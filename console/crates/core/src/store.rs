@@ -375,6 +375,30 @@ impl Store {
     }
 
     // ---------------------------------------------------------------- 节点
+    /// 新建一台 L 端节点（管理面登记"虚机主板"）
+    pub fn create_node(&self, req: NewNodeReq) -> Result<AgentNode> {
+        let mut i = self.inner.lock().unwrap();
+        let next = i
+            .nodes
+            .iter()
+            .filter_map(|n| n.id.rsplit('-').next().and_then(|x| x.parse::<u32>().ok()))
+            .max()
+            .unwrap_or(0)
+            + 1;
+        let node = AgentNode {
+            id: format!("node-{:04}", next),
+            name: req.name,
+            addr: req.addr,
+            version: req.version.unwrap_or_else(|| "0.1.0".into()),
+            status: NodeStatus::Online,
+            last_seen: now_ms(),
+            mappings: 0,
+        };
+        i.nodes.push(node.clone());
+        self.persist_locked(&i)?;
+        Ok(node)
+    }
+
     pub fn nodes(&self) -> Vec<AgentNode> {
         self.inner.lock().unwrap().nodes.clone()
     }

@@ -222,6 +222,14 @@ pub struct PatchMapping {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct NewNodeReq {
+    pub name: String,
+    pub addr: String,
+    #[serde(default)]
+    pub version: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct DeployReq {
     pub version: String,
 }

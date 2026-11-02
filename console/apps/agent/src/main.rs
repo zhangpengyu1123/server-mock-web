@@ -1,4 +1,4 @@
-﻿//! RhineLab Console · L 端 agent
+//! RhineLab Console · L 端 agent
 //!
 //! 一个进程承担三件事（这就是 L 端「业务面」的全部）：
 //! 1. `/api/business/*` 业务面：本地映射 CRUD + 试打 + 日志（需登录）
@@ -240,6 +240,20 @@ async fn admin_nodes(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Vec<AgentNod
     Ok(Json(st.store.nodes()))
 }
 
+/// 新建虚机主板（登记一台 L 端节点）
+async fn admin_create_node(
+    st: Ctx,
+    headers: HeaderMap,
+    Json(req): Json<NewNodeReq>,
+) -> ApiResult<Json<AgentNode>> {
+    let u = auth_admin(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    let node = st.store.create_node(req)?;
+    st.store
+        .push_log("admin", "node.create", &format!("新建虚机 {}", node.id), "info");
+    Ok(Json(node))
+}
+
 async fn admin_deploy(
     st: Ctx,
     headers: HeaderMap,
@@ -392,7 +406,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/business/mappings/:id/test", post(business_test))
         .route("/business/logs", get(business_logs))
         .route("/business/stats", get(business_stats))
-        .route("/admin/nodes", get(admin_nodes))
+        .route("/admin/nodes", get(admin_nodes).post(admin_create_node))
         .route("/admin/nodes/:id/deploy", post(admin_deploy))
         .route("/admin/jobs/:id", get(admin_job))
         .route("/admin/users", get(admin_users).post(admin_create_user))
