@@ -129,6 +129,8 @@ curl -X POST http://127.0.0.1:9600/mock/<path> -H "Content-Type: application/jso
 
 **看点**：状态表（ID / Label / Tone）+ 操作结果表（Option → Effect → To state → Set field），可增删改，保存后**真实影响**升级任务弹出的人工确认选项。
 
+![人机交互状态机](img/17-human-state-machine.png)
+
 **台词**：
 > 这里是"剧本"：每种操作结果对应什么效果（继续 / 挂起 / 终止）。
 > 改完保存，后面任务里弹出的按钮就跟着变。
