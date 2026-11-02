@@ -216,6 +216,9 @@ pub struct PatchMapping {
     pub status: Option<u16>,
     pub delay_ms: Option<u32>,
     pub body: Option<String>,
+    /// 更新服务版本（"更新"操作）
+    #[serde(default)]
+    pub version: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]

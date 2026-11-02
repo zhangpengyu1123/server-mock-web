@@ -329,6 +329,9 @@ impl Store {
         if let Some(v) = patch.delay_ms {
             i.mappings[idx].delay_ms = v;
         }
+          if let Some(v) = patch.version.clone() {
+              i.mappings[idx].version = v;
+          }
         if let Some(v) = patch.body {
             i.mappings[idx].body = v;
         }

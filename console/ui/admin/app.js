@@ -84,6 +84,7 @@
       }
       S.user = data.user;
       S.api.setCsrf(data.csrf);
+  window.RHINE_CSRF = data.csrf;   // 供 3D 交互层复用（rig-ui.js）
       try { localStorage.setItem('rhine.admin.base', S.base); } catch (e) {}
       $('#footMsg').textContent = '已接入 · 载入舰队';
       $('#whiteout').classList.add('on');

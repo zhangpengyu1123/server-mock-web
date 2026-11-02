@@ -188,10 +188,26 @@ function update() {
 
     // 2. 卡顶光带：呼吸 + 命中闪
     const flash = st.lift > 0 ? 1 : 0;
+    const boardUpdating = m.board && m.board.node && m.board.node.status === 'updating';
     st.tops.forEach((o) => {
       if (!o.material || !o.material.emissive) return;
-      const base = enabled ? 1.15 + 0.25 * Math.sin(t * 1.8 + seed * 6.28) : 0.05;
-      o.material.emissiveIntensity = base + flash * 2.4;
+      if (!enabled) {
+        // 停用：整条熄灭、颜色转暗（"断线"感）
+        o.material.emissive.setHex(0x2a2622);
+        o.material.emissiveIntensity = 0.05;
+        return;
+      }
+      if (boardUpdating) {
+        // 部署中：青色跑马灯（沿卡排相位推进）
+        o.material.emissive.copy(CYAN);
+        const phase = (t * 1.6 - (m.slot || 0) * 0.9) % 1;
+        o.material.emissiveIntensity = 0.7 + 3.2 * Math.max(0, Math.sin(phase * Math.PI * 2));
+      } else {
+        // 启用：琥珀实线 + 轻微呼吸
+        o.material.emissive.copy(AMBER);
+        o.material.emissiveIntensity = 1.55 + 0.22 * Math.sin(t * 1.6 + seed * 6.28);
+      }
+      if (flash) o.material.emissiveIntensity += flash * 2.4;
     });
 
     // 4. 悬停反馈

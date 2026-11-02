@@ -88,7 +88,8 @@ function nameplateTexture(lines, opts) {
   const cv = document.createElement('canvas');
   cv.width = W; cv.height = H;
   const g = cv.getContext('2d');
-  g.fillStyle = '#141210';
+  const isOff = !!opts.disabled;
+  g.fillStyle = isOff ? '#6e6963' : '#141210';   // 停用：灰底反白（作废章）
   g.fillRect(0, 0, W, H);
 
   // 左侧琥珀竖条
@@ -98,7 +99,7 @@ function nameplateTexture(lines, opts) {
   const pad = 46;
   g.textBaseline = 'middle';
   // 主标题
-  g.fillStyle = '#f7f2ea';
+  g.fillStyle = isOff ? '#faf7f2' : '#f7f2ea';
   g.font = '600 ' + (opts.big || 78) + 'px "PingFang SC","Microsoft YaHei",system-ui,sans-serif';
   let text = String(lines[0] || '');
   while (g.measureText(text).width > W - pad * 2 - 40 && text.length > 3) {
@@ -136,18 +137,32 @@ function nameplateTexture(lines, opts) {
           ink: (on || sync) ? '#141210' : 'rgba(247,242,234,.72)' });
       }
       let chipX = W - pad;
-      const chipY = H - 74;
+      const chipY = H - 96;
       g.font = '600 40px "JetBrains Mono",ui-monospace,Consolas,monospace';
       g.textBaseline = 'middle';
       for (let k = chips.length - 1; k >= 0; k--) {
         const c = chips[k];
         const tw = g.measureText(c.text).width;
-        const bw = tw + 30;
-        if (c.fill) { g.fillStyle = c.fill; g.fillRect(chipX - bw, chipY - 26, bw, 52); }
-        else { g.strokeStyle = c.stale ? 'rgba(247,242,234,.22)' : 'rgba(247,242,234,.34)'; g.lineWidth = 2; g.strokeRect(chipX - bw, chipY - 26, bw, 52); }
+        const bw = tw + 44;
+        if (c.fill) { g.fillStyle = c.fill; g.fillRect(chipX - bw, chipY - 40, bw, 80); }
+        else {
+          if (c.stale) {
+            // 落后版本：斜纹底 + 琥珀描边（视觉拉力：该升级了）
+            g.save(); g.beginPath(); g.rect(chipX - bw, chipY - 40, bw, 80); g.clip();
+            g.strokeStyle = 'rgba(215,154,68,.30)'; g.lineWidth = 3;
+            for (let hx = chipX - bw - 80; hx < chipX + 20; hx += 14) {
+              g.beginPath(); g.moveTo(hx, chipY + 40); g.lineTo(hx + 80, chipY - 40); g.stroke();
+            }
+            g.restore();
+            g.strokeStyle = '#d79a44'; g.lineWidth = 3;
+          } else {
+            g.strokeStyle = 'rgba(247,242,234,.34)'; g.lineWidth = 2;
+          }
+          g.strokeRect(chipX - bw, chipY - 40, bw, 80);
+        }
         g.fillStyle = c.ink;
-        g.fillText(c.text, chipX - bw + 15, chipY);
-        chipX -= bw + 12;
+        g.fillText(c.text, chipX - bw + 22, chipY);
+        chipX -= bw + 16;
       }
 
   const t = new THREE.CanvasTexture(cv);
@@ -454,6 +469,7 @@ class Rig {
           version: mp.version || (board.node && board.node.version) || '',
           stale: !!(mp.version && board.node && mp.version !== board.node.version),
           state: mp.enabled === false ? 'OFF' : 'ON',
+          disabled: mp.enabled === false,
         });
       plate.position.set(0, plateYc, G.cardT / 2 + 0.0036);   // 前移 2mm，跳出铭牌凹位
       root.add(plate);
