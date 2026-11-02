@@ -325,7 +325,15 @@ class Topo3D {
     const dot = new THREE.Mesh(new THREE.SphereGeometry(0.016, 8, 8), glow(0xffc978, 2.6).clone());
     dot.position.set(a[0], a[1], a[2]);
     this.root.add(dot);
-    this.links.push({ from: idA, to: idB, mesh: m, dot, a: new THREE.Vector3(...a), b: new THREE.Vector3(...b), phase: Math.random() });
+    // 方向箭头：链路中点的小圆锥，指向子节点（父 → 子的数据方向）
+    const va = new THREE.Vector3(...a), vb = new THREE.Vector3(...b);
+    const dir = new THREE.Vector3().subVectors(vb, va).normalize();
+    const arrow = new THREE.Mesh(new THREE.ConeGeometry(0.020, 0.055, 8), glow(0xffc978, 1.2).clone());
+    arrow.position.copy(va).addScaledVector(dir, 0.58);
+    arrow.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+    this.root.add(arrow);
+
+    this.links.push({ from: idA, to: idB, mesh: m, dot, arrow, a: va, b: vb, phase: Math.random() });
   }
 
   anchorOf(id) {
@@ -506,6 +514,12 @@ class Topo3D {
         l.dot.material.emissiveIntensity = none ? 1.6 : (hit ? 2.4 : 0.5);
         l.dot.visible = none || hit;
       }
+        if (l.arrow) {
+          const none2 = !id;
+          l.arrow.material.color.setHex(none2 ? 0xffc978 : (hit ? 0xffd79a : 0x9a948a));
+          l.arrow.material.emissiveIntensity = none2 ? 1.2 : (hit ? 2.0 : 0.25);
+          l.arrow.visible = none2 || hit;
+        }
     });
   }
 
@@ -559,11 +573,11 @@ class Topo3D {
       this.links.forEach((l) => {
         if (!l.dot) return;
         const dim = this.selected && l.hot === false;
-        const k = (((now * (dim ? 0.3 : 1)) + l.phase) % 1);
-        const e = k < 0.5 ? k * 2 : (1 - k) * 2;   // 往返
+        const e = (((now * (dim ? 0.3 : 1)) + l.phase) % 1);   // 单向：父 → 子，到终点重生
         l.dot.position.lerpVectors(l.a, l.b, e);
         const base = dim ? 0.35 : 1.6;
-        l.dot.material.emissiveIntensity = base + Math.sin(e * Math.PI) * base;
+        const fade = Math.sin(e * Math.PI);
+        l.dot.material.emissiveIntensity = base * (0.35 + fade);
       });
     }
     this.controls.update();
