@@ -177,13 +177,25 @@ class Topo3D {
 
   async loadModels() {
     const l = (n) => new Promise((res, rej) => this.loader.load(ASSETS + n + '.glb?v=' + Date.now(), res, undefined, rej));
-    const [site, group, ne, comp] = await Promise.all([
-      l('topo_site'), l('topo_group'), l('topo_ne'), l('topo_comp'),
-    ]);
-    this.models = { site, group, ne, comp };
+    const names = ['site', 'group', 'ne', 'comp', 'comp_ctrl', 'comp_switch', 'comp_service', 'comp_power', 'comp_fan'];
+    const loaded = await Promise.all(names.map((n) => l('topo_' + n).catch(() => null)));
+    this.models = {};
+    names.forEach((n, i) => { if (loaded[i]) this.models[n] = loaded[i]; });
+  }
+
+  /** 组件名映射到资产：主控/交换/业务/电源/风扇，其余用通用芯片 */
+  compKind(name) {
+    const s = String(name || '');
+    if (/主控|ctrl|control/i.test(s)) return 'comp_ctrl';
+    if (/交换|switch/i.test(s)) return 'comp_switch';
+    if (/业务|service|业务板/i.test(s)) return 'comp_service';
+    if (/电源|power|psu/i.test(s)) return 'comp_power';
+    if (/风扇|fan/i.test(s)) return 'comp_fan';
+    return 'comp';
   }
 
   inst(kind) {
+    if (this.models && !this.models[kind]) kind = 'comp';
     if (!this.models) return null;
     const o = this.models[kind].scene.clone(true);
     o.traverse((c) => {
@@ -328,7 +340,7 @@ class Topo3D {
       comps.forEach((name, i) => {
         const ang = (i / comps.length) * Math.PI * 2 - Math.PI / 2;
         const r = 0.92;
-        const chip = this.inst('comp') || new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.22, 0.22), mat(0xd8d1c7, 0.55));
+        const chip = this.inst(this.compKind(name)) || new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.22, 0.22), mat(0xd8d1c7, 0.55));
         chip.position.set(Math.cos(ang) * r, Y + 0.02, Math.sin(ang) * r); chip.scale.setScalar(1.5);
         chip.rotation.y = -ang + Math.PI / 2;
         this.root.add(chip);
