@@ -106,6 +106,12 @@ pub struct Mapping {
     pub content_type: String,
     pub body: String,
     pub enabled: bool,
+    /// 结构化响应字段（为空时用 body 原样返回）
+    #[serde(default)]
+    pub fields: Vec<RuleField>,
+    /// 人机交互节点
+    #[serde(default)]
+    pub human: Option<RuleHuman>,
     /// 该服务当前部署版本，形如 `0.1.1`（旧数据缺省为空）
     #[serde(default)]
     pub version: String,
@@ -297,6 +303,62 @@ pub struct NewTaskReq {
 #[derive(Debug, Deserialize)]
 pub struct ResolveHumanReq {
     /// 选项下标
+    pub option: usize,
+}
+
+
+// ---------------- MOCK 响应规则 ----------------
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct RuleField {
+    pub name: String,
+    /// string | number | boolean | object | array
+    pub kind: String,
+    /// static | autoIncrement | once | condition
+    pub source: String,
+    #[serde(default)]
+    pub value: String,
+    #[serde(default = "one")]
+    pub step: i64,
+    #[serde(default)]
+    pub max: i64,
+    #[serde(default)]
+    pub condition: String,
+    #[serde(default)]
+    pub count: i64,
+    #[serde(default)]
+    pub used: bool,
+}
+
+fn one() -> i64 { 1 }
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct RuleOption {
+    pub label: String,
+    pub effect: String,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct RuleHuman {
+    pub prompt: String,
+    pub options: Vec<RuleOption>,
+    /// pending | resolved
+    pub state: String,
+    #[serde(default)]
+    pub chosen: Option<usize>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct PatchRulesReq {
+    #[serde(default)]
+    pub fields: Option<Vec<RuleField>>,
+    #[serde(default)]
+    pub human: Option<RuleHuman>,
+    #[serde(default)]
+    pub clear_human: bool,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ResolveMockHumanReq {
     pub option: usize,
 }
 

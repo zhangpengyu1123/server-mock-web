@@ -191,6 +191,72 @@ impl Store {
         self.clone()
     }
 
+    // ---------------- MOCK 规则 ----------------
+    pub fn patch_rules(&self, id: &str, req: PatchRulesReq) -> Result<Mapping> {
+        let mut i = self.inner.lock().unwrap();
+        let idx = i.mappings.iter().position(|m| m.id == id).ok_or(Error::NotFound)?;
+        {
+            let m = &mut i.mappings[idx];
+            if let Some(f) = req.fields { m.fields = f; }
+            if req.clear_human { m.human = None; } else if let Some(h) = req.human { m.human = Some(h); }
+        }
+        let out = i.mappings[idx].clone();
+        self.persist_locked(&i)?;
+        Ok(out)
+    }
+
+    pub fn mock_human(&self, id: &str) -> Result<Option<RuleHuman>> {
+        let i = self.inner.lock().unwrap();
+        let m = i.mappings.iter().find(|m| m.id == id).ok_or(Error::NotFound)?;
+        Ok(m.human.clone())
+    }
+
+    /// 解析人机交互：continue → resolved；abort → 保持 pending 但记录 chosen
+    pub fn resolve_mock_human(&self, id: &str, option: usize) -> Result<Mapping> {
+        let mut i = self.inner.lock().unwrap();
+        let idx = i.mappings.iter().position(|m| m.id == id).ok_or(Error::NotFound)?;
+        {
+            let m = &mut i.mappings[idx];
+            if let Some(h) = m.human.as_mut() {
+                h.chosen = Some(option);
+                let eff = h.options.get(option).map(|o| o.effect.clone()).unwrap_or_else(|| "continue".into());
+                if eff == "continue" { h.state = "resolved".into(); }
+            }
+        }
+        let out = i.mappings[idx].clone();
+        self.persist_locked(&i)?;
+        Ok(out)
+    }
+
+    /// 按规则推进计数并返回"本次响应"所需的字段快照（autoIncrement / once 在此变动）
+    pub fn advance_rules(&self, id: &str) -> Result<Vec<RuleField>> {
+        let mut i = self.inner.lock().unwrap();
+        let idx = i.mappings.iter().position(|m| m.id == id).ok_or(Error::NotFound)?;
+        let mut snapshot = Vec::new();
+        {
+            let m = &mut i.mappings[idx];
+            for f in m.fields.iter_mut() {
+                match f.source.as_str() {
+                    "autoIncrement" => {
+                        f.count += f.step.max(1);
+                        if f.max > 0 && f.count > f.max { f.count = f.step.max(1); }
+                        let mut c = f.clone();
+                        c.value = f.count.to_string();
+                        snapshot.push(c);
+                    }
+                    "once" => {
+                        let mut c = f.clone();
+                        if f.used { c.value = String::new(); } else { f.used = true; }
+                        snapshot.push(c);
+                    }
+                    _ => snapshot.push(f.clone()),
+                }
+            }
+        }
+        self.persist_locked(&i)?;
+        Ok(snapshot)
+    }
+
     // ---------------- 升级任务 ----------------
     pub fn tasks(&self) -> Vec<UpgradeTask> {
         self.inner.lock().unwrap().tasks.clone()
@@ -500,6 +566,8 @@ impl Store {
                 .unwrap_or_else(|| "application/json".into()),
             body: req.body.unwrap_or_else(|| "{}".into()),
             enabled: true,
+            fields: vec![],
+            human: None,
             hits: 0,
             last_hit_at: None,
             created_at: now_ms(),
@@ -810,6 +878,8 @@ fn seed(inner: &mut Inner) {
             content_type: "application/json".into(),
             body: body.into(),
             enabled: true,
+            fields: vec![],
+            human: None,
               version: ["0.1.1", "0.1.0", "0.2.0"][i % 3].to_string(),
             hits: (i as u64) * 7,
             last_hit_at: None,

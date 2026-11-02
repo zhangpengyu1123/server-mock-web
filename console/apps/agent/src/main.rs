@@ -235,6 +235,30 @@ async fn business_stats(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Stats>> {
 }
 
 // ================================================================== 管理面
+async fn business_patch_rules(
+    st: Ctx,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+    Json(req): Json<PatchRulesReq>,
+) -> ApiResult<Json<Mapping>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    Ok(Json(st.store.patch_rules(&id, req)?))
+}
+
+async fn business_resolve_mock_human(
+    st: Ctx,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+    Json(req): Json<ResolveMockHumanReq>,
+) -> ApiResult<Json<Mapping>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    let m = st.store.resolve_mock_human(&id, req.option)?;
+    st.store.push_log("business", "mock.human", &format!("人机交互 {}", m.id), "info");
+    Ok(Json(m))
+}
+
 async fn business_tasks(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Vec<UpgradeTask>>> {
     let _u = auth(&st, &headers)?;
     Ok(Json(st.store.tasks()))
@@ -392,7 +416,63 @@ async fn admin_logs(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Vec<LogEntry>
 // ================================================================== mock 引擎
 /// 被测系统真正调用的端点。走真实 HTTP（不是进程内调用），
 /// 所以「本地映射」能被 curl、被别的服务、被测系统本身打到。
-async fn mock_engine(st: Ctx, Path(rest): Path<String>, method: Method) -> Response {
+/// 极简条件求值：支持 "a==b?X:Y"（a/b 可为 req.<字段> 或字面量）
+fn eval_condition(expr: &str, body: &serde_json::Value) -> String {
+    let (cond, branches) = match expr.split_once('?') { Some(v) => v, None => return expr.to_string() };
+    let (yes, no) = match branches.split_once(':') { Some(v) => v, None => (branches, "") };
+    let (lhs, rhs) = match cond.split_once("==") { Some(v) => v, None => return yes.trim().to_string() };
+    let val = |s: &str| -> String {
+        let s = s.trim().trim_matches('"');
+        if let Some(k) = s.strip_prefix("req.") {
+            body.get(k).map(|v| match v { serde_json::Value::String(x) => x.clone(), o => o.to_string() }).unwrap_or_default()
+        } else { s.to_string() }
+    };
+    if val(lhs) == val(rhs) { yes.trim().trim_matches('"').to_string() } else { no.trim().trim_matches('"').to_string() }
+}
+
+/// 把规则字段拼成 JSON：点路径自动嵌套
+fn build_body(fields: &[RuleField], req: &serde_json::Value, base: &str) -> String {
+    let mut root = serde_json::Value::Object(Default::default());
+    for f in fields {
+        let raw = match f.source.as_str() {
+            "condition" => eval_condition(&f.condition, req),
+            "once" if f.value.is_empty() => continue,
+            _ => f.value.clone(),
+        };
+        // {{req.x}} 插值
+        let mut out = raw.clone();
+        while let Some(s) = out.find("{{req.") {
+            if let Some(e) = out[s..].find("}}") {
+                let key = out[s + 6..s + e].to_string();
+                let v = req.get(&key).map(|x| match x { serde_json::Value::String(y) => y.clone(), o => o.to_string() }).unwrap_or_default();
+                out = format!("{}{}{}", &out[..s], v, &out[s + e + 2..]);
+            } else { break; }
+        }
+        let val = match f.kind.as_str() {
+            "number" => serde_json::from_str::<serde_json::Value>(&out).unwrap_or(serde_json::Value::from(0)),
+            "boolean" => serde_json::Value::Bool(out == "true" || out == "1"),
+            "object" | "array" => serde_json::from_str(&out).unwrap_or(serde_json::Value::String(out.clone())),
+            _ => serde_json::Value::String(out),
+        };
+        let parts: Vec<&str> = f.name.split('.').collect();
+        let mut cur = &mut root;
+        for (i, p) in parts.iter().enumerate() {
+            if i == parts.len() - 1 {
+                cur[p] = val.clone();
+            } else {
+                cur = cur.as_object_mut().unwrap().entry(p.to_string()).or_insert_with(|| serde_json::Value::Object(Default::default()));
+            }
+        }
+    }
+    if root.as_object().map(|o| o.is_empty()).unwrap_or(true) { base.to_string() } else { root.to_string() }
+}
+
+async fn mock_engine(
+    st: Ctx,
+    Path(rest): Path<String>,
+    method: Method,
+    body: Option<Json<serde_json::Value>>,
+) -> Response {
     let path = format!("/{rest}");
     let m = match st.store.hit_mock(method.as_str(), &path) {
         Ok(m) => m,
@@ -404,12 +484,39 @@ async fn mock_engine(st: Ctx, Path(rest): Path<String>, method: Method) -> Respo
                 .into_response()
         }
     };
+    // 人机交互未确认 → 202 + 待确认载荷
+    if let Some(h) = m.human.as_ref() {
+        if h.state == "pending" {
+            let payload = json!({
+                "humanPending": true,
+                "mapping": m.id,
+                "prompt": h.prompt,
+                "options": h.options,
+            });
+            let mut res = (StatusCode::ACCEPTED, Json(payload)).into_response();
+            res.headers_mut().insert(
+                header::HeaderName::from_static("x-rhine-human"),
+                HeaderValue::from_static("pending"),
+            );
+            return res;
+        }
+    }
+
     if m.delay_ms > 0 {
         tokio::time::sleep(Duration::from_millis(m.delay_ms as u64)).await;
     }
+    let req_json = body.map(|Json(v)| v).unwrap_or_else(|| json!({}));
+    let out_body = if m.fields.is_empty() {
+        m.body.clone()
+    } else {
+        match st.store.advance_rules(&m.id) {
+            Ok(fs) => build_body(&fs, &req_json, &m.body),
+            Err(_) => m.body.clone(),
+        }
+    };
     let ct = HeaderValue::from_str(&m.content_type)
         .unwrap_or_else(|_| HeaderValue::from_static("application/json"));
-    let mut res = Response::new(axum::body::Body::from(m.body.clone()));
+    let mut res = Response::new(axum::body::Body::from(out_body));
     *res.status_mut() = StatusCode::from_u16(m.status).unwrap_or(StatusCode::OK);
     res.headers_mut().insert(header::CONTENT_TYPE, ct);
     res.headers_mut().insert(
@@ -475,6 +582,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/business/mappings/:id/test", post(business_test))
         .route("/business/logs", get(business_logs))
         .route("/business/stats", get(business_stats))
+        .route("/business/mappings/:id/rules", patch(business_patch_rules))
+        .route("/business/mappings/:id/human", post(business_resolve_mock_human))
         .route("/business/tasks", get(business_tasks).post(business_create_task))
         .route("/business/tasks/:id/human", post(business_resolve_human))
         .route("/business/endpoints", get(business_endpoints).post(business_create_endpoint))
