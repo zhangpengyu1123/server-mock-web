@@ -201,3 +201,35 @@ curl -X POST http://127.0.0.1:9600/api/business/platform/fs/verify
 | 后端模型 | `console/crates/core/src/model.rs` |
 | 存储 | `console/crates/core/src/store.rs` |
 | 接口与引擎 | `console/apps/agent/src/main.rs` |
+
+---
+
+## 12. 场景快照与教学场景库
+
+MOCK 管理页右侧「场景快照（导出 / 导入）」：
+
+| 操作 | 说明 |
+|---|---|
+| 预置场景下拉 + 载入 | 一键切到某套教学场景（会覆盖当前数据） |
+| ↓ 导出场景 | 下载 `rhine-scene-*.json`（约 13 KB） |
+| ↑ 导入场景 | 选本地 JSON 导入，提示「已导入 N 条 ✓」 |
+
+快照内容：端点（含证书/能力）、网元（属性/版本/流程/校验/组件）、网元组、软件包、平台配置（站点/CPU/共部署）、人机模板、MOCK 映射（含 fields 与 variants）。
+
+接口：
+
+```bash
+GET  /api/business/export        # 导出（登录即可）
+POST /api/business/import        # 导入（管理员 + CSRF），整体覆盖，保留用户与会话
+```
+
+内置场景（`console/ui/business/scenes/`）：
+
+| 文件 | 场景 | 要点 |
+|---|---|---|
+| `baseline.json` | 基线：单站点三网元 | 标准演示起点 |
+| `co-deploy.json` | 双站点共部署 | CPU 32、共部署开启、版本 5.3.0 待升级 |
+| `fault-drill.json` | 故障演练 | 注入 500 规则、慢速兜底 400ms、15s 人机超时 |
+| `index.json` | 索引 | 下拉列表的数据源 |
+
+> 换机器演示：把 `scenes/*.json` 或自己导出的快照拷过去，导入即可 1:1 复现。
