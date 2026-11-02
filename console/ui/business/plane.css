@@ -4,15 +4,16 @@
    ==========================================================================*/
 :root {
   /* 取自 RhineLabUI 设计基准：暖灰白底 / 近黑墨 / 暖杏金信号 */
-  --ink: #171713;
-  --ink-2: rgba(23, 23, 19, .62);
-  --ink-3: rgba(23, 23, 19, .40);
-  --line: rgba(23, 23, 19, .16);
-  --line-2: rgba(23, 23, 19, .28);
+  --ink: #080a08;
+  --ink-2: #77756d;
+  --ink-3: #9a978e;
+  --line: #aaa59a;
+  --line-2: #bdb8ad;
   --paper: #eae5e1;
   --paper-2: #e7e3d9;
+  --panel: #edebe4;
   --sand: #c1b8a7;
-  --signal: #a67d48;
+  --signal: #9b7247;
   --danger: #7d2f22;
   --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, "PingFang SC", "Microsoft YaHei", sans-serif;
 }

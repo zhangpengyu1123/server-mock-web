@@ -124,6 +124,7 @@ FS：平台版本 + 校验流程（可执行，失败即中断）
 |---|---|
 | [console/docs/demo-script.md](console/docs/demo-script.md) | **逐幕演示脚本**（11 幕：操作 / 看点 / 台词 / 验证命令 + 截图） |
 | [console/docs/business-plane-manual.md](console/docs/business-plane-manual.md) | 业务面手册：启动、九块工作台、接口、场景库、便携版 |
+| [console/docs/visual-spec.md](console/docs/visual-spec.md) | 视觉基准：与上游 RhineLabUI 的 token 逐项对照与差异说明 |
 
 ---
 
