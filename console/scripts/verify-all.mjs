@@ -132,9 +132,11 @@ G('网元管理');
   check('网元成组（同组网元）', gs.length > 0 && gs.some((g) => (g.element_ids || []).length > 1),
     gs.map((g) => g.name + '(' + (g.element_ids || []).length + ')').join(' · '));
 
-  // 清理：删除刚建的两个（用场景导入兜底，这里只记录）
-  await J('/api/business/elements/' + created.body.id, { method: 'DELETE' }).catch(() => {});
-  await J('/api/business/elements/' + copied.body.id, { method: 'DELETE' }).catch(() => {});
+  // 清理：删掉本轮新建的网元（DELETE 接口存在时生效，否则靠 clean-scene 兜底）
+  for (const id of [created.body.id, copied.body.id]) {
+    const del = await J('/api/business/elements/' + id, { method: 'DELETE' }).catch(() => ({ status: 0 }));
+    if (del.status !== 200 && del.status !== 204) console.log('    （提示）网元 ' + id + ' 需靠 clean-scene 清理，DELETE 返回 ' + del.status);
+  }
 }
 
 /* ================= 四、OMC ================= */

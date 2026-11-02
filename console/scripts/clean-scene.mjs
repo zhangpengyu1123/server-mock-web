@@ -15,6 +15,9 @@ const scene = await fetch(BASE + '/api/business/export', { headers: H }).then((x
 const before = { mappings: scene.mappings.length, tasks: (scene.tasks || []).length };
 
 scene.mappings = scene.mappings.filter((m) => !/\d{10,}$/.test(m.path));
+// 回归脚本留下的痕迹：gNB-HZ-0999 及其副本、18443 测试端点
+scene.elements = (scene.elements || []).filter((e) => !/0999/.test(e.name));
+scene.endpoints = (scene.endpoints || []).filter((e) => e.port !== 18443);
 scene.tasks = [];
 scene.hits = [];
 

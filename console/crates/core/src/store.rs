@@ -558,6 +558,9 @@ impl Store {
         if let Ok(x) = serde_json::from_value::<PlatformCfg>(get("platform")) { i.platform = x; count += 1; }
         if let Ok(x) = serde_json::from_value::<HumanTemplate>(get("human")) { i.human = x; count += 1; }
         if let Ok(x) = serde_json::from_value::<Vec<Mapping>>(get("mappings")) { count += x.len(); i.mappings = x; }
+        // 场景导入视为「复位」：清掉旧任务与审计，避免演示时看到上一轮残留
+        i.tasks.clear();
+        i.hits.clear();
         self.persist_locked(&i)?;
         Ok(count)
     }

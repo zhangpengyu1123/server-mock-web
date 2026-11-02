@@ -9,7 +9,7 @@
       ],
       "cert": null,
       "enabled": false,
-      "created_at": 1793640235690
+      "created_at": 1793641708383
     }
   ],
   "elements": [
@@ -44,8 +44,29 @@
           "msg": "架构不匹配"
         }
       ],
-      "flow": [],
-      "created_at": 1793640235238
+      "flow": [
+        {
+          "step": "上传软件包",
+          "human": false
+        },
+        {
+          "step": "预检查（参数校验）",
+          "human": false
+        },
+        {
+          "step": "激活",
+          "human": true
+        },
+        {
+          "step": "主备倒换",
+          "human": true
+        },
+        {
+          "step": "完成与回执",
+          "human": false
+        }
+      ],
+      "created_at": 1793641707945
     },
     {
       "id": "ne-0002",
@@ -64,8 +85,29 @@
         "电源"
       ],
       "checks": [],
-      "flow": [],
-      "created_at": 1793640235238
+      "flow": [
+        {
+          "step": "上传软件包",
+          "human": false
+        },
+        {
+          "step": "预检查（参数校验）",
+          "human": false
+        },
+        {
+          "step": "激活",
+          "human": true
+        },
+        {
+          "step": "主备倒换",
+          "human": true
+        },
+        {
+          "step": "完成与回执",
+          "human": false
+        }
+      ],
+      "created_at": 1793641707945
     },
     {
       "id": "ne-0003",
@@ -84,8 +126,29 @@
         "电源"
       ],
       "checks": [],
-      "flow": [],
-      "created_at": 1793640235238
+      "flow": [
+        {
+          "step": "上传软件包",
+          "human": false
+        },
+        {
+          "step": "预检查（参数校验）",
+          "human": false
+        },
+        {
+          "step": "激活",
+          "human": true
+        },
+        {
+          "step": "主备倒换",
+          "human": true
+        },
+        {
+          "step": "完成与回执",
+          "human": false
+        }
+      ],
+      "created_at": 1793641707945
     }
   ],
   "groups": [
@@ -97,7 +160,7 @@
         "ne-0001",
         "ne-0002"
       ],
-      "created_at": 1793640235238
+      "created_at": 1793641707945
     },
     {
       "id": "g-hz-02",
@@ -106,7 +169,7 @@
       "element_ids": [
         "ne-0003"
       ],
-      "created_at": 1793640235238
+      "created_at": 1793641707945
     }
   ],
   "packages": [
@@ -118,7 +181,7 @@
       "vendor": "华为",
       "version": "5.2.1",
       "verified": true,
-      "created_at": 1793640235238
+      "created_at": 1793641707945
     },
     {
       "id": "pkg-002",
@@ -128,7 +191,7 @@
       "vendor": "华为",
       "version": "5.2.0",
       "verified": true,
-      "created_at": 1793640235238
+      "created_at": 1793641707945
     },
     {
       "id": "pkg-003",
@@ -138,7 +201,7 @@
       "vendor": "中兴",
       "version": "4.8.4",
       "verified": true,
-      "created_at": 1793640235238
+      "created_at": 1793641707945
     }
   ],
   "platform": {
@@ -250,16 +313,16 @@
       "username": "admin",
       "display": "莱茵生命 · 管理员",
       "role": "admin",
-      "hash": "$argon2id$v=19$m=19456,t=2,p=1$Wls9mtQbqhh/kPRp0mfFmA$zvmNbUhJYHR4raytz0IphkO3r0ePWpE4tv+kN7NxyOU",
-      "created_at": 1793640235463
+      "hash": "$argon2id$v=19$m=19456,t=2,p=1$rNX3oxhH6+/MAsrl5a2qXw$SHM8quLCLzv86AyF6mcZhUQm/8w4btMsFwSxnJDLVe8",
+      "created_at": 1793641708165
     },
     {
       "id": "user-0002",
       "username": "viewer",
       "display": "观测站 · 业务用户",
       "role": "operator",
-      "hash": "$argon2id$v=19$m=19456,t=2,p=1$w9UHWe3lDeplVJJn13RqEw$THFAHwxuDrLkJQTJe4sShG7ElpoEIF8gHM0+ozCeC+4",
-      "created_at": 1793640235690
+      "hash": "$argon2id$v=19$m=19456,t=2,p=1$424ZH3s67z6oPIapKpySqA$UGx838RYUcyOVxH1yEcjcXde3Q+fM3xZsthTc9DHZ3s",
+      "created_at": 1793641708383
     }
   ],
   "mappings": [
@@ -280,7 +343,7 @@
       "version": "0.1.1",
       "hits": 0,
       "last_hit_at": null,
-      "created_at": 1793640235690
+      "created_at": 1793641708383
     },
     {
       "id": "map-0002",
@@ -299,7 +362,7 @@
       "version": "0.1.0",
       "hits": 7,
       "last_hit_at": null,
-      "created_at": 1793640175690
+      "created_at": 1793641648383
     },
     {
       "id": "map-0003",
@@ -318,7 +381,7 @@
       "version": "0.2.0",
       "hits": 14,
       "last_hit_at": null,
-      "created_at": 1793640115690
+      "created_at": 1793641588383
     },
     {
       "id": "map-0004",
@@ -337,7 +400,7 @@
       "version": "0.1.1",
       "hits": 21,
       "last_hit_at": null,
-      "created_at": 1793640055690
+      "created_at": 1793641528383
     }
   ],
   "nodes": [
@@ -347,7 +410,7 @@
       "addr": "10.0.0.21:9443",
       "version": "0.1.0",
       "status": "online",
-      "last_seen": 1793640235690,
+      "last_seen": 1793641708383,
       "mappings": 4
     },
     {
@@ -356,7 +419,7 @@
       "addr": "10.0.0.22:9443",
       "version": "0.1.0",
       "status": "online",
-      "last_seen": 1793640193690,
+      "last_seen": 1793641666383,
       "mappings": 2
     },
     {
@@ -365,7 +428,7 @@
       "addr": "10.0.0.23:9443",
       "version": "0.0.9",
       "status": "offline",
-      "last_seen": 1793636635690,
+      "last_seen": 1793638108383,
       "mappings": 0
     }
   ],

@@ -101,7 +101,7 @@
 | 项 | 状态 |
 |---|---|
 | 种子数据 | 1 端点 / 3 网元（各 5 步流程、2 步人工）/ 2 组 / 3 包 / 4 映射 / 0 任务 |
-| 三套教学场景 | baseline / co-deploy / fault-drill（各 9 KB 左右，均带演示规则） |
+| 三套教学场景 | baseline（CPU 16 · 杭州滨江站）/ co-deploy（CPU 32 · 北京望京站 · BJ-* 命名 · 5.3.0 待升级）/ fault-drill（CPU 8 · 演练沙箱 · 500 注入 + 慢兜底 + 强制人工门 + 主备同名致校验失败）；各约 9.8 KB，均带演示规则与 5 步流程 |
 | 导出导入 | `GET /api/business/export` / `POST /api/business/import` |
 | 文档 | `demo-script.md`（11 幕 + 16 图）· `business-plane-manual.md` · `visual-spec.md` · 本报告 |
 | 便携包 | `dist/rhine-mock-console-1.0.0/`（34.6 MB）+ zip（17.9 MB） |

@@ -21,8 +21,29 @@
         "电源",
         "风扇"
       ],
-      "created_at": 1793640234202,
-      "flow": [],
+      "created_at": 1793641706732,
+      "flow": [
+        {
+          "human": false,
+          "step": "上传软件包"
+        },
+        {
+          "human": false,
+          "step": "预检查（参数校验）"
+        },
+        {
+          "human": true,
+          "step": "激活"
+        },
+        {
+          "human": true,
+          "step": "主备倒换"
+        },
+        {
+          "human": false,
+          "step": "完成与回执"
+        }
+      ],
       "group": "g-hz-01",
       "id": "ne-0001",
       "kind": "gNB",
@@ -42,8 +63,29 @@
         "业务板",
         "电源"
       ],
-      "created_at": 1793640234202,
-      "flow": [],
+      "created_at": 1793641706732,
+      "flow": [
+        {
+          "human": false,
+          "step": "上传软件包"
+        },
+        {
+          "human": false,
+          "step": "预检查（参数校验）"
+        },
+        {
+          "human": true,
+          "step": "激活"
+        },
+        {
+          "human": true,
+          "step": "主备倒换"
+        },
+        {
+          "human": false,
+          "step": "完成与回执"
+        }
+      ],
       "group": "g-hz-01",
       "id": "ne-0002",
       "kind": "gNB",
@@ -62,8 +104,29 @@
         "信令板",
         "电源"
       ],
-      "created_at": 1793640234202,
-      "flow": [],
+      "created_at": 1793641706732,
+      "flow": [
+        {
+          "human": false,
+          "step": "上传软件包"
+        },
+        {
+          "human": false,
+          "step": "预检查（参数校验）"
+        },
+        {
+          "human": true,
+          "step": "激活"
+        },
+        {
+          "human": true,
+          "step": "主备倒换"
+        },
+        {
+          "human": false,
+          "step": "完成与回执"
+        }
+      ],
       "group": "g-hz-02",
       "id": "ne-0003",
       "kind": "MME",
@@ -81,17 +144,17 @@
         "NEMP"
       ],
       "cert": null,
-      "created_at": 1793640234652,
+      "created_at": 1793641707173,
       "enabled": false,
       "host": "127.0.0.1",
       "id": "ep-0001",
       "port": 8443
     }
   ],
-  "exported_at": 1793640488665,
+  "exported_at": 1793641736420,
   "groups": [
     {
-      "created_at": 1793640234202,
+      "created_at": 1793641706732,
       "element_ids": [
         "ne-0001",
         "ne-0002"
@@ -101,7 +164,7 @@
       "site": "site-hz"
     },
     {
-      "created_at": 1793640234202,
+      "created_at": 1793641706732,
       "element_ids": [
         "ne-0003"
       ],
@@ -159,13 +222,13 @@
     {
       "body": "{\"code\":\"0\",\"message\":\"success\",\"data\":{\"neId\":\"GNB-HZ-0904\"}}",
       "content_type": "application/json",
-      "created_at": 1793640234652,
+      "created_at": 1793641707173,
       "delay_ms": 120,
       "enabled": true,
       "fields": [
         {
           "condition": "",
-          "count": 25,
+          "count": 10,
           "kind": "string",
           "max": 0,
           "name": "sessionId",
@@ -197,10 +260,10 @@
           "value": "false"
         }
       ],
-      "hits": 35,
+      "hits": 10,
       "human": null,
       "id": "map-0001",
-      "last_hit_at": 1793640487888,
+      "last_hit_at": 1793641711288,
       "method": "post",
       "name": "注册网元",
       "owner": "user-0002",
@@ -241,14 +304,14 @@
     {
       "body": "{\"code\":\"0\",\"data\":{\"items\":[{\"neId\":\"GNB-HZ-0904\",\"site\":\"杭州主站点\"}]}}",
       "content_type": "application/json",
-      "created_at": 1793640174652,
+      "created_at": 1793641647173,
       "delay_ms": 60,
       "enabled": true,
       "fields": [],
-      "hits": 11,
+      "hits": 7,
       "human": null,
       "id": "map-0002",
-      "last_hit_at": 1793640488168,
+      "last_hit_at": null,
       "method": "get",
       "name": "网元列表",
       "owner": "user-0002",
@@ -260,7 +323,7 @@
     {
       "body": "{\"code\":\"0\",\"message\":\"accepted\"}",
       "content_type": "application/json",
-      "created_at": 1793640114652,
+      "created_at": 1793641587173,
       "delay_ms": 240,
       "enabled": true,
       "fields": [],
@@ -279,14 +342,14 @@
     {
       "body": "{\"code\":\"401\",\"message\":\"token expired\"}",
       "content_type": "application/json",
-      "created_at": 1793640054652,
+      "created_at": 1793641527173,
       "delay_ms": 30,
       "enabled": true,
       "fields": [],
-      "hits": 23,
+      "hits": 21,
       "human": null,
       "id": "map-0004",
-      "last_hit_at": 1793640488293,
+      "last_hit_at": null,
       "method": "get",
       "name": "鉴权失败样例",
       "owner": "user-0002",
@@ -298,7 +361,7 @@
   ],
   "packages": [
     {
-      "created_at": 1793640234202,
+      "created_at": 1793641706732,
       "id": "pkg-001",
       "kind": "网元软件包",
       "name": "NR-RAN",
@@ -308,7 +371,7 @@
       "version": "5.2.1"
     },
     {
-      "created_at": 1793640234202,
+      "created_at": 1793641706732,
       "id": "pkg-002",
       "kind": "网元软件包",
       "name": "NR-RAN",
@@ -318,7 +381,7 @@
       "version": "5.2.0"
     },
     {
-      "created_at": 1793640234202,
+      "created_at": 1793641706732,
       "id": "pkg-003",
       "kind": "核心网软件包",
       "name": "EPC-CORE",
@@ -348,11 +411,11 @@
         ]
       }
     ],
-    "co_deploy": true,
+    "co_deploy": false,
     "fs": {
       "cpus": 16,
-      "site_primary": "HZ 主站点",
-      "site_secondary": "NB 备站点",
+      "site_primary": "杭州滨江 A",
+      "site_secondary": "杭州滨江 B",
       "upgrade_steps": [
         "挂载安装镜像",
         "预检查（CPU/内存/存储）",
@@ -361,32 +424,7 @@
         "启动并自检",
         "主备切换验证"
       ],
-      "verify_runs": [
-        {
-          "at": 1793640387201,
-          "note": "sha256 匹配",
-          "status": "pass",
-          "step": "校验 checksum（sha256）"
-        },
-        {
-          "at": 1793640387201,
-          "note": "GPG 签名有效",
-          "status": "pass",
-          "step": "校验签名（GPG）"
-        },
-        {
-          "at": 1793640387201,
-          "note": "3 个软件包与平台版本兼容",
-          "status": "pass",
-          "step": "校验包与平台版本兼容性"
-        },
-        {
-          "at": 1793640387201,
-          "note": "主备站点一致",
-          "status": "pass",
-          "step": "校验主备站点一致性"
-        }
-      ],
+      "verify_runs": [],
       "verify_steps": [
         "校验 checksum（sha256）",
         "校验签名（GPG）",
