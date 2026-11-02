@@ -29,9 +29,9 @@ const G = {
   cardSeatY: 0.635,
   insertLift: 0.80,
   spacing: 0.82,                    // 板宽 0.46 + 间隙 0.36
-  infoY: 0.6875,                    // 信息卡贴平铺凹槽
-  infoZ: 0.365,
-  infoW: 0.360, infoH: 0.090,
+  infoY: 0.7035,                    // 信息卡贴在探出板外的横卡面上
+  infoZ: 0.545,
+  infoW: 0.380, infoH: 0.095,
   railY: 0.690, railZ: 0.405,
   cardT: 0.018,
 };
@@ -163,7 +163,7 @@ class Rig {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 0.90;
+    this.renderer.toneMappingExposure = 0.86;
     host.appendChild(this.renderer.domElement);
     this.renderer.domElement.className = 'rig__canvas';
 
@@ -210,7 +210,7 @@ class Rig {
   buildLights() {
     this.scene.add(new THREE.HemisphereLight(0xffffff, 0xc8bfb6, 0.60));
 
-    const key = new THREE.DirectionalLight(0xfff6ea, 1.40);
+    const key = new THREE.DirectionalLight(0xfff6ea, 1.12);
     key.position.set(4.2, 5.4, 5.2);
     key.castShadow = true;
     key.shadow.mapSize.set(2048, 2048);
@@ -341,7 +341,6 @@ class Rig {
         rail.material.emissiveIntensity = 1.6;
       }
       const glows = this.collect(root, 'SOCKET_GLOW');
-      glows.forEach((g) => g.scale.set(1.7, 1.5, 1));   // 空槽灯放大：待插状态更明显
 
       // 前缘铭牌：节点名 + 版本 + 编号
       const plate = this.makePlate(G.infoW, G.infoH,
