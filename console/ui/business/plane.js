@@ -639,6 +639,7 @@
             </tr>`).join('')}
           </tbody></table>
           <div class="pl-row-end">
+            <button class="pl-btn pl-btn--sm" id="btnTaskDemo">▶ 演示一次完整升级</button>
             <button class="pl-btn pl-btn--sm" id="btnTaskPurge">清理已完成</button>
             <button class="pl-btn pl-btn--sm" id="btnTaskQuick">＋ 创建升级任务</button>
           </div>
@@ -1700,6 +1701,42 @@
       } catch (e) { console.warn(e); }
       render();
     }));
+    // 演示剧本：建任务 → 自动推进 → 遇到人工确认 3s 后自动点第 1 项 → 到 100%
+    const demo = $('#btnTaskDemo');
+    if (demo) demo.addEventListener('click', async () => {
+      demo.disabled = true;
+      demo.textContent = '演示中…';
+      try {
+        const site = (S.platform && S.platform.site_name) || 'site-hz';
+        const t0 = await api('/api/business/tasks', {
+          method: 'POST', headers: headers(),
+          body: JSON.stringify({ site, element_ids: ['ne-0001'], from_version: '5.2.1', to_version: '5.2.2' }),
+        });
+        S.taskSel = t0.id;
+        S.view = 'task';
+        render();
+        // 轮询：有人工确认待处理 → 2.2s 后自动选第 1 项；100% 结束
+        for (let i = 0; i < 60; i++) {
+          await new Promise((r) => setTimeout(r, 1500));
+          const list = await api('/api/business/tasks');
+          S.tasks = list || S.tasks;
+          const cur = (S.tasks || []).find((x) => x.id === t0.id);
+          if (!cur) break;
+          const stage = cur.stages[cur.stage] || {};
+          if (stage.human && stage.human.state === 'pending') {
+            await new Promise((r) => setTimeout(r, 900));
+            await api('/api/business/tasks/' + t0.id + '/human', {
+              method: 'POST', headers: headers(), body: JSON.stringify({ option: 0 }),
+            });
+          }
+          render();
+          if (cur.progress >= 100) break;
+        }
+      } catch (e) { console.warn(e); }
+      if (demo) { demo.disabled = false; demo.textContent = '▶ 演示一次完整升级'; }
+      render();
+    });
+
     const purge = $('#btnTaskPurge');
     if (purge) purge.addEventListener('click', async () => {
       try {

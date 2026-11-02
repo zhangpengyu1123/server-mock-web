@@ -292,3 +292,11 @@ body.pl::after {
 /* 区块小标题右边加发丝线，强化"档案分栏"感 */
 .pl-card__t { display: flex; align-items: center; gap: 8px; }
 .pl-card__t::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+/* 2D 拓扑：琥珀连线流动（数据流向） */
+#topoSvg path[stroke="#a67d48"],
+#topoSvg line[stroke="#a67d48"] {
+  stroke-dasharray: 5 4;
+  animation: rhineFlow 1.4s linear infinite;
+}
+@keyframes rhineFlow { to { stroke-dashoffset: -18; } }

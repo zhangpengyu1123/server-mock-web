@@ -277,8 +277,14 @@ class Topo3D {
   }
 
   edge(idA, idB) {
-    const m = this.linkOneshot(this.anchorOf(idA), this.anchorOf(idB));
-    if (m) this.links.push({ from: idA, to: idB, mesh: m });
+    const a = this.anchorOf(idA), b = this.anchorOf(idB);
+    const m = this.linkOneshot(a, b);
+    if (!m) return;
+    // 流光：沿线往复的小光点
+    const dot = new THREE.Mesh(new THREE.SphereGeometry(0.016, 8, 8), glow(0xffc978, 2.6));
+    dot.position.set(a[0], a[1], a[2]);
+    this.root.add(dot);
+    this.links.push({ from: idA, to: idB, mesh: m, dot, a: new THREE.Vector3(...a), b: new THREE.Vector3(...b), phase: Math.random() });
   }
 
   anchorOf(id) {
@@ -446,6 +452,17 @@ class Topo3D {
   loop() {
     this.raf = requestAnimationFrame(() => this.loop());
     this.labels.forEach((l) => { if (l.parent) l.quaternion.copy(this.camera.quaternion); });
+    // 流光推进（每 3.2s 走完一条线段，错相出发）
+    if (this.links && this.links.length) {
+      const now = performance.now() / 3200;
+      this.links.forEach((l) => {
+        if (!l.dot) return;
+        const k = ((now + l.phase) % 1);
+        const e = k < 0.5 ? k * 2 : (1 - k) * 2;   // 往返
+        l.dot.position.lerpVectors(l.a, l.b, e);
+        l.dot.material.emissiveIntensity = 1.6 + Math.sin(e * Math.PI) * 1.6;
+      });
+    }
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
   }
