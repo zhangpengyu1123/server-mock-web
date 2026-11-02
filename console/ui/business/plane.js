@@ -72,6 +72,7 @@
       },
     },
     ifaceVariants: {},  // mappingId -> 多规则数组
+    sceneMsg: '',       // 场景导入/导出提示
     neDraft: null,     // 当前编辑中的网元草稿（flow / checks）
     groupDraft: [],    // 成组选中的网元
     topoLevel: 'element',
@@ -354,6 +355,19 @@
             </div>
           </div>
         </div>
+      <div class="pl-card">
+        <div class="pl-card__t">场景快照（导出 / 导入）</div>
+        <div class="pl-muted" style="font-size:10px;line-height:1.8;margin-bottom:10px">
+          把端点、网元、网元组、软件包、平台配置、人机模板、MOCK 规则打包成一个 JSON。换机器演示时导入即可。
+        </div>
+        <div class="pl-row-end" style="justify-content:flex-start;gap:8px">
+          <button class="pl-btn pl-btn--sm" id="btnSceneExport">↓ 导出场景</button>
+          <button class="pl-btn pl-btn--sm" id="btnSceneImport">↑ 导入场景</button>
+          <input type="file" id="sceneFile" accept="application/json" style="display:none"/>
+          <span class="pl-muted" id="sceneMsg" style="font-size:9px">${esc(S.sceneMsg || '')}</span>
+        </div>
+      </div>
+
         <div class="pl-card">
           <div class="pl-card__t">端点状态（服务端）</div>
           <dl class="pl-kv">
@@ -1672,6 +1686,42 @@
       } catch (e) { console.warn(e); }
       render();
     });
+
+    // 场景导出 / 导入
+    const sceneExport = $('#btnSceneExport');
+    if (sceneExport) sceneExport.addEventListener('click', async () => {
+      const msg = $('#sceneMsg');
+      try {
+        const scene = await api('/api/business/export');
+        const blob = new Blob([JSON.stringify(scene, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'rhine-scene-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '') + '.json';
+        a.click();
+        URL.revokeObjectURL(a.href);
+        S.sceneMsg = '已导出 ✓  ' + a.download;
+        setTimeout(() => { S.sceneMsg = ''; if (S.view === 'mock-admin') render(); }, 2500);
+      } catch (e) { if (msg) msg.textContent = '导出失败：' + e.message; }
+    });
+    const sceneImportBtn = $('#btnSceneImport');
+    const sceneFile = $('#sceneFile');
+    if (sceneImportBtn && sceneFile) {
+      sceneImportBtn.addEventListener('click', () => sceneFile.click());
+      sceneFile.addEventListener('change', async () => {
+        const msg = $('#sceneMsg');
+        const f = sceneFile.files && sceneFile.files[0];
+        if (!f) return;
+        try {
+          const text = await f.text();
+          const payload = JSON.parse(text);
+          const res = await api('/api/business/import', { method: 'POST', headers: headers(), body: JSON.stringify(payload) });
+          await Promise.all([loadEndpoint(), loadElements(), loadLcm(), loadHuman(), loadTasks(), loadIfaces()]);
+          S.sceneMsg = '已导入 ' + (res.imported || 0) + ' 条 ✓';
+          setTimeout(() => { S.sceneMsg = ''; if (S.view === 'mock-admin') render(); }, 3000);
+        } catch (e) { if (msg) msg.textContent = '导入失败：' + e.message; }
+        render();
+      });
+    }
 
     // 审计：确认人机交互（放行 202）
     $$('[data-human-resolve]').forEach((b) => b.addEventListener('click', async () => {

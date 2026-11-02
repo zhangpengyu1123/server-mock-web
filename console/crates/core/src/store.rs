@@ -529,6 +529,39 @@ impl Store {
         Ok(g)
     }
 
+    /// 导出场景：业务面九块工作台的完整数据
+    pub fn export_scene(&self) -> serde_json::Value {
+        let i = self.inner.lock().unwrap();
+        serde_json::json!({
+            "kind": "rhine-lab-scene",
+            "version": 1,
+            "exported_at": now_ms(),
+            "endpoints": i.endpoints,
+            "elements": i.elements,
+            "groups": i.groups,
+            "packages": i.packages,
+            "platform": i.platform,
+            "human": i.human,
+            "mappings": i.mappings,
+        })
+    }
+
+    /// 导入场景：整体覆盖（保留用户与会话）
+    pub fn import_scene(&self, v: serde_json::Value) -> Result<usize> {
+        let mut i = self.inner.lock().unwrap();
+        let get = |k: &str| v.get(k).cloned().unwrap_or(serde_json::Value::Null);
+        let mut count = 0usize;
+        if let Ok(x) = serde_json::from_value::<Vec<MockEndpoint>>(get("endpoints")) { count += x.len(); i.endpoints = x; }
+        if let Ok(x) = serde_json::from_value::<Vec<NetworkElement>>(get("elements")) { count += x.len(); i.elements = x; }
+        if let Ok(x) = serde_json::from_value::<Vec<ElementGroup>>(get("groups")) { count += x.len(); i.groups = x; }
+        if let Ok(x) = serde_json::from_value::<Vec<SoftwarePackage>>(get("packages")) { count += x.len(); i.packages = x; }
+        if let Ok(x) = serde_json::from_value::<PlatformCfg>(get("platform")) { i.platform = x; count += 1; }
+        if let Ok(x) = serde_json::from_value::<HumanTemplate>(get("human")) { i.human = x; count += 1; }
+        if let Ok(x) = serde_json::from_value::<Vec<Mapping>>(get("mappings")) { count += x.len(); i.mappings = x; }
+        self.persist_locked(&i)?;
+        Ok(count)
+    }
+
     /// 清理：删除已完成（progress>=100）或已失败的任务
     pub fn purge_tasks(&self) -> usize {
         let mut i = self.inner.lock().unwrap();

@@ -376,11 +376,26 @@ async fn business_resolve_mock_human(
     Ok(Json(m))
 }
 
+async fn business_export(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Value>> {
+    let _u = auth(&st, &headers)?;
+    Ok(Json(st.store.export_scene()))
+}
+
+async fn business_import(
+    st: Ctx, headers: HeaderMap, Json(body): Json<Value>,
+) -> ApiResult<Json<Value>> {
+    let _u = auth_admin(&st, &headers)?;
+    csrf_guard(&st, &headers, &_u)?;
+    let n = st.store.import_scene(body)?;
+    st.store.push_log("business", "scene.import", &format!("导入 {} 条记录", n), "info");
+    Ok(Json(json!({ "imported": n })))
+}
+
 async fn business_retry_human(
     st: Ctx, headers: HeaderMap, Path(id): Path<String>,
 ) -> ApiResult<Json<UpgradeTask>> {
-    let u = auth(&st, &headers)?;
-    csrf_guard(&st, &headers, &u)?;
+    let _u = auth_admin(&st, &headers)?;
+    csrf_guard(&st, &headers, &_u)?;
     Ok(Json(st.store.retry_human(&id)?))
 }
 
@@ -793,6 +808,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/business/mappings/:id/human", post(business_resolve_mock_human))
         .route("/business/tasks", get(business_tasks).post(business_create_task))
         .route("/business/tasks/purge", post(business_purge_tasks))
+        .route("/business/export", get(business_export))
+        .route("/business/import", post(business_import))
         .route("/business/tasks/:id/human", post(business_resolve_human))
         .route("/business/tasks/:id/human/retry", post(business_retry_human))
         .route("/business/endpoints", get(business_endpoints).post(business_create_endpoint))
