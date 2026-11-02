@@ -1,5 +1,7 @@
 # 业务面演示手册 · RHINE LAB PLANE
 
+> 要照着讲？看 **[demo-script.md](demo-script.md)**（逐幕操作脚本 + 16 张截图）。
+
 > 面向"有机响应"的 MoC 平台：**LCM 管版本 → OMC 管升级 → 升级的元组件仍是网元**，
 > 全流程带人机交互（human-in-the-loop），风格统一为米白档案纸 + 黑墨细线 + 琥珀信号色。
 
