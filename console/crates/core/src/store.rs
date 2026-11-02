@@ -90,6 +90,8 @@ struct Persisted {
     #[serde(default)]
     platform: PlatformCfg,
     #[serde(default)]
+    human: HumanTemplate,
+    #[serde(default)]
     hits: VecDeque<MockHit>,
     #[serde(default)]
     tasks: Vec<UpgradeTask>,
@@ -100,6 +102,7 @@ struct Persisted {
 }
 
 struct Inner {
+    human: HumanTemplate,
     packages: Vec<SoftwarePackage>,
     platform: PlatformCfg,
     elements: Vec<NetworkElement>,
@@ -139,6 +142,19 @@ impl Store {
             seq: 0,
             started_at: now_ms(),
             endpoints: vec![],
+            human: HumanTemplate {
+                states: vec![
+                    HumanStateDef { id: "PENDING".into(), label: "待确认".into(), tone: "signal".into() },
+                    HumanStateDef { id: "RESOLVED".into(), label: "已确认".into(), tone: "ink".into() },
+                    HumanStateDef { id: "EXPIRED".into(), label: "已超时".into(), tone: "danger".into() },
+                    HumanStateDef { id: "SKIPPED".into(), label: "已跳过".into(), tone: "muted".into() },
+                ],
+                outcomes: vec![
+                    HumanOutcomeDef { option: "确认继续".into(), effect: "continue".into(), to: "RESOLVED".into(), set_field: "humanResult=ok".into() },
+                    HumanOutcomeDef { option: "稍后处理".into(), effect: "hold".into(), to: "PENDING".into(), set_field: "humanResult=hold".into() },
+                    HumanOutcomeDef { option: "终止升级".into(), effect: "abort".into(), to: "EXPIRED".into(), set_field: "humanResult=abort".into() },
+                ],
+            },
             packages: vec![],
             platform: PlatformCfg {
                 lcm_elements: vec![], co_deploy: true, omc_elements: vec![], omc_groups: vec![],
@@ -176,6 +192,7 @@ impl Store {
                     inner.seq = p.seq;
                         inner.endpoints = p.endpoints;
                         inner.elements = p.elements;
+                        inner.human = p.human;
                         inner.packages = p.packages;
                         inner.platform = p.platform;
                         inner.groups = p.groups;
@@ -205,6 +222,19 @@ impl Store {
             inner.platform.accounts = vec![
                 Account { id: "acc-01".into(), name: "omc-ops".into(), role: "运维".into(), scope: vec!["ne-0001".into()] },
                 Account { id: "acc-02".into(), name: "omc-view".into(), role: "只读".into(), scope: vec!["ne-0001".into(), "ne-0002".into()] },
+            ];
+        }
+        if inner.human.states.is_empty() {
+            inner.human.states = vec![
+                HumanStateDef { id: "PENDING".into(), label: "待确认".into(), tone: "signal".into() },
+                HumanStateDef { id: "RESOLVED".into(), label: "已确认".into(), tone: "ink".into() },
+                HumanStateDef { id: "EXPIRED".into(), label: "已超时".into(), tone: "danger".into() },
+                HumanStateDef { id: "SKIPPED".into(), label: "已跳过".into(), tone: "muted".into() },
+            ];
+            inner.human.outcomes = vec![
+                HumanOutcomeDef { option: "确认继续".into(), effect: "continue".into(), to: "RESOLVED".into(), set_field: "humanResult=ok".into() },
+                HumanOutcomeDef { option: "稍后处理".into(), effect: "hold".into(), to: "PENDING".into(), set_field: "humanResult=hold".into() },
+                HumanOutcomeDef { option: "终止升级".into(), effect: "abort".into(), to: "EXPIRED".into(), set_field: "humanResult=abort".into() },
             ];
         }
         if inner.elements.is_empty() {
@@ -273,6 +303,7 @@ impl Store {
             endpoints: inner.endpoints.clone(),
             elements: inner.elements.clone(),
             packages: inner.packages.clone(),
+            human: inner.human.clone(),
             platform: inner.platform.clone(),
             groups: inner.groups.clone(),
             hits: inner.hits.clone(),
@@ -291,6 +322,20 @@ impl Store {
     /// 后台任务持有独立句柄（内部是 Arc<Mutex<..>>，共享同一份状态）
     pub fn clone_for_task(&self) -> Self {
         self.clone()
+    }
+
+    // ---------------- 人机交互模板 ----------------
+    pub fn human_template(&self) -> HumanTemplate {
+        self.inner.lock().unwrap().human.clone()
+    }
+
+    pub fn patch_human_template(&self, req: PatchHumanTemplateReq) -> Result<HumanTemplate> {
+        let mut i = self.inner.lock().unwrap();
+        if let Some(s) = req.states { i.human.states = s; }
+        if let Some(o) = req.outcomes { i.human.outcomes = o; }
+        let out = i.human.clone();
+        self.persist_locked(&i)?;
+        Ok(out)
     }
 
     // ---------------- LCM 软件包 / 平台配置 ----------------

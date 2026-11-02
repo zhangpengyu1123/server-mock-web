@@ -262,6 +262,40 @@ pub struct NewUserReq {
 
 
 
+// ---------------- 人机交互模板 ----------------
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct HumanStateDef {
+    pub id: String,
+    pub label: String,
+    /// signal | ink | danger | muted
+    pub tone: String,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct HumanOutcomeDef {
+    pub option: String,
+    /// continue | hold | abort
+    pub effect: String,
+    /// 目标状态 id
+    pub to: String,
+    #[serde(default)]
+    pub set_field: String,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, Default)]
+pub struct HumanTemplate {
+    #[serde(default)]
+    pub states: Vec<HumanStateDef>,
+    #[serde(default)]
+    pub outcomes: Vec<HumanOutcomeDef>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct PatchHumanTemplateReq {
+    pub states: Option<Vec<HumanStateDef>>,
+    pub outcomes: Option<Vec<HumanOutcomeDef>>,
+}
+
 // ---------------- LCM 软件包 ----------------
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SoftwarePackage {

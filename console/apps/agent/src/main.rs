@@ -240,6 +240,19 @@ async fn business_stats(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Stats>> {
 }
 
 // ================================================================== 管理面
+async fn business_human_template(st: Ctx, headers: HeaderMap) -> ApiResult<Json<HumanTemplate>> {
+    let _u = auth(&st, &headers)?;
+    Ok(Json(st.store.human_template()))
+}
+
+async fn business_patch_human_template(
+    st: Ctx, headers: HeaderMap, Json(req): Json<PatchHumanTemplateReq>,
+) -> ApiResult<Json<HumanTemplate>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    Ok(Json(st.store.patch_human_template(req)?))
+}
+
 async fn business_packages(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Vec<SoftwarePackage>>> {
     let _u = auth(&st, &headers)?;
     Ok(Json(st.store.packages()))
@@ -701,6 +714,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/business/mappings/:id/test", post(business_test))
         .route("/business/logs", get(business_logs))
         .route("/business/stats", get(business_stats))
+        .route("/business/human-template", get(business_human_template).patch(business_patch_human_template))
         .route("/business/packages", get(business_packages).post(business_create_package))
         .route("/business/packages/:id/upgrade", post(business_package_upgrade))
         .route("/business/platform", get(business_platform).patch(business_patch_platform))
