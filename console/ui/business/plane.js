@@ -18,6 +18,7 @@
     csrf: sessionStorage.getItem('rhine.plane.csrf') || '',
     ep: null,          // 当前 Mock 端点（来自后端）
     tasks: [],         // 审计
+    taskTimer: 0,      // 任务视图轮询定时器
 
     // 升级任务（来自后端）
     taskSel: null,     // 当前查看的任务 id
@@ -1210,6 +1211,21 @@
       if (S.view === 'topo' && S.topoDim === '3d') {
         const b3now = $('#btn3d');
         if (b3now) setTimeout(() => b3now.click(), 0);
+      }
+
+      // 任务视图：每 3s 拉一次，进度变化则重渲染（自动推进阶段会自己动）
+      if (S.taskTimer) { clearTimeout(S.taskTimer); S.taskTimer = 0; }
+      if (S.view === 'task' && S.tasks.length) {
+        const snapshot = S.tasks.map((x) => x.id + ':' + x.stage + ':' + x.progress).join('|');
+        S.taskTimer = setTimeout(async () => {
+          try {
+            const fresh = await api('/api/business/tasks');
+            const next = (fresh || []).map((x) => x.id + ':' + x.stage + ':' + x.progress).join('|');
+            S.tasks = fresh || S.tasks;
+            if (next !== snapshot) render();
+            else { S.taskTimer = setTimeout(() => render(), 3000); }
+          } catch (e) { /* 忽略 */ }
+        }, 3000);
       }
   }
 

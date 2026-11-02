@@ -707,6 +707,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         auth_required,
     });
 
+    // 任务自动推进（3s 一拍）：让无人工阶段自己往前走
+    {
+        let auto_store = st.store.clone();
+        tokio::spawn(async move {
+            let mut tick = tokio::time::interval(Duration::from_secs(3));
+            loop {
+                tick.tick().await;
+                let n = auto_store.auto_tick(2500);
+                if n > 0 {
+                    auto_store.push_log("agent", "task.auto", &format!("自动推进 {} 个任务", n), "info");
+                }
+            }
+        });
+    }
+
     let api = Router::new()
         .route("/meta", get(meta))
         .route("/auth/login", post(login))

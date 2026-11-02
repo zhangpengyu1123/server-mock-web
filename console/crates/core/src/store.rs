@@ -525,6 +525,49 @@ impl Store {
         Ok(g)
     }
 
+    /// 自动推进：没有待确认人机交互的当前阶段，按节拍前进
+    pub fn auto_tick(&self, dwell_ms: i64) -> usize {
+        let mut i = self.inner.lock().unwrap();
+        let now = now_ms();
+        let mut changed = 0;
+        let n = i.tasks.len();
+        for idx in 0..n {
+            let t = &i.tasks[idx];
+            if t.stage + 1 >= t.stages.len() {
+                continue;
+            }
+            let cur = &t.stages[t.stage];
+            if cur.state != "running" {
+                continue;
+            }
+            // 有人机交互且未确认 → 不自动推进
+            if let Some(h) = &cur.human {
+                if h.state == "pending" {
+                    continue;
+                }
+            }
+            if now - t.updated_at < dwell_ms {
+                continue;
+            }
+            let t = &mut i.tasks[idx];
+            t.stages[t.stage].state = "done".into();
+            let next = t.stage + 1;
+            t.stage = next;
+            t.stages[next].state = "running".into();
+            t.progress = (((next + 1) as f32 / t.stages.len() as f32) * 100.0) as u8;
+            if next + 1 >= t.stages.len() {
+                t.stages[next].state = "done".into();
+                t.progress = 100;
+            }
+            t.updated_at = now;
+            changed += 1;
+        }
+        if changed > 0 {
+            let _ = self.persist_locked(&i);
+        }
+        changed
+    }
+
     // ---------------- 审计 ----------------
     pub fn log_hit(&self, hit: MockHit) {
         let mut i = self.inner.lock().unwrap();
@@ -638,9 +681,9 @@ impl Store {
             timeout_s,
         };
         let stages = vec![
-            UpgradeStage { key: "upload".into(), label: "上传软件包".into(), state: "done".into(), human: None },
-            UpgradeStage { key: "verify".into(), label: "预检查与参数校验".into(), state: "done".into(), human: None },
-            UpgradeStage { key: "activate".into(), label: "激活".into(), state: "running".into(),
+            UpgradeStage { key: "upload".into(), label: "上传软件包".into(), state: "running".into(), human: None },
+            UpgradeStage { key: "verify".into(), label: "预检查与参数校验".into(), state: "pending".into(), human: None },
+            UpgradeStage { key: "activate".into(), label: "激活".into(), state: "pending".into(),
                 human: Some(human("升级包已就绪，确认开始激活？", 60)) },
             UpgradeStage { key: "switch".into(), label: "主备倒换".into(), state: "pending".into(),
                 human: Some(human("即将主备倒换，请确认现场可以操作", 45)) },
@@ -652,10 +695,11 @@ impl Store {
             element_ids: req.element_ids,
             from_version: req.from_version,
             to_version: req.to_version,
-            stage: 2,
-            progress: 40,
+            stage: 0,
+            progress: 20,
             stages,
             created_at: now_ms(),
+            updated_at: now_ms(),
         };
         i.tasks.push(task.clone());
         self.persist_locked(&i)?;
@@ -700,6 +744,7 @@ impl Store {
                 }
             }
         }
+        i.tasks[idx].updated_at = now_ms();
         let out = i.tasks[idx].clone();
         self.persist_locked(&i)?;
         Ok(out)

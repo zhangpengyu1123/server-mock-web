@@ -513,6 +513,8 @@ pub struct UpgradeTask {
     pub progress: u8,
     pub stages: Vec<UpgradeStage>,
     pub created_at: Millis,
+    #[serde(default)]
+    pub updated_at: Millis,
 }
 
 #[derive(Debug, Deserialize)]
