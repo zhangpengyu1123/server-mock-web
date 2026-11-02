@@ -218,3 +218,77 @@ body.pl {
   .pl-rail { display: flex; gap: 0; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); }
   .pl-grid--3, .pl-grid--2, .pl-grid--side { grid-template-columns: 1fr; }
 }
+
+/* ============================================================================
+   2026-11 · 视觉收尾（对齐 RhineLabUI 参考：更大字号 / 更松行高 / 纸面颗粒）
+   —— 放在最后覆盖，不改上面既有规则
+   ========================================================================== */
+:root {
+  --track-label: .2em;
+}
+
+/* 纸面：极轻噪点 + 中心提亮，模拟参考仓的暖雾 */
+body.pl {
+  font-size: 13px;
+  background-image:
+    radial-gradient(1200px 620px at 78% -12%, rgba(255,255,255,.72), transparent 62%),
+    radial-gradient(900px 520px at 12% 108%, rgba(201,188,170,.18), transparent 60%),
+    linear-gradient(180deg, #efebe6, #e6e1da);
+}
+body.pl::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  opacity: .5; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.035'/></svg>");
+}
+
+/* 标题与页头 */
+.pl-hd h1 { font-size: 19px; letter-spacing: .05em; }
+.pl-hd p { font-size: 9.5px; letter-spacing: .18em; }
+.pl-hd { padding-bottom: 14px; margin-bottom: 20px; }
+
+/* 卡片：更松的内边距 + 更强纸面感 */
+.pl-card { padding: 16px 18px; background: rgba(255,255,255,.5); }
+.pl-card__t { font-size: 9.5px; letter-spacing: var(--track-label); margin-bottom: 12px; }
+
+/* 表格：行高与字号 */
+.pl-table { font-size: 11.5px; }
+.pl-table th { font-size: 9px; letter-spacing: .18em; padding: 8px 10px; }
+.pl-table td { padding: 9px 10px; }
+
+/* 左侧导航：更易读 */
+.pl-rail__item { font-size: 12.5px; padding: 9px 20px; }
+.pl-rail__item small { font-size: 8.5px; }
+.pl-rail__hd { font-size: 8.5px; padding: 0 20px 8px; }
+.pl-rail { padding-top: 16px; }
+
+/* 层级切换按钮 */
+.pl-layer__t { font-size: 14px; }
+.pl-layer__d { font-size: 9px; }
+.pl-layer__k { font-size: 8.5px; }
+
+/* 表单与按钮 */
+.pl-field > label { font-size: 9px; letter-spacing: .18em; }
+.pl-field input, .pl-field select, .pl-field textarea { font-size: 12px; padding: 9px 10px; }
+.pl-btn { font-size: 10px; padding: 9px 14px; }
+.pl-btn--sm { font-size: 9px; padding: 6px 10px; }
+
+/* KV 列表 */
+.pl-kv { grid-template-columns: 104px 1fr; font-size: 11.5px; }
+.pl-kv dt { font-size: 9px; }
+
+/* 步骤条 */
+.pl-step__t { font-size: 12px; }
+.pl-step__n { font-size: 8.5px; }
+
+/* 标签与等宽数字 */
+.pl-tag { font-size: 8.5px; padding: 2px 7px; }
+
+/* 焦点：琥珀下划线，贴合参考仓的选中信号 */
+.pl-field input:focus, .pl-field select:focus {
+  border-color: var(--ink);
+  box-shadow: inset 0 -2px 0 var(--signal);
+}
+
+/* 区块小标题右边加发丝线，强化"档案分栏"感 */
+.pl-card__t { display: flex; align-items: center; gap: 8px; }
+.pl-card__t::after { content: ""; flex: 1; height: 1px; background: var(--line); }

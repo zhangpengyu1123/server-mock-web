@@ -529,6 +529,21 @@ impl Store {
         Ok(g)
     }
 
+    /// 清理：删除已完成（progress>=100）或已失败的任务
+    pub fn purge_tasks(&self) -> usize {
+        let mut i = self.inner.lock().unwrap();
+        let before = i.tasks.len();
+        i.tasks.retain(|t| {
+            let failed = t.stages.iter().any(|s| s.state == "failed");
+            !(t.progress >= 100 || failed)
+        });
+        let removed = before - i.tasks.len();
+        if removed > 0 {
+            let _ = self.persist_locked(&i);
+        }
+        removed
+    }
+
     /// 自动推进：没有待确认人机交互的当前阶段，按节拍前进
     pub fn auto_tick(&self, dwell_ms: i64) -> usize {
         let mut i = self.inner.lock().unwrap();

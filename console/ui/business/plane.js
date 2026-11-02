@@ -632,7 +632,10 @@
               <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-task="${esc(x.id)}">查看</button></td>
             </tr>`).join('')}
           </tbody></table>
-          <div class="pl-row-end"><button class="pl-btn pl-btn--sm" id="btnTaskQuick">＋ 创建升级任务</button></div>
+          <div class="pl-row-end">
+            <button class="pl-btn pl-btn--sm" id="btnTaskPurge">清理已完成</button>
+            <button class="pl-btn pl-btn--sm" id="btnTaskQuick">＋ 创建升级任务</button>
+          </div>
         </div>
       </div>`;
   }
@@ -1680,6 +1683,15 @@
       } catch (e) { console.warn(e); }
       render();
     }));
+    const purge = $('#btnTaskPurge');
+    if (purge) purge.addEventListener('click', async () => {
+      try {
+        await api('/api/business/tasks/purge', { method: 'POST', headers: headers(), body: '{}' });
+        await loadTasks();
+        S.taskSel = (S.tasks[0] || {}).id || null;
+      } catch (e) { console.warn(e); }
+      render();
+    });
     const quick = $('#btnTaskQuick');
     if (quick) quick.addEventListener('click', async () => {
       try {

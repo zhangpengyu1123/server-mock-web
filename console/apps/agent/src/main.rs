@@ -376,6 +376,14 @@ async fn business_resolve_mock_human(
     Ok(Json(m))
 }
 
+async fn business_purge_tasks(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Value>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    let removed = st.store.purge_tasks();
+    st.store.push_log("business", "task.purge", &format!("清理 {} 个任务", removed), "info");
+    Ok(Json(json!({ "removed": removed })))
+}
+
 async fn business_tasks(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Vec<UpgradeTask>>> {
     let _u = auth(&st, &headers)?;
     Ok(Json(st.store.tasks()))
@@ -751,6 +759,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/business/mappings/:id/rules", patch(business_patch_rules))
         .route("/business/mappings/:id/human", post(business_resolve_mock_human))
         .route("/business/tasks", get(business_tasks).post(business_create_task))
+        .route("/business/tasks/purge", post(business_purge_tasks))
         .route("/business/tasks/:id/human", post(business_resolve_human))
         .route("/business/endpoints", get(business_endpoints).post(business_create_endpoint))
         .route("/business/endpoints/:id", patch(business_patch_endpoint))
