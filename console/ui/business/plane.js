@@ -1101,6 +1101,50 @@
           </ol>
           <div class="pl-row-end"><button class="pl-btn pl-btn--sm" id="btnFsUpgrade">演练一次</button></div>
         </div>
+          ${''}
+          <div class="pl-card" style="grid-column:1/-1">
+            <div class="pl-card__t">定制平台配置与流程（写入后端）</div>
+            <div style="display:grid;grid-template-columns:0.7fr 1fr 1fr 0.7fr auto;gap:8px;align-items:end;margin-bottom:12px">
+              <div class="pl-field"><label>CPU 数量</label>
+                <input id="fsCpus" type="number" min="1" value="${f.cpus}"
+                  style="font:inherit;font-size:11px;padding:6px 8px;background:#fff;border:1px solid var(--line-2);width:100%"/></div>
+              <div class="pl-field"><label>主站点</label>
+                <input id="fsPrimary" value="${esc(f.sitePrimary)}"
+                  style="font:inherit;font-size:11px;padding:6px 8px;background:#fff;border:1px solid var(--line-2);width:100%"/></div>
+              <div class="pl-field"><label>备站点</label>
+                <input id="fsSecondary" value="${esc(f.siteSecondary)}"
+                  style="font:inherit;font-size:11px;padding:6px 8px;background:#fff;border:1px solid var(--line-2);width:100%"/></div>
+              <div class="pl-field"><label>平台版本</label>
+                <input id="fsVersion" value="${esc(f.platformVersion)}"
+                  style="font:inherit;font-size:11px;padding:6px 8px;background:#fff;border:1px solid var(--line-2);width:100%"/></div>
+              <button class="pl-btn pl-btn--sm pl-btn--solid" id="btnFsSave">保存配置</button>
+            </div>
+
+            <div class="pl-grid pl-grid--side">
+              <div>
+                <div class="pl-muted" style="font-size:8.5px;letter-spacing:.16em;margin-bottom:6px">软件包校验流程（可增删）</div>
+                ${(f.verifySteps || []).map((st, i) => `<div style="display:flex;gap:6px;margin-bottom:5px">
+                  <input data-fs-verify="${i}" value="${esc(st)}"
+                    style="flex:1;font:inherit;font-size:10px;padding:4px 7px;background:#fff;border:1px solid var(--line-2)"/>
+                  <button class="pl-btn pl-btn--sm" data-fs-verify-del="${i}">删除</button>
+                </div>`).join('')}
+                <button class="pl-btn pl-btn--sm" id="btnFsVerifyAdd">＋ 校验步骤</button>
+              </div>
+              <div>
+                <div class="pl-muted" style="font-size:8.5px;letter-spacing:.16em;margin-bottom:6px">平台升级流程（可增删）</div>
+                ${(f.upgrade || []).map((st, i) => `<div style="display:flex;gap:6px;margin-bottom:5px">
+                  <input data-fs-upgrade="${i}" value="${esc(st)}"
+                    style="flex:1;font:inherit;font-size:10px;padding:4px 7px;background:#fff;border:1px solid var(--line-2)"/>
+                  <button class="pl-btn pl-btn--sm" data-fs-upgrade-del="${i}">删除</button>
+                </div>`).join('')}
+                <button class="pl-btn pl-btn--sm" id="btnFsUpgradeAdd">＋ 升级步骤</button>
+              </div>
+            </div>
+            <div class="pl-row-end" style="align-items:center;margin-top:10px">
+              <span class="pl-muted" id="fsMsg" style="font-size:9px;margin-right:auto"></span>
+              <button class="pl-btn pl-btn--sm pl-btn--solid" id="btnFsSaveFlow">保存流程</button>
+            </div>
+          </div>
       </div>`;
   }
 
@@ -2220,6 +2264,74 @@
       prompt: 'FS 虚层升级将停止业务并切换主备站点，请确认可以继续',
       timeout: 45,
       options: [{ l: '确认切换', next: 'install' }, { l: '取消升级', next: 'abort' }],
+    }));
+    // FS · 配置与流程编辑（PATCH platform.fs）
+    const fsCfg = () => Object.assign({}, (S.platform && S.platform.fs) || {});
+    const fsDraft = () => {
+      const c = fsCfg();
+      return {
+        cpus: Number(($('#fsCpus') || {}).value || c.cpus || 16),
+        site_primary: (($('#fsPrimary') || {}).value || '').trim() || c.site_primary,
+        site_secondary: (($('#fsSecondary') || {}).value || '').trim() || c.site_secondary,
+        version: (($('#fsVersion') || {}).value || '').trim() || c.version,
+        verify_steps: $$('[data-fs-verify]').map((el) => el.value.trim()).filter(Boolean),
+        upgrade_steps: $$('[data-fs-upgrade]').map((el) => el.value.trim()).filter(Boolean),
+        verify_runs: c.verify_runs || [],
+      };
+    };
+    const fsSave = async (msgSel) => {
+      const msg = $(msgSel);
+      try {
+        S.platform = await api('/api/business/platform', {
+          method: 'PATCH', headers: headers(), body: JSON.stringify({ fs: fsDraft() }),
+        });
+        if (msg) { msg.textContent = '已保存 ✓'; setTimeout(() => { const m = $(msgSel); if (m) m.textContent = ''; }, 2500); }
+      } catch (e) { if (msg) msg.textContent = '保存失败：' + e.message; }
+      render();
+    };
+    const fsSaveBtn = $('#btnFsSave');
+    if (fsSaveBtn) fsSaveBtn.addEventListener('click', () => fsSave('#fsMsg'));
+    const fsSaveFlow = $('#btnFsSaveFlow');
+    if (fsSaveFlow) fsSaveFlow.addEventListener('click', () => fsSave('#fsMsg'));
+    const fsAddVerify = $('#btnFsVerifyAdd');
+    if (fsAddVerify) fsAddVerify.addEventListener('click', async () => {
+      const c = fsCfg();
+      const steps = ($$('[data-fs-verify]').map((el) => el.value.trim()).filter(Boolean)).concat(['新校验步骤']);
+      S.platform = await api('/api/business/platform', {
+        method: 'PATCH', headers: headers(),
+        body: JSON.stringify({ fs: Object.assign({}, c, { verify_steps: steps }) }),
+      });
+      render();
+    });
+    const fsAddUpgrade = $('#btnFsUpgradeAdd');
+    if (fsAddUpgrade) fsAddUpgrade.addEventListener('click', async () => {
+      const c = fsCfg();
+      const steps = ($$('[data-fs-upgrade]').map((el) => el.value.trim()).filter(Boolean)).concat(['新升级步骤']);
+      S.platform = await api('/api/business/platform', {
+        method: 'PATCH', headers: headers(),
+        body: JSON.stringify({ fs: Object.assign({}, c, { upgrade_steps: steps }) }),
+      });
+      render();
+    });
+    $$('[data-fs-verify-del]').forEach((b) => b.addEventListener('click', async () => {
+      const c = fsCfg();
+      const steps = $$('[data-fs-verify]').map((el) => el.value.trim()).filter(Boolean);
+      steps.splice(Number(b.dataset.fsVerifyDel), 1);
+      S.platform = await api('/api/business/platform', {
+        method: 'PATCH', headers: headers(),
+        body: JSON.stringify({ fs: Object.assign({}, c, { verify_steps: steps }) }),
+      });
+      render();
+    }));
+    $$('[data-fs-upgrade-del]').forEach((b) => b.addEventListener('click', async () => {
+      const c = fsCfg();
+      const steps = $$('[data-fs-upgrade]').map((el) => el.value.trim()).filter(Boolean);
+      steps.splice(Number(b.dataset.fsUpgradeDel), 1);
+      S.platform = await api('/api/business/platform', {
+        method: 'PATCH', headers: headers(),
+        body: JSON.stringify({ fs: Object.assign({}, c, { upgrade_steps: steps }) }),
+      });
+      render();
     }));
     $$('[data-flow-toggle]').forEach((b) => b.addEventListener('click', () => {
       const i = +b.dataset.flowToggle;
