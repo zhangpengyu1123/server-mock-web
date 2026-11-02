@@ -585,13 +585,20 @@ impl Store {
             .max()
             .unwrap_or(0)
             + 1;
-        let human = |prompt: &str, timeout_s: u32| HumanStep {
-            prompt: prompt.into(),
-            options: vec![
+        // 人机交互选项来自可编辑的状态机模板（HumanTemplate）
+        let tpl = i.human.clone();
+        let opts: Vec<HumanOption> = if tpl.outcomes.is_empty() {
+            vec![
                 HumanOption { label: "确认继续".into(), effect: "continue".into() },
                 HumanOption { label: "稍后处理".into(), effect: "hold".into() },
                 HumanOption { label: "终止升级".into(), effect: "abort".into() },
-            ],
+            ]
+        } else {
+            tpl.outcomes.iter().map(|o| HumanOption { label: o.option.clone(), effect: o.effect.clone() }).collect()
+        };
+        let human = |prompt: &str, timeout_s: u32| HumanStep {
+            prompt: prompt.into(),
+            options: opts.clone(),
             state: "pending".into(),
             chosen: None,
             timeout_s,
