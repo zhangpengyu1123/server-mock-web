@@ -290,3 +290,24 @@ dist/rhine-mock-console-1.0.0/
 
 > 桌面壳通过 WebView2 远程调试端口取证：`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=9222`，
 > 用 CDP 可读到完整 DOM（包含从 9601 拉到的端点数据），说明桌面应用与本机 agent 已打通。
+---
+
+## 0.3 桌面壳取证（无交互桌面环境）
+
+CI / 远程会话下无法截屏时，用 WebView2 远程调试端口读取真实 DOM：
+
+```powershell
+$env:WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS = '--remote-debugging-port=9222'
+Start-Process "dist/rhine-mock-console-1.0.0/Rhine 业务面.exe"
+node console/scripts/check-desktop.mjs
+```
+
+输出示例：
+
+```json
+{ "title": "业务面 · RHINE LAB PLANE", "view": "MOCK 管理",
+  "ink": "#080a08", "line": "#aaa59a", "accent": "#9b7247",
+  "nav": 9, "cards": 3 }
+```
+
+注意：桌面壳连的是本机 **9601（W 端，免登录）**，未启动 9601 时会停在登录门（`nav: 0`）。

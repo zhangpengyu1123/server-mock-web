@@ -9,7 +9,7 @@
       ],
       "cert": null,
       "enabled": false,
-      "created_at": 1793636597619
+      "created_at": 1793640235690
     }
   ],
   "elements": [
@@ -45,7 +45,7 @@
         }
       ],
       "flow": [],
-      "created_at": 1793636597175
+      "created_at": 1793640235238
     },
     {
       "id": "ne-0002",
@@ -65,7 +65,7 @@
       ],
       "checks": [],
       "flow": [],
-      "created_at": 1793636597175
+      "created_at": 1793640235238
     },
     {
       "id": "ne-0003",
@@ -85,7 +85,7 @@
       ],
       "checks": [],
       "flow": [],
-      "created_at": 1793636597175
+      "created_at": 1793640235238
     }
   ],
   "groups": [
@@ -97,7 +97,7 @@
         "ne-0001",
         "ne-0002"
       ],
-      "created_at": 1793636597175
+      "created_at": 1793640235238
     },
     {
       "id": "g-hz-02",
@@ -106,7 +106,7 @@
       "element_ids": [
         "ne-0003"
       ],
-      "created_at": 1793636597175
+      "created_at": 1793640235238
     }
   ],
   "packages": [
@@ -118,7 +118,7 @@
       "vendor": "华为",
       "version": "5.2.1",
       "verified": true,
-      "created_at": 1793636597175
+      "created_at": 1793640235238
     },
     {
       "id": "pkg-002",
@@ -128,7 +128,7 @@
       "vendor": "华为",
       "version": "5.2.0",
       "verified": true,
-      "created_at": 1793636597175
+      "created_at": 1793640235238
     },
     {
       "id": "pkg-003",
@@ -138,7 +138,7 @@
       "vendor": "中兴",
       "version": "4.8.4",
       "verified": true,
-      "created_at": 1793636597175
+      "created_at": 1793640235238
     }
   ],
   "platform": {
@@ -174,8 +174,8 @@
         ]
       }
     ],
-    "site_name": "",
-    "site_role": "",
+    "site_name": "HZ 主站点",
+    "site_role": "primary",
     "fs": {
       "cpus": 16,
       "site_primary": "HZ 主站点",
@@ -250,16 +250,16 @@
       "username": "admin",
       "display": "莱茵生命 · 管理员",
       "role": "admin",
-      "hash": "$argon2id$v=19$m=19456,t=2,p=1$DHBPxhAMZx8h3uEM5fo++Q$unU94GB1IQ337PhTNTYILg1opMbwmwaDU9Otb4jIStc",
-      "created_at": 1793636597397
+      "hash": "$argon2id$v=19$m=19456,t=2,p=1$Wls9mtQbqhh/kPRp0mfFmA$zvmNbUhJYHR4raytz0IphkO3r0ePWpE4tv+kN7NxyOU",
+      "created_at": 1793640235463
     },
     {
       "id": "user-0002",
       "username": "viewer",
       "display": "观测站 · 业务用户",
       "role": "operator",
-      "hash": "$argon2id$v=19$m=19456,t=2,p=1$8cDPqz60UbFuCnNYjxKsJg$CGZD4mjlyqH2ZTPGzKhqQlrWMTEY/aNw9Y9aLMp44oc",
-      "created_at": 1793636597619
+      "hash": "$argon2id$v=19$m=19456,t=2,p=1$w9UHWe3lDeplVJJn13RqEw$THFAHwxuDrLkJQTJe4sShG7ElpoEIF8gHM0+ozCeC+4",
+      "created_at": 1793640235690
     }
   ],
   "mappings": [
@@ -280,7 +280,7 @@
       "version": "0.1.1",
       "hits": 0,
       "last_hit_at": null,
-      "created_at": 1793636597619
+      "created_at": 1793640235690
     },
     {
       "id": "map-0002",
@@ -299,7 +299,7 @@
       "version": "0.1.0",
       "hits": 7,
       "last_hit_at": null,
-      "created_at": 1793636537619
+      "created_at": 1793640175690
     },
     {
       "id": "map-0003",
@@ -318,7 +318,7 @@
       "version": "0.2.0",
       "hits": 14,
       "last_hit_at": null,
-      "created_at": 1793636477619
+      "created_at": 1793640115690
     },
     {
       "id": "map-0004",
@@ -337,7 +337,7 @@
       "version": "0.1.1",
       "hits": 21,
       "last_hit_at": null,
-      "created_at": 1793636417619
+      "created_at": 1793640055690
     }
   ],
   "nodes": [
@@ -347,7 +347,7 @@
       "addr": "10.0.0.21:9443",
       "version": "0.1.0",
       "status": "online",
-      "last_seen": 1793636597619,
+      "last_seen": 1793640235690,
       "mappings": 4
     },
     {
@@ -356,7 +356,7 @@
       "addr": "10.0.0.22:9443",
       "version": "0.1.0",
       "status": "online",
-      "last_seen": 1793636555619,
+      "last_seen": 1793640193690,
       "mappings": 2
     },
     {
@@ -365,7 +365,7 @@
       "addr": "10.0.0.23:9443",
       "version": "0.0.9",
       "status": "offline",
-      "last_seen": 1793632997619,
+      "last_seen": 1793636635690,
       "mappings": 0
     }
   ],
