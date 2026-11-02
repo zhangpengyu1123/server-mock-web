@@ -354,6 +354,45 @@ class Topo3D {
       return;
     }
 
+    // 组视角：站点板在后，选中的组居中，组内网元弧形展开
+    if (lvl === 'group') {
+      const g = st.groups.find((x) => x.id === st.topoSel) || st.groups[0];
+      const siteB = this.inst('site') || this.plate(1.55, 0.08, 1.05, 0xeae5e1);
+      siteB.scale.setScalar(0.85);
+      siteB.position.set(0, Y, -1.30);
+      this.root.add(siteB);
+      addPick(siteB, { kind: 'site', id: 'site', label: st.site.name });
+      this.addLabel(siteB, st.site.name, 'SITE', 0.26, 0.9, { big: 44, small: 24, tick: '#a67d48' });
+
+      if (g) {
+        const tray = this.inst('group') || this.plate(2.05, 0.07, 0.66, 0xe6e1d9);
+        tray.position.set(0, Y, 0);
+        this.root.add(tray);
+        addPick(tray, { kind: 'group', id: g.id, label: g.name });
+        this.addLabel(tray, g.name, 'GROUP · ' + g.elements.length + ' NE', 0.30, 1.0, { big: 42, small: 22 });
+        this.edge('site', g.id);
+
+        const members = g.elements.map((id) => st.elements.find((e) => e.id === id)).filter(Boolean);
+        members.forEach((e, i) => {
+          const n = members.length;
+          const span = 1.25;
+          const x = n === 1 ? 0 : -span / 2 + (span / (n - 1)) * i;
+          const mod = this.inst('ne') || this.card(0.34, 0.46, 0.03);
+          mod.position.set(x, Y + 0.05, 0.02);
+          mod.scale.setScalar(1.15);
+          this.root.add(mod);
+          addPick(mod, { kind: 'ne', id: e.id, label: e.name });
+          if (this.models) this.paintNameplate(mod, e.name, e.version, e.id.toUpperCase());
+          this.addLabel(mod, e.name, e.type + ' · v' + e.version, this.models ? 0.58 : 0.34, 1.0,
+            { big: 42, small: 22, tick: /5\.2\.1/.test(e.version) ? '#a67d48' : null });
+          this.edge(g.id, e.id);
+        });
+      }
+      this.controls.target.set(0, Y + 0.12, -0.15);
+      this.camera.position.set(2.6, Y + 2.1, 2.9);
+      return;
+    }
+
     const site = this.inst('site') || this.plate(1.55, 0.08, 1.05, 0xeae5e1);
     site.position.set(0, Y, 0.95);
     this.root.add(site);

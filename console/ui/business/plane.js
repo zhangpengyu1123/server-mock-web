@@ -1201,13 +1201,25 @@
           links.push([g.id, e.id]);
         });
       });
-    } else if (S.topoLevel === 'group') {
-      mk('site', 360, 24, 170, 40, S.site.name, 'SITE', 'site');
-      S.elements.forEach((e, i) => {
-        const x = 80 + i * 250;
-        mk(e.id, x, 140, 180, 42, e.name, e.type + ' · v' + e.version, 'ne');
-        links.push(['site', e.id]);
-      });
+      } else if (S.topoLevel === 'group') {
+        // 组视角：站点 → 选中的组 → 组内网元（横向展开）
+        const g = S.groups.find((x) => x.id === S.topoSel) || S.groups[0];
+        mk('site', 360, 20, 180, 38, S.site.name, 'SITE · ' + S.site.role, 'site');
+        if (g) {
+          mk(g.id, 350, 110, 200, 44, g.name, 'GROUP · ' + g.elements.length + ' NE', 'group');
+          links.push(['site', g.id]);
+          const members = g.elements.map((id) => S.elements.find((x) => x.id === id)).filter(Boolean);
+          members.forEach((m, i) => {
+            const n = members.length;
+            const x = n === 1 ? 360 : 40 + (640 / (n - 1)) * i;
+            mk(m.id, x, 230, 170, 44, m.name, m.type + ' · v' + m.version, 'ne');
+            links.push([g.id, m.id]);
+          });
+        }
+        // 其他组：右侧速览
+        S.groups.filter((x) => !g || x.id !== g.id).forEach((x, i) => {
+          mk('go-' + x.id, 700, 20 + i * 32, 160, 26, x.name, x.elements.length + ' NE', 'group');
+        });
     } else {
       const e = S.elements.find((x) => x.id === S.topoSel) || S.elements[0];
       mk('ne', 40, 170, 150, 44, e.name, 'NE · v' + e.version, 'ne');
@@ -1478,13 +1490,21 @@
     }));
 
     // 拓扑层级
-    $$('[data-level]').forEach((b) => b.addEventListener('click', () => { S.topoLevel = b.dataset.level; render(); }));
+      $$('[data-level]').forEach((b) => b.addEventListener('click', () => {
+        S.topoLevel = b.dataset.level;
+        if (S.topoLevel === 'group' && !String(S.topoSel || '').startsWith('g-')) {
+          S.topoSel = (S.groups[0] || {}).id || S.topoSel;
+        }
+        if (S.topoLevel === 'component' && !S.elements.find((x) => x.id === S.topoSel)) {
+          S.topoSel = (S.elements[0] || {}).id || S.topoSel;
+        }
+        render(); }));
 
     // 2D / 3D 切换
     const b2 = $('#btn2d'), b3 = $('#btn3d'), box3 = $('#topo3d');
     if (b2 && b3 && box3) {
-        S.topoDim = '2d';
       b2.addEventListener('click', () => {
+          S.topoDim = '2d';
         box3.style.display = 'none';
         $('#topoSvg').style.display = '';
         b2.style.cssText = 'background:#17140f;color:#eae5e1;border-color:#17140f';
