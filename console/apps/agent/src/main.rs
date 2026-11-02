@@ -240,6 +240,42 @@ async fn business_stats(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Stats>> {
 }
 
 // ================================================================== 管理面
+async fn business_packages(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Vec<SoftwarePackage>>> {
+    let _u = auth(&st, &headers)?;
+    Ok(Json(st.store.packages()))
+}
+
+async fn business_create_package(
+    st: Ctx, headers: HeaderMap, Json(req): Json<NewPackageReq>,
+) -> ApiResult<Json<SoftwarePackage>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    Ok(Json(st.store.create_package(req)?))
+}
+
+async fn business_platform(st: Ctx, headers: HeaderMap) -> ApiResult<Json<PlatformCfg>> {
+    let _u = auth(&st, &headers)?;
+    Ok(Json(st.store.platform()))
+}
+
+async fn business_patch_platform(
+    st: Ctx, headers: HeaderMap, Json(req): Json<PatchPlatformReq>,
+) -> ApiResult<Json<PlatformCfg>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    Ok(Json(st.store.patch_platform(req)?))
+}
+
+async fn business_package_upgrade(
+    st: Ctx, headers: HeaderMap, Path(id): Path<String>, Json(req): Json<PackageUpgradeReq>,
+) -> ApiResult<Json<UpgradeTask>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    let t = st.store.upgrade_package(&id, &req.site, req.to_version.clone())?;
+    st.store.push_log("business", "pkg.upgrade", &format!("软件包 {} → 任务 {}", id, t.id), "info");
+    Ok(Json(t))
+}
+
 async fn business_elements(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Vec<NetworkElement>>> {
     let _u = auth(&st, &headers)?;
     Ok(Json(st.store.elements()))
@@ -665,6 +701,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/business/mappings/:id/test", post(business_test))
         .route("/business/logs", get(business_logs))
         .route("/business/stats", get(business_stats))
+        .route("/business/packages", get(business_packages).post(business_create_package))
+        .route("/business/packages/:id/upgrade", post(business_package_upgrade))
+        .route("/business/platform", get(business_platform).patch(business_patch_platform))
         .route("/business/elements", get(business_elements).post(business_create_element))
         .route("/business/elements/:id", patch(business_patch_element))
         .route("/business/elements/:id/copy", post(business_copy_element))

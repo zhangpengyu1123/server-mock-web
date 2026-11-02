@@ -261,6 +261,87 @@ pub struct NewUserReq {
 
 
 
+
+// ---------------- LCM 软件包 ----------------
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct SoftwarePackage {
+    pub id: String,
+    pub name: String,
+    /// 网元软件包 | 核心网软件包 | 平台补丁
+    pub kind: String,
+    /// 所属网元 id
+    pub owner: String,
+    pub vendor: String,
+    pub version: String,
+    #[serde(default)]
+    pub verified: bool,
+    pub created_at: Millis,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct NewPackageReq {
+    pub name: String,
+    pub kind: String,
+    pub owner: String,
+    pub vendor: String,
+    pub version: String,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Account {
+    pub id: String,
+    pub name: String,
+    pub role: String,
+    #[serde(default)]
+    pub scope: Vec<String>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, Default)]
+pub struct FsConfig {
+    pub cpus: u32,
+    pub site_primary: String,
+    pub site_secondary: String,
+    pub version: String,
+    #[serde(default)]
+    pub verify_steps: Vec<String>,
+    #[serde(default)]
+    pub upgrade_steps: Vec<String>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, Default)]
+pub struct PlatformCfg {
+    #[serde(default)]
+    pub lcm_elements: Vec<String>,
+    #[serde(default)]
+    pub co_deploy: bool,
+    #[serde(default)]
+    pub omc_elements: Vec<String>,
+    #[serde(default)]
+    pub omc_groups: Vec<String>,
+    #[serde(default)]
+    pub accounts: Vec<Account>,
+    pub fs: FsConfig,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct PatchPlatformReq {
+    pub lcm_elements: Option<Vec<String>>,
+    pub co_deploy: Option<bool>,
+    pub omc_elements: Option<Vec<String>>,
+    pub omc_groups: Option<Vec<String>>,
+    pub accounts: Option<Vec<Account>>,
+    pub fs: Option<FsConfig>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct PackageUpgradeReq {
+    #[serde(default)]
+    pub site: String,
+    /// 可覆盖包版本
+    #[serde(default)]
+    pub to_version: Option<String>,
+}
+
 // ---------------- 网元 ----------------
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ElementCheck {

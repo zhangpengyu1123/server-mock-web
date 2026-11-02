@@ -86,6 +86,10 @@ struct Persisted {
     #[serde(default)]
     groups: Vec<ElementGroup>,
     #[serde(default)]
+    packages: Vec<SoftwarePackage>,
+    #[serde(default)]
+    platform: PlatformCfg,
+    #[serde(default)]
     hits: VecDeque<MockHit>,
     #[serde(default)]
     tasks: Vec<UpgradeTask>,
@@ -96,6 +100,8 @@ struct Persisted {
 }
 
 struct Inner {
+    packages: Vec<SoftwarePackage>,
+    platform: PlatformCfg,
     elements: Vec<NetworkElement>,
     groups: Vec<ElementGroup>,
     hits: VecDeque<MockHit>,
@@ -133,6 +139,27 @@ impl Store {
             seq: 0,
             started_at: now_ms(),
             endpoints: vec![],
+            packages: vec![],
+            platform: PlatformCfg {
+                lcm_elements: vec![], co_deploy: true, omc_elements: vec![], omc_groups: vec![],
+                accounts: vec![],
+                fs: FsConfig {
+                    cpus: 16,
+                    site_primary: "HZ 主站点".into(),
+                    site_secondary: "NB 备站点".into(),
+                    version: "2.4.0".into(),
+                    verify_steps: vec![
+                        "校验 checksum（sha256）".into(),
+                        "校验签名（GPG）".into(),
+                        "校验包与平台版本兼容性".into(),
+                        "校验主备站点一致性".into(),
+                    ],
+                    upgrade_steps: vec![
+                        "挂载安装镜像".into(), "预检查（CPU/内存/存储）".into(), "停业务".into(),
+                        "安装".into(), "启动并自检".into(), "主备切换验证".into(),
+                    ],
+                },
+            },
             elements: vec![],
             groups: vec![],
             hits: VecDeque::new(),
@@ -149,6 +176,8 @@ impl Store {
                     inner.seq = p.seq;
                         inner.endpoints = p.endpoints;
                         inner.elements = p.elements;
+                        inner.packages = p.packages;
+                        inner.platform = p.platform;
                         inner.groups = p.groups;
                         inner.hits = p.hits;
                         inner.tasks = p.tasks;
@@ -162,6 +191,22 @@ impl Store {
             }
         }
 
+        if inner.packages.is_empty() {
+            let pk = |id: &str, name: &str, kind: &str, owner: &str, vendor: &str, version: &str| SoftwarePackage {
+                id: id.into(), name: name.into(), kind: kind.into(), owner: owner.into(),
+                vendor: vendor.into(), version: version.into(), verified: true, created_at: now_ms(),
+            };
+            inner.packages.push(pk("pkg-001", "NR-RAN", "网元软件包", "ne-0001", "华为", "5.2.1"));
+            inner.packages.push(pk("pkg-002", "NR-RAN", "网元软件包", "ne-0001", "华为", "5.2.0"));
+            inner.packages.push(pk("pkg-003", "EPC-CORE", "核心网软件包", "ne-0003", "中兴", "4.8.4"));
+            inner.platform.lcm_elements = vec!["ne-0001".into(), "ne-0002".into(), "ne-0003".into()];
+            inner.platform.omc_elements = vec!["ne-0001".into(), "ne-0002".into()];
+            inner.platform.omc_groups = vec!["g-hz-01".into()];
+            inner.platform.accounts = vec![
+                Account { id: "acc-01".into(), name: "omc-ops".into(), role: "运维".into(), scope: vec!["ne-0001".into()] },
+                Account { id: "acc-02".into(), name: "omc-view".into(), role: "只读".into(), scope: vec!["ne-0001".into(), "ne-0002".into()] },
+            ];
+        }
         if inner.elements.is_empty() {
             inner.groups.push(ElementGroup {
                 id: "g-hz-01".into(), name: "杭州 gNB 组".into(), site: "site-hz".into(),
@@ -227,6 +272,8 @@ impl Store {
             seq: inner.seq,
             endpoints: inner.endpoints.clone(),
             elements: inner.elements.clone(),
+            packages: inner.packages.clone(),
+            platform: inner.platform.clone(),
             groups: inner.groups.clone(),
             hits: inner.hits.clone(),
             tasks: inner.tasks.clone(),
@@ -244,6 +291,74 @@ impl Store {
     /// 后台任务持有独立句柄（内部是 Arc<Mutex<..>>，共享同一份状态）
     pub fn clone_for_task(&self) -> Self {
         self.clone()
+    }
+
+    // ---------------- LCM 软件包 / 平台配置 ----------------
+    pub fn packages(&self) -> Vec<SoftwarePackage> {
+        self.inner.lock().unwrap().packages.clone()
+    }
+    pub fn platform(&self) -> PlatformCfg {
+        self.inner.lock().unwrap().platform.clone()
+    }
+
+    pub fn create_package(&self, req: NewPackageReq) -> Result<SoftwarePackage> {
+        let mut i = self.inner.lock().unwrap();
+        let next = i.packages.iter()
+            .filter_map(|p| p.id.rsplit('-').next().and_then(|x| x.parse::<u32>().ok()))
+            .max().unwrap_or(0) + 1;
+        let p = SoftwarePackage {
+            id: format!("pkg-{:03}", next),
+            name: req.name, kind: req.kind, owner: req.owner,
+            vendor: req.vendor, version: req.version,
+            verified: false, created_at: now_ms(),
+        };
+        i.packages.push(p.clone());
+        self.persist_locked(&i)?;
+        Ok(p)
+    }
+
+    pub fn patch_platform(&self, req: PatchPlatformReq) -> Result<PlatformCfg> {
+        let mut i = self.inner.lock().unwrap();
+        {
+            let p = &mut i.platform;
+            if let Some(v) = req.lcm_elements { p.lcm_elements = v; }
+            if let Some(v) = req.co_deploy { p.co_deploy = v; }
+            if let Some(v) = req.omc_elements { p.omc_elements = v; }
+            if let Some(v) = req.omc_groups { p.omc_groups = v; }
+            if let Some(v) = req.accounts { p.accounts = v; }
+            if let Some(v) = req.fs { p.fs = v; }
+        }
+        let out = i.platform.clone();
+        self.persist_locked(&i)?;
+        Ok(out)
+    }
+
+    /// 包升级 → 生成一体化升级任务（LCM 管版本、OMC 管升级的联动点）
+    pub fn upgrade_package(&self, pkg_id: &str, site: &str, to_override: Option<String>) -> Result<UpgradeTask> {
+        let pkg = {
+            let i = self.inner.lock().unwrap();
+            i.packages.iter().find(|p| p.id == pkg_id).cloned().ok_or(Error::NotFound)?
+        };
+        let from = {
+            let i = self.inner.lock().unwrap();
+            i.elements.iter().find(|e| e.id == pkg.owner).map(|e| e.version.clone()).unwrap_or_else(|| "0.0.0".into())
+        };
+        let req = NewTaskReq {
+            site: if site.is_empty() { "site-hz".into() } else { site.into() },
+            element_ids: vec![pkg.owner.clone()],
+            from_version: from,
+            to_version: to_override.unwrap_or_else(|| pkg.version.clone()),
+        };
+        let task = self.create_task(req)?;
+        // 标记包为已验证（升级即视为已校验）
+        {
+            let mut i = self.inner.lock().unwrap();
+            if let Some(p) = i.packages.iter_mut().find(|p| p.id == pkg_id) {
+                p.verified = true;
+            }
+            let _ = self.persist_locked(&i);
+        }
+        Ok(task)
     }
 
     // ---------------- 网元 ----------------

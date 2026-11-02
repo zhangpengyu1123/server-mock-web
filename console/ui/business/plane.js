@@ -21,6 +21,8 @@
 
     // 升级任务（来自后端）
     taskSel: null,     // 当前查看的任务 id
+    packages: [],      // LCM 软件包（来自后端）
+    platform: null,    // 平台配置（共部署 / FS）
     layer: 'runtime',
     view: 'mock-admin',
     endpoint: { host: '127.0.0.1', port: '9443', enabled: false, cert: null, caps: [] },
@@ -172,6 +174,18 @@
       $('#plGo').addEventListener('click', submit);
       $('#plP').addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
     });
+  }
+
+  async function loadLcm() {
+    try {
+      const [pkgs, cfg] = await Promise.all([
+        api('/api/business/packages'),
+        api('/api/business/platform'),
+      ]);
+      if (Array.isArray(pkgs)) S.packages = pkgs;
+      if (cfg) S.platform = cfg;
+    } catch (e) { /* 离线保留演示数据 */ }
+    return { packages: S.packages, platform: S.platform };
   }
 
   async function loadElements() {
@@ -577,32 +591,36 @@
   /* ---------------------------------------------------------------- 视图：LCM */
   function viewLcm() {
     const l = S.lcm;
+    const pkgs = (S.packages && S.packages.length) ? S.packages : l.packages;
+    const byId = (id) => (S.elements.find((x) => x.id === id) || {}).name || id;
+    const co = S.platform ? !!S.platform.co_deploy : l.coDeploy;
     return head('LCM 平台', 'Element versions · software packages · co-deploy with OMC', 'FILE NO. LCM-001') + `
       <div class="pl-grid pl-grid--side">
         <div class="pl-card">
           <div class="pl-card__t">管理的网元与当前版本</div>
           <table class="pl-table">
             <thead><tr><th>Element</th><th>Software</th><th>Current</th><th>Prev</th><th></th></tr></thead>
-            <tbody>${S.elements.map((e) => `<tr>
-              <td>${esc(e.name)}</td><td class="pl-muted">${esc(e.sw)}</td>
-              <td class="num">v${esc(e.version)}</td>
-              <td class="pl-muted num">${e.prev || '—'}</td>
-              <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-pkg-for="${esc(e.id)}">软件包</button></td>
+            <tbody>${S.elements.map((el) => `<tr>
+              <td>${esc(el.name)}</td><td class="pl-muted">${esc(el.sw)}</td>
+              <td class="num">v${esc(el.version)}</td>
+              <td class="pl-muted num">${esc(el.prev || '—')}</td>
+              <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-pkg-for="${esc(el.id)}">软件包</button></td>
             </tr>`).join('')}</tbody>
           </table>
           <div class="pl-row-end" style="align-items:center">
-            <span class="pl-muted" style="font-size:8.5px;margin-right:auto">与 OMC 共部署：${l.coDeploy ? '<span class="pl-dot pl-dot--on"></span>已开启' : '未开启'}</span>
-            <button class="pl-btn pl-btn--sm" id="btnCoDeploy">${l.coDeploy ? '关闭共部署' : '开启共部署'}</button>
+            <span class="pl-muted" style="font-size:8.5px;margin-right:auto">与 OMC 共部署：${co ? '<span class="pl-dot pl-dot--on"></span>已开启' : '未开启'}</span>
+            <button class="pl-btn pl-btn--sm" id="btnCoDeploy">${co ? '关闭共部署' : '开启共部署'}</button>
           </div>
         </div>
         <div class="pl-card">
-          <div class="pl-card__t">软件包仓库</div>
+          <div class="pl-card__t">软件包仓库（点「升级」直接生成 OMC 任务）</div>
           <table class="pl-table">
-            <thead><tr><th>Package</th><th>类型</th><th>所属网元</th><th>厂商</th><th>版本</th></tr></thead>
-            <tbody>${l.packages.map((p) => `<tr>
+            <thead><tr><th>Package</th><th>类型</th><th>所属网元</th><th>厂商</th><th>版本</th><th></th></tr></thead>
+            <tbody>${pkgs.map((p) => `<tr>
               <td>${esc(p.name)}</td><td class="pl-muted">${esc(p.kind)}</td>
-              <td class="pl-muted">${esc((S.elements.find((e) => e.id === p.owner) || {}).name || p.owner)}</td>
+              <td class="pl-muted">${esc(byId(p.owner))}</td>
               <td class="pl-muted">${esc(p.vendor)}</td><td class="num">v${esc(p.version)}</td>
+              <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-pkg-up="${esc(p.id)}" data-pkg-ver="${esc(p.version)}">升级</button></td>
             </tr>`).join('')}</tbody>
           </table>
           <div class="pl-row-end"><button class="pl-btn pl-btn--solid pl-btn--sm" id="btnPkgAdd">＋ 登记软件包</button></div>
@@ -612,7 +630,14 @@
 
   /* ---------------------------------------------------------------- 视图：FS */
   function viewFs() {
-    const f = S.fs;
+    const f = Object.assign({}, S.fs, (S.platform && S.platform.fs) ? {
+      cpus: S.platform.fs.cpus,
+      sitePrimary: S.platform.fs.site_primary,
+      siteSecondary: S.platform.fs.site_secondary,
+      platformVersion: S.platform.fs.version,
+      verifySteps: S.platform.fs.verify_steps,
+      upgrade: S.platform.fs.upgrade_steps,
+    } : {});
     return head('FS 虚层平台', 'CPU · primary/secondary site · platform version · package verification', 'FILE NO. FS-001') + `
       <div class="pl-grid pl-grid--3">
         <div class="pl-card">
@@ -1217,6 +1242,32 @@
     const auditRefresh = $('#btnAuditRefresh');
     if (auditRefresh) auditRefresh.addEventListener('click', async () => { await loadAudit(); render(); });
 
+    // LCM · 包升级 → 生成任务
+    $$('[data-pkg-up]').forEach((b) => b.addEventListener('click', async () => {
+      try {
+        const task = await api('/api/business/packages/' + b.dataset.pkgUp + '/upgrade', {
+          method: 'POST', headers: headers(),
+          body: JSON.stringify({ site: 'site-hz', to_version: b.dataset.pkgVer }),
+        });
+        S.tasks.unshift(task);
+        S.taskSel = task.id;
+        S.view = 'task';
+      } catch (e) { console.warn(e); }
+      render();
+    }));
+    // LCM · 共部署开关
+    const coBtn = $('#btnCoDeploy');
+    if (coBtn) coBtn.addEventListener('click', async () => {
+      try {
+        const cur = S.platform ? !!S.platform.co_deploy : false;
+        S.platform = await api('/api/business/platform', {
+          method: 'PATCH', headers: headers(), body: JSON.stringify({ co_deploy: !cur }),
+        });
+        if (S.lcm) S.lcm.coDeploy = S.platform.co_deploy;
+      } catch (e) { console.warn(e); }
+      render();
+    });
+
     // 升级任务
     $$('[data-task]').forEach((b) => b.addEventListener('click', () => {
       S.taskSel = b.dataset.task; S.view = 'task'; render();
@@ -1310,7 +1361,10 @@
   (async () => {
     try {
       const ok = await ensureAuth();
-      if (ok) { await loadEndpoint(); await loadElements(); await loadTasks(); await loadIfaces(); await loadAudit(); }
+      if (ok) {
+        await loadEndpoint(); await loadElements(); await loadLcm();
+        await loadTasks(); await loadIfaces(); await loadAudit();
+      }
     } catch (e) { /* 后端不可达时退化为本地演示数据 */ }
     render();
   })();
