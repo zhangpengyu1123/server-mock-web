@@ -452,6 +452,38 @@
     return { counts, p95, avg, maxDelay, series: rows.slice(0, 40).reverse() };
   }
 
+  /** 接口健康度：按 path 聚合命中 / 错误率 / 平均延迟 */
+  function auditHealth(rows) {
+    if (!rows.length) return '';
+    const map = new Map();
+    rows.forEach((r) => {
+      const k = String(r.path || '—');
+      const it = map.get(k) || { path: k, hits: 0, errors: 0, delays: [], lastStatus: 0, lastAt: 0 };
+      it.hits++;
+      const st = Number(r.status) || 0;
+      if (st >= 400) it.errors++;
+      it.delays.push(Number(r.delay_ms) || 0);
+      if ((Number(r.at) || 0) >= it.lastAt) { it.lastAt = Number(r.at) || 0; it.lastStatus = st; }
+      map.set(k, it);
+    });
+    const list = Array.from(map.values()).sort((a, b) => b.hits - a.hits).slice(0, 8);
+    const body = list.map((it) => {
+      const avg = Math.round(it.delays.reduce((a, b) => a + b, 0) / it.delays.length);
+      const rate = Math.round((it.errors / it.hits) * 100);
+      const tone = rate === 0 ? 'var(--ink)' : rate < 30 ? '#a0703c' : 'var(--danger)';
+      return '<tr>'
+        + '<td class="pl-mono" style="font-size:10px">' + esc(it.path) + '</td>'
+        + '<td class="num">' + it.hits + '</td>'
+        + '<td class="num" style="color:' + tone + ';font-weight:600">' + rate + '%</td>'
+        + '<td class="num">' + avg + ' ms</td>'
+        + '<td class="num">' + it.lastStatus + '</td>'
+        + '</tr>';
+    }).join('');
+    return '<div class="pl-card"><div class="pl-card__t">接口健康度（按 path 聚合）</div>'
+      + '<table class="pl-table"><thead><tr><th>Path</th><th>Hits</th><th>Err</th><th>Avg</th><th>Last</th></tr></thead>'
+      + '<tbody>' + body + '</tbody></table></div>';
+  }
+
   /** 审计图表 HTML（概览 / 状态码分布 / 延迟条形） */
   function auditCharts(rows) {
     if (!rows.length) return '';
@@ -491,7 +523,8 @@
       + '<svg viewBox="0 0 320 74" preserveAspectRatio="none" style="width:100%;height:74px;display:block">'
       + '<line x1="0" y1="72" x2="320" y2="72" stroke="rgba(23,23,19,.18)"/>' + rects + '</svg>'
       + '<div class="pl-muted" style="font-size:8px;letter-spacing:.14em;margin-top:4px">BAR = DELAY MS · 深=成功 琥珀=人机 红=错误</div>'
-      + '</div></div>';
+        + '</div></div>'
+        + auditHealth(rows);
   }
 
 
