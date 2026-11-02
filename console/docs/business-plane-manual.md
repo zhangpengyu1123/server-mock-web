@@ -9,6 +9,34 @@
 
 ---
 
+---
+
+## 0.1 一键启动
+
+```powershell
+# 推荐（PowerShell，自动起两个实例并打开页面）
+.\start-demo.ps1
+
+# 双击或 cmd
+start-demo.cmd
+```
+
+脚本行为：
+
+1. 检查 `console/target/debug/rhine-agent.exe` 是否存在（不存在会提示编译命令）
+2. 9600 未监听 → 后台起 L 端（`RHINE_AUTH=on`，需登录）；9601 未监听 → 起 W 端（免登录）
+3. 等到 9600 就绪（最多 20s）→ 自动打开 `business/plane.html`
+
+| 端 | 地址 | 凭据 |
+|---|---|---|
+| L 端 | http://127.0.0.1:9600/business/plane.html | `admin / rhine-admin-2026` |
+| W 端 | http://127.0.0.1:9601/business/plane.html | 免登录 |
+| 看板 | http://127.0.0.1:9600/business/index.html | 同 L 端 |
+
+停止：`Get-Process rhine-agent | Stop-Process -Force`
+
+> 桌面壳：`console/desktop/business/`（Tauri 2）已指向 `business/plane.html`，
+> CSP 放行 9600/9601。打包需要 WebView2 + `cargo tauri build`，不在日常编译链里。
 ## 0. 两层结构（不是六个平级平台）
 
 ```

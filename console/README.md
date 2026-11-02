@@ -185,3 +185,11 @@ Windows 11 / Rust 1.96 / Node 26，依赖离线编译：
 3. **真实部署**：`advance_deploy` → `Deployer` trait（SSH / HTTP 两种实现）。
 4. **L 端守护**：systemd unit + 只读根 + 内存上限。
 5. **登录加固**：失败限速、会话轮转、可选 TOTP。
+
+## 一键启动
+
+```powershell
+.\start-demo.ps1   # 仓库根目录
+```r
+
+自动拉起 L 端(9600)/W 端(9601) 并打开业务面。
