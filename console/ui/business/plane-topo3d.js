@@ -322,7 +322,7 @@ class Topo3D {
     const m = this.linkOneshot(a, b);
     if (!m) return;
     // 流光：沿线往复的小光点
-    const dot = new THREE.Mesh(new THREE.SphereGeometry(0.016, 8, 8), glow(0xffc978, 2.6));
+    const dot = new THREE.Mesh(new THREE.SphereGeometry(0.016, 8, 8), glow(0xffc978, 2.6).clone());
     dot.position.set(a[0], a[1], a[2]);
     this.root.add(dot);
     this.links.push({ from: idA, to: idB, mesh: m, dot, a: new THREE.Vector3(...a), b: new THREE.Vector3(...b), phase: Math.random() });
@@ -487,16 +487,25 @@ class Topo3D {
           else { mm.emissive.setHex(0x000000); mm.emissiveIntensity = 0; }
         }
         mm.transparent = true;
-        mm.opacity = isSel ? 1 : (on ? 0.95 : 0.38);
+        mm.opacity = isSel ? 1 : (on ? 0.95 : 0.6);
       });
     });
     (this.links || []).forEach((l) => {
       const hit = l.from === id || l.to === id;
       l.mesh.material = l.mesh.material.clone();
-      l.mesh.material.color.setHex(hit ? 0xe0a95c : 0x9a948a);
+      l.mesh.material.color.setHex(hit ? 0xe6b26a : 0xb8b2a6);
       l.mesh.material.emissive.setHex(hit ? 0xa67d48 : 0x000000);
-      l.mesh.material.emissiveIntensity = hit ? 1.5 : 0.15;
-      l.mesh.scale.set(hit ? 1.8 : 0.7, 1, hit ? 1.8 : 0.7);
+      l.mesh.material.emissiveIntensity = hit ? 2.4 : 0.05;
+      l.mesh.scale.set(hit ? 2.4 : 0.6, 1, hit ? 2.4 : 0.6);
+      // 流光点跟随选中：命中链路亮琥珀快速，其余灰暗慢速；无选中时常态
+      l.hot = hit;
+      if (l.dot) {
+        const none = !id;
+        l.dot.material.color.setHex(none ? 0xffc978 : (hit ? 0xffd79a : 0x8f8b82));
+        l.dot.material.emissive.setHex(none ? 0xffc978 : (hit ? 0xffc978 : 0x5c5850));
+        l.dot.material.emissiveIntensity = none ? 1.6 : (hit ? 2.4 : 0.5);
+        l.dot.visible = none || hit;
+      }
     });
   }
 
@@ -545,13 +554,16 @@ class Topo3D {
     this.labels.forEach((l) => { if (l.parent) l.quaternion.copy(this.camera.quaternion); });
     // 流光推进（每 3.2s 走完一条线段，错相出发）
     if (this.links && this.links.length) {
-      const now = performance.now() / 3200;
+      const speedBoost = this.selected ? 1.35 : 1;
+      const now = (performance.now() / 3200) * speedBoost;
       this.links.forEach((l) => {
         if (!l.dot) return;
-        const k = ((now + l.phase) % 1);
+        const dim = this.selected && l.hot === false;
+        const k = (((now * (dim ? 0.3 : 1)) + l.phase) % 1);
         const e = k < 0.5 ? k * 2 : (1 - k) * 2;   // 往返
         l.dot.position.lerpVectors(l.a, l.b, e);
-        l.dot.material.emissiveIntensity = 1.6 + Math.sin(e * Math.PI) * 1.6;
+        const base = dim ? 0.35 : 1.6;
+        l.dot.material.emissiveIntensity = base + Math.sin(e * Math.PI) * base;
       });
     }
     this.controls.update();
