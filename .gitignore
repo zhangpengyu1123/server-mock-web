@@ -5,3 +5,4 @@ console/desktop/*/target/
 console/desktop/*/gen/
 *.log
 console/assets/preview/*.png
+dist/

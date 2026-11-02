@@ -263,3 +263,30 @@ POST /api/business/import        # 导入（管理员 + CSRF），整体覆盖�
 | `index.json` | 索引 | 下拉列表的数据源 |
 
 > 换机器演示：把 `scenes/*.json` 或自己导出的快照拷过去，导入即可 1:1 复现。
+---
+
+## 0.2 便携发行版（免安装）
+
+```powershell
+node console/assets/make-dist.mjs      # 生成 dist/rhine-mock-console-1.0.0/
+```
+
+产物结构：
+
+```
+dist/rhine-mock-console-1.0.0/
+  启动.cmd                一键起两个后端 + 打开桌面业务面
+  停止.cmd
+  rhine-agent.exe         后端（9.7 MB）
+  Rhine 业务面.exe        桌面应用（12.1 MB，内嵌整套 UI）
+  ui/                     静态前端（浏览器模式）
+  data/                   数据文件（可备份替换）
+  docs/                   演示手册 + 逐幕脚本 + 截图
+  README.txt
+```
+
+实测（从 dist 目录独立运行）：9600/9601 均监听、浏览器 `plane.html → 200`、
+`/api/meta.authRequired=false`、桌面壳加载「业务面 · RHINE LAB PLANE」。
+
+> 桌面壳通过 WebView2 远程调试端口取证：`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=9222`，
+> 用 CDP 可读到完整 DOM（包含从 9601 拉到的端点数据），说明桌面应用与本机 agent 已打通。
