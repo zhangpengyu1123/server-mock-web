@@ -283,10 +283,14 @@
         catch { say('mock 直链：' + url); }
       }
       closeModal();
-      if (window.RhineScene.instance && window.RhineScene.instance.setData) {
-        // 触发一次重绘标签（版本/状态 chip 会跟着变）
-        window.dispatchEvent(new CustomEvent('rig:refresh'));
-      }
+      // 重新拉数据并刷新 3D：停用/版本更新当场生效（不用刷新页面）
+      try {
+        const [nodes, mappings] = await Promise.all([
+          fetch('/api/admin/nodes', { credentials: 'include' }).then((r) => r.json()),
+          fetch('/api/business/mappings', { credentials: 'include' }).then((r) => r.json()),
+        ]);
+        if (window.RhineScene && window.RhineScene.setData) window.RhineScene.setData({ nodes, mappings });
+      } catch (e) { /* 忽略刷新失败 */ }
     } catch (err) {
       say('操作失败：' + err.message);
     } finally {
