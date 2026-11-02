@@ -29,9 +29,9 @@ const G = {
   cardSeatY: 0.635,
   insertLift: 0.80,
   spacing: 0.82,                    // 板宽 0.46 + 间隙 0.36
-  infoY: 0.690,                     // 信息铭牌（板面，靠相机一侧）
-  infoZ: 0.380,
-  infoW: 0.40, infoH: 0.135,
+  infoY: 0.6875,                    // 信息卡贴平铺凹槽
+  infoZ: 0.365,
+  infoW: 0.360, infoH: 0.090,
   railY: 0.690, railZ: 0.405,
   cardT: 0.018,
 };
@@ -348,7 +348,7 @@ class Rig {
         [node.name || node.id, 'NODE ' + node.id.replace(/^node-/, '') + '   ·   ' + (node.version || '')],
         { big: 120, code: 'X-' + String(bi + 1).padStart(3, '0'), accent: '#d79a44' });
       plate.rotation.x = -Math.PI / 2;      // 平铺在板面（横向信息卡）
-      plate.position.set(0, G.boardTop + 0.0018, 0.430);
+      plate.position.set(0, G.infoY, G.infoZ);
       root.add(plate);
 
       // 前缘光槽上的流线（JS 生成，带 UV）
