@@ -71,6 +71,7 @@
       },
     },
     topoLevel: 'element',
+    topoDim: '2d',   // '2d' | '3d'（记住选择，切层级后仍生效）
     omc: {
       elements: ['ne-0001', 'ne-0002'],
       groups: ['g-hz-01'],
@@ -1476,6 +1477,7 @@
     'human': viewHuman,
   };
 
+
   function render() {
     renderRail();
     const fn = VIEWS[S.view] || viewMockAdmin;
@@ -1483,6 +1485,11 @@
     $$('.pl-layer').forEach((b) => b.classList.toggle('is-on', b.dataset.layer === S.layer));
     bindView();
     if (S.view === 'topo') { renderTopo(); renderTopoDetail(); }
+      // 维度记忆：当前是 3D 时，重渲染后自动恢复
+      if (S.view === 'topo' && S.topoDim === '3d') {
+        const b3now = $('#btn3d');
+        if (b3now) setTimeout(() => b3now.click(), 0);
+      }
   }
 
   /* ---------------------------------------------------------------- 事件 */
@@ -1586,6 +1593,7 @@
     // 2D / 3D 切换
     const b2 = $('#btn2d'), b3 = $('#btn3d'), box3 = $('#topo3d');
     if (b2 && b3 && box3) {
+        S.topoDim = '2d';
       b2.addEventListener('click', () => {
         box3.style.display = 'none';
         $('#topoSvg').style.display = '';
@@ -1593,6 +1601,7 @@
         b3.style.cssText = '';
         if (window.PlaneTopo3D) window.PlaneTopo3D.unmount();
       });
+        S.topoDim = '3d';
       b3.addEventListener('click', () => {
         box3.style.display = 'block';
         $('#topoSvg').style.display = 'none';

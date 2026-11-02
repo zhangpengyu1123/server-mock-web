@@ -1,23 +1,23 @@
 /* ============================================================================
-   RHINE LAB · 3D 拓扑（v2 · 程序化档案板）
+   RHINE LAB · 3D 拓扑（v3 · Blender 资产）
    ----------------------------------------------------------------------------
-   为什么不用 GLB：站点/组/组件在拓扑尺度上只有几厘米，直接复用管理面的机架
-   资产会小到看不清。这里按参考仓的"档案板"语言程序化生成：
-     站点   = 大方形悬浮板（1.50 × 0.08 × 1.10）
-     网元组 = 长条板（2.00 × 0.07 × 0.62）
-     网元   = 立卡（0.34 × 0.46 × 0.03），顶缘一条琥珀光
-     组件   = 小立方（0.22），环形围绕网元
-   连接   = 细圆柱光管；标注 = canvas 文字牌（始终朝向相机）
-   视角   = 斜上 45°，可拖拽/缩放，带边界
+   资产来自 console/assets/blender/topo_assets_v1.py（米白档案质感 + 琥珀光条）：
+     topo_site.glb  站点平台（1.62 × 1.18，凹槽/短脚/前缘光条/四角刻线）
+     topo_group.glb 网元组托板（2.10 × 0.72，3 条卡槽）
+     topo_ne.glb    网元模块（立卡 0.36 × 0.48，标签凹槽 + 顶缘光带 + 散热筋）
+     topo_comp.glb  组件芯片（0.22，琥珀条与缺口）
+   交互：点选高亮邻接 / 双击下钻（element→component） / 拖拽旋转缩放
+   资产加载失败时回退程序化方块，保证不白屏。
    ==========================================================================*/
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const C = { paper: 0xeae5e1, ink: 0x171713, amber: 0xa67d48, sand: 0xc1b8a7, muted: 0x8e897b };
+const ASSETS = './assets/';
 
 let rig = null;
 
-/* ---------------------------------------------------------------- 文字牌 */
 function labelTexture(title, sub, opts) {
   opts = opts || {};
   const W = 512, H = 160;
@@ -36,10 +36,7 @@ function labelTexture(title, sub, opts) {
     g.font = '500 ' + (opts.small || 32) + 'px "JetBrains Mono","PingFang SC",monospace';
     g.fillText(String(sub), 18, H * 0.75);
   }
-  if (opts.tick) {
-    g.fillStyle = opts.tick;
-    g.fillRect(0, 4, 6, H - 8);
-  }
+  if (opts.tick) { g.fillStyle = opts.tick; g.fillRect(0, 4, 6, H - 8); }
   const t = new THREE.CanvasTexture(cv);
   t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = 4;
@@ -47,9 +44,9 @@ function labelTexture(title, sub, opts) {
 }
 
 const MAT = {};
-function mat(color, rough, metal) {
-  const k = 'm' + color + rough + (metal || 0);
-  if (!MAT[k]) MAT[k] = new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: metal || 0 });
+function mat(color, rough) {
+  const k = 'm' + color + rough;
+  if (!MAT[k]) MAT[k] = new THREE.MeshStandardMaterial({ color, roughness: rough });
   return MAT[k];
 }
 function glow(color, intensity) {
@@ -70,10 +67,10 @@ class Topo3D {
 
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(C.paper);
-    this.scene.fog = new THREE.FogExp2(C.paper, 0.032);
+    this.scene.fog = new THREE.FogExp2(C.paper, 0.030);
 
     this.camera = new THREE.PerspectiveCamera(34, w / h, 0.05, 80);
-    this.camera.position.set(2.5, 2.2, 2.8);
+    this.camera.position.set(2.6, 2.3, 3.0);
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
@@ -81,7 +78,7 @@ class Topo3D {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.0;
+    this.renderer.toneMappingExposure = 1.02;
     host.appendChild(this.renderer.domElement);
     this.renderer.domElement.style.display = 'block';
 
@@ -89,7 +86,7 @@ class Topo3D {
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.08;
     this.controls.minDistance = 1.4;
-    this.controls.maxDistance = 8;
+    this.controls.maxDistance = 9;
     this.controls.minPolarAngle = Math.PI * 0.12;
     this.controls.maxPolarAngle = Math.PI * 0.40;
     this.controls.minAzimuthAngle = -Math.PI * 0.45;
@@ -99,9 +96,11 @@ class Topo3D {
     this.lights();
     this.floor();
     this.labels = [];
-    this.build();
+    this.links = [];
+    this.models = null;
+    this.loader = new GLTFLoader();
+    this.loadModels().then(() => this.build()).catch(() => this.build());
     this.bindPick();
-    this.clock = new THREE.Clock();
     this.loop();
   }
 
@@ -131,15 +130,33 @@ class Topo3D {
     this.scene.add(f);
   }
 
+  async loadModels() {
+    const l = (n) => new Promise((res, rej) => this.loader.load(ASSETS + n + '.glb?v=' + Date.now(), res, undefined, rej));
+    const [site, group, ne, comp] = await Promise.all([
+      l('topo_site'), l('topo_group'), l('topo_ne'), l('topo_comp'),
+    ]);
+    this.models = { site, group, ne, comp };
+  }
+
+  inst(kind) {
+    if (!this.models) return null;
+    const o = this.models[kind].scene.clone(true);
+    o.traverse((c) => {
+      if (c.isMesh) {
+        c.castShadow = true;
+        c.receiveShadow = true;
+        c.material = Array.isArray(c.material) ? c.material.map((m) => m.clone()) : c.material.clone();
+      }
+    });
+    return o;
+  }
+
+  /* 程序化回退 */
   plate(w, t, d, color) {
     const m = new THREE.Mesh(new THREE.BoxGeometry(w, t, d), mat(color || 0xe6e1d9, 0.62));
     m.castShadow = true; m.receiveShadow = true;
-    const inner = new THREE.Mesh(new THREE.BoxGeometry(w * 0.86, 0.003, d * 0.86), mat(0xbdb6a9, 0.8));
-    inner.position.y = t / 2 + 0.002;
-    m.add(inner);
     return m;
   }
-
   card(w, h, t) {
     const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, t), mat(0xdfd8ce, 0.6));
     m.castShadow = true; m.receiveShadow = true;
@@ -151,7 +168,7 @@ class Topo3D {
 
   addLabel(parent, title, sub, y, scale, opts) {
     const { tex, aspect } = labelTexture(title, sub, opts);
-    const hh = 0.165 * (scale || 1);
+    const hh = 0.16 * (scale || 1);
     const m = new THREE.Mesh(new THREE.PlaneGeometry(hh * aspect, hh),
       new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false }));
     m.position.set(0, y, 0);
@@ -161,67 +178,28 @@ class Topo3D {
     return m;
   }
 
-  link(a, b) {
-    this.links = this.links || [];
+  linkOneshot(a, b) {
     const from = new THREE.Vector3(...a);
     const to = new THREE.Vector3(...b);
     const dir = new THREE.Vector3().subVectors(to, from);
     const len = dir.length();
-    if (len < 0.001) return;
+    if (len < 0.001) return null;
     const m = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, len, 6, 1, true), glow(C.amber, 0.95));
     m.position.copy(from).addScaledVector(dir, 0.5);
     m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
     this.root.add(m);
-    if (this.lastFrom && this.lastTo) {
-      this.links.push({ from: this.lastFrom, to: this.lastTo, mesh: m });
-    }
+    return m;
   }
 
-  /** 记录"这条线连接哪两个节点"（build 时按顺序调用） */
-  edge(a, b) {
-    this.lastFrom = a; this.lastTo = b;
-    return this.link(this.anchorOf(a), this.anchorOf(b));
+  edge(idA, idB) {
+    const m = this.linkOneshot(this.anchorOf(idA), this.anchorOf(idB));
+    if (m) this.links.push({ from: idA, to: idB, mesh: m });
   }
 
   anchorOf(id) {
     const n = (this.nodes || []).find((o) => o.userData && o.userData.id === id);
     if (!n) return [0, 0.7, 0];
-    const p = n.position;
-    return [p.x, p.y + 0.12, p.z];
-  }
-
-  /** 选中高亮：自身加琥珀自发光，邻接节点提亮，其余压暗 */
-  select(id) {
-    if (!this.nodes) return;
-    this.selected = id;
-    const near = new Set([id]);
-    (this.links || []).forEach((l) => {
-      if (l.from === id) near.add(l.to);
-      if (l.to === id) near.add(l.from);
-    });
-    this.nodes.forEach((o) => {
-      const oid = (o.userData || {}).id;
-      const on = near.has(oid);
-      o.traverse((c) => {
-        if (!c.isMesh || !c.material) return;
-        const mm = c.material;
-        if (mm.emissive) {
-          if (oid === id) { mm.emissive.setHex(0xa67d48); mm.emissiveIntensity = 0.55; }
-          else { mm.emissive.setHex(0x000000); mm.emissiveIntensity = 0; }
-        }
-        if (mm.transparent !== undefined) {
-          mm.transparent = !on || oid !== id;
-          mm.opacity = oid === id ? 1 : (on ? 0.92 : 0.42);
-        }
-      });
-    });
-    (this.links || []).forEach((l) => {
-      const hit = l.from === id || l.to === id;
-      l.mesh.material = l.mesh.material.clone();
-      l.mesh.material.color.setHex(hit ? 0xa67d48 : 0x9a948a);
-      l.mesh.material.emissiveIntensity = hit ? 1.6 : 0.25;
-      l.mesh.scale.set(hit ? 1.6 : 0.8, 1, hit ? 1.6 : 0.8);
-    });
+    return [n.position.x, n.position.y + 0.1, n.position.z];
   }
 
   build() {
@@ -234,80 +212,108 @@ class Topo3D {
     this.nodes = [];
     this.labels = [];
     this.links = [];
-    this.lastFrom = null;
-    this.lastTo = null;
 
     const st = this.state;
     const lvl = st.topoLevel || 'element';
     const Y = 0.62;
-    const addPick = (obj, data) => { obj.userData = data; this.nodes.push(obj); };
+    const addPick = (obj, data) => { obj.userData = Object.assign({}, data); this.nodes.push(obj); };
 
     if (lvl === 'component') {
       const ne = st.elements.find((e) => e.id === st.topoSel) || st.elements[0];
-      const base = this.plate(3.0, 0.06, 3.0, 0xe9e4dc);
-      base.position.set(0, Y - 0.03, 0);
+      const base = this.inst('site') || this.plate(3.0, 0.06, 3.0);
+      base.scale.setScalar(1.15);
+      base.position.set(0, Y - 0.05, 0);
       this.root.add(base);
 
-      const c = this.card(0.78, 0.5, 0.035);
-      c.position.set(0, Y + 0.26, 0);
-      this.root.add(c);
-      addPick(c, { kind: 'ne', id: ne.id, label: ne.name });
-      this.addLabel(c, ne.name, ne.type + ' · v' + ne.version, 0.35, 1.15, { big: 46, small: 26, tick: '#a67d48' });
+      const mod = this.inst('ne') || this.card(0.78, 0.5, 0.035);
+      mod.position.set(0, Y, 0);
+      if (this.models) mod.scale.setScalar(1.55);
+      this.root.add(mod);
+      addPick(mod, { kind: 'ne', id: ne.id, label: ne.name });
+      this.addLabel(mod, ne.name, ne.type + ' · v' + ne.version, this.models ? 0.86 : 0.35, 1.15, { big: 46, small: 26, tick: '#a67d48' });
 
       const comps = ne.comps || [];
       comps.forEach((name, i) => {
         const ang = (i / comps.length) * Math.PI * 2 - Math.PI / 2;
-        const r = 1.2;
-        const box = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.22, 0.22), mat(0xd8d1c7, 0.55));
-        box.position.set(Math.cos(ang) * r, Y + 0.11, Math.sin(ang) * r);
-        box.castShadow = true;
-        this.root.add(box);
-        addPick(box, { kind: 'comp', id: ne.id + ':' + name, label: name });
-        const line = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.004, 0.004), glow(C.amber, 1.4));
-        line.position.y = 0.112;
-        box.add(line);
-        this.addLabel(box, name, 'COMPONENT', 0.21, 0.85, { big: 44, small: 24 });
-        this.link([0, Y + 0.12, 0], [box.position.x, Y + 0.11, box.position.z]);
+        const r = 0.92;
+        const chip = this.inst('comp') || new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.22, 0.22), mat(0xd8d1c7, 0.55));
+        chip.position.set(Math.cos(ang) * r, Y + 0.02, Math.sin(ang) * r); chip.scale.setScalar(1.5);
+        chip.rotation.y = -ang + Math.PI / 2;
+        this.root.add(chip);
+        addPick(chip, { kind: 'comp', id: ne.id + ':' + name, label: name });
+        this.addLabel(chip, name, 'COMPONENT', 0.20, 0.85, { big: 44, small: 24 });
+        this.edge(ne.id, ne.id + ':' + name);
       });
 
-      this.controls.target.set(0, Y + 0.12, 0);
-      this.camera.position.set(2.9, Y + 2.05, 3.0);
+      this.controls.target.set(0, Y + 0.10, 0);
+      this.camera.position.set(2.9, Y + 2.45, 3.15);
       return;
     }
 
-    // 站点
-    const site = this.plate(1.55, 0.08, 1.05, 0xefeae3);
+    const site = this.inst('site') || this.plate(1.55, 0.08, 1.05, 0xeae5e1);
     site.position.set(0, Y, 0.95);
     this.root.add(site);
     addPick(site, { kind: 'site', id: 'site', label: st.site.name });
     this.addLabel(site, st.site.name, 'SITE · ' + st.site.role, 0.30, 1.05, { big: 44, small: 24, tick: '#a67d48' });
 
-    // 组 + 网元
     st.groups.forEach((g, gi) => {
       const gz = -0.25 - gi * 1.45;
-      const gp = this.plate(2.05, 0.07, 0.66, 0xece7e0);
-      gp.position.set(0, Y, gz);
-      this.root.add(gp);
-      addPick(gp, { kind: 'group', id: g.id, label: g.name });
-      this.addLabel(gp, g.name, 'GROUP · ' + g.elements.length + ' NE', 0.27, 0.95, { big: 42, small: 22 });
-      this.link([0, Y + 0.04, 0.95 - 0.52], [0, Y + 0.04, gz + 0.33]);
+      const tray = this.inst('group') || this.plate(2.05, 0.07, 0.66, 0xe6e1d9);
+      tray.position.set(0, Y, gz);
+      this.root.add(tray);
+      addPick(tray, { kind: 'group', id: g.id, label: g.name });
+      this.addLabel(tray, g.name, 'GROUP · ' + g.elements.length + ' NE', 0.30, 0.95, { big: 42, small: 22 });
+      this.edge('site', g.id);
 
       g.elements.forEach((eid, ei) => {
         const e = st.elements.find((x) => x.id === eid);
         if (!e) return;
         const x = (ei - (g.elements.length - 1) / 2) * 0.66;
-        const cd = this.card(0.34, 0.46, 0.03);
-        cd.position.set(x, Y + 0.30, gz);
-        this.root.add(cd);
-        addPick(cd, { kind: 'ne', id: e.id, label: e.name });
-        this.addLabel(cd, e.name, e.type + ' · v' + e.version, 0.33, 1.0,
+        const mod = this.inst('ne') || this.card(0.34, 0.46, 0.03);
+        mod.position.set(x, Y + 0.04, gz); mod.scale.setScalar(1.25);
+        this.root.add(mod);
+        addPick(mod, { kind: 'ne', id: e.id, label: e.name });
+        this.addLabel(mod, e.name, e.type + ' · v' + e.version, this.models ? 0.60 : 0.34, 1.0,
           { big: 42, small: 22, tick: /5\.2\.1/.test(e.version) ? '#a67d48' : null });
-        this.link([x, Y + 0.06, gz], [x, Y + 0.10, gz]);
+        this.edge(g.id, e.id);
       });
     });
 
-    this.controls.target.set(0, Y + 0.06, -0.35);
+    this.controls.target.set(0, Y + 0.10, -0.35);
     this.camera.position.set(3.15, Y + 2.35, 3.25);
+  }
+
+  select(id) {
+    if (!this.nodes) return;
+    this.selected = id;
+    const near = new Set([id]);
+    (this.links || []).forEach((l) => {
+      if (l.from === id) near.add(l.to);
+      if (l.to === id) near.add(l.from);
+    });
+    this.nodes.forEach((o) => {
+      const oid = (o.userData || {}).id;
+      const isSel = oid === id;
+      const on = near.has(oid);
+      o.traverse((c) => {
+        if (!c.isMesh || !c.material) return;
+        const mm = c.material;
+        if (mm.emissive) {
+          if (isSel) { mm.emissive.setHex(0x6b4a1f); mm.emissiveIntensity = 0.5; }
+          else { mm.emissive.setHex(0x000000); mm.emissiveIntensity = 0; }
+        }
+        mm.transparent = true;
+        mm.opacity = isSel ? 1 : (on ? 0.95 : 0.38);
+      });
+    });
+    (this.links || []).forEach((l) => {
+      const hit = l.from === id || l.to === id;
+      l.mesh.material = l.mesh.material.clone();
+      l.mesh.material.color.setHex(hit ? 0xe0a95c : 0x9a948a);
+      l.mesh.material.emissive.setHex(hit ? 0xa67d48 : 0x000000);
+      l.mesh.material.emissiveIntensity = hit ? 1.5 : 0.15;
+      l.mesh.scale.set(hit ? 1.8 : 0.7, 1, hit ? 1.8 : 0.7);
+    });
   }
 
   bindPick() {
@@ -324,9 +330,17 @@ class Topo3D {
       this.ray.setFromCamera(this.ptr, this.camera);
       const hits = this.ray.intersectObjects(this.nodes, true);
       if (!hits.length) return null;
-      let o = hits[0].object;
-      while (o && !o.userData.kind) o = o.parent;
-      return o || null;
+      const resolve = (h) => {
+        let o = h.object;
+        while (o && !(o.userData && o.userData.kind)) o = o.parent;
+        return o;
+      };
+      // 优先拾取"网元 / 组件"这类小对象，避免被托板/站点板挡住
+      for (const h of hits) {
+        const o = resolve(h);
+        if (o && (o.userData.kind === 'ne' || o.userData.kind === 'comp')) return o;
+      }
+      return resolve(hits[0]) || null;
     };
     el.addEventListener('click', () => {
       const o = pick();
@@ -367,8 +381,11 @@ class Topo3D {
 
 window.PlaneTopo3D = {
   mount(host, state, onPick, onDrill) {
-    if (rig) { rig.state = state; rig.onPick = onPick; rig.onDrill = onDrill; return rig; }
+    // host 是重渲染后的新容器时，旧 rig 的画布已脱离 DOM → 重建
+    if (rig && !host.contains(rig.renderer.domElement)) { rig.dispose(); rig = null; }
+    if (rig) { rig.state = state; rig.onPick = onPick; rig.onDrill = onDrill; window.__topoRig = rig; return rig; }
     rig = new Topo3D(host, state, onPick, onDrill);
+    window.__topoRig = rig;
     return rig;
   },
   select(id) { if (rig) rig.select(id); },
