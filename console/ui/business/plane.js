@@ -70,6 +70,8 @@
         ],
       },
     },
+    neDraft: null,     // 当前编辑中的网元草稿（flow / checks）
+    groupDraft: [],    // 成组选中的网元
     topoLevel: 'element',
     topoDim: '2d',   // '2d' | '3d'（记住选择，切层级后仍生效）
     omc: {
@@ -458,7 +460,10 @@
                 <button class="pl-btn pl-btn--sm" data-ne-copy="${esc(e.id)}">复制</button>
               </td></tr>`).join('')}</tbody>
           </table>
-          <div class="pl-row-end"><button class="pl-btn pl-btn--solid pl-btn--sm" id="btnNeAdd">＋ 新建网元</button></div>
+          <div class="pl-row-end">
+            <button class="pl-btn pl-btn--sm" id="btnGroupAdd">＋ 成组</button>
+            <button class="pl-btn pl-btn--solid pl-btn--sm" id="btnNeAdd">＋ 新建网元</button>
+          </div>
         </div>
         <div class="pl-card">
           <div class="pl-card__t">组件模板（内置）</div>
@@ -551,311 +556,6 @@
 
 
 
-  /* ---------------------------------------------------------------- 视图：人机交互状态机 */
-  function viewHuman() {
-    const h = S.human || {
-      states: [
-        { id: 'PENDING', label: '待确认', tone: 'signal' },
-        { id: 'RESOLVED', label: '已确认', tone: 'ink' },
-        { id: 'EXPIRED', label: '已超时', tone: 'danger' },
-        { id: 'SKIPPED', label: '已跳过', tone: 'muted' },
-      ],
-      outcomes: [
-        { option: '确认继续', effect: 'continue', to: 'RESOLVED', set_field: 'humanResult=ok' },
-        { option: '稍后处理', effect: 'hold', to: 'PENDING', set_field: 'humanResult=hold' },
-        { option: '终止升级', effect: 'abort', to: 'EXPIRED', set_field: 'humanResult=abort' },
-      ],
-    };
-    const toneColor = { signal: '#a67d48', ink: '#171713', danger: '#7d2f22', muted: '#8e897b' };
-    const W = 760, H = 260;
-    const p = h.states.find((s) => s.id === 'PENDING') || { id: 'PENDING' };
-    const nodes = [
-      { id: p.id, x: 90, y: 120, label: (h.states.find((s) => s.id === p.id) || {}).label || '待确认', tone: 'signal' },
-    ];
-    // 其余状态排右侧
-    const rest = h.states.filter((s) => s.id !== p.id);
-    const stepY = (H - 70) / Math.max(1, rest.length - 1 || 1);
-    rest.forEach((s, i) => nodes.push({ id: s.id, x: 520, y: 45 + i * (rest.length > 1 ? stepY : 0), label: s.label, tone: s.tone }));
-    const nodeById = (id) => nodes.find((n) => n.id === id);
-    return head('人机交互', 'Human-in-the-loop state machine · editable states & outcomes', 'FILE NO. HUMAN-001') + `
-      <div class="pl-grid pl-grid--side">
-        <div class="pl-card" style="padding:0;overflow:hidden">
-          <div class="pl-card__t" style="padding:12px 16px 0">状态机</div>
-          <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;display:block">
-            <defs>
-              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="#a67d48"></path>
-              </marker>
-            </defs>
-            ${h.outcomes.map((o) => {
-              const from = nodeById(p.id);
-              const to = nodeById(o.to) || from;
-              const mx = (from.x + to.x) / 2;
-              const d = from.id === to.id
-                ? `M ${from.x + 60} ${from.y} C ${from.x + 120} ${from.y - 70}, ${from.x + 120} ${from.y + 70}, ${from.x + 60} ${from.y}`
-                : `M ${from.x + 62} ${from.y} C ${mx} ${from.y}, ${mx} ${to.y}, ${to.x - 62} ${to.y}`;
-              return `<path d="${d}" fill="none" stroke="#a67d48" stroke-width="1.2" marker-end="url(#arrow)" opacity="0.85"/>
-                <text x="${mx}" y="${(from.y + to.y) / 2 - 8}" font-size="9" fill="#8a6a3c" text-anchor="middle" font-family="JetBrains Mono,monospace">${esc(o.option)}</text>`;
-            }).join('')}
-            ${nodes.map((n) => `<g>
-              <rect x="${n.x - 62}" y="${n.y - 22}" width="124" height="44" fill="#f6f1ea" stroke="${toneColor[n.tone] || '#171713'}" stroke-width="1.2"/>
-              <text x="${n.x}" y="${n.y - 4}" font-size="10" fill="#171713" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="600">${esc(n.id)}</text>
-              <text x="${n.x}" y="${n.y + 11}" font-size="9" fill="#8e897b" text-anchor="middle" font-family="JetBrains Mono,monospace">${esc(n.label)}</text>
-            </g>`).join('')}
-          </svg>
-        </div>
-        <div class="pl-card">
-          <div class="pl-card__t">状态（可增删改）</div>
-          <table class="pl-table">
-            <thead><tr><th>ID</th><th>Label</th><th>Tone</th><th></th></tr></thead>
-            <tbody>${h.states.map((s, i) => `<tr>
-              <td><input data-st-id="${i}" value="${esc(s.id)}" style="width:100%;font:inherit;font-size:10px;padding:2px 4px;background:#fff;border:1px solid var(--line-2)"/></td>
-              <td><input data-st-label="${i}" value="${esc(s.label)}" style="width:100%;font:inherit;font-size:10px;padding:2px 4px;background:#fff;border:1px solid var(--line-2)"/></td>
-              <td><select data-st-tone="${i}" style="font:inherit;font-size:10px;padding:2px;background:#fff;border:1px solid var(--line-2)">
-                ${['signal', 'ink', 'danger', 'muted'].map((v) => `<option${s.tone === v ? ' selected' : ''}>${v}</option>`).join('')}
-              </select></td>
-              <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-st-del="${i}">移除</button></td>
-            </tr>`).join('')}</tbody>
-          </table>
-          <div class="pl-row-end"><button class="pl-btn pl-btn--sm" id="btnStateAdd">＋ 状态</button></div>
-        </div>
-      </div>
-
-      <div class="pl-card" style="margin-top:14px">
-        <div class="pl-card__t">操作结果（option → effect → 目标状态）</div>
-        <table class="pl-table">
-          <thead><tr><th>Option</th><th>Effect</th><th>To state</th><th>Set field</th><th></th></tr></thead>
-          <tbody>${h.outcomes.map((o, i) => `<tr>
-            <td><input data-oc-opt="${i}" value="${esc(o.option)}" style="width:100%;font:inherit;font-size:10px;padding:2px 4px;background:#fff;border:1px solid var(--line-2)"/></td>
-            <td><select data-oc-eff="${i}" style="font:inherit;font-size:10px;padding:2px;background:#fff;border:1px solid var(--line-2)">
-              ${['continue', 'hold', 'abort'].map((v) => `<option${o.effect === v ? ' selected' : ''}>${v}</option>`).join('')}
-            </select></td>
-            <td><select data-oc-to="${i}" style="font:inherit;font-size:10px;padding:2px;background:#fff;border:1px solid var(--line-2)">
-              ${h.states.map((s) => `<option${o.to === s.id ? ' selected' : ''}>${esc(s.id)}</option>`).join('')}
-            </select></td>
-            <td><input data-oc-set="${i}" value="${esc(o.set_field || '')}" style="width:100%;font:inherit;font-size:10px;padding:2px 4px;background:#fff;border:1px solid var(--line-2)"/></td>
-            <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-oc-del="${i}">移除</button></td>
-          </tr>`).join('')}</tbody>
-        </table>
-        <div class="pl-row-end">
-          <span class="pl-muted" id="humanMsg" style="margin-right:auto;font-size:9px"></span>
-          <button class="pl-btn pl-btn--sm" id="btnOutcomeAdd">＋ 操作结果</button>
-          <button class="pl-btn pl-btn--solid" id="btnHumanSave">保存状态机</button>
-        </div>
-      </div>`;
-  }
-
-  /* ---------------------------------------------------------------- 视图：OMC */
-  function viewOmc() {
-    const ST = { done: '已完成', running: '进行中', pending: '待执行', failed: '失败', held: '已挂起' };
-    const cfg = S.platform || { omc_elements: [], omc_groups: [], accounts: [] };
-    const managed = cfg.omc_elements && cfg.omc_elements.length ? cfg.omc_elements : S.omc.elements;
-    const accounts = cfg.accounts && cfg.accounts.length ? cfg.accounts : S.omc.accounts;
-    return head('OMC 平台', 'Managed elements · accounts · integrated upgrade task with site', 'FILE NO. OMC-001') + `
-      <div class="pl-grid pl-grid--side">
-        <div class="pl-card">
-          <div class="pl-card__t">纳管网元（点选切换，写回后端）</div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
-            ${S.elements.map((el) => `<button class="pl-btn pl-btn--sm" data-omc-el="${esc(el.id)}"
-              style="${managed.includes(el.id) ? 'background:#171713;color:#eae5e1;border-color:#171713' : ''}">${esc(el.name)}</button>`).join('')}
-          </div>
-          <dl class="pl-kv">
-            <dt>纳管数量</dt><dd>${managed.length} / ${S.elements.length}</dd>
-            <dt>网元组</dt><dd>${(cfg.omc_groups || []).length ? cfg.omc_groups.join(' · ') : '—'}</dd>
-            <dt>站点</dt><dd>${esc(S.site.name)} · ${esc(S.site.role)}</dd>
-          </dl>
-          <div class="pl-card__t" style="margin-top:14px">账号（按网元范围授权）</div>
-          <table class="pl-table">
-            <thead><tr><th>Account</th><th>Role</th><th>Scope</th></tr></thead>
-            <tbody>${accounts.map((a) => `<tr>
-              <td>${esc(a.name)}</td><td>${esc(a.role)}</td>
-              <td class="pl-muted">${(a.scope || []).length} 个网元</td></tr>`).join('')}</tbody>
-          </table>
-          <div style="display:flex;gap:6px;margin-top:10px">
-            <input id="accName" placeholder="账号名" style="flex:1;font:inherit;font-size:10px;padding:5px 7px;background:#fff;border:1px solid var(--line-2)"/>
-            <select id="accRole" style="font:inherit;font-size:10px;padding:4px;background:#fff;border:1px solid var(--line-2)">
-              <option>运维</option><option>只读</option><option>管理员</option>
-            </select>
-            <button class="pl-btn pl-btn--sm" id="btnAccAdd">创建账号</button>
-          </div>
-        </div>
-        <div class="pl-card">
-          <div class="pl-card__t">一体化升级任务（点击进入时间线）</div>
-          ${S.tasks.length ? S.tasks.slice(0, 6).map((k) => {
-            const cur = k.stages[k.stage] || {};
-            const pending = cur.human && cur.human.state === 'pending';
-            return `<div style="border:1px solid var(--line);padding:10px;margin-bottom:10px;cursor:pointer" data-task="${esc(k.id)}">
-              <div style="display:flex;justify-content:space-between;align-items:baseline">
-                <b style="font-size:11.5px">${esc(k.id)}</b>
-                <span class="pl-tag ${pending ? 'pl-tag--on' : ''}">${esc(ST[cur.state] || cur.state || '—')}</span>
-              </div>
-              <div class="pl-muted" style="font-size:9px;margin:6px 0">
-                站点 ${esc(k.site)} · 网元 ${k.element_ids.length} 个 · v${esc(k.from_version)} → v${esc(k.to_version)}
-              </div>
-              <div style="height:2px;background:var(--line-2)"><i style="display:block;height:2px;width:${k.progress}%;background:var(--signal)"></i></div>
-              <div class="pl-muted" style="font-size:8.5px;margin-top:6px">进度 ${k.progress}%${pending ? ' · 卡在人工确认' : ''}</div>
-            </div>`;
-          }).join('') : '<div class="pl-muted" style="font-size:10px;padding:6px 0">还没有任务，点下面创建。</div>'}
-          <div class="pl-row-end">
-            <button class="pl-btn pl-btn--solid pl-btn--sm" id="btnTaskAdd">＋ 创建升级任务</button>
-          </div>
-        </div>
-      </div>`;
-  }
-
-  /* ---------------------------------------------------------------- 视图：LCM */
-  function viewLcm() {
-    const l = S.lcm;
-    const pkgs = (S.packages && S.packages.length) ? S.packages : l.packages;
-    const byId = (id) => (S.elements.find((x) => x.id === id) || {}).name || id;
-    const co = S.platform ? !!S.platform.co_deploy : l.coDeploy;
-    return head('LCM 平台', 'Element versions · software packages · co-deploy with OMC', 'FILE NO. LCM-001') + `
-      <div class="pl-grid pl-grid--side">
-        <div class="pl-card">
-          <div class="pl-card__t">管理的网元与当前版本</div>
-          <table class="pl-table">
-            <thead><tr><th>Element</th><th>Software</th><th>Current</th><th>Prev</th><th></th></tr></thead>
-            <tbody>${S.elements.map((el) => `<tr>
-              <td>${esc(el.name)}</td><td class="pl-muted">${esc(el.sw)}</td>
-              <td class="num">v${esc(el.version)}</td>
-              <td class="pl-muted num">${esc(el.prev || '—')}</td>
-              <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-pkg-for="${esc(el.id)}">软件包</button></td>
-            </tr>`).join('')}</tbody>
-          </table>
-          <div class="pl-row-end" style="align-items:center">
-            <span class="pl-muted" style="font-size:8.5px;margin-right:auto">与 OMC 共部署：${co ? '<span class="pl-dot pl-dot--on"></span>已开启' : '未开启'}</span>
-            <button class="pl-btn pl-btn--sm" id="btnCoDeploy">${co ? '关闭共部署' : '开启共部署'}</button>
-          </div>
-        </div>
-        <div class="pl-card">
-          <div class="pl-card__t">软件包仓库（点「升级」直接生成 OMC 任务）</div>
-          <table class="pl-table">
-            <thead><tr><th>Package</th><th>类型</th><th>所属网元</th><th>厂商</th><th>版本</th><th></th></tr></thead>
-            <tbody>${pkgs.map((p) => `<tr>
-              <td>${esc(p.name)}</td><td class="pl-muted">${esc(p.kind)}</td>
-              <td class="pl-muted">${esc(byId(p.owner))}</td>
-              <td class="pl-muted">${esc(p.vendor)}</td><td class="num">v${esc(p.version)}</td>
-              <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-pkg-up="${esc(p.id)}" data-pkg-ver="${esc(p.version)}">升级</button></td>
-            </tr>`).join('')}</tbody>
-          </table>
-          <div class="pl-row-end"><button class="pl-btn pl-btn--solid pl-btn--sm" id="btnPkgAdd">＋ 登记软件包</button></div>
-        </div>
-      </div>`;
-  }
-
-  /* ---------------------------------------------------------------- 视图：FS */
-  function viewFs() {
-    const f = Object.assign({}, S.fs, (S.platform && S.platform.fs) ? {
-      cpus: S.platform.fs.cpus,
-      sitePrimary: S.platform.fs.site_primary,
-      siteSecondary: S.platform.fs.site_secondary,
-      platformVersion: S.platform.fs.version,
-      verifySteps: S.platform.fs.verify_steps,
-      upgrade: S.platform.fs.upgrade_steps,
-      verifyRuns: S.platform.fs.verify_runs || [],
-    } : {});
-    const runs = f.verifyRuns || [];
-    const runOf = (step) => runs.find((r) => r.step === step);
-    const tone = (st) => st === 'pass' ? 'pl-tag--on' : st === 'fail' ? 'pl-tag--bad' : '';
-    const tfmt = (ms) => ms ? new Date(Number(ms)).toTimeString().slice(0, 8) : '';
-    const fails = runs.filter((r) => r.status === 'fail').length;
-    return head('FS 虚层平台', 'CPU · primary/secondary site · platform version · package verification', 'FILE NO. FS-001') + `
-      <div class="pl-grid pl-grid--3">
-        <div class="pl-card">
-          <div class="pl-card__t">平台配置</div>
-          <dl class="pl-kv">
-            <dt>CPU</dt><dd>${f.cpus} vCPU</dd>
-            <dt>主站点</dt><dd>${esc(f.sitePrimary)}</dd>
-            <dt>备站点</dt><dd>${esc(f.siteSecondary)}</dd>
-            <dt>平台版本</dt><dd>v${esc(f.platformVersion)}</dd>
-          </dl>
-        </div>
-        <div class="pl-card">
-          <div style="display:flex;justify-content:space-between;align-items:baseline">
-            <div class="pl-card__t" style="margin:0">软件包校验流程</div>
-            <button class="pl-btn pl-btn--sm" id="btnFsVerify">执行校验</button>
-          </div>
-          <div style="margin-top:10px">
-            ${(f.verifySteps || []).map((st, i) => {
-              const r = runOf(st);
-              return `<div style="display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px dotted var(--line)">
-                <span style="width:14px;text-align:center;color:${r && r.status === 'pass' ? '#a67d48' : r && r.status === 'fail' ? '#7d2f22' : 'var(--ink-3)'}">
-                  ${r && r.status === 'pass' ? '✓' : r && r.status === 'fail' ? '✕' : '○'}
-                </span>
-                <div style="flex:1">
-                  <div style="font-size:10.5px">${i + 1}. ${esc(st)}</div>
-                  ${r ? `<div class="pl-muted" style="font-size:8.5px;margin-top:2px">${esc(r.note)} · ${tfmt(r.at)}</div>` : ''}
-                </div>
-                ${r ? `<span class="pl-tag ${tone(r.status)}">${esc(r.status.toUpperCase())}</span>` : ''}
-              </div>`;
-            }).join('')}
-          </div>
-          ${runs.length ? `<div class="pl-muted" style="font-size:8.5px;margin-top:8px">
-            最近一次：${runs.length} 步 · 失败 ${fails} 项 ${fails ? '· 已中断' : '· 全部通过'}
-          </div>` : '<div class="pl-muted" style="font-size:8.5px;margin-top:8px">尚未执行校验</div>'}
-        </div>
-        <div class="pl-card">
-          <div class="pl-card__t">平台升级流程</div>
-          <ol style="margin:0;padding-left:16px;font-size:10px;line-height:1.95">
-            ${(f.upgrade || []).map((st) => `<li>${esc(st)}</li>`).join('')}
-          </ol>
-          <div class="pl-row-end"><button class="pl-btn pl-btn--sm" id="btnFsUpgrade">演练一次</button></div>
-        </div>
-      </div>`;
-  }
-
-  /* ---------------------------------------------------------------- 视图：网元详情（升级流程 + 参数校验 + 人机交互） */
-  function viewNeDetail() {
-    const e = S.elements.find((x) => x.id === S.topoSel) || S.elements[0];
-    return head('网元 · ' + e.name, 'Upgrade flow · parameter validation · human-in-the-loop', 'FILE NO. NE-002') + `
-      <div class="pl-grid pl-grid--side">
-        <div class="pl-card">
-          <div class="pl-card__t">升级流程步骤（可挂人机交互）</div>
-          <table class="pl-table">
-            <thead><tr><th>#</th><th>Step</th><th>Human</th><th></th></tr></thead>
-            <tbody>${S.neFlow.map((s, i) => `<tr>
-              <td class="num">${i + 1}</td><td>${esc(s.s)}</td>
-              <td>${s.human ? '<span class="pl-tag pl-tag--on">含确认</span>' : '<span class="pl-muted">—</span>'}</td>
-              <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-flow-toggle="${i}">${s.human ? '移除' : '插入'}人机交互</button></td>
-            </tr>`).join('')}</tbody>
-          </table>
-        </div>
-        <div class="pl-card">
-          <div class="pl-card__t">参数校验规则</div>
-          <table class="pl-table">
-            <thead><tr><th>Field</th><th>Rule</th><th>Fail</th></tr></thead>
-            <tbody>${S.neChecks.map((c) => `<tr><td>${esc(c.f)}</td><td class="pl-muted">${esc(c.rule)}</td>
-              <td class="pl-muted">${esc(c.msg)}</td></tr>`).join('')}</tbody>
-          </table>
-          <div class="pl-row-end"><button class="pl-btn pl-btn--sm" id="btnCheckAdd">＋ 增加校验</button></div>
-          <div class="pl-card__t" style="margin-top:14px">旧版本</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <span class="pl-tag">v5.1.9</span><span class="pl-tag">v5.1.4</span><span class="pl-tag">v5.0.7</span>
-          </div>
-        </div>
-      </div>
-      <div class="pl-card" style="margin-top:14px">
-        <div class="pl-card__t">人机交互状态机（自定义状态与操作结果）</div>
-        <table class="pl-table">
-          <thead><tr><th>State</th><th>Label</th><th>Tone</th></tr></thead>
-          <tbody>${S.humanStates.map((s) => `<tr><td>${esc(s.id)}</td><td>${esc(s.label)}</td>
-            <td><span class="pl-tag ${s.tone === 'signal' ? 'pl-tag--on' : s.tone === 'danger' ? 'pl-tag--bad' : ''}">${esc(s.tone)}</span></td></tr>`).join('')}</tbody>
-        </table>
-        <div class="pl-card__t" style="margin-top:14px">选项 → 操作结果</div>
-        <table class="pl-table">
-          <thead><tr><th>Option</th><th>Effect</th><th>Set field</th></tr></thead>
-          <tbody>${S.humanOutcomes.map((o) => `<tr><td>${esc(o.opt)}</td><td>${esc(o.effect)}</td>
-            <td class="pl-muted">${esc(o.setField)}</td></tr>`).join('')}</tbody>
-        </table>
-        <div class="pl-row-end">
-          <button class="pl-btn pl-btn--sm" id="btnHumanPreview2">预览确认界面</button>
-        </div>
-      </div>`;
-  }
-
-
-
-  /* ---------------------------------------------------------------- 视图：升级任务时间线 */
   function viewTask() {
     const t2 = S.tasks.find((x) => x.id === S.taskSel) || S.tasks[0];
     if (!t2) {
@@ -930,6 +630,16 @@
   }
 
   /* ---------------------------------------------------------------- 视图：人机交互状态机 */
+
+  /* ---------------------------------------------------------------- 视图：OMC */
+
+  /* ---------------------------------------------------------------- 视图：LCM */
+
+  /* ---------------------------------------------------------------- 视图：FS */
+
+  /* ---------------------------------------------------------------- 视图：网元详情（升级流程 + 参数校验 + 人机交互） */
+
+  /* ---------------------------------------------------------------- 视图：人机交互状态机 */
   function viewHuman() {
     const h = S.human || {
       states: [
@@ -1184,52 +894,62 @@
 
   /* ---------------------------------------------------------------- 视图：网元详情（升级流程 + 参数校验 + 人机交互） */
   function viewNeDetail() {
-    const e = S.elements.find((x) => x.id === S.topoSel) || S.elements[0];
-    return head('网元 · ' + e.name, 'Upgrade flow · parameter validation · human-in-the-loop', 'FILE NO. NE-002') + `
+    const el = S.elements.find((x) => x.id === S.topoSel) || S.elements[0];
+    if (!S.neDraft || S.neDraft.__id !== el.id) {
+      S.neDraft = {
+        __id: el.id,
+        flow: (el.flow && el.flow.length ? el.flow : [
+          { step: '上传软件包', human: false },
+          { step: '预检查（参数校验）', human: false },
+          { step: '激活', human: true },
+          { step: '主备倒换', human: true },
+          { step: '完成与回执', human: false },
+        ]).map((x) => ({ step: x.step || '', human: !!x.human })),
+        checks: (el.checks || []).map((c) => ({ field: c.field || '', rule: c.rule || '', msg: c.msg || '' })),
+      };
+    }
+    const d = S.neDraft;
+    return head('网元 · ' + el.name, 'Upgrade flow · parameter validation · human-in-the-loop', 'FILE NO. NE-002') + `
       <div class="pl-grid pl-grid--side">
         <div class="pl-card">
-          <div class="pl-card__t">升级流程步骤（可挂人机交互）</div>
+          <div class="pl-card__t">升级流程步骤（可增删 · 点开关挂人机交互 · 保存到后端）</div>
           <table class="pl-table">
             <thead><tr><th>#</th><th>Step</th><th>Human</th><th></th></tr></thead>
-            <tbody>${S.neFlow.map((s, i) => `<tr>
-              <td class="num">${i + 1}</td><td>${esc(s.s)}</td>
-              <td>${s.human ? '<span class="pl-tag pl-tag--on">含确认</span>' : '<span class="pl-muted">—</span>'}</td>
-              <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-flow-toggle="${i}">${s.human ? '移除' : '插入'}人机交互</button></td>
+            <tbody>${d.flow.map((st, i) => `<tr>
+              <td class="num">${i + 1}</td>
+              <td><input data-flow-step="${i}" value="${esc(st.step)}" style="width:100%;font:inherit;font-size:10.5px;padding:3px 5px;background:#fff;border:1px solid var(--line-2)"/></td>
+              <td><button class="pl-btn pl-btn--sm" data-flow-human="${i}" style="${st.human ? 'background:#171713;color:#eae5e1;border-color:#171713' : ''}">${st.human ? '含确认' : '—'}</button></td>
+              <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-flow-del="${i}">删除</button></td>
             </tr>`).join('')}</tbody>
           </table>
+          <div class="pl-row-end"><button class="pl-btn pl-btn--sm" id="btnFlowAdd">＋ 步骤</button></div>
         </div>
         <div class="pl-card">
-          <div class="pl-card__t">参数校验规则</div>
+          <div class="pl-card__t">参数校验规则（可编辑）</div>
           <table class="pl-table">
-            <thead><tr><th>Field</th><th>Rule</th><th>Fail</th></tr></thead>
-            <tbody>${S.neChecks.map((c) => `<tr><td>${esc(c.f)}</td><td class="pl-muted">${esc(c.rule)}</td>
-              <td class="pl-muted">${esc(c.msg)}</td></tr>`).join('')}</tbody>
+            <thead><tr><th>Field</th><th>Rule</th><th>Fail</th><th></th></tr></thead>
+            <tbody>${d.checks.map((c, i) => `<tr>
+              <td><input data-chk-field="${i}" value="${esc(c.field)}" style="width:100%;font:inherit;font-size:10px;padding:3px;background:#fff;border:1px solid var(--line-2)"/></td>
+              <td><input data-chk-rule="${i}" value="${esc(c.rule)}" style="width:100%;font:inherit;font-size:10px;padding:3px;background:#fff;border:1px solid var(--line-2)"/></td>
+              <td><input data-chk-msg="${i}" value="${esc(c.msg)}" style="width:100%;font:inherit;font-size:10px;padding:3px;background:#fff;border:1px solid var(--line-2)"/></td>
+              <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-chk-del="${i}">删除</button></td>
+            </tr>`).join('')}</tbody>
           </table>
-          <div class="pl-row-end"><button class="pl-btn pl-btn--sm" id="btnCheckAdd">＋ 增加校验</button></div>
-          <div class="pl-card__t" style="margin-top:14px">旧版本</div>
+          <div class="pl-row-end"><button class="pl-btn pl-btn--sm" id="btnChkAdd">＋ 校验</button></div>
+          <div class="pl-card__t" style="margin-top:14px">版本</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <span class="pl-tag">v5.1.9</span><span class="pl-tag">v5.1.4</span><span class="pl-tag">v5.0.7</span>
+            <span class="pl-tag pl-tag--on">v${esc(el.version)}（当前）</span>
+            ${(el.prev && el.prev !== '—') ? `<span class="pl-tag">v${esc(el.prev)}</span>` : ''}
           </div>
         </div>
       </div>
-      <div class="pl-card" style="margin-top:14px">
-        <div class="pl-card__t">人机交互状态机（自定义状态与操作结果）</div>
-        <table class="pl-table">
-          <thead><tr><th>State</th><th>Label</th><th>Tone</th></tr></thead>
-          <tbody>${S.humanStates.map((s) => `<tr><td>${esc(s.id)}</td><td>${esc(s.label)}</td>
-            <td><span class="pl-tag ${s.tone === 'signal' ? 'pl-tag--on' : s.tone === 'danger' ? 'pl-tag--bad' : ''}">${esc(s.tone)}</span></td></tr>`).join('')}</tbody>
-        </table>
-        <div class="pl-card__t" style="margin-top:14px">选项 → 操作结果</div>
-        <table class="pl-table">
-          <thead><tr><th>Option</th><th>Effect</th><th>Set field</th></tr></thead>
-          <tbody>${S.humanOutcomes.map((o) => `<tr><td>${esc(o.opt)}</td><td>${esc(o.effect)}</td>
-            <td class="pl-muted">${esc(o.setField)}</td></tr>`).join('')}</tbody>
-        </table>
-        <div class="pl-row-end">
-          <button class="pl-btn pl-btn--sm" id="btnHumanPreview2">预览确认界面</button>
-        </div>
+      <div class="pl-row-end" style="margin-top:14px">
+        <span class="pl-muted" id="neMsg" style="margin-right:auto;font-size:9px"></span>
+        <button class="pl-btn" id="btnNeBack">返回列表</button>
+        <button class="pl-btn pl-btn--solid" id="btnNeSave">保存到网元</button>
       </div>`;
   }
+
 
 
 
@@ -1718,6 +1438,63 @@
     const auditRefresh = $('#btnAuditRefresh');
     if (auditRefresh) auditRefresh.addEventListener('click', async () => { await loadAudit(); render(); });
 
+    // 网元详情：流程 / 校验 编辑
+    $$('[data-flow-step]').forEach((el) => el.addEventListener('input', () => {
+      S.neDraft.flow[+el.dataset.flowStep].step = el.value;
+    }));
+    $$('[data-flow-human]').forEach((b) => b.addEventListener('click', () => {
+      const i = +b.dataset.flowHuman;
+      S.neDraft.flow[i].human = !S.neDraft.flow[i].human;
+      render();
+    }));
+    $$('[data-flow-del]').forEach((b) => b.addEventListener('click', () => {
+      S.neDraft.flow.splice(+b.dataset.flowDel, 1); render();
+    }));
+    const flowAdd = $('#btnFlowAdd');
+    if (flowAdd) flowAdd.addEventListener('click', () => {
+      S.neDraft.flow.push({ step: '新步骤', human: false }); render();
+    });
+    $$('[data-chk-field]').forEach((el) => el.addEventListener('input', () => { S.neDraft.checks[+el.dataset.chkField].field = el.value; }));
+    $$('[data-chk-rule]').forEach((el) => el.addEventListener('input', () => { S.neDraft.checks[+el.dataset.chkRule].rule = el.value; }));
+    $$('[data-chk-msg]').forEach((el) => el.addEventListener('input', () => { S.neDraft.checks[+el.dataset.chkMsg].msg = el.value; }));
+    $$('[data-chk-del]').forEach((b) => b.addEventListener('click', () => {
+      S.neDraft.checks.splice(+b.dataset.chkDel, 1); render();
+    }));
+    const chkAdd = $('#btnChkAdd');
+    if (chkAdd) chkAdd.addEventListener('click', () => {
+      S.neDraft.checks.push({ field: 'field', rule: '必填', msg: '缺失参数' }); render();
+    });
+    const neBack = $('#btnNeBack');
+    if (neBack) neBack.addEventListener('click', () => { S.view = 'elements'; render(); });
+    const neSave = $('#btnNeSave');
+    if (neSave) neSave.addEventListener('click', async () => {
+      const msg = $('#neMsg');
+      try {
+        await api('/api/business/elements/' + S.neDraft.__id, {
+          method: 'PATCH', headers: headers(),
+          body: JSON.stringify({ flow: S.neDraft.flow, checks: S.neDraft.checks }),
+        });
+        await loadElements();
+        S.neDraft.__id = null;   // 让草稿从新数据重建
+        if (msg) { msg.textContent = '已保存到网元 ✓'; setTimeout(() => { if (msg) msg.textContent = ''; }, 2000); }
+      } catch (e) { if (msg) msg.textContent = '保存失败：' + e.message; }
+      render();
+    });
+
+    // 成组：把当前组内网元 + 选中项写成一个新组
+    const groupAdd = $('#btnGroupAdd');
+    if (groupAdd) groupAdd.addEventListener('click', async () => {
+      const members = S.elements.map((e) => e.id).slice(0, 2);
+      try {
+        await api('/api/business/groups', {
+          method: 'POST', headers: headers(),
+          body: JSON.stringify({ name: '新网元组 ' + (S.groups.length + 1), site: 'site-hz', element_ids: members }),
+        });
+        await loadElements();
+      } catch (e) { console.warn(e); }
+      render();
+    });
+
     // 人机交互状态机编辑
     const humanDraft = () => S.human || { states: [], outcomes: [] };
     $$('[data-st-id]').forEach((el) => el.addEventListener('change', () => {
@@ -1921,8 +1698,8 @@
       S.neFlow[i].human = !S.neFlow[i].human;
       render();
     }));
-    const chkAdd = $('#btnCheckAdd');
-    if (chkAdd) chkAdd.addEventListener('click', () => {
+    const chkAddBtn = $('#btnCheckAdd');
+    if (chkAddBtn) chkAddBtn.addEventListener('click', () => {
       S.neChecks.push({ f: 'newField', rule: '必填', msg: '缺失参数' });
       render();
     });
