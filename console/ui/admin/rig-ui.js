@@ -96,7 +96,7 @@
   `;
 
   const style = document.createElement('style');
-  style.textContent = CSS;
+  style.textContent = '';   // 样式改由 rig-ui.css 提供（米白档案风）
   document.head.appendChild(style);
 
   /* ------------------------------------------------------------ DOM */
@@ -108,7 +108,10 @@
   modal.className = 'rig-modal';
   modal.innerHTML = `
     <div class="rig-modal__hd">
-      <div class="rig-modal__ttl">—</div>
+      <div>
+        <div class="rig-modal__ttl">—</div>
+        <div class="rig-modal__sub">—</div>
+      </div>
       <div class="rig-modal__x">✕</div>
     </div>
     <div class="rig-modal__bd"><div class="rig-modal__meta"></div></div>
@@ -117,7 +120,8 @@
       <button class="rig-btn" data-act="stop">停用</button>
       <button class="rig-btn" data-act="update">更新版本</button>
       <button class="rig-btn" data-act="share">共享</button>
-    </div>`;
+    </div>
+    <div class="rig-modal__ft"><span><i class="dot"></i><em>Confidentiality</em></span><span>Rhine Lab · Fleet Control</span></div>`;
   document.body.appendChild(modal);
 
   const toast = document.createElement('div');
@@ -165,11 +169,15 @@
       ['命中', String(mp.hits || 0)],
       ['所属虚机', (node.name || '') + ' · ' + (node.version || '')],
     ];
-    return `<div class="rig-tip__hd"><span class="rig-tip__k">${m.kind}</span>
-        <span class="rig-tip__t">${mp.name || mp.path || m.id}</span></div>
-      <div class="rig-tip__row"><span>机型</span><b>${kindLabel(m.kind)}</b></div>
-      ${rows.map(([k, v]) => `<div class="rig-tip__row"><span>${k}</span><b>${v}</b></div>`).join('')}
-      <div class="rig-tip__bar"><i></i></div>`;
+    const file = 'FILE NO. ' + (mp.id || m.id).toUpperCase().replace('MAP-', 'X-');
+    return `<div class="rig-tip__hd">
+        <span class="rig-tip__k">${m.kind}</span>
+        <span class="rig-tip__t">${mp.name || mp.path || m.id}</span>
+      </div>
+      <div class="rig-tip__row"><span>Model</span><b>${kindLabel(m.kind)}</b></div>
+      ${rows.map(([k, v]) => `<div class="rig-tip__row${/版本/.test(k) && stale ? ' is-stale' : ''}"><span>${k}</span><b>${v}</b></div>`).join('')}
+      <div class="rig-tip__bar"><i></i></div>
+      <div class="rig-tip__foot"><span>${file}</span><span>Powered by Rhine Lab</span></div>`;
   }
 
   function tipForBoard(b) {
@@ -199,11 +207,15 @@
       const mp = ref.mapping || {};
       const node = ref.board.node || {};
       m.textContent = mp.name || mp.path || ref.id;
+      modal.querySelector('.rig-modal__sub').textContent =
+        'FILE NO. ' + String(mp.id || ref.id).toUpperCase().replace('MAP-', 'X-') + '  ·  ' + ref.kind;
       meta.innerHTML = `
-        <div>机型 <b>${ref.kind}</b> · ${kindLabel(ref.kind)}</div>
-        <div>${(mp.method || 'GET').toUpperCase()} <b>${mp.path || ''}</b></div>
-        <div>版本 <b>v${mp.version || node.version || '—'}</b> · 状态 <b>${mp.enabled === false ? '停用' : '启用'}</b></div>
-        <div>虚机 <b>${node.name || ''}</b> · 命中 <b>${mp.hits || 0}</b></div>`;
+        <div class="row"><span>Model</span><b>${kindLabel(ref.kind)}</b></div>
+        <div class="row"><span>Endpoint</span><b>${(mp.method || 'GET').toUpperCase()} ${mp.path || ''}</b></div>
+        <div class="row"><span>Version</span><b>v${mp.version || node.version || '—'}</b></div>
+        <div class="row"><span>State</span><b>${mp.enabled === false ? 'STOPPED' : 'RUNNING'}</b></div>
+        <div class="row"><span>Host VM</span><b>${node.name || ''} · v${node.version || '—'}</b></div>
+        <div class="row"><span>Hits</span><b>${mp.hits || 0}</b></div>`;
       btns.forEach((b) => { b.style.display = ''; });
       btns[0].disabled = mp.enabled !== false;
       btns[1].disabled = mp.enabled === false;
@@ -211,10 +223,14 @@
     } else {
       const n = ref.node || {};
       m.textContent = n.name || n.id;
+      modal.querySelector('.rig-modal__sub').textContent =
+        'NODE ' + String(n.id || '').toUpperCase() + '  ·  VM';
       meta.innerHTML = `
-        <div>虚机 <b>${n.id}</b> · <b>${n.addr || '—'}</b></div>
-        <div>版本 <b>v${n.version || '—'}</b> · 状态 <b>${n.status}</b></div>
-        <div>该板上的服务：<b>${(window.RhineScene.instance.modules || []).filter((x) => x.board === ref).length}</b> 个</div>`;
+        <div class="row"><span>Node</span><b>${n.id}</b></div>
+        <div class="row"><span>Address</span><b>${n.addr || '—'}</b></div>
+        <div class="row"><span>Version</span><b>v${n.version || '—'}</b></div>
+        <div class="row"><span>State</span><b>${String(n.status || '').toUpperCase()}</b></div>
+        <div class="row"><span>Services</span><b>${(window.RhineScene.instance.modules || []).filter((x) => x.board === ref).length}</b></div>`;
       btns.forEach((b) => { b.style.display = 'none'; });
       btns[2].style.display = '';   // 虚机只允许"更新版本"
     }

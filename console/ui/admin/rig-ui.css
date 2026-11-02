@@ -1,0 +1,282 @@
+/* ============================================================================
+   RHINE LAB · 3D 交互层样式（档案纸风格）
+   ----------------------------------------------------------------------------
+   取自参考仓的视觉语汇：
+     · 米白卡纸底 + 黑墨字（不是深色 HUD）
+     · 1px 发丝线、四角小刻度、无圆角、无发光
+     · 大写宽字距小标签 + FILE NUMBER 编号 + CONFIDENTIALITY 水印
+     · 琥珀只作为"信号色"用在一条细线和状态点上
+   ==========================================================================*/
+
+.rig-tip,
+.rig-modal {
+  font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color: #17140f;
+  background: #f3eee7;
+  border: 1px solid rgba(23, 20, 15, 0.22);
+  box-shadow: 0 14px 34px rgba(64, 52, 40, 0.14);
+  /* 极轻的纸纹，避免纯色发死 */
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(238, 232, 223, 0.5));
+}
+
+/* 四角刻度（档案卡的裁切标记） */
+.rig-tip::before,
+.rig-modal::before,
+.rig-tip::after,
+.rig-modal::after {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-color: rgba(23, 20, 15, 0.55);
+  border-style: solid;
+  border-width: 0;
+}
+.rig-tip::before, .rig-modal::before { top: 5px; left: 5px; border-top-width: 1px; border-left-width: 1px; }
+.rig-tip::after, .rig-modal::after { bottom: 5px; right: 5px; border-bottom-width: 1px; border-right-width: 1px; }
+
+/* ---------------------------------------------------------------- 悬停详情卡 */
+.rig-tip {
+  position: fixed;
+  z-index: 60;
+  min-width: 286px;
+  max-width: 360px;
+  padding: 13px 15px 12px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(3px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.rig-tip.on { opacity: 1; transform: translateY(0); }
+
+/* 顶部：小标签 + FILE NUMBER */
+.rig-tip__hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 7px;
+  margin-bottom: 9px;
+  border-bottom: 1px solid rgba(23, 20, 15, 0.16);
+}
+.rig-tip__k {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border: 1px solid rgba(23, 20, 15, 0.45);
+  color: #17140f;
+}
+.rig-tip__t {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+  color: #17140f;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rig-tip__file {
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  color: rgba(23, 20, 15, 0.5);
+  white-space: nowrap;
+}
+
+/* 行：左标签（大写小字）+ 右值（等宽） */
+.rig-tip__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: 10.5px;
+  padding: 2.5px 0;
+  color: rgba(23, 20, 15, 0.62);
+}
+.rig-tip__row > span {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 9px;
+}
+.rig-tip__row > b {
+  color: #17140f;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-align: right;
+  word-break: break-all;
+}
+/* 落后版本：琥珀点 + 琥珀字（信号色只在这里用） */
+.rig-tip__row.is-stale > b { color: #a9761f; }
+.rig-tip__row.is-stale > b::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 6px;
+  vertical-align: 1px;
+  background: #d79a44;
+}
+
+/* 底部：一条琥珀细线 + 品牌尾注 */
+.rig-tip__bar {
+  margin-top: 9px;
+  height: 2px;
+  background: rgba(23, 20, 15, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+.rig-tip__bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 38%;
+  background: #d79a44;
+  animation: rigSweep 1.9s linear infinite;
+}
+@keyframes rigSweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(280%); }
+}
+.rig-tip__foot {
+  margin-top: 7px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  color: rgba(23, 20, 15, 0.42);
+  text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------- 操作弹窗 */
+.rig-modal {
+  position: fixed;
+  z-index: 70;
+  width: 392px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.14s ease, transform 0.14s ease;
+  pointer-events: none;
+}
+.rig-modal.on { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+.rig-modal__hd {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 15px 9px;
+  border-bottom: 1px solid rgba(23, 20, 15, 0.16);
+}
+.rig-modal__ttl {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #17140f;
+}
+.rig-modal__sub {
+  margin-top: 3px;
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  color: rgba(23, 20, 15, 0.45);
+  text-transform: uppercase;
+}
+.rig-modal__x {
+  cursor: pointer;
+  color: rgba(23, 20, 15, 0.42);
+  font-size: 14px;
+  line-height: 1;
+  padding: 2px 4px;
+  border: 1px solid transparent;
+}
+.rig-modal__x:hover { color: #17140f; border-color: rgba(23, 20, 15, 0.3); }
+
+.rig-modal__bd { padding: 11px 15px 4px; }
+.rig-modal__meta {
+  font-size: 10.5px;
+  line-height: 1.9;
+  color: rgba(23, 20, 15, 0.66);
+}
+.rig-modal__meta b { color: #17140f; font-weight: 500; }
+.rig-modal__meta .row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px dotted rgba(23, 20, 15, 0.14);
+  padding: 3px 0;
+}
+.rig-modal__meta .row:last-child { border-bottom: 0; }
+.rig-modal__meta .row > span {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(23, 20, 15, 0.5);
+}
+
+/* 按钮：发丝描边、大写、hover 反白 */
+.rig-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding: 12px 15px 6px;
+}
+.rig-btn {
+  appearance: none;
+  cursor: pointer;
+  padding: 10px 8px;
+  font: inherit;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #17140f;
+  background: transparent;
+  border: 1px solid rgba(23, 20, 15, 0.30);
+  margin: -1px 0 0 -1px;
+  transition: background 0.1s ease, color 0.1s ease, border-color 0.1s ease;
+}
+.rig-btn:hover {
+  background: #17140f;
+  color: #f3eee7;
+  border-color: #17140f;
+}
+.rig-btn[data-act="start"] { border-left-width: 1px; }
+.rig-btn[data-act="stop"]:hover { background: #7d2f22; border-color: #7d2f22; color: #f3eee7; }
+.rig-btn:disabled { opacity: 0.34; pointer-events: none; }
+.rig-btn.is-busy { opacity: 0.5; pointer-events: none; }
+
+/* 底部：CONFIDENTIALITY + 品牌 */
+.rig-modal__ft {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 15px 12px;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(23, 20, 15, 0.42);
+}
+.rig-modal__ft em { font-style: normal; color: rgba(23, 20, 15, 0.62); }
+.rig-modal__ft .dot {
+  width: 5px; height: 5px; background: #d79a44; display: inline-block; margin-right: 6px;
+}
+
+/* ---------------------------------------------------------------- 轻提示 */
+.rig-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 46px;
+  transform: translateX(-50%);
+  z-index: 80;
+  background: #f3eee7;
+  color: #17140f;
+  border: 1px solid rgba(23, 20, 15, 0.28);
+  border-left: 2px solid #d79a44;
+  font: 11px/1.5 "JetBrains Mono", ui-monospace, monospace;
+  letter-spacing: 0.04em;
+  padding: 10px 16px;
+  box-shadow: 0 12px 28px rgba(64, 52, 40, 0.16);
+  opacity: 0;
+  transition: opacity 0.16s ease;
+  pointer-events: none;
+}
+.rig-toast.on { opacity: 1; }
