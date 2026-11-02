@@ -4,6 +4,7 @@
 
 | 脚本 | 用途 |
 |---|---|
+| `verify-all.mjs` | **全量回归**：按目标清单逐条断言业务面能力（37 项），末行输出 `37/37 通过` |
 | `make-dist.mjs` | 打包便携发行版到 `dist/rhine-mock-console-<ver>/`（含 exe、ui、data、docs、启动/停止脚本） |
 | `make-scenes.mjs` | 由当前导出的场景派生三套教学场景到 `console/ui/business/scenes/` |
 | `seed-audit.mjs` | 造审计数据（多规则 + 不同延迟/状态码），用于截图与演示 |

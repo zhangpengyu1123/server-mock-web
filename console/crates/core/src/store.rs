@@ -260,21 +260,21 @@ impl Store {
                     ElementCheck { field: "version".into(), rule: "目标版本 > 当前版本".into(), msg: "不支持降级".into() },
                     ElementCheck { field: "arch".into(), rule: "必须与网元架构一致".into(), msg: "架构不匹配".into() },
                 ],
-                flow: vec![], created_at: now_ms(),
+                flow: default_flow(), created_at: now_ms(),
             });
             inner.elements.push(NetworkElement {
                 id: "ne-0002".into(), name: "gNB-HZ-0905".into(), arch: "SA".into(), kind: "gNB".into(),
                 version: "5.2.0".into(), software: "NR-RAN".into(),
                 prev_versions: vec!["5.1.9".into()], group: "g-hz-01".into(),
                 components: comps(&["主控板", "业务板", "电源"]),
-                checks: vec![], flow: vec![], created_at: now_ms(),
+                checks: vec![], flow: default_flow(), created_at: now_ms(),
             });
             inner.elements.push(NetworkElement {
                 id: "ne-0003".into(), name: "MME-HZ-01".into(), arch: "EPC".into(), kind: "MME".into(),
                 version: "4.8.4".into(), software: "EPC-CORE".into(),
                 prev_versions: vec!["4.8.3".into()], group: "g-hz-02".into(),
                 components: comps(&["主控板", "信令板", "电源"]),
-                checks: vec![], flow: vec![], created_at: now_ms(),
+                checks: vec![], flow: default_flow(), created_at: now_ms(),
             });
         }
         if inner.users.is_empty() {
@@ -1312,6 +1312,17 @@ impl Store {
             version: self.version.clone(),
         }
     }
+}
+
+/// 默认升级流程：5 步，其中「激活」「主备倒换」需要人工确认
+fn default_flow() -> Vec<ElementStep> {
+    vec![
+        ElementStep { step: "上传软件包".into(), human: false },
+        ElementStep { step: "预检查（参数校验）".into(), human: false },
+        ElementStep { step: "激活".into(), human: true },
+        ElementStep { step: "主备倒换".into(), human: true },
+        ElementStep { step: "完成与回执".into(), human: false },
+    ]
 }
 
 fn seed(inner: &mut Inner) {
