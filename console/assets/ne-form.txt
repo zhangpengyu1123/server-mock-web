@@ -1,0 +1,36 @@
+              <div class="pl-row-end" style="margin-top:8px">
+                <button class="pl-btn pl-btn--sm" id="btnNeForm">＋ 新建网元</button>
+              </div>
+              ${S.neForm.open ? `<div style="border:1px solid var(--line-2);padding:10px;margin-top:10px">
+                <div class="pl-muted" style="font-size:8.5px;letter-spacing:.16em;margin-bottom:8px">新建网元（写入后端）</div>
+                <div style="display:grid;grid-template-columns:1.4fr 0.9fr 0.9fr 0.8fr 1fr 1.1fr;gap:6px;margin-bottom:8px">
+                  <input id="neName" placeholder="网元名 gNB-HZ-0910" value="${esc(S.neForm.name)}"
+                    style="font:inherit;font-size:10px;padding:5px 7px;background:#fff;border:1px solid var(--line-2)"/>
+                  <select id="neArch" style="font:inherit;font-size:10px;padding:4px 6px;background:#fff;border:1px solid var(--line-2)">
+                    ${['SA', 'NSA', 'CU-DU', 'EPC'].map((a) => `<option${S.neForm.arch === a ? ' selected' : ''}>${a}</option>`).join('')}
+                  </select>
+                  <select id="neKind" style="font:inherit;font-size:10px;padding:4px 6px;background:#fff;border:1px solid var(--line-2)">
+                    ${['gNB', 'MME', 'UPF', 'AMF', 'SMF'].map((k) => `<option${S.neForm.kind === k ? ' selected' : ''}>${k}</option>`).join('')}
+                  </select>
+                  <input id="neVersion" placeholder="5.2.1" value="${esc(S.neForm.version)}"
+                    style="font:inherit;font-size:10px;padding:5px 7px;background:#fff;border:1px solid var(--line-2)"/>
+                  <input id="neSoftware" placeholder="软件名 NR-RAN" value="${esc(S.neForm.software)}"
+                    style="font:inherit;font-size:10px;padding:5px 7px;background:#fff;border:1px solid var(--line-2)"/>
+                  <select id="neGroup" style="font:inherit;font-size:10px;padding:4px 6px;background:#fff;border:1px solid var(--line-2)">
+                    ${S.groups.map((g) => `<option value="${esc(g.id)}"${S.neForm.group === g.id ? ' selected' : ''}>${esc(g.name)}</option>`).join('')}
+                  </select>
+                </div>
+                <div class="pl-muted" style="font-size:8.5px;letter-spacing:.16em;margin-bottom:6px">组件（点选）</div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px">
+                  ${['主控板', '交换板', '业务板', '信令板', '电源', '风扇', '时钟板'].map((c) => {
+                    const on = S.neForm.comps.includes(c);
+                    return `<button class="pl-btn pl-btn--sm" data-ne-comp="${esc(c)}"
+                      style="${on ? 'background:#171713;color:#eae5e1;border-color:#171713' : ''}">${esc(c)}</button>`;
+                  }).join('')}
+                </div>
+                <div class="pl-row-end" style="justify-content:flex-start;gap:8px">
+                  <button class="pl-btn pl-btn--sm pl-btn--solid" id="btnNeSubmit">创建</button>
+                  <button class="pl-btn pl-btn--sm" id="btnNeCancel">取消</button>
+                  <span class="pl-muted" id="neFormMsg" style="font-size:9px"></span>
+                </div>
+              </div>` : ''}

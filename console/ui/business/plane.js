@@ -76,6 +76,7 @@
     scenes: [],         // 内置教学场景（./scenes/index.json）
     accSel: 0,          // OMC 当前编辑授权的账号下标
     pkgDraft: { name: '', kind: '网元软件包', owner: '', vendor: '', version: '' },
+    neForm: { open: false, name: '', arch: 'SA', kind: 'gNB', version: '5.2.1', software: 'NR-RAN', group: '', comps: ['主控板', '业务板', '电源'] },
     neDraft: null,     // 当前编辑中的网元草稿（flow / checks）
     groupDraft: [],    // 成组选中的网元
     topoLevel: 'element',
@@ -576,10 +577,43 @@
                 <button class="pl-btn pl-btn--sm" data-ne-copy="${esc(e.id)}">复制</button>
               </td></tr>`).join('')}</tbody>
           </table>
-          <div class="pl-row-end">
-            <button class="pl-btn pl-btn--sm" id="btnGroupAdd">＋ 成组</button>
-            <button class="pl-btn pl-btn--solid pl-btn--sm" id="btnNeAdd">＋ 新建网元</button>
-          </div>
+            <div class="pl-row-end" style="gap:6px">
+              <button class="pl-btn pl-btn--sm" id="btnGroupAdd">＋ 成组</button>
+              <button class="pl-btn pl-btn--sm" id="btnNeForm">＋ 新建网元</button>
+            </div>
+              ${S.neForm.open ? `<div style="border:1px solid var(--line-2);padding:10px;margin-top:10px">
+                <div class="pl-muted" style="font-size:8.5px;letter-spacing:.16em;margin-bottom:8px">新建网元（写入后端）</div>
+                <div style="display:grid;grid-template-columns:1.4fr 0.9fr 0.9fr 0.8fr 1fr 1.1fr;gap:6px;margin-bottom:8px">
+                  <input id="neName" placeholder="网元名 gNB-HZ-0910" value="${esc(S.neForm.name)}"
+                    style="font:inherit;font-size:10px;padding:5px 7px;background:#fff;border:1px solid var(--line-2)"/>
+                  <select id="neArch" style="font:inherit;font-size:10px;padding:4px 6px;background:#fff;border:1px solid var(--line-2)">
+                    ${['SA', 'NSA', 'CU-DU', 'EPC'].map((a) => `<option${S.neForm.arch === a ? ' selected' : ''}>${a}</option>`).join('')}
+                  </select>
+                  <select id="neKind" style="font:inherit;font-size:10px;padding:4px 6px;background:#fff;border:1px solid var(--line-2)">
+                    ${['gNB', 'MME', 'UPF', 'AMF', 'SMF'].map((k) => `<option${S.neForm.kind === k ? ' selected' : ''}>${k}</option>`).join('')}
+                  </select>
+                  <input id="neVersion" placeholder="5.2.1" value="${esc(S.neForm.version)}"
+                    style="font:inherit;font-size:10px;padding:5px 7px;background:#fff;border:1px solid var(--line-2)"/>
+                  <input id="neSoftware" placeholder="软件名 NR-RAN" value="${esc(S.neForm.software)}"
+                    style="font:inherit;font-size:10px;padding:5px 7px;background:#fff;border:1px solid var(--line-2)"/>
+                  <select id="neGroup" style="font:inherit;font-size:10px;padding:4px 6px;background:#fff;border:1px solid var(--line-2)">
+                    ${S.groups.map((g) => `<option value="${esc(g.id)}"${S.neForm.group === g.id ? ' selected' : ''}>${esc(g.name)}</option>`).join('')}
+                  </select>
+                </div>
+                <div class="pl-muted" style="font-size:8.5px;letter-spacing:.16em;margin-bottom:6px">组件（点选）</div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px">
+                  ${['主控板', '交换板', '业务板', '信令板', '电源', '风扇', '时钟板'].map((c) => {
+                    const on = S.neForm.comps.includes(c);
+                    return `<button class="pl-btn pl-btn--sm" data-ne-comp="${esc(c)}"
+                      style="${on ? 'background:#171713;color:#eae5e1;border-color:#171713' : ''}">${esc(c)}</button>`;
+                  }).join('')}
+                </div>
+                <div class="pl-row-end" style="justify-content:flex-start;gap:8px">
+                  <button class="pl-btn pl-btn--sm pl-btn--solid" id="btnNeSubmit">创建</button>
+                  <button class="pl-btn pl-btn--sm" id="btnNeCancel">取消</button>
+                  <span class="pl-muted" id="neFormMsg" style="font-size:9px"></span>
+                </div>
+              </div>` : ''}
         </div>
         <div class="pl-card">
           <div class="pl-card__t">组件模板（内置）</div>
@@ -1500,20 +1534,51 @@
     if (hPrev) hPrev.addEventListener('click', () => openHuman());
 
     // 网元
-    const na = $('#btnNeAdd');
-    if (na) na.addEventListener('click', async () => {
+    // 网元 · 新建（真表单）
+    const neFormBind = (id, key, isSelect) => {
+      const el = $('#' + id);
+      if (!el) return;
+      el.addEventListener(isSelect ? 'change' : 'input', () => { S.neForm[key] = el.value; });
+    };
+    const neOpen = $('#btnNeForm');
+    if (neOpen) neOpen.addEventListener('click', () => {
+      S.neForm.open = !S.neForm.open;
+      if (S.neForm.open && !S.neForm.group) S.neForm.group = (S.groups[0] || {}).id || '';
+      render();
+    });
+    neFormBind('neName', 'name');
+    neFormBind('neArch', 'arch', true);
+    neFormBind('neKind', 'kind', true);
+    neFormBind('neVersion', 'version');
+    neFormBind('neSoftware', 'software');
+    neFormBind('neGroup', 'group', true);
+    $$('[data-ne-comp]').forEach((b) => b.addEventListener('click', () => {
+      const c = b.dataset.neComp;
+      const arr = S.neForm.comps || (S.neForm.comps = []);
+      S.neForm.comps = arr.includes(c) ? arr.filter((x) => x !== c) : arr.concat([c]);
+      render();
+    }));
+    const neCancel = $('#btnNeCancel');
+    if (neCancel) neCancel.addEventListener('click', () => { S.neForm.open = false; render(); });
+    const neSubmit = $('#btnNeSubmit');
+    if (neSubmit) neSubmit.addEventListener('click', async () => {
+      const msg = $('#neFormMsg');
+      const f = S.neForm;
+      if (!f.name.trim()) { if (msg) msg.textContent = '网元名必填'; return; }
       try {
         await api('/api/business/elements', {
           method: 'POST', headers: headers(),
           body: JSON.stringify({
-            name: 'gNB-HZ-09' + String(10 + S.elements.length),
-            arch: 'SA', kind: 'gNB', version: '5.2.1', software: 'NR-RAN',
-            group: (S.groups[0] || {}).id || '',
-            components: ['主控板', '业务板', '电源'],
+            name: f.name.trim(), arch: f.arch, kind: f.kind,
+            version: f.version.trim() || '5.2.1',
+            software: f.software.trim() || 'NR-RAN',
+            group: f.group || (S.groups[0] || {}).id || '',
+            components: f.comps && f.comps.length ? f.comps : ['主控板'],
           }),
         });
         await loadElements();
-      } catch (e) { console.warn(e); }
+        S.neForm = { open: false, name: '', arch: f.arch, kind: f.kind, version: '', software: f.software, group: f.group, comps: f.comps };
+      } catch (e) { if (msg) msg.textContent = '创建失败：' + e.message; }
       render();
     });
     $$('[data-ne-detail]').forEach((b) => b.addEventListener('click', () => {
