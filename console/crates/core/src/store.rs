@@ -79,6 +79,8 @@ pub struct AuthUser {
 
 #[derive(Serialize, Deserialize, Default)]
 struct Persisted {
+    #[serde(default)]
+    endpoints: Vec<MockEndpoint>,
     users: Vec<User>,
     mappings: Vec<Mapping>,
     nodes: Vec<AgentNode>,
@@ -86,6 +88,7 @@ struct Persisted {
 }
 
 struct Inner {
+    endpoints: Vec<MockEndpoint>,
     users: Vec<User>,
     mappings: Vec<Mapping>,
     nodes: Vec<AgentNode>,
@@ -117,6 +120,7 @@ impl Store {
             logs: VecDeque::new(),
             seq: 0,
             started_at: now_ms(),
+            endpoints: vec![],
         };
 
         if path.exists() {
@@ -127,6 +131,7 @@ impl Store {
                     inner.mappings = p.mappings;
                     inner.nodes = p.nodes;
                     inner.seq = p.seq;
+                        inner.endpoints = p.endpoints;
                 }
                 Err(e) => {
                     // 坏数据不静默吞掉：备份后重新播种，避免"看起来正常但数据没了"
@@ -139,6 +144,13 @@ impl Store {
 
         if inner.users.is_empty() {
             seed(&mut inner);
+        if inner.endpoints.is_empty() {
+            inner.endpoints.push(MockEndpoint {
+                id: "ep-0001".into(), host: "127.0.0.1".into(), port: 8443,
+                capabilities: vec!["NEMP".into()], cert: None, enabled: false,
+                created_at: now_ms(),
+            });
+        }
         }
 
         let store = Self {
@@ -156,6 +168,7 @@ impl Store {
             mappings: inner.mappings.clone(),
             nodes: inner.nodes.clone(),
             seq: inner.seq,
+            endpoints: inner.endpoints.clone(),
         };
         let json = serde_json::to_string_pretty(&doc).map_err(|e| Error::Io(e.to_string()))?;
         if let Some(dir) = self.path.parent() {
@@ -170,6 +183,93 @@ impl Store {
     /// 后台任务持有独立句柄（内部是 Arc<Mutex<..>>，共享同一份状态）
     pub fn clone_for_task(&self) -> Self {
         self.clone()
+    }
+
+    // ---------------- Mock 端点 ----------------
+    pub fn endpoints(&self) -> Vec<MockEndpoint> {
+        self.inner.lock().unwrap().endpoints.clone()
+    }
+
+    pub fn create_endpoint(&self, req: NewEndpointReq) -> Result<MockEndpoint> {
+        let mut i = self.inner.lock().unwrap();
+        let next = i
+            .endpoints
+            .iter()
+            .filter_map(|e| e.id.rsplit('-').next().and_then(|x| x.parse::<u32>().ok()))
+            .max()
+            .unwrap_or(0)
+            + 1;
+        let ep = MockEndpoint {
+            id: format!("ep-{:04}", next),
+            host: req.host,
+            port: req.port,
+            capabilities: req.capabilities,
+            cert: None,
+            enabled: false,
+            created_at: now_ms(),
+        };
+        i.endpoints.push(ep.clone());
+        self.persist_locked(&i)?;
+        Ok(ep)
+    }
+
+    pub fn patch_endpoint(&self, id: &str, req: PatchEndpointReq) -> Result<MockEndpoint> {
+        let mut i = self.inner.lock().unwrap();
+        let idx = i
+            .endpoints
+            .iter()
+            .position(|e| e.id == id)
+            .ok_or(Error::NotFound)?;
+        {
+            let e = &mut i.endpoints[idx];
+            if let Some(h) = req.host { e.host = h; }
+            if let Some(p) = req.port { e.port = p; }
+            if let Some(c) = req.capabilities { e.capabilities = c; }
+            if let Some(v) = req.enabled { e.enabled = v; }
+        }
+        let out = i.endpoints[idx].clone();
+        self.persist_locked(&i)?;
+        Ok(out)
+    }
+
+    /// 签发演示证书：CN + SAN + 序列号 + 有效期，返回 PEM 文本
+    pub fn issue_cert(&self, id: &str, req: NewCertReq) -> Result<MockEndpoint> {
+        let mut i = self.inner.lock().unwrap();
+        let idx = i
+            .endpoints
+            .iter()
+            .position(|e| e.id == id)
+            .ok_or(Error::NotFound)?;
+        let mut serial = String::new();
+        for _ in 0..16 {
+            serial.push_str(&format!("{:02X}", rand::random::<u8>()));
+        }
+        let mut body = String::new();
+        let mut k = 0usize;
+        while k < 24 {
+            body.push_str(&format!("{:08X}", rand::random::<u32>()));
+            k += 1;
+            if k % 4 == 0 { body.push('\n'); }
+        }
+        let san = if req.san.is_empty() { vec![req.cn.clone(), "localhost".into()] } else { req.san };
+        let cert = MockCert {
+            cn: req.cn.clone(),
+            san: san.clone(),
+            serial: serial.clone(),
+            issued_at: now_ms(),
+            expires_at: now_ms() + 365 * 24 * 3600 * 1000,
+            pem: format!(
+                "-----BEGIN CERTIFICATE-----\n# RHINE LAB · DEMO CERT（演示用，不可用于真实 TLS）\n# CN={}\n# SAN={}\n# SERIAL={}\n{}\n-----END CERTIFICATE-----",
+                req.cn,
+                san.join(","),
+                serial,
+                body
+            ),
+        };
+        i.endpoints[idx].cert = Some(cert);
+        let out = i.endpoints[idx].clone();
+        self.persist_locked(&i)?;
+        Ok(out)
     }
 
     pub fn push_log(&self, actor: &str, action: &str, detail: &str, level: &str) {
@@ -291,7 +391,8 @@ impl Store {
             name: req.name.unwrap_or_else(|| req.path.clone()),
             method: Method::parse(&req.method).unwrap(),
             path: req.path.clone(),
-            status: req.status.unwrap_or(200),
+            status: req.status.unwrap_or(200),
+
               version: req.version.clone().unwrap_or_else(|| "0.1.0".into()),
             delay_ms: req.delay_ms.unwrap_or(0),
             content_type: req

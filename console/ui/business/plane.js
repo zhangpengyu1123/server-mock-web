@@ -15,6 +15,8 @@
 
   /* ---------------------------------------------------------------- 状态 */
   const S = {
+    csrf: sessionStorage.getItem('rhine.plane.csrf') || '',
+    ep: null,          // 当前 Mock 端点（来自后端）
     layer: 'runtime',
     view: 'mock-admin',
     endpoint: { host: '127.0.0.1', port: '9443', enabled: false, cert: null, caps: [] },
@@ -114,6 +116,73 @@
     topoSel: null,
   };
 
+  /* ---------------------------------------------------------------- API */
+  function headers(extra) {
+    const h = Object.assign({ 'Content-Type': 'application/json' }, extra || {});
+    if (S.csrf) h['X-CSRF'] = S.csrf;
+    return h;
+  }
+  async function api(path, opts) {
+    const r = await fetch(path, Object.assign({ credentials: 'include' }, opts || {}));
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.status === 204 ? null : r.json();
+  }
+
+  /** 登录门：L 端需要凭据；W 端（authRequired=false）直接放行 */
+  async function ensureAuth() {
+    const meta = await api('/api/meta').catch(() => null);
+    if (meta && meta.authRequired === false) return true;
+    if (S.csrf) {
+      const me = await api('/api/auth/me').catch(() => null);
+      if (me && me.user) return true;
+    }
+    return new Promise((resolve) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'pl-human';
+      wrap.id = 'plLogin';
+      wrap.innerHTML = `<div class="pl-human__box" style="width:380px">
+        <div class="pl-human__hd"><div><div class="pl-human__t">接入业务面</div>
+          <div class="pl-human__s">SIGN IN · BUSINESS PLANE</div></div></div>
+        <div class="pl-human__bd">
+          <div class="pl-field" style="margin-bottom:10px"><label>Username</label><input id="plU" value="viewer" /></div>
+          <div class="pl-field" style="margin-bottom:12px"><label>Password</label><input id="plP" type="password" value="rhine-viewer-2026" /></div>
+          <button class="pl-btn pl-btn--solid" id="plGo" style="width:100%">登录</button>
+          <div class="pl-muted" id="plErr" style="margin-top:8px;font-size:9px;color:#7d2f22"></div>
+        </div></div>`;
+      document.body.appendChild(wrap);
+      const submit = async () => {
+        try {
+          const data = await api('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: $('#plU').value, password: $('#plP').value }),
+          });
+          S.csrf = data.csrf;
+          sessionStorage.setItem('rhine.plane.csrf', data.csrf);
+          wrap.remove();
+          resolve(true);
+        } catch (e) {
+          $('#plErr').textContent = '登录失败：' + e.message;
+        }
+      };
+      $('#plGo').addEventListener('click', submit);
+      $('#plP').addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+    });
+  }
+
+  /** 拉取端点（没有就建一个） */
+  async function loadEndpoint() {
+    try {
+      const list = await api('/api/business/endpoints');
+      if (list && list.length) { S.ep = list[0]; return S.ep; }
+      S.ep = await api('/api/business/endpoints', {
+        method: 'POST', headers: headers(),
+        body: JSON.stringify({ host: '127.0.0.1', port: 8443, capabilities: [] }),
+      });
+      return S.ep;
+    } catch (e) { return null; }
+  }
+
   /* ---------------------------------------------------------------- 导航 */
   const NAV = [
     {
@@ -155,13 +224,14 @@
 
   /* ---------------------------------------------------------------- 视图：MOCK 管理 */
   function viewMockAdmin() {
-    const e = S.endpoint;
-    const step = !e.host ? 1 : !e.cert ? 2 : e.caps.length === 0 ? 3 : e.enabled ? 4 : 4;
+    const e = S.ep || { host: '127.0.0.1', port: 8443, capabilities: [], cert: null, enabled: false };
+    const caps = e.capabilities || [];
+    const step = !e.host ? 1 : !e.cert ? 2 : caps.length === 0 ? 3 : e.enabled ? 4 : 4;
     const steps = ['登记监听', '签发证书', '挂载能力', '开启服务'];
     return head('MOCK 管理', 'Register endpoint · issue certificate · mount capabilities · start', 'FILE NO. MOCK-001') + `
       <div class="pl-steps">
-        ${steps.map((t, i) => `<div class="pl-step${step === i + 1 ? ' is-on' : (step > i + 1 ? ' is-done' : '')}">
-          <div class="pl-step__n">STEP ${i + 1}</div><div class="pl-step__t">${esc(t)}</div></div>`).join('')}
+        ${steps.map((t2, i) => `<div class="pl-step${step === i + 1 ? ' is-on' : (step > i + 1 ? ' is-done' : '')}">
+          <div class="pl-step__n">STEP ${i + 1}</div><div class="pl-step__t">${esc(t2)}</div></div>`).join('')}
       </div>
       <div class="pl-grid pl-grid--side">
         <div class="pl-card">
@@ -171,30 +241,31 @@
               <div class="pl-field"><label>Host / IP</label><input id="epHost" value="${esc(e.host)}" /></div>
               <div class="pl-field"><label>Port</label><input id="epPort" value="${esc(e.port)}" /></div>
             </div>
-            <div class="pl-field"><label>挂载平台能力（可多选）</label>
+            <div class="pl-field"><label>挂载平台能力（可多选，写入后端）</label>
               <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
                 ${S.caps.map((c) => `<button class="pl-btn pl-btn--sm" data-cap="${esc(c)}"
-                  style="${e.caps.includes(c) ? 'background:#17140f;color:#f3eee7;border-color:#17140f' : ''}">${esc(c)}</button>`).join('')}
+                  style="${caps.includes(c) ? 'background:#171713;color:#eae5e1;border-color:#171713' : ''}">${esc(c)}</button>`).join('')}
               </div>
             </div>
             <div class="pl-row-end">
+              <button class="pl-btn" id="btnSave">保存端点</button>
               <button class="pl-btn" id="btnCert">02 · 生成证书</button>
               <button class="pl-btn pl-btn--solid" id="btnStart">${e.enabled ? '停止服务' : '04 · 开启服务'}</button>
             </div>
           </div>
         </div>
         <div class="pl-card">
-          <div class="pl-card__t">端点状态</div>
+          <div class="pl-card__t">端点状态（服务端）</div>
           <dl class="pl-kv">
+            <dt>ID</dt><dd>${esc(e.id || '—')}</dd>
             <dt>Endpoint</dt><dd>${esc(e.host)}:${esc(e.port)}</dd>
             <dt>Service</dt><dd>${e.enabled ? '<span class="pl-dot pl-dot--on"></span>运行中' : '<span class="pl-dot"></span>未启动'}</dd>
             <dt>Certificate</dt><dd>${e.cert ? esc(e.cert.cn) + ' · SAN ' + e.cert.san.length : '<span class="pl-muted">未签发</span>'}</dd>
-            <dt>Capabilities</dt><dd>${e.caps.length ? e.caps.map((c) => `<span class="pl-tag pl-tag--on">${esc(c)}</span>`).join(' ') : '<span class="pl-muted">未挂载</span>'}</dd>
-            <dt>Interfaces</dt><dd>${S.ifaces.length} 个</dd>
+            <dt>Capabilities</dt><dd>${caps.length ? caps.map((c) => `<span class="pl-tag pl-tag--on">${esc(c)}</span>`).join(' ') : '<span class="pl-muted">未挂载</span>'}</dd>
           </dl>
           <div style="margin-top:12px">
-            <div class="pl-card__t" style="margin-bottom:6px">证书内容（签发后）</div>
-            <pre class="pl-muted" style="margin:0;font-size:8.5px;line-height:1.6;white-space:pre-wrap">${e.cert ? esc(e.cert.pem) : '—'}</pre>
+            <div class="pl-card__t" style="margin-bottom:6px">证书内容</div>
+            <pre class="pl-muted" style="margin:0;font-size:8px;line-height:1.55;white-space:pre-wrap">${e.cert ? esc(e.cert.pem) : '—'}</pre>
           </div>
         </div>
       </div>`;
@@ -771,29 +842,50 @@
 
   /* ---------------------------------------------------------------- 事件 */
   function bindView() {
-    // MOCK 管理
-    const host = $('#epHost'), port = $('#epPort');
-    if (host) host.addEventListener('input', () => { S.endpoint.host = host.value; });
-    if (port) port.addEventListener('input', () => { S.endpoint.port = port.value; });
-    $$('[data-cap]').forEach((b) => b.addEventListener('click', () => {
+    // MOCK 管理（全部走服务端）
+    const epId = () => (S.ep && S.ep.id) || '';
+    $$('[data-cap]').forEach((b) => b.addEventListener('click', async () => {
       const c = b.dataset.cap;
-      const i = S.endpoint.caps.indexOf(c);
-      if (i >= 0) S.endpoint.caps.splice(i, 1); else S.endpoint.caps.push(c);
+      if (!S.ep) return;
+      const set = new Set(S.ep.capabilities || []);
+      set.has(c) ? set.delete(c) : set.add(c);
+      try {
+        S.ep = await api('/api/business/endpoints/' + epId(), {
+          method: 'PATCH', headers: headers(), body: JSON.stringify({ capabilities: [...set] }),
+        });
+      } catch (e2) { console.warn(e2); }
       render();
     }));
+    const btnSave = $('#btnSave');
+    if (btnSave) btnSave.addEventListener('click', async () => {
+      if (!S.ep) return;
+      try {
+        S.ep = await api('/api/business/endpoints/' + epId(), {
+          method: 'PATCH', headers: headers(),
+          body: JSON.stringify({ host: $('#epHost').value.trim(), port: +$('#epPort').value || 8443 }),
+        });
+      } catch (e2) { console.warn(e2); }
+      render();
+    });
     const btnCert = $('#btnCert');
-    if (btnCert) btnCert.addEventListener('click', () => {
-      S.endpoint.cert = {
-        cn: S.endpoint.host,
-        san: [S.endpoint.host, 'localhost'],
-        pem: '-----BEGIN CERTIFICATE-----\n' + 'MIIB' + Math.random().toString(36).slice(2, 18).toUpperCase() + '\n...\n-----END CERTIFICATE-----',
-      };
+    if (btnCert) btnCert.addEventListener('click', async () => {
+      if (!S.ep) return;
+      try {
+        S.ep = await api('/api/business/endpoints/' + epId() + '/cert', {
+          method: 'POST', headers: headers(),
+          body: JSON.stringify({ cn: $('#epHost').value.trim() || S.ep.host, san: [S.ep.host, 'localhost'] }),
+        });
+      } catch (e2) { console.warn(e2); }
       render();
     });
     const btnStart = $('#btnStart');
-    if (btnStart) btnStart.addEventListener('click', () => {
-      if (!S.endpoint.cert) { S.endpoint.enabled = false; }
-      S.endpoint.enabled = !S.endpoint.enabled;
+    if (btnStart) btnStart.addEventListener('click', async () => {
+      if (!S.ep) return;
+      try {
+        S.ep = await api('/api/business/endpoints/' + epId(), {
+          method: 'PATCH', headers: headers(), body: JSON.stringify({ enabled: !S.ep.enabled }),
+        });
+      } catch (e2) { console.warn(e2); }
       render();
     });
 
@@ -963,6 +1055,12 @@
   }
 
   $('#plExit') && $('#plExit').addEventListener('click', () => { location.href = '/'; });
-  render();
+  (async () => {
+    try {
+      const ok = await ensureAuth();
+      if (ok) await loadEndpoint();
+    } catch (e) { /* 后端不可达时退化为本地演示数据 */ }
+    render();
+  })();
   window.Plane = { S, render, openHuman };
 })();

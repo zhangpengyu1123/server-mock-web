@@ -241,3 +241,51 @@ pub struct NewUserReq {
     pub display: Option<String>,
     pub role: Option<String>,
 }
+
+/// Mock 监听端点：本机 IP:端口 + 挂载的平台能力 + 可选证书
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct MockEndpoint {
+    pub id: String,
+    pub host: String,
+    pub port: u16,
+    #[serde(default)]
+    pub capabilities: Vec<String>,
+    #[serde(default)]
+    pub cert: Option<MockCert>,
+    pub enabled: bool,
+    pub created_at: Millis,
+}
+
+/// 演示用自签证书（不用于真实 TLS，仅承载 CN/SAN/有效期信息）
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct MockCert {
+    pub cn: String,
+    pub san: Vec<String>,
+    pub serial: String,
+    pub issued_at: Millis,
+    pub expires_at: Millis,
+    pub pem: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct NewEndpointReq {
+    pub host: String,
+    pub port: u16,
+    #[serde(default)]
+    pub capabilities: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct PatchEndpointReq {
+    pub host: Option<String>,
+    pub port: Option<u16>,
+    pub capabilities: Option<Vec<String>>,
+    pub enabled: Option<bool>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct NewCertReq {
+    pub cn: String,
+    #[serde(default)]
+    pub san: Vec<String>,
+}

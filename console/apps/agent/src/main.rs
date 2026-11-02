@@ -235,6 +235,45 @@ async fn business_stats(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Stats>> {
 }
 
 // ================================================================== 管理面
+async fn business_endpoints(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Vec<MockEndpoint>>> {
+    let _u = auth(&st, &headers)?;
+    Ok(Json(st.store.endpoints()))
+}
+
+async fn business_create_endpoint(
+    st: Ctx,
+    headers: HeaderMap,
+    Json(req): Json<NewEndpointReq>,
+) -> ApiResult<Json<MockEndpoint>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    Ok(Json(st.store.create_endpoint(req)?))
+}
+
+async fn business_patch_endpoint(
+    st: Ctx,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+    Json(req): Json<PatchEndpointReq>,
+) -> ApiResult<Json<MockEndpoint>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    Ok(Json(st.store.patch_endpoint(&id, req)?))
+}
+
+async fn business_issue_cert(
+    st: Ctx,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+    Json(req): Json<NewCertReq>,
+) -> ApiResult<Json<MockEndpoint>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    let ep = st.store.issue_cert(&id, req)?;
+    st.store.push_log("business", "endpoint.cert", &format!("签发证书 {}", ep.id), "info");
+    Ok(Json(ep))
+}
+
 async fn admin_nodes(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Vec<AgentNode>>> {
     let _u = auth_admin(&st, &headers)?;
     Ok(Json(st.store.nodes()))
@@ -406,6 +445,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/business/mappings/:id/test", post(business_test))
         .route("/business/logs", get(business_logs))
         .route("/business/stats", get(business_stats))
+        .route("/business/endpoints", get(business_endpoints).post(business_create_endpoint))
+        .route("/business/endpoints/:id", patch(business_patch_endpoint))
+        .route("/business/endpoints/:id/cert", post(business_issue_cert))
         .route("/admin/nodes", get(admin_nodes).post(admin_create_node))
         .route("/admin/nodes/:id/deploy", post(admin_deploy))
         .route("/admin/jobs/:id", get(admin_job))
