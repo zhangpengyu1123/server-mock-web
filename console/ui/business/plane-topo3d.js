@@ -43,6 +43,38 @@ function labelTexture(title, sub, opts) {
   return { tex: t, aspect: W / H };
 }
 
+/* 卡面铭牌贴图：名称 + 版本 + 编号（贴在 Blender 的 MAT_TopoPlate 面上） */
+function nameplateTexture(name, version, code) {
+  const W = 512, H = 256;
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const g = cv.getContext('2d');
+  g.fillStyle = '#171713';
+  g.fillRect(0, 0, W, H);
+  g.strokeStyle = 'rgba(234,229,225,.30)';
+  g.lineWidth = 2;
+  g.strokeRect(10, 10, W - 20, H - 20);
+  g.fillStyle = '#a67d48';
+  g.fillRect(20, 20, 6, 34);
+  g.fillStyle = 'rgba(234,229,225,.50)';
+  g.font = '500 24px "JetBrains Mono",monospace';
+  g.fillText(String(code || ''), 34, 46);
+  g.fillStyle = '#eae5e1';
+  g.font = '600 58px "JetBrains Mono","PingFang SC",monospace';
+  let nm = String(name || '');
+  while (g.measureText(nm).width > W - 60 && nm.length > 4) nm = nm.slice(0, -2) + '…';
+  g.fillText(nm, 30, 132);
+  g.fillStyle = '#a67d48';
+  g.font = '600 40px "JetBrains Mono",monospace';
+  g.fillText('v' + String(version || ''), 30, 200);
+  g.fillStyle = 'rgba(234,229,225,.25)';
+  for (let i = 0; i < 7; i++) g.fillRect(W - 150 + i * 16, 184, 8, 3);
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 8;
+  return tex;
+}
+
 const MAT = {};
 function mat(color, rough) {
   const k = 'm' + color + rough;
@@ -151,6 +183,46 @@ class Topo3D {
     return o;
   }
 
+  /** 卡面铭牌：以 MAT_TopoPlate 面的网格为父级，前后各贴一张（不依赖 UV 朝向） */
+  paintNameplate(mod, name, version, code) {
+    const tex = nameplateTexture(name, version, code);
+    let count = 0;
+    mod.traverse((c) => {
+      if (!c.isMesh) return;
+      const mats = Array.isArray(c.material) ? c.material : [c.material];
+      const plateIdx = mats.findIndex((m) => /TopoPlate/i.test(m.name || ''));
+      if (plateIdx < 0) return;
+      // 该网格的包围盒 → 取最薄的轴作为法线方向
+      c.geometry.computeBoundingBox();
+      const bb = c.geometry.boundingBox;
+      const size = bb.getSize(new THREE.Vector3());
+      const axes = [['x', size.x], ['y', size.y], ['z', size.z]].sort((a, b) => a[1] - b[1]);
+      const thin = axes[0][0];                 // 最薄轴 = 面法线方向
+      const faceAxes = axes.slice(1);          // 面内两轴（升序）
+      const big = faceAxes[1], small = faceAxes[0];
+      const w = big[1] * 0.94;                 // 宽 = 较长轴
+      const h = small[1] * 0.94;               // 高 = 较短轴
+      const flip = big[0] === 'y';             // 若长轴是 y，需要把平面转 90°
+      const off = axes[0][1] / 2 + 0.0015;
+      const center = bb.getCenter(new THREE.Vector3());
+
+      [1, -1].forEach((sign) => {
+        const plane = new THREE.Mesh(
+          new THREE.PlaneGeometry(w, h),
+          new THREE.MeshBasicMaterial({ map: tex, toneMapped: false, side: THREE.DoubleSide })
+        );
+        plane.position.copy(center);
+        if (thin === 'x') { plane.position.x += sign * off; plane.rotation.y = sign > 0 ? Math.PI / 2 : -Math.PI / 2; if (flip) plane.rotation.z = Math.PI / 2; }
+        else if (thin === 'y') { plane.position.y += sign * off; plane.rotation.x = sign > 0 ? -Math.PI / 2 : Math.PI / 2; if (flip) plane.rotation.z = Math.PI / 2; }
+        else { plane.position.z += sign * off; if (sign < 0) plane.rotation.y = Math.PI; if (flip) plane.rotation.z = Math.PI / 2; }
+        plane.renderOrder = 7;
+        c.add(plane);
+        count++;
+      });
+    });
+    return count;
+  }
+
   /* 程序化回退 */
   plate(w, t, d, color) {
     const m = new THREE.Mesh(new THREE.BoxGeometry(w, t, d), mat(color || 0xe6e1d9, 0.62));
@@ -228,6 +300,7 @@ class Topo3D {
       const mod = this.inst('ne') || this.card(0.78, 0.5, 0.035);
       mod.position.set(0, Y, 0);
       if (this.models) mod.scale.setScalar(1.55);
+      if (this.models) this.paintNameplate(mod, ne.name, ne.version, ne.id.toUpperCase());
       this.root.add(mod);
       addPick(mod, { kind: 'ne', id: ne.id, label: ne.name });
       this.addLabel(mod, ne.name, ne.type + ' · v' + ne.version, this.models ? 0.86 : 0.35, 1.15, { big: 46, small: 26, tick: '#a67d48' });
@@ -271,6 +344,7 @@ class Topo3D {
         const x = (ei - (g.elements.length - 1) / 2) * 0.66;
         const mod = this.inst('ne') || this.card(0.34, 0.46, 0.03);
         mod.position.set(x, Y + 0.04, gz); mod.scale.setScalar(1.25);
+        if (this.models) this.paintNameplate(mod, e.name, e.version, e.id.toUpperCase());
         this.root.add(mod);
         addPick(mod, { kind: 'ne', id: e.id, label: e.name });
         this.addLabel(mod, e.name, e.type + ' · v' + e.version, this.models ? 0.60 : 0.34, 1.0,

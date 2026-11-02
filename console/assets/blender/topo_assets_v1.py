@@ -41,6 +41,7 @@ BODY   = lambda: mat("MAT_TopoBody",  (0.870, 0.850, 0.820), 0.60)
 BODY2  = lambda: mat("MAT_TopoBody2", (0.800, 0.776, 0.741), 0.66)
 DARK   = lambda: mat("MAT_TopoDark",  (0.052, 0.049, 0.045), 0.52)
 LINE   = lambda: mat("MAT_TopoLine",  (0.360, 0.340, 0.315), 0.80)
+PLATE  = lambda: mat("MAT_TopoPlate",  (0.105, 0.100, 0.092), 0.72)
 ACCENT = lambda: mat("MAT_TopoAccent", (1.0, 0.66, 0.26), 0.35, 0.0, emit=(1.0, 0.66, 0.26), emit_strength=3.2)
 
 def mesh_box(name, w, d, h, center=(0, 0, 0), material=None, bevel=0.0, segs=2):
@@ -130,7 +131,7 @@ def build_ne():
     # 顶缘琥珀光带
     parts.append(mesh_box("ne_topbar", 0.330, 0.058, 0.012, (0, 0, 0.472), ACCENT()))
     # 正面标签凹槽
-    parts.append(mesh_box("ne_label", 0.290, 0.008, 0.150, (0, -0.027, 0.300), DARK()))
+    parts.append(mesh_box("ne_label", 0.290, 0.008, 0.150, (0, -0.027, 0.300), PLATE()))
     # 正面刻线（两行）
     for i, z in enumerate((0.230, 0.200)):
         parts.append(mesh_box(f"ne_line_{i}", 0.240, 0.006, 0.004, (0, -0.030, z), LINE()))
