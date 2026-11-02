@@ -75,6 +75,7 @@
     sceneMsg: '',       // 场景导入/导出提示
     scenes: [],         // 内置教学场景（./scenes/index.json）
     accSel: 0,          // OMC 当前编辑授权的账号下标
+    pkgDraft: { name: '', kind: '网元软件包', owner: '', vendor: '', version: '' },
     neDraft: null,     // 当前编辑中的网元草稿（flow / checks）
     groupDraft: [],    // 成组选中的网元
     topoLevel: 'element',
@@ -985,7 +986,25 @@
               <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-pkg-up="${esc(p.id)}" data-pkg-ver="${esc(p.version)}">升级</button></td>
             </tr>`).join('')}</tbody>
           </table>
-          <div class="pl-row-end"><button class="pl-btn pl-btn--solid pl-btn--sm" id="btnPkgAdd">＋ 登记软件包</button></div>
+              <div style="border-top:1px solid var(--line);margin-top:12px;padding-top:10px">
+                <div class="pl-muted" style="font-size:8.5px;letter-spacing:.16em;margin-bottom:6px">登记软件包（写入后端）</div>
+                <div style="display:grid;grid-template-columns:1.2fr 1fr 1.1fr 1fr 0.8fr auto;gap:6px;align-items:center">
+                  <input id="pkgName" placeholder="包名 NR-RAN" value="${esc(S.pkgDraft.name)}"
+                    style="font:inherit;font-size:10px;padding:5px 7px;background:#fff;border:1px solid var(--line-2)"/>
+                  <select id="pkgKind" style="font:inherit;font-size:10px;padding:4px 6px;background:#fff;border:1px solid var(--line-2)">
+                    ${['网元软件包', '补丁包', '驱动包', '配置文件包'].map((k) => `<option${S.pkgDraft.kind === k ? ' selected' : ''}>${k}</option>`).join('')}
+                  </select>
+                  <select id="pkgOwner" style="font:inherit;font-size:10px;padding:4px 6px;background:#fff;border:1px solid var(--line-2)">
+                    ${S.elements.map((el) => `<option value="${esc(el.id)}"${S.pkgDraft.owner === el.id ? ' selected' : ''}>${esc(el.name)}</option>`).join('')}
+                  </select>
+                  <input id="pkgVendor" placeholder="厂商" value="${esc(S.pkgDraft.vendor)}"
+                    style="font:inherit;font-size:10px;padding:5px 7px;background:#fff;border:1px solid var(--line-2)"/>
+                  <input id="pkgVersion" placeholder="5.2.2" value="${esc(S.pkgDraft.version)}"
+                    style="font:inherit;font-size:10px;padding:5px 7px;background:#fff;border:1px solid var(--line-2)"/>
+                  <button class="pl-btn pl-btn--sm pl-btn--solid" id="btnPkgSubmit">登记</button>
+                </div>
+                <div class="pl-muted" id="pkgMsg" style="font-size:9px;margin-top:6px"></div>
+              </div>
         </div>
       </div>`;
   }
@@ -2083,12 +2102,45 @@
     const taskHuman = $('#btnTaskHuman');
     if (taskHuman) taskHuman.addEventListener('click', () => openHuman());
     const co = $('#btnCoDeploy');
-    if (co) co.addEventListener('click', () => { S.lcm.coDeploy = !S.lcm.coDeploy; render(); });
-    const pkgAdd = $('#btnPkgAdd');
-    if (pkgAdd) pkgAdd.addEventListener('click', () => {
-      S.lcm.packages.push({ id: 'pkg-00' + (S.lcm.packages.length + 1), name: 'NR-RAN', kind: '网元软件包', owner: 'ne-0001', vendor: '华为', version: '5.2.2', verified: true });
+    if (co) co.addEventListener('click', async () => {
+      const next = !(S.platform ? !!S.platform.co_deploy : S.lcm.coDeploy);
+      try {
+        S.platform = await api('/api/business/platform', { method: 'PATCH', headers: headers(), body: JSON.stringify({ co_deploy: next }) });
+      } catch (e) { console.warn(e); }
       render();
     });
+    // LCM · 软件包登记（写后端）
+    const draftBind = (id, key, isSelect) => {
+      const el = $('#' + id);
+      if (!el) return;
+      el.addEventListener(isSelect ? 'change' : 'input', () => { S.pkgDraft[key] = el.value; });
+    };
+    draftBind('pkgName', 'name');
+    draftBind('pkgKind', 'kind', true);
+    draftBind('pkgOwner', 'owner', true);
+    draftBind('pkgVendor', 'vendor');
+    draftBind('pkgVersion', 'version');
+    if (!S.pkgDraft.owner && S.elements[0]) S.pkgDraft.owner = S.elements[0].id;
+    const pkgSubmit = $('#btnPkgSubmit');
+    if (pkgSubmit) pkgSubmit.addEventListener('click', async () => {
+      const msg = $('#pkgMsg');
+      const d = S.pkgDraft;
+      if (!d.name.trim() || !d.version.trim()) { if (msg) msg.textContent = '包名与版本必填'; return; }
+      try {
+        await api('/api/business/packages', {
+          method: 'POST', headers: headers(),
+          body: JSON.stringify({ name: d.name.trim(), kind: d.kind, owner: d.owner || (S.elements[0] || {}).id, vendor: d.vendor.trim() || '—', version: d.version.trim() }),
+        });
+        await loadLcm();
+        S.pkgDraft = { name: '', kind: d.kind, owner: d.owner, vendor: d.vendor, version: '' };
+        if (msg) msg.textContent = '已登记 ✓';
+      } catch (e) { if (msg) msg.textContent = '登记失败：' + e.message; }
+      render();
+    });
+    $$('[data-pkg-for]').forEach((b) => b.addEventListener('click', () => {
+      S.pkgDraft.owner = b.dataset.pkgFor;
+      render();
+    }));
     // FS 虚层：执行包校验
     const fsVerify = $('#btnFsVerify');
     if (fsVerify) fsVerify.addEventListener('click', async () => {
