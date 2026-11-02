@@ -88,7 +88,7 @@
       "port": 8443
     }
   ],
-  "exported_at": 1793640241425,
+  "exported_at": 1793640488621,
   "groups": [
     {
       "created_at": 1793640234202,
@@ -162,17 +162,80 @@
       "created_at": 1793640234652,
       "delay_ms": 120,
       "enabled": true,
-      "fields": [],
-      "hits": 0,
+      "fields": [
+        {
+          "condition": "",
+          "count": 25,
+          "kind": "string",
+          "max": 0,
+          "name": "sessionId",
+          "source": "autoIncrement",
+          "step": 1,
+          "used": false,
+          "value": "SESS-"
+        },
+        {
+          "condition": "",
+          "count": 0,
+          "kind": "string",
+          "max": 0,
+          "name": "onceToken",
+          "source": "once",
+          "step": 1,
+          "used": true,
+          "value": "ONE-ONLY-OK"
+        },
+        {
+          "condition": "req.mode==\"fast\"?true:false",
+          "count": 0,
+          "kind": "boolean",
+          "max": 0,
+          "name": "accepted",
+          "source": "condition",
+          "step": 1,
+          "used": false,
+          "value": "false"
+        }
+      ],
+      "hits": 35,
       "human": null,
       "id": "map-0001",
-      "last_hit_at": null,
+      "last_hit_at": 1793640487888,
       "method": "post",
       "name": "注册网元",
       "owner": "user-0002",
       "path": "/nemp/v1/ne/register",
       "status": 200,
-      "variants": [],
+      "variants": [
+        {
+          "body": "{\"code\":0,\"mode\":\"fast\",\"ne\":\"gNB-HZ-0904\"}",
+          "delay_ms": 5,
+          "note": "快速通道",
+          "status": 201,
+          "when": "req.mode==\"fast\""
+        },
+        {
+          "body": "{\"code\":0,\"mode\":\"slow\"}",
+          "delay_ms": 600,
+          "note": "慢链路（撑高 P95）",
+          "status": 200,
+          "when": "req.mode==\"slow\""
+        },
+        {
+          "body": "{\"code\":5001,\"msg\":\"register rejected\"}",
+          "delay_ms": 12,
+          "note": "注册失败用例",
+          "status": 500,
+          "when": "req.mode==\"fail\""
+        },
+        {
+          "body": "{\"code\":0,\"mode\":\"default\"}",
+          "delay_ms": 45,
+          "note": "兜底",
+          "status": 200,
+          "when": ""
+        }
+      ],
       "version": "0.1.1"
     },
     {
@@ -182,10 +245,10 @@
       "delay_ms": 60,
       "enabled": true,
       "fields": [],
-      "hits": 7,
+      "hits": 11,
       "human": null,
       "id": "map-0002",
-      "last_hit_at": null,
+      "last_hit_at": 1793640488168,
       "method": "get",
       "name": "网元列表",
       "owner": "user-0002",
@@ -220,10 +283,10 @@
       "delay_ms": 30,
       "enabled": true,
       "fields": [],
-      "hits": 21,
+      "hits": 23,
       "human": null,
       "id": "map-0004",
-      "last_hit_at": null,
+      "last_hit_at": 1793640488293,
       "method": "get",
       "name": "鉴权失败样例",
       "owner": "user-0002",
@@ -298,7 +361,32 @@
         "启动并自检",
         "主备切换验证"
       ],
-      "verify_runs": [],
+      "verify_runs": [
+        {
+          "at": 1793640387201,
+          "note": "sha256 匹配",
+          "status": "pass",
+          "step": "校验 checksum（sha256）"
+        },
+        {
+          "at": 1793640387201,
+          "note": "GPG 签名有效",
+          "status": "pass",
+          "step": "校验签名（GPG）"
+        },
+        {
+          "at": 1793640387201,
+          "note": "3 个软件包与平台版本兼容",
+          "status": "pass",
+          "step": "校验包与平台版本兼容性"
+        },
+        {
+          "at": 1793640387201,
+          "note": "主备站点一致",
+          "status": "pass",
+          "step": "校验主备站点一致性"
+        }
+      ],
       "verify_steps": [
         "校验 checksum（sha256）",
         "校验签名（GPG）",
@@ -319,7 +407,7 @@
     "omc_groups": [
       "g-hz-01"
     ],
-    "site_name": "HZ 主站点",
+    "site_name": "杭州滨江站",
     "site_role": "primary"
   },
   "version": 1
