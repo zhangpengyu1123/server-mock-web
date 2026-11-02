@@ -268,7 +268,7 @@ POST /api/business/import        # 导入（管理员 + CSRF），整体覆盖�
 ## 0.2 便携发行版（免安装）
 
 ```powershell
-node console/assets/make-dist.mjs      # 生成 dist/rhine-mock-console-1.0.0/
+node console/scripts/make-dist.mjs      # 生成 dist/rhine-mock-console-1.0.0/
 ```
 
 产物结构：

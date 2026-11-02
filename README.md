@@ -27,7 +27,7 @@ cd ..
 | W 端（免登录） | http://127.0.0.1:9601/business/plane.html | — |
 | 管理面看板 | http://127.0.0.1:9600/business/index.html | 同 L 端 |
 
-也可以用便携版：`node console/assets/make-dist.mjs` → `dist/rhine-mock-console-1.0.0/启动.cmd`。
+也可以用便携版：`node console/scripts/make-dist.mjs` → `dist/rhine-mock-console-1.0.0/启动.cmd`。
 桌面应用：`console/desktop/business/target/debug/rhine-desktop-business.exe`（Tauri 2 + WebView2）。
 
 ---
