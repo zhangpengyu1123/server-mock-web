@@ -134,13 +134,23 @@
   };
 
   /* ---------------------------------------------------------------- API */
+  // 桌面壳（Tauri）里页面来自 tauri://localhost，相对 /api 不可用 → 指向本机 W 端
+  const IS_TAURI = (location.protocol === 'tauri:' || location.hostname === 'tauri.localhost');
+  const API_BASE = IS_TAURI ? 'http://127.0.0.1:9601' : '';
+
+  function apiUrl(path) {
+    if (!API_BASE) return path;
+    if (/^https?:\/\//i.test(path)) return path;
+    return API_BASE + (path.startsWith('/') ? path : '/' + path);
+  }
+
   function headers(extra) {
     const h = Object.assign({ 'Content-Type': 'application/json' }, extra || {});
     if (S.csrf) h['X-CSRF'] = S.csrf;
     return h;
   }
   async function api(path, opts) {
-    const r = await fetch(path, Object.assign({ credentials: 'include' }, opts || {}));
+    const r = await fetch(apiUrl(path), Object.assign({ credentials: 'include' }, opts || {}));
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.status === 204 ? null : r.json();
   }
@@ -189,7 +199,7 @@
 
   async function loadHuman() {
     try { S.human = await api('/api/business/human-template'); } catch (e) { /* 离线 */ }
-      try { S.scenes = await fetch('./scenes/index.json', { cache: 'no-store' }).then((r) => r.json()); } catch (e) { S.scenes = []; }
+      try { S.scenes = await fetch(apiUrl('./scenes/index.json'), { cache: 'no-store' }).then((r) => r.json()); } catch (e) { S.scenes = []; }
     return S.human;
   }
 
@@ -1968,7 +1978,7 @@
       if (!file) { S.sceneMsg = '先选一个场景'; render(); return; }
       try {
         const payload = await api('./scenes/' + file, { raw: true }).catch(() => null)
-          || await fetch('./scenes/' + file, { cache: 'no-store' }).then((r) => r.json());
+          || await fetch(apiUrl('./scenes/' + file), { cache: 'no-store' }).then((r) => r.json());
         const res = await api('/api/business/import', { method: 'POST', headers: headers(), body: JSON.stringify(payload) });
         await Promise.all([loadEndpoint(), loadElements(), loadLcm(), loadHuman(), loadTasks(), loadIfaces()]);
         S.sceneMsg = '已载入「' + ((S.scenes.find((s) => s.file === file) || {}).name || file) + '」' + (res.imported || 0) + ' 条 ✓';

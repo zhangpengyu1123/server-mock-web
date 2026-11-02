@@ -1,4 +1,4 @@
-﻿node_modules/
+node_modules/
 console/target/
 console/data/
 console/desktop/*/target/

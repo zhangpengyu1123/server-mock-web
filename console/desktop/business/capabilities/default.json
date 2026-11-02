@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "业务面窗口：只要窗口基础能力",

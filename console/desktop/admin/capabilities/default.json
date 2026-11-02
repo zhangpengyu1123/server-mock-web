@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "管理面窗口：只要窗口基础能力（目标是远端节点，走 HTTP 不碰文件系统）",
