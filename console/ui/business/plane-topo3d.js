@@ -17,6 +17,7 @@ const C = { paper: 0xeae5e1, ink: 0x171713, amber: 0xa67d48, sand: 0xc1b8a7, mut
 const ASSETS = './assets/';
 
 let rig = null;
+let ASSET_PROMISE = null;   // 资产只拉一次，rebuild 复用
 
 function labelTexture(title, sub, opts) {
   opts = opts || {};
@@ -176,11 +177,39 @@ class Topo3D {
   }
 
   async loadModels() {
-    const l = (n) => new Promise((res, rej) => this.loader.load(ASSETS + n + '.glb?v=' + Date.now(), res, undefined, rej));
-    const names = ['site', 'group', 'ne', 'comp', 'comp_ctrl', 'comp_switch', 'comp_service', 'comp_power', 'comp_fan'];
-    const loaded = await Promise.all(names.map((n) => l('topo_' + n).catch(() => null)));
+    // 单文件资产：一次请求拿全部模型（模块级缓存，rebuild 不再重复下载）
+    if (!ASSET_PROMISE) {
+      ASSET_PROMISE = new Promise((res, rej) =>
+        this.loader.load(ASSETS + 'topo_all.glb?v=1', res, undefined, rej));
+    }
+    const gltf = await ASSET_PROMISE;
+    const NAMES = {
+      TOPO_SITE: 'site',
+      TOPO_GROUP: 'group',
+      TOPO_NE: 'ne',
+      TOPO_COMP_CTRL: 'comp_ctrl',
+      TOPO_COMP_SWITCH: 'comp_switch',
+      TOPO_COMP_SERVICE: 'comp_service',
+      TOPO_COMP_POWER: 'comp_power',
+      TOPO_COMP_FAN: 'comp_fan',
+    };
     this.models = {};
-    names.forEach((n, i) => { if (loaded[i]) this.models[n] = loaded[i]; });
+    const roots = [];
+    gltf.scene.traverse((o) => {
+      if (o.parent === gltf.scene) roots.push(o);
+    });
+    roots.forEach((node) => {
+      const key = NAMES[node.name];
+      if (!key) return;
+      const holder = new THREE.Group();
+      const clone = node.clone(true);
+      clone.position.set(0, 0, 0);
+      clone.rotation.set(0, 0, 0);
+      holder.add(clone);
+      this.models[key] = { scene: holder };
+    });
+    // 通用芯片兜底 = 主控板
+    if (!this.models.comp) this.models.comp = this.models.comp_ctrl || null;
   }
 
   /** 组件名映射到资产：主控/交换/业务/电源/风扇，其余用通用芯片 */
