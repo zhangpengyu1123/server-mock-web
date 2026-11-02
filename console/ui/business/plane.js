@@ -281,9 +281,14 @@
     return head('拓扑连接', 'Site → element group → element → component（正交连线，双击下钻）', 'FILE NO. TOPO-001') + `
       <div class="pl-grid pl-grid--side">
         <div class="pl-card" style="padding:0;overflow:hidden">
-          <div class="pl-topo" id="topoBox">
+          <div class="pl-topo" id="topoBox" style="position:relative">
             <svg id="topoSvg" viewBox="0 0 880 430" preserveAspectRatio="xMidYMid meet"></svg>
             <div class="topo-tip" id="topoTip"></div>
+            <div id="topo3d" style="position:absolute;inset:0;display:none"></div>
+            <div style="position:absolute;top:8px;right:8px;display:flex;gap:6px;z-index:3">
+              <button class="pl-btn pl-btn--sm" data-dim="2d" id="btn2d">2D</button>
+              <button class="pl-btn pl-btn--sm" data-dim="3d" id="btn3d">3D</button>
+            </div>
           </div>
           <div style="display:flex;gap:6px;padding:10px 12px;border-top:1px solid var(--line)">
             ${['element', 'group', 'component'].map((l) => `<button class="pl-btn pl-btn--sm" data-level="${l}"
@@ -742,6 +747,25 @@
 
     // 拓扑层级
     $$('[data-level]').forEach((b) => b.addEventListener('click', () => { S.topoLevel = b.dataset.level; render(); }));
+
+    // 2D / 3D 切换
+    const b2 = $('#btn2d'), b3 = $('#btn3d'), box3 = $('#topo3d');
+    if (b2 && b3 && box3) {
+      b2.addEventListener('click', () => {
+        box3.style.display = 'none';
+        $('#topoSvg').style.display = '';
+        b2.style.cssText = 'background:#17140f;color:#eae5e1;border-color:#17140f';
+        b3.style.cssText = '';
+        if (window.PlaneTopo3D) window.PlaneTopo3D.unmount();
+      });
+      b3.addEventListener('click', () => {
+        box3.style.display = 'block';
+        $('#topoSvg').style.display = 'none';
+        b3.style.cssText = 'background:#17140f;color:#eae5e1;border-color:#17140f';
+        b2.style.cssText = '';
+        if (window.PlaneTopo3D) window.PlaneTopo3D.mount(box3, S, (id) => { S.topoSel = id; renderTopoDetail(); });
+      });
+    }
 
     // 左侧导航
     $$('[data-view]').forEach((b) => b.addEventListener('click', () => {
