@@ -573,7 +573,7 @@
         </div>
         <div class="pl-row-end"><button class="pl-btn pl-btn--solid pl-btn--sm" id="btnTaskQuick">＋ 创建升级任务</button></div></div>`;
     }
-    const ST = { done: '已完成', running: '进行中', pending: '待执行', failed: '失败', held: '已挂起' };
+    const ST = { done: '已完成', running: '进行中', pending: '待执行', failed: '失败', held: '已挂起（等人确认）' };
     const nodeColor = (st) => st === 'done' ? 'var(--signal)' : st === 'running' ? 'var(--ink)' : st === 'failed' ? '#7d2f22' : st === 'held' ? '#a67d48' : 'var(--line-2)';
     const pendingIdx = t2.stages.findIndex((st) => st.human && st.human.state === 'pending');
     return head('升级任务 · ' + t2.id, 'Stage timeline · human-in-the-loop state machine', 'FILE NO. ' + t2.id) + `
@@ -598,7 +598,13 @@
                         <span>${esc(o.label)}</span><small>EFFECT · ${esc(o.effect)}</small></button>`).join('')}
                     </div>
                   </div>` : ''}
-                ${st.human && st.human.state !== 'pending' ? `
+                ${st.human && st.human.state === 'expired' ? `
+                  <div style="border:1px solid #7d2f22;background:rgba(125,47,34,.05);padding:11px;margin-top:8px">
+                    <div style="font-size:8px;letter-spacing:.2em;color:#7d2f22">HUMAN · EXPIRED · 超时 ${st.human.timeout_s}s</div>
+                    <div style="margin:7px 0 9px;font-size:11px;line-height:1.75">${esc(st.human.prompt)}</div>
+                    <button class="pl-btn pl-btn--sm" data-human-retry="${esc(t2.id)}">重新发起确认</button>
+                  </div>` : ''}
+                ${st.human && st.human.state !== 'pending' && st.human.state !== 'expired' ? `
                   <div class="pl-muted" style="font-size:8.5px;margin-top:4px">
                     人机交互 · ${esc(st.human.state)}${st.human.chosen !== undefined && st.human.chosen !== null ? ' · 选择第 ' + (st.human.chosen + 1) + ' 项' : ''}
                   </div>` : ''}
@@ -746,7 +752,7 @@
 
   /* ---------------------------------------------------------------- 视图：OMC */
   function viewOmc() {
-    const ST = { done: '已完成', running: '进行中', pending: '待执行', failed: '失败', held: '已挂起' };
+    const ST = { done: '已完成', running: '进行中', pending: '待执行', failed: '失败', held: '已挂起（等人确认）' };
     const cfg = S.platform || { omc_elements: [], omc_groups: [], accounts: [] };
     const managed = cfg.omc_elements && cfg.omc_elements.length ? cfg.omc_elements : S.omc.elements;
     const accounts = cfg.accounts && cfg.accounts.length ? cfg.accounts : S.omc.accounts;
@@ -1624,6 +1630,17 @@
           method: 'POST', headers: headers(), body: JSON.stringify({ option: 0 }),
         });
         await loadAudit();
+      } catch (e) { console.warn(e); }
+      render();
+    }));
+
+    // 任务 · 超时后重新发起人工确认
+    $$('[data-human-retry]').forEach((b) => b.addEventListener('click', async () => {
+      try {
+        await api('/api/business/tasks/' + b.dataset.humanRetry + '/human/retry', {
+          method: 'POST', headers: headers(), body: '{}',
+        });
+        await loadTasks();
       } catch (e) { console.warn(e); }
       render();
     }));

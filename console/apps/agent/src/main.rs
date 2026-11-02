@@ -376,6 +376,14 @@ async fn business_resolve_mock_human(
     Ok(Json(m))
 }
 
+async fn business_retry_human(
+    st: Ctx, headers: HeaderMap, Path(id): Path<String>,
+) -> ApiResult<Json<UpgradeTask>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    Ok(Json(st.store.retry_human(&id)?))
+}
+
 async fn business_purge_tasks(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Value>> {
     let u = auth(&st, &headers)?;
     csrf_guard(&st, &headers, &u)?;
@@ -722,6 +730,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let mut tick = tokio::time::interval(Duration::from_secs(3));
             loop {
                 tick.tick().await;
+                let e = auto_store.expire_humans();
+                if e > 0 { auto_store.push_log("agent", "human.expire", &format!("{} 个人工确认超时", e), "warn"); }
                 let n = auto_store.auto_tick(2500);
                 if n > 0 {
                     auto_store.push_log("agent", "task.auto", &format!("自动推进 {} 个任务", n), "info");
@@ -761,6 +771,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/business/tasks", get(business_tasks).post(business_create_task))
         .route("/business/tasks/purge", post(business_purge_tasks))
         .route("/business/tasks/:id/human", post(business_resolve_human))
+        .route("/business/tasks/:id/human/retry", post(business_retry_human))
         .route("/business/endpoints", get(business_endpoints).post(business_create_endpoint))
         .route("/business/endpoints/:id", patch(business_patch_endpoint))
         .route("/business/endpoints/:id/cert", post(business_issue_cert))

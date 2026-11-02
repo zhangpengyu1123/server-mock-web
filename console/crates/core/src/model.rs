@@ -496,6 +496,9 @@ pub struct HumanStep {
     #[serde(default)]
     pub chosen: Option<usize>,
     pub timeout_s: u32,
+    /// 进入 pending 的时间（用于超时判定）
+    #[serde(default)]
+    pub since: Millis,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
