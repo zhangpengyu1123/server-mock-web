@@ -1,4 +1,4 @@
-﻿//! 领域模型：两端（W / L）共用同一套结构。
+//! 领域模型：两端（W / L）共用同一套结构。
 //!
 //! 设计要点：
 //! - 所有时间戳用 `i64` 毫秒（epoch），避免引入时间库，也便于前端直接 `new Date(ms)`。
@@ -106,6 +106,9 @@ pub struct Mapping {
     pub content_type: String,
     pub body: String,
     pub enabled: bool,
+    /// 该服务当前部署版本，形如 `0.1.1`（旧数据缺省为空）
+    #[serde(default)]
+    pub version: String,
     pub hits: u64,
     pub last_hit_at: Option<Millis>,
     pub created_at: Millis,
@@ -199,6 +202,8 @@ pub struct NewMapping {
     pub name: Option<String>,
     pub method: String,
     pub path: String,
+    #[serde(default)]
+    pub version: Option<String>,
     pub status: Option<u16>,
     pub delay_ms: Option<u32>,
     pub content_type: Option<String>,

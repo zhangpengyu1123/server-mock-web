@@ -1,4 +1,4 @@
-﻿//! 状态与持久化。
+//! 状态与持久化。
 //!
 //! 存储选型说明：scaffold 阶段用「JSON 文件 + 进程内 Mutex」，零 C 依赖、编译快、
 //! 数据可读可 diff。真实部署应换成 SQLite（`rusqlite` bounded 或 `sqlx`），
@@ -291,7 +291,8 @@ impl Store {
             name: req.name.unwrap_or_else(|| req.path.clone()),
             method: Method::parse(&req.method).unwrap(),
             path: req.path.clone(),
-            status: req.status.unwrap_or(200),
+            status: req.status.unwrap_or(200),
+              version: req.version.clone().unwrap_or_else(|| "0.1.0".into()),
             delay_ms: req.delay_ms.unwrap_or(0),
             content_type: req
                 .content_type
@@ -581,6 +582,7 @@ fn seed(inner: &mut Inner) {
             content_type: "application/json".into(),
             body: body.into(),
             enabled: true,
+              version: ["0.1.1", "0.1.0", "0.2.0"][i % 3].to_string(),
             hits: (i as u64) * 7,
             last_hit_at: None,
             created_at: now_ms() - (i as i64) * 60_000,

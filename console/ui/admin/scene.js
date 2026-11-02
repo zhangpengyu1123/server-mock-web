@@ -123,6 +123,32 @@ function nameplateTexture(lines, opts) {
   // 末尾小刻度
   g.fillStyle = 'rgba(247,242,234,.28)';
   for (let i = 0; i < 14; i++) g.fillRect(W - pad - i * 16, H - 26, 8, 3);
+      // —— chip：版本 + 状态（右下角） ——
+      const chips = [];
+      if (opts.version) {
+        chips.push({ text: 'v' + opts.version, fill: null,
+          ink: opts.stale ? 'rgba(247,242,234,.40)' : '#d79a44', stale: !!opts.stale });
+      }
+      if (opts.state) {
+        const on = opts.state === 'ON', sync = opts.state === 'SYNC';
+        chips.push({ text: opts.state,
+          fill: on ? '#d79a44' : sync ? '#3f8f93' : 'rgba(247,242,234,.16)',
+          ink: (on || sync) ? '#141210' : 'rgba(247,242,234,.72)' });
+      }
+      let chipX = W - pad;
+      const chipY = H - 74;
+      g.font = '600 40px "JetBrains Mono",ui-monospace,Consolas,monospace';
+      g.textBaseline = 'middle';
+      for (let k = chips.length - 1; k >= 0; k--) {
+        const c = chips[k];
+        const tw = g.measureText(c.text).width;
+        const bw = tw + 30;
+        if (c.fill) { g.fillStyle = c.fill; g.fillRect(chipX - bw, chipY - 26, bw, 52); }
+        else { g.strokeStyle = c.stale ? 'rgba(247,242,234,.22)' : 'rgba(247,242,234,.34)'; g.lineWidth = 2; g.strokeRect(chipX - bw, chipY - 26, bw, 52); }
+        g.fillStyle = c.ink;
+        g.fillText(c.text, chipX - bw + 15, chipY);
+        chipX -= bw + 12;
+      }
 
   const t = new THREE.CanvasTexture(cv);
   t.anisotropy = 4;
@@ -345,7 +371,9 @@ class Rig {
       // 前缘铭牌：节点名 + 版本 + 编号
       const plate = this.makePlate(G.infoW, G.infoH,
         [node.name || node.id, 'NODE ' + node.id.replace(/^node-/, '') + '   ·   ' + (node.version || '')],
-        { big: 120, code: 'X-' + String(bi + 1).padStart(3, '0'), accent: '#d79a44' });
+        { big: 120, code: 'X-' + String(bi + 1).padStart(3, '0'), accent: '#d79a44',
+            version: node.version || '',
+            state: node.status === 'online' ? 'ON' : node.status === 'updating' ? 'SYNC' : 'OFF' });
       plate.rotation.x = -Math.PI / 2;      // 平铺在板面（横向信息卡）
       plate.position.set(0, G.infoY, G.infoZ);
       root.add(plate);
@@ -364,6 +392,17 @@ class Rig {
       ribbon.rotation.x = -Math.PI / 2;
       ribbon.scale.set(0.34, 1, 1);            // 窄板：光流按板宽收窄
       root.add(ribbon);
+
+      // 离线：整板压暗一档（与在线板形成明显区别）
+      if (node.status === 'offline') {
+        root.traverse((o) => {
+          if (!o.isMesh || !o.material) return;
+          const mats = Array.isArray(o.material) ? o.material : [o.material];
+          mats.forEach((mat) => {
+            if (mat.color && mat.emissiveIntensity === undefined) mat.color.multiplyScalar(0.86);
+          });
+        });
+      }
 
       const board = { id: node.id, node, root, glows, rail, ribbon, bays: this.bayCenters(), index: bi };
       this.boards.push(board);
@@ -409,7 +448,13 @@ class Rig {
       const plateYc = tall ? 0.368 : 0.334;
       const plate = this.makePlate(plateW, plateH,
         [name, String(mp.method || 'GET').toUpperCase() + '  ' + (mp.path || '')],
-        { big: 110, code: kind, accent: kind === 'OMC' ? '#3f8f93' : '#d79a44' });
+        {
+          big: 110, code: kind,
+          accent: kind === 'OMC' ? '#3f8f93' : '#d79a44',
+          version: mp.version || (board.node && board.node.version) || '',
+          stale: !!(mp.version && board.node && mp.version !== board.node.version),
+          state: mp.enabled === false ? 'OFF' : 'ON',
+        });
       plate.position.set(0, plateYc, G.cardT / 2 + 0.0036);   // 前移 2mm，跳出铭牌凹位
       root.add(plate);
 
@@ -431,6 +476,26 @@ class Rig {
       glow.scale.set(0.34, 0.34, 1);
       glow.position.set(0, plateYc, 0.10);
       root.add(glow);
+
+      // 停用：整卡压暗，并盖一层半透明遮罩，远看就能分辨
+      if (mp.enabled === false) {
+        root.traverse((o) => {
+          if (!o.isMesh || !o.material) return;
+          const mats = Array.isArray(o.material) ? o.material : [o.material];
+          mats.forEach((mat) => {
+            if (mat.color) mat.color.multiplyScalar(0.80);
+            if (mat.emissiveIntensity !== undefined) mat.emissiveIntensity = 0;
+          });
+        });
+        const veil = new THREE.Mesh(
+          new THREE.PlaneGeometry(0.360, 0.360),
+          new THREE.MeshBasicMaterial({ color: 0x1b1917, transparent: true, opacity: 0.34, depthWrite: false })
+        );
+        veil.position.set(0, 0.19, G.cardT / 2 + 0.0055);
+        veil.renderOrder = 2;
+        root.add(veil);
+        mp.__veil = veil;
+      }
 
       const bg = board.glows[slot];
       if (bg) bg.material.emissiveIntensity = 0.03;
