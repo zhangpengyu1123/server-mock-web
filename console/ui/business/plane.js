@@ -174,6 +174,29 @@
     });
   }
 
+  async function loadElements() {
+    try {
+      const [els, gs] = await Promise.all([
+        api('/api/business/elements'),
+        api('/api/business/groups'),
+      ]);
+      if (Array.isArray(els) && els.length) {
+        S.elements = els.map((e) => ({
+          id: e.id, name: e.name, arch: e.arch,
+          type: e.kind, version: e.version, sw: e.software,
+          group: e.group, comps: e.components || [],
+          prev: (e.prev_versions || [])[0] || '—',
+          checks: e.checks || [], flow: e.flow || [],
+        }));
+      }
+      if (Array.isArray(gs) && gs.length) {
+        S.groups = gs.map((g) => ({ id: g.id, name: g.name, elements: g.element_ids || [] }));
+      }
+      if (!S.elements.find((e) => e.id === S.topoSel) && S.elements.length) S.topoSel = S.elements[0].id;
+    } catch (e) { /* 离线时保留演示数据 */ }
+    return { elements: S.elements, groups: S.groups };
+  }
+
   async function loadAudit() {
     try { S.audit = await api('/api/business/audit?limit=60') || []; } catch (e) { S.audit = []; }
     return S.audit;
@@ -1052,19 +1075,31 @@
 
     // 网元
     const na = $('#btnNeAdd');
-    if (na) na.addEventListener('click', () => {
-      const n = S.elements.length + 1;
-      S.elements.push({ id: 'ne-000' + n, name: 'gNB-HZ-09' + (4 + n), arch: 'SA', type: 'gNB', version: '5.2.1', sw: 'NR-RAN', group: 'g-hz-01', comps: ['主控板', '业务板', '电源'] });
+    if (na) na.addEventListener('click', async () => {
+      try {
+        await api('/api/business/elements', {
+          method: 'POST', headers: headers(),
+          body: JSON.stringify({
+            name: 'gNB-HZ-09' + String(10 + S.elements.length),
+            arch: 'SA', kind: 'gNB', version: '5.2.1', software: 'NR-RAN',
+            group: (S.groups[0] || {}).id || '',
+            components: ['主控板', '业务板', '电源'],
+          }),
+        });
+        await loadElements();
+      } catch (e) { console.warn(e); }
       render();
     });
     $$('[data-ne-detail]').forEach((b) => b.addEventListener('click', () => {
       S.topoSel = b.dataset.neDetail; S.view = 'ne-detail'; render();
     }));
-    $$('[data-ne-copy]').forEach((b) => b.addEventListener('click', () => {
-      const src = S.elements.find((x) => x.id === b.dataset.neCopy);
-      if (!src) return;
-      const n = S.elements.length + 1;
-      S.elements.push(Object.assign({}, src, { id: 'ne-000' + n, name: src.name + '-copy' }));
+    $$('[data-ne-copy]').forEach((b) => b.addEventListener('click', async () => {
+      try {
+        await api('/api/business/elements/' + b.dataset.neCopy + '/copy', {
+          method: 'POST', headers: headers(), body: '{}',
+        });
+        await loadElements();
+      } catch (e) { console.warn(e); }
       render();
     }));
 
@@ -1275,7 +1310,7 @@
   (async () => {
     try {
       const ok = await ensureAuth();
-      if (ok) { await loadEndpoint(); await loadTasks(); await loadIfaces(); await loadAudit(); }
+      if (ok) { await loadEndpoint(); await loadElements(); await loadTasks(); await loadIfaces(); await loadAudit(); }
     } catch (e) { /* 后端不可达时退化为本地演示数据 */ }
     render();
   })();

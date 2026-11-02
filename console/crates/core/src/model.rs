@@ -260,6 +260,91 @@ pub struct NewUserReq {
 }
 
 
+
+// ---------------- 网元 ----------------
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ElementCheck {
+    pub field: String,
+    pub rule: String,
+    pub msg: String,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ElementStep {
+    pub step: String,
+    #[serde(default)]
+    pub human: bool,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct NetworkElement {
+    pub id: String,
+    pub name: String,
+    /// SA | NSA | EPC | CLOUD
+    pub arch: String,
+    /// gNB | MME | UPF | CU | DU
+    pub kind: String,
+    pub version: String,
+    pub software: String,
+    #[serde(default)]
+    pub prev_versions: Vec<String>,
+    #[serde(default)]
+    pub group: String,
+    #[serde(default)]
+    pub components: Vec<String>,
+    #[serde(default)]
+    pub checks: Vec<ElementCheck>,
+    #[serde(default)]
+    pub flow: Vec<ElementStep>,
+    pub created_at: Millis,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ElementGroup {
+    pub id: String,
+    pub name: String,
+    #[serde(default)]
+    pub site: String,
+    #[serde(default)]
+    pub element_ids: Vec<String>,
+    pub created_at: Millis,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct NewElementReq {
+    pub name: String,
+    pub arch: String,
+    pub kind: String,
+    pub version: String,
+    pub software: String,
+    #[serde(default)]
+    pub group: String,
+    #[serde(default)]
+    pub components: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct PatchElementReq {
+    pub name: Option<String>,
+    pub arch: Option<String>,
+    pub kind: Option<String>,
+    pub version: Option<String>,
+    pub software: Option<String>,
+    pub group: Option<String>,
+    pub components: Option<Vec<String>>,
+    pub checks: Option<Vec<ElementCheck>>,
+    pub flow: Option<Vec<ElementStep>>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct NewGroupReq {
+    pub name: String,
+    #[serde(default)]
+    pub site: String,
+    #[serde(default)]
+    pub element_ids: Vec<String>,
+}
+
 // ---------------- 升级任务（OMC 一体化升级） ----------------
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct HumanOption {

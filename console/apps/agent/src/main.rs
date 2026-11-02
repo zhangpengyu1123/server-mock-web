@@ -240,6 +240,50 @@ async fn business_stats(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Stats>> {
 }
 
 // ================================================================== 管理面
+async fn business_elements(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Vec<NetworkElement>>> {
+    let _u = auth(&st, &headers)?;
+    Ok(Json(st.store.elements()))
+}
+
+async fn business_create_element(
+    st: Ctx, headers: HeaderMap, Json(req): Json<NewElementReq>,
+) -> ApiResult<Json<NetworkElement>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    Ok(Json(st.store.create_element(req)?))
+}
+
+async fn business_patch_element(
+    st: Ctx, headers: HeaderMap, Path(id): Path<String>, Json(req): Json<PatchElementReq>,
+) -> ApiResult<Json<NetworkElement>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    Ok(Json(st.store.patch_element(&id, req)?))
+}
+
+async fn business_copy_element(
+    st: Ctx, headers: HeaderMap, Path(id): Path<String>,
+) -> ApiResult<Json<NetworkElement>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    let el = st.store.copy_element(&id)?;
+    st.store.push_log("business", "element.copy", &format!("复制网元 {}", el.id), "info");
+    Ok(Json(el))
+}
+
+async fn business_groups(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Vec<ElementGroup>>> {
+    let _u = auth(&st, &headers)?;
+    Ok(Json(st.store.groups()))
+}
+
+async fn business_create_group(
+    st: Ctx, headers: HeaderMap, Json(req): Json<NewGroupReq>,
+) -> ApiResult<Json<ElementGroup>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    Ok(Json(st.store.create_group(req)?))
+}
+
 async fn business_audit(
     st: Ctx,
     headers: HeaderMap,
@@ -621,6 +665,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/business/mappings/:id/test", post(business_test))
         .route("/business/logs", get(business_logs))
         .route("/business/stats", get(business_stats))
+        .route("/business/elements", get(business_elements).post(business_create_element))
+        .route("/business/elements/:id", patch(business_patch_element))
+        .route("/business/elements/:id/copy", post(business_copy_element))
+        .route("/business/groups", get(business_groups).post(business_create_group))
         .route("/business/audit", get(business_audit))
         .route("/business/mappings/:id/rules", patch(business_patch_rules))
         .route("/business/mappings/:id/human", post(business_resolve_mock_human))
