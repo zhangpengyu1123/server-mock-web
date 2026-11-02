@@ -2376,6 +2376,21 @@
     }
   }
 
+  // ---------------------------------------------------------------- 桌面壳窗口控制
+  (function bindWindowControls() {
+    const box = $('#plWinCtl');
+    if (!box) return;
+    const api = window.__TAURI_INTERNALS__;
+    const call = (cmd) => (api && api.invoke) ? api.invoke('plugin:window|' + cmd, { label: 'main' }) : Promise.resolve();
+    box.querySelectorAll('[data-win]').forEach((b) => b.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      const k = b.dataset.win;
+      if (k === 'min') call('minimize');
+      else if (k === 'max') call('toggle_maximize');
+      else if (k === 'close') call('close');
+    }));
+  })();
+
   $('#plExit') && $('#plExit').addEventListener('click', () => { location.href = '/'; });
   (async () => {
     try {

@@ -10,6 +10,8 @@
       "title": "RHINE MOCK · 业务面",
       "width": 1480, "height": 920, "minWidth": 1080, "minHeight": 700,
       "center": true,
+      "decorations": false,
+      "resizable": true,
       "url": "business/plane.html"
     }],
     "security": {

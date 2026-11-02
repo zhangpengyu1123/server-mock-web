@@ -311,3 +311,17 @@ node console/scripts/check-desktop.mjs
 ```
 
 注意：桌面壳连的是本机 **9601（W 端，免登录）**，未启动 9601 时会停在登录门（`nav: 0`）。
+---
+
+## 0.4 桌面壳自绘标题栏
+
+桌面壳（`console/desktop/business`）关闭了系统边框（`decorations: false`），改用页面内的自绘控制：
+
+| 元素 | 实现 |
+|---|---|
+| 拖动区 | `.pl-top` 带 `data-tauri-drag-region`（仅 Tauri 下注入） |
+| 按钮 | 右上角 `— / □ / ×`，调用 `plugin:window|minimize / toggle_maximize / close` |
+| 浏览器 | `html` 不带 `is-tauri`，`.pl-winctl` 自动隐藏，仍是「退出」按钮 |
+| 权限 | `core:window:allow-start-dragging / allow-minimize / allow-toggle-maximize / allow-close` |
+
+实测（WebView2 CDP）：`is-tauri=true`、拖动区存在、3 个按钮可见、`minimize` 与 `close` 均生效（关闭后进程退出）。
