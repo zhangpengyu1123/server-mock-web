@@ -59,10 +59,11 @@ function glow(color, intensity) {
 }
 
 class Topo3D {
-  constructor(host, state, onPick) {
+  constructor(host, state, onPick, onDrill) {
     this.host = host;
     this.state = state;
     this.onPick = onPick;
+    this.onDrill = onDrill;
 
     const w = host.clientWidth || 880;
     const h = host.clientHeight || 430;
@@ -161,6 +162,7 @@ class Topo3D {
   }
 
   link(a, b) {
+    this.links = this.links || [];
     const from = new THREE.Vector3(...a);
     const to = new THREE.Vector3(...b);
     const dir = new THREE.Vector3().subVectors(to, from);
@@ -170,6 +172,56 @@ class Topo3D {
     m.position.copy(from).addScaledVector(dir, 0.5);
     m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
     this.root.add(m);
+    if (this.lastFrom && this.lastTo) {
+      this.links.push({ from: this.lastFrom, to: this.lastTo, mesh: m });
+    }
+  }
+
+  /** 记录"这条线连接哪两个节点"（build 时按顺序调用） */
+  edge(a, b) {
+    this.lastFrom = a; this.lastTo = b;
+    return this.link(this.anchorOf(a), this.anchorOf(b));
+  }
+
+  anchorOf(id) {
+    const n = (this.nodes || []).find((o) => o.userData && o.userData.id === id);
+    if (!n) return [0, 0.7, 0];
+    const p = n.position;
+    return [p.x, p.y + 0.12, p.z];
+  }
+
+  /** 选中高亮：自身加琥珀自发光，邻接节点提亮，其余压暗 */
+  select(id) {
+    if (!this.nodes) return;
+    this.selected = id;
+    const near = new Set([id]);
+    (this.links || []).forEach((l) => {
+      if (l.from === id) near.add(l.to);
+      if (l.to === id) near.add(l.from);
+    });
+    this.nodes.forEach((o) => {
+      const oid = (o.userData || {}).id;
+      const on = near.has(oid);
+      o.traverse((c) => {
+        if (!c.isMesh || !c.material) return;
+        const mm = c.material;
+        if (mm.emissive) {
+          if (oid === id) { mm.emissive.setHex(0xa67d48); mm.emissiveIntensity = 0.55; }
+          else { mm.emissive.setHex(0x000000); mm.emissiveIntensity = 0; }
+        }
+        if (mm.transparent !== undefined) {
+          mm.transparent = !on || oid !== id;
+          mm.opacity = oid === id ? 1 : (on ? 0.92 : 0.42);
+        }
+      });
+    });
+    (this.links || []).forEach((l) => {
+      const hit = l.from === id || l.to === id;
+      l.mesh.material = l.mesh.material.clone();
+      l.mesh.material.color.setHex(hit ? 0xa67d48 : 0x9a948a);
+      l.mesh.material.emissiveIntensity = hit ? 1.6 : 0.25;
+      l.mesh.scale.set(hit ? 1.6 : 0.8, 1, hit ? 1.6 : 0.8);
+    });
   }
 
   build() {
@@ -181,6 +233,9 @@ class Topo3D {
     this.scene.add(this.root);
     this.nodes = [];
     this.labels = [];
+    this.links = [];
+    this.lastFrom = null;
+    this.lastTo = null;
 
     const st = this.state;
     const lvl = st.topoLevel || 'element';
@@ -264,14 +319,26 @@ class Topo3D {
       this.ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1;
       this.ptr.y = -((e.clientY - r.top) / r.height) * 2 + 1;
     });
-    el.addEventListener('click', () => {
-      if (!this.nodes) return;
+    const pick = () => {
+      if (!this.nodes) return null;
       this.ray.setFromCamera(this.ptr, this.camera);
       const hits = this.ray.intersectObjects(this.nodes, true);
-      if (!hits.length) return;
+      if (!hits.length) return null;
       let o = hits[0].object;
       while (o && !o.userData.kind) o = o.parent;
-      if (o && this.onPick) this.onPick(o.userData.id, o.userData);
+      return o || null;
+    };
+    el.addEventListener('click', () => {
+      const o = pick();
+      if (!o) return;
+      this.select(o.userData.id);
+      if (this.onPick) this.onPick(o.userData.id, o.userData);
+    });
+    el.addEventListener('dblclick', () => {
+      const o = pick();
+      if (!o) return;
+      this.select(o.userData.id);
+      if (this.onDrill) this.onDrill(o.userData.kind, o.userData.id);
     });
   }
 
@@ -299,11 +366,12 @@ class Topo3D {
 }
 
 window.PlaneTopo3D = {
-  mount(host, state, onPick) {
-    if (rig) return rig;
-    rig = new Topo3D(host, state, onPick);
+  mount(host, state, onPick, onDrill) {
+    if (rig) { rig.state = state; rig.onPick = onPick; rig.onDrill = onDrill; return rig; }
+    rig = new Topo3D(host, state, onPick, onDrill);
     return rig;
   },
+  select(id) { if (rig) rig.select(id); },
   unmount() { if (rig) { rig.dispose(); rig = null; } },
   rebuild() { if (rig) rig.build(); },
 };

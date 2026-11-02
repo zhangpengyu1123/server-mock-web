@@ -1146,7 +1146,21 @@
         $('#topoSvg').style.display = 'none';
         b3.style.cssText = 'background:#17140f;color:#eae5e1;border-color:#17140f';
         b2.style.cssText = '';
-        if (window.PlaneTopo3D) window.PlaneTopo3D.mount(box3, S, (id) => { S.topoSel = id; renderTopoDetail(); });
+        if (window.PlaneTopo3D) window.PlaneTopo3D.mount(
+          box3, S,
+          (id) => { S.topoSel = id; renderTopoDetail(); },
+          (kind, id) => {
+            if (kind === 'ne') { S.topoSel = id; S.topoLevel = 'component'; }
+            else if (kind === 'site' || kind === 'group') { S.topoLevel = 'element'; }
+            if (window.PlaneTopo3D) window.PlaneTopo3D.rebuild();
+            // 同步层级按钮选中态（不整页重渲染，保住 3D 实例）
+            Array.from(document.querySelectorAll('[data-level]')).forEach((btn) => {
+              const on = btn.dataset.level === S.topoLevel;
+              btn.style.cssText = on ? 'background:#17140f;color:#eae5e1;border-color:#17140f' : '';
+            });
+            renderTopoDetail();
+          }
+        );
       });
     }
 
