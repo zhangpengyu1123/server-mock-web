@@ -27,13 +27,13 @@ function labelTexture(title, sub, opts) {
   g.clearRect(0, 0, W, H);
   g.textBaseline = 'middle';
   g.fillStyle = '#171713';
-  g.font = '600 ' + (opts.big || 52) + 'px "JetBrains Mono","PingFang SC","Microsoft YaHei",monospace';
+  g.font = '600 ' + (opts.big || 60) + 'px "JetBrains Mono","PingFang SC","Microsoft YaHei",monospace';
   let text = String(title || '');
   while (g.measureText(text).width > W - 40 && text.length > 3) text = text.slice(0, -2) + '…';
   g.fillText(text, 18, opts.sub ? H * 0.40 : H * 0.52);
   if (sub) {
     g.fillStyle = 'rgba(23,23,19,.55)';
-    g.font = '500 ' + (opts.small || 28) + 'px "JetBrains Mono","PingFang SC",monospace';
+    g.font = '500 ' + (opts.small || 32) + 'px "JetBrains Mono","PingFang SC",monospace';
     g.fillText(String(sub), 18, H * 0.75);
   }
   if (opts.tick) {
@@ -124,7 +124,7 @@ class Topo3D {
 
   floor() {
     const f = new THREE.Mesh(new THREE.PlaneGeometry(40, 40),
-      new THREE.MeshStandardMaterial({ color: 0xe2ddd6, roughness: 0.94 }));
+      new THREE.MeshStandardMaterial({ color: 0xe8e3dc, roughness: 0.94 }));
     f.rotation.x = -Math.PI / 2;
     f.receiveShadow = true;
     this.scene.add(f);
@@ -133,7 +133,7 @@ class Topo3D {
   plate(w, t, d, color) {
     const m = new THREE.Mesh(new THREE.BoxGeometry(w, t, d), mat(color || 0xe6e1d9, 0.62));
     m.castShadow = true; m.receiveShadow = true;
-    const inner = new THREE.Mesh(new THREE.BoxGeometry(w * 0.86, 0.003, d * 0.86), mat(C.muted, 0.8));
+    const inner = new THREE.Mesh(new THREE.BoxGeometry(w * 0.86, 0.003, d * 0.86), mat(0xbdb6a9, 0.8));
     inner.position.y = t / 2 + 0.002;
     m.add(inner);
     return m;
@@ -150,7 +150,7 @@ class Topo3D {
 
   addLabel(parent, title, sub, y, scale, opts) {
     const { tex, aspect } = labelTexture(title, sub, opts);
-    const hh = 0.105 * (scale || 1);
+    const hh = 0.165 * (scale || 1);
     const m = new THREE.Mesh(new THREE.PlaneGeometry(hh * aspect, hh),
       new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false }));
     m.position.set(0, y, 0);
@@ -215,13 +215,13 @@ class Topo3D {
         this.link([0, Y + 0.12, 0], [box.position.x, Y + 0.11, box.position.z]);
       });
 
-      this.controls.target.set(0, Y + 0.14, 0);
-      this.camera.position.set(2.3, Y + 1.55, 2.5);
+      this.controls.target.set(0, Y + 0.12, 0);
+      this.camera.position.set(2.9, Y + 2.05, 3.0);
       return;
     }
 
     // 站点
-    const site = this.plate(1.55, 0.08, 1.05, 0xeae5e1);
+    const site = this.plate(1.55, 0.08, 1.05, 0xefeae3);
     site.position.set(0, Y, 0.95);
     this.root.add(site);
     addPick(site, { kind: 'site', id: 'site', label: st.site.name });
@@ -230,7 +230,7 @@ class Topo3D {
     // 组 + 网元
     st.groups.forEach((g, gi) => {
       const gz = -0.25 - gi * 1.45;
-      const gp = this.plate(2.05, 0.07, 0.66, 0xe6e1d9);
+      const gp = this.plate(2.05, 0.07, 0.66, 0xece7e0);
       gp.position.set(0, Y, gz);
       this.root.add(gp);
       addPick(gp, { kind: 'group', id: g.id, label: g.name });
@@ -251,8 +251,8 @@ class Topo3D {
       });
     });
 
-    this.controls.target.set(0, Y + 0.10, -0.5);
-    this.camera.position.set(2.6, Y + 1.85, 2.7);
+    this.controls.target.set(0, Y + 0.06, -0.35);
+    this.camera.position.set(3.15, Y + 2.35, 3.25);
   }
 
   bindPick() {
