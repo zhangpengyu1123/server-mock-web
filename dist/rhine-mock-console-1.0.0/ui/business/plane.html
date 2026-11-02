@@ -5,9 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>业务面 · RHINE LAB PLANE</title>
 <link rel="stylesheet" href="../shared/base.css" />
-<link rel="stylesheet" href="./plane.css?v=20261103013047" />
+<link rel="stylesheet" href="./plane.css?v=20261103014131" />
 </head>
 <body class="pl">
+
+<!-- 桌面壳探测（Tauri 下启用自绘标题栏与窗口按钮） -->
+<script>
+  (function () {
+    var isTauri = location.protocol === 'tauri:' || location.hostname === 'tauri.localhost';
+    if (isTauri) {
+      document.documentElement.classList.add('is-tauri');
+      document.addEventListener('DOMContentLoaded', function () {
+        var top = document.querySelector('.pl-top');
+        if (top) top.setAttribute('data-tauri-drag-region', '');
+      });
+    }
+  })();
+</script>
 
 <!-- 顶栏 -->
 <header class="pl-top">
@@ -39,6 +53,11 @@
   <div class="pl-meta">
     <span id="plNode">—</span>
     <button class="pl-ghost" id="plExit">退出</button>
+    <div class="pl-winctl" id="plWinCtl" aria-label="窗口控制">
+      <button class="pl-winctl__b" data-win="min" title="最小化">—</button>
+      <button class="pl-winctl__b" data-win="max" title="最大化">□</button>
+      <button class="pl-winctl__b pl-winctl__b--x" data-win="close" title="关闭">×</button>
+    </div>
   </div>
 </header>
 
@@ -75,7 +94,7 @@
   "three/addons/": "../vendor/"
 } }
 </script>
-<script src="./plane.js?v=20261103011754"></script>
-<script type="module" src="./plane-topo3d.js?v=20261103012121"></script>
+<script src="./plane.js?v=20261103014131"></script>
+<script type="module" src="./plane-topo3d.js?v=20261103014016"></script>
 </body>
 </html>

@@ -69,7 +69,7 @@ accent:["#9b7247", "#c5a16b"]
 ## 4. 纹理与动效
 
 - 全局 SVG 噪点颗粒（`body.pl::after`），与上游「颗粒 20%、尺寸 20%、12Hz」同源思路
-- 琥珀流光：`@keyframes rhineFlow` 虚线位移（2D 连线）、3D 连线上的流动光点（3.2s 往返）
+- 琥珀流光：`@keyframes rhineFlow` 虚线位移（2D 连线）、3D 连线上的单向流动光点 + 中点箭头（父 → 子）
 - 加载骨架：`TO P O L O G Y  L O A D I N G` + `@keyframes rhineLoad`
 
 ## 5. 与上游的差异（有意保留）

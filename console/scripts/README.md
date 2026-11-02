@@ -9,6 +9,9 @@
 | `seed-audit.mjs` | 造审计数据（多规则 + 不同延迟/状态码），用于截图与演示 |
 | `test-variants.mjs` | 多规则匹配的接口自测（断言 201/500/200 与延迟） |
 | `check-desktop.mjs` | 通过 WebView2 远程调试端口（9222）读取桌面壳里业务面的实际渲染状态（标题/当前视图/配色 token/导航与卡片数） |
+| `check-titlebar.mjs` | 校验桌面壳自绘标题栏：`is-tauri`、拖动区、3 个窗口按钮、`invoke` 可用性、minimize 实测 |
+| `shot-desktop.mjs` | 通过 CDP 截取桌面壳画面（无交互桌面时的取证手段） |
+| `click-close.mjs` | 模拟点击自绘标题栏的「×」，验证窗口真的关闭 |
 | seed-demo-rules.mjs | 给 `/nemp/v1/ne/register` 配 4 条规则 + 3 个字段行为，并造审计流量 |
 | clean-scene.mjs | 导出→过滤（时间戳映射 / 任务 / 命中）→导入，用于演示前重置 |
 | etch-three-addons.mjs | 拉取 three.js 与 addons 到 `console/ui/vendor/`（离线环境一次性） |

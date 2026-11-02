@@ -199,25 +199,25 @@
         {
           "step": "校验 checksum（sha256）",
           "status": "pass",
-          "at": 1793640387201,
+          "at": 1793640730065,
           "note": "sha256 匹配"
         },
         {
           "step": "校验签名（GPG）",
           "status": "pass",
-          "at": 1793640387201,
+          "at": 1793640730065,
           "note": "GPG 签名有效"
         },
         {
           "step": "校验包与平台版本兼容性",
           "status": "pass",
-          "at": 1793640387201,
+          "at": 1793640730065,
           "note": "3 个软件包与平台版本兼容"
         },
         {
           "step": "校验主备站点一致性",
           "status": "pass",
-          "at": 1793640387201,
+          "at": 1793640730065,
           "note": "主备站点一致"
         }
       ]
@@ -268,42 +268,6 @@
     ]
   },
   "hits": [
-    {
-      "status": 200,
-      "body": "",
-      "content_type": "application/json",
-      "latency_ms": 120,
-      "mapping_id": "map-0001",
-      "at": 1793640952173,
-      "method": "POST",
-      "path": "/nemp/v1/ne/register",
-      "delay_ms": 45,
-      "human": false
-    },
-    {
-      "status": 500,
-      "body": "",
-      "content_type": "application/json",
-      "latency_ms": 120,
-      "mapping_id": "map-0001",
-      "at": 1793640952095,
-      "method": "POST",
-      "path": "/nemp/v1/ne/register",
-      "delay_ms": 12,
-      "human": false
-    },
-    {
-      "status": 201,
-      "body": "",
-      "content_type": "application/json",
-      "latency_ms": 120,
-      "mapping_id": "map-0001",
-      "at": 1793640952063,
-      "method": "POST",
-      "path": "/nemp/v1/ne/register",
-      "delay_ms": 5,
-      "human": false
-    },
     {
       "status": 200,
       "body": "",
@@ -2667,6 +2631,42 @@
       "path": "/nemp/v1/ne/register",
       "delay_ms": 600,
       "human": false
+    },
+    {
+      "status": 201,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793640511423,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 5,
+      "human": false
+    },
+    {
+      "status": 200,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793640511393,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 45,
+      "human": false
+    },
+    {
+      "status": 500,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793640511316,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 12,
+      "human": false
     }
   ],
   "tasks": [
@@ -3136,7 +3136,7 @@
           "step": 1,
           "max": 0,
           "condition": "",
-          "count": 28,
+          "count": 10,
           "used": false
         },
         {
@@ -3194,8 +3194,8 @@
       ],
       "human": null,
       "version": "0.1.1",
-      "hits": 38,
-      "last_hit_at": 1793640952109,
+      "hits": 265,
+      "last_hit_at": 1793640694946,
       "created_at": 1793640234652
     },
     {

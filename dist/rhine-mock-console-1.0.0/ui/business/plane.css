@@ -301,3 +301,19 @@ body.pl::after {
   animation: rhineFlow 1.4s linear infinite;
 }
 @keyframes rhineFlow { to { stroke-dashoffset: -18; } }
+
+/* ---------------------------------------------------------------- 桌面壳自绘标题栏 */
+.pl-winctl { display: none; gap: 2px; margin-left: 8px; }
+html.is-tauri .pl-winctl { display: flex; }
+html.is-tauri .pl-top { -webkit-user-select: none; user-select: none; }
+html.is-tauri #plExit { display: none; }
+
+.pl-winctl__b {
+  width: 26px; height: 22px; display: inline-flex; align-items: center; justify-content: center;
+  font: inherit; font-size: 11px; line-height: 1;
+  background: transparent; color: var(--ink-2);
+  border: 1px solid var(--line); cursor: pointer;
+  transition: background .14s ease, color .14s ease, border-color .14s ease;
+}
+.pl-winctl__b:hover { background: var(--panel); color: var(--ink); border-color: var(--line-2); }
+.pl-winctl__b--x:hover { background: var(--danger); color: #f5efe7; border-color: var(--danger); }
