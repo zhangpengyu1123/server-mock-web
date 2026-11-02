@@ -242,6 +242,64 @@ pub struct NewUserReq {
     pub role: Option<String>,
 }
 
+
+// ---------------- 升级任务（OMC 一体化升级） ----------------
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct HumanOption {
+    pub label: String,
+    /// continue | abort | hold
+    pub effect: String,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct HumanStep {
+    pub prompt: String,
+    pub options: Vec<HumanOption>,
+    /// pending | resolved | expired
+    pub state: String,
+    #[serde(default)]
+    pub chosen: Option<usize>,
+    pub timeout_s: u32,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct UpgradeStage {
+    pub key: String,
+    pub label: String,
+    /// pending | running | done | failed | held
+    pub state: String,
+    #[serde(default)]
+    pub human: Option<HumanStep>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct UpgradeTask {
+    pub id: String,
+    pub site: String,
+    pub element_ids: Vec<String>,
+    pub from_version: String,
+    pub to_version: String,
+    /// 当前阶段索引
+    pub stage: usize,
+    pub progress: u8,
+    pub stages: Vec<UpgradeStage>,
+    pub created_at: Millis,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct NewTaskReq {
+    pub site: String,
+    pub element_ids: Vec<String>,
+    pub from_version: String,
+    pub to_version: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ResolveHumanReq {
+    /// 选项下标
+    pub option: usize,
+}
+
 /// Mock 监听端点：本机 IP:端口 + 挂载的平台能力 + 可选证书
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct MockEndpoint {

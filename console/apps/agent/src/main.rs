@@ -235,6 +235,36 @@ async fn business_stats(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Stats>> {
 }
 
 // ================================================================== 管理面
+async fn business_tasks(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Vec<UpgradeTask>>> {
+    let _u = auth(&st, &headers)?;
+    Ok(Json(st.store.tasks()))
+}
+
+async fn business_create_task(
+    st: Ctx,
+    headers: HeaderMap,
+    Json(req): Json<NewTaskReq>,
+) -> ApiResult<Json<UpgradeTask>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    let t = st.store.create_task(req)?;
+    st.store.push_log("business", "task.create", &format!("创建升级任务 {}", t.id), "info");
+    Ok(Json(t))
+}
+
+async fn business_resolve_human(
+    st: Ctx,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+    Json(req): Json<ResolveHumanReq>,
+) -> ApiResult<Json<UpgradeTask>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    let t = st.store.resolve_human(&id, req.option)?;
+    st.store.push_log("business", "task.human", &format!("人工确认 {} → 阶段 {}", t.id, t.stage), "info");
+    Ok(Json(t))
+}
+
 async fn business_endpoints(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Vec<MockEndpoint>>> {
     let _u = auth(&st, &headers)?;
     Ok(Json(st.store.endpoints()))
@@ -445,6 +475,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/business/mappings/:id/test", post(business_test))
         .route("/business/logs", get(business_logs))
         .route("/business/stats", get(business_stats))
+        .route("/business/tasks", get(business_tasks).post(business_create_task))
+        .route("/business/tasks/:id/human", post(business_resolve_human))
         .route("/business/endpoints", get(business_endpoints).post(business_create_endpoint))
         .route("/business/endpoints/:id", patch(business_patch_endpoint))
         .route("/business/endpoints/:id/cert", post(business_issue_cert))

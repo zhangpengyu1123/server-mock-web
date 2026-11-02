@@ -81,6 +81,8 @@ pub struct AuthUser {
 struct Persisted {
     #[serde(default)]
     endpoints: Vec<MockEndpoint>,
+    #[serde(default)]
+    tasks: Vec<UpgradeTask>,
     users: Vec<User>,
     mappings: Vec<Mapping>,
     nodes: Vec<AgentNode>,
@@ -88,6 +90,7 @@ struct Persisted {
 }
 
 struct Inner {
+    tasks: Vec<UpgradeTask>,
     endpoints: Vec<MockEndpoint>,
     users: Vec<User>,
     mappings: Vec<Mapping>,
@@ -121,6 +124,7 @@ impl Store {
             seq: 0,
             started_at: now_ms(),
             endpoints: vec![],
+            tasks: vec![],
         };
 
         if path.exists() {
@@ -132,6 +136,7 @@ impl Store {
                     inner.nodes = p.nodes;
                     inner.seq = p.seq;
                         inner.endpoints = p.endpoints;
+                        inner.tasks = p.tasks;
                 }
                 Err(e) => {
                     // 坏数据不静默吞掉：备份后重新播种，避免"看起来正常但数据没了"
@@ -169,6 +174,7 @@ impl Store {
             nodes: inner.nodes.clone(),
             seq: inner.seq,
             endpoints: inner.endpoints.clone(),
+            tasks: inner.tasks.clone(),
         };
         let json = serde_json::to_string_pretty(&doc).map_err(|e| Error::Io(e.to_string()))?;
         if let Some(dir) = self.path.parent() {
@@ -183,6 +189,100 @@ impl Store {
     /// 后台任务持有独立句柄（内部是 Arc<Mutex<..>>，共享同一份状态）
     pub fn clone_for_task(&self) -> Self {
         self.clone()
+    }
+
+    // ---------------- 升级任务 ----------------
+    pub fn tasks(&self) -> Vec<UpgradeTask> {
+        self.inner.lock().unwrap().tasks.clone()
+    }
+
+    /// 新建一体化升级任务：5 段流程，其中 activate / 主备倒换 带人机交互
+    pub fn create_task(&self, req: NewTaskReq) -> Result<UpgradeTask> {
+        let mut i = self.inner.lock().unwrap();
+        let next = i
+            .tasks
+            .iter()
+            .filter_map(|t| t.id.rsplit('-').next().and_then(|x| x.parse::<u32>().ok()))
+            .max()
+            .unwrap_or(0)
+            + 1;
+        let human = |prompt: &str, timeout_s: u32| HumanStep {
+            prompt: prompt.into(),
+            options: vec![
+                HumanOption { label: "确认继续".into(), effect: "continue".into() },
+                HumanOption { label: "稍后处理".into(), effect: "hold".into() },
+                HumanOption { label: "终止升级".into(), effect: "abort".into() },
+            ],
+            state: "pending".into(),
+            chosen: None,
+            timeout_s,
+        };
+        let stages = vec![
+            UpgradeStage { key: "upload".into(), label: "上传软件包".into(), state: "done".into(), human: None },
+            UpgradeStage { key: "verify".into(), label: "预检查与参数校验".into(), state: "done".into(), human: None },
+            UpgradeStage { key: "activate".into(), label: "激活".into(), state: "running".into(),
+                human: Some(human("升级包已就绪，确认开始激活？", 60)) },
+            UpgradeStage { key: "switch".into(), label: "主备倒换".into(), state: "pending".into(),
+                human: Some(human("即将主备倒换，请确认现场可以操作", 45)) },
+            UpgradeStage { key: "done".into(), label: "完成与回执".into(), state: "pending".into(), human: None },
+        ];
+        let task = UpgradeTask {
+            id: format!("UPG-{:04}", 90 + next),
+            site: req.site,
+            element_ids: req.element_ids,
+            from_version: req.from_version,
+            to_version: req.to_version,
+            stage: 2,
+            progress: 40,
+            stages,
+            created_at: now_ms(),
+        };
+        i.tasks.push(task.clone());
+        self.persist_locked(&i)?;
+        Ok(task)
+    }
+
+    /// 提交人工确认：continue 推进阶段、hold 挂起、abort 失败
+    pub fn resolve_human(&self, id: &str, option: usize) -> Result<UpgradeTask> {
+        let mut i = self.inner.lock().unwrap();
+        let idx = i.tasks.iter().position(|t| t.id == id).ok_or(Error::NotFound)?;
+        {
+            let t = &mut i.tasks[idx];
+            let si = t.stage;
+            if si >= t.stages.len() {
+                return Ok(t.clone());
+            }
+            let eff = match &t.stages[si].human {
+                Some(h) => h.options.get(option).map(|o| o.effect.clone()).unwrap_or_else(|| "continue".into()),
+                None => "continue".into(),
+            };
+            if let Some(h) = t.stages[si].human.as_mut() {
+                h.state = if eff == "abort" { "expired".into() } else { "resolved".into() };
+                h.chosen = Some(option);
+            }
+            match eff.as_str() {
+                "continue" => {
+                    t.stages[si].state = "done".into();
+                    let next = (si + 1).min(t.stages.len() - 1);
+                    t.stage = next;
+                    t.stages[next].state = "running".into();
+                    t.progress = (((next + 1) as f32 / t.stages.len() as f32) * 100.0) as u8;
+                    if next == t.stages.len() - 1 {
+                        t.stages[next].state = "running".into();
+                    }
+                }
+                "hold" => {
+                    t.stages[si].state = "held".into();
+                }
+                _ => {
+                    t.stages[si].state = "failed".into();
+                    t.progress = 0;
+                }
+            }
+        }
+        let out = i.tasks[idx].clone();
+        self.persist_locked(&i)?;
+        Ok(out)
     }
 
     // ---------------- Mock 端点 ----------------
