@@ -185,13 +185,24 @@ pub struct Stats {
     pub version: String,
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct MockHit {
     pub status: u16,
     pub body: String,
     pub content_type: String,
     pub latency_ms: u64,
     pub mapping_id: String,
+    /// 审计扩展字段
+    #[serde(default)]
+    pub at: Millis,
+    #[serde(default)]
+    pub method: String,
+    #[serde(default)]
+    pub path: String,
+    #[serde(default)]
+    pub delay_ms: u32,
+    #[serde(default)]
+    pub human: bool,
 }
 
 // ============================================================ 请求体 DTO

@@ -17,7 +17,9 @@
   const S = {
     csrf: sessionStorage.getItem('rhine.plane.csrf') || '',
     ep: null,          // 当前 Mock 端点（来自后端）
-    tasks: [],         // 升级任务（来自后端）
+    tasks: [],         // 审计
+
+    // 升级任务（来自后端）
     taskSel: null,     // 当前查看的任务 id
     layer: 'runtime',
     view: 'mock-admin',
@@ -170,6 +172,11 @@
       $('#plGo').addEventListener('click', submit);
       $('#plP').addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
     });
+  }
+
+  async function loadAudit() {
+    try { S.audit = await api('/api/business/audit?limit=60') || []; } catch (e) { S.audit = []; }
+    return S.audit;
   }
 
   async function loadIfaces() {
@@ -361,14 +368,31 @@
 
   /* ---------------------------------------------------------------- 视图：审计 */
   function viewAudit() {
-    const rows = S.audit.length ? S.audit : [];
-    return head('运行审计', 'Request / response trail', 'FILE NO. MOCK-003') + `
+    const rows = Array.isArray(S.audit) ? S.audit : [];
+    const tfmt = (ms) => {
+      if (!ms) return '—';
+      const d = new Date(Number(ms));
+      return d.toTimeString().slice(0, 8) + '.' + String(d.getMilliseconds()).padStart(3, '0');
+    };
+    return head('运行审计', 'Request / response trail · human-pending gate', 'FILE NO. MOCK-003') + `
       <div class="pl-card">
-        <div class="pl-card__t">请求与响应</div>
-        ${rows.length ? `<table class="pl-table"><thead><tr><th>Time</th><th>Method</th><th>Path</th><th>Status</th><th>Delay</th><th>Human</th></tr></thead>
-          <tbody>${rows.map((r) => `<tr><td class="pl-muted">${esc(r.t)}</td><td>${esc(r.m)}</td><td>${esc(r.p)}</td>
-            <td class="num">${r.s}</td><td class="num">${r.d} ms</td><td>${r.h ? '<span class="pl-tag pl-tag--on">WAIT</span>' : '—'}</td></tr>`).join('')}</tbody></table>`
-          : `<div class="pl-muted" style="padding:14px 0;font-size:10px">还没有请求。开启 MOCK 服务后，这里会出现请求与响应审计（含人机交互挂起记录）。</div>`}
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+          <div class="pl-card__t" style="margin:0">请求与响应（最近 ${rows.length} 条，服务端记录）</div>
+          <button class="pl-btn pl-btn--sm" id="btnAuditRefresh">刷新</button>
+        </div>
+        ${rows.length ? `<table class="pl-table">
+          <thead><tr><th>Time</th><th>Method</th><th>Path</th><th>Status</th><th>Delay</th><th>Human</th></tr></thead>
+          <tbody>${rows.map((r) => `<tr>
+            <td class="pl-muted pl-mono">${tfmt(r.at)}</td>
+            <td>${esc(String(r.method || '').toUpperCase())}</td>
+            <td>${esc(r.path)}</td>
+            <td class="num ${r.status >= 400 ? 'pl-tag--bad' : ''}">${r.status}</td>
+            <td class="num">${r.delay_ms || 0} ms</td>
+            <td>${r.human ? '<span class="pl-tag pl-tag--on">HUMAN 202</span>' : '<span class="pl-muted">—</span>'}</td>
+          </tr>`).join('')}</tbody>
+        </table>` : `<div class="pl-muted" style="padding:14px 0;font-size:10px">
+          还没有请求记录。开一个 Mock 服务并打一次 <code>/mock/...</code>，这里会出现真实的请求与响应审计。
+        </div>`}
       </div>`;
   }
 
@@ -1152,6 +1176,12 @@
       openHuman({ prompt: h.prompt, timeout: h.timeout, options: h.options.map((o) => ({ l: o.l, next: o.effect })) });
     }));
 
+    // 审计
+
+    // 审计
+    const auditRefresh = $('#btnAuditRefresh');
+    if (auditRefresh) auditRefresh.addEventListener('click', async () => { await loadAudit(); render(); });
+
     // 升级任务
     $$('[data-task]').forEach((b) => b.addEventListener('click', () => {
       S.taskSel = b.dataset.task; S.view = 'task'; render();
@@ -1245,7 +1275,7 @@
   (async () => {
     try {
       const ok = await ensureAuth();
-      if (ok) { await loadEndpoint(); await loadTasks(); await loadIfaces(); }
+      if (ok) { await loadEndpoint(); await loadTasks(); await loadIfaces(); await loadAudit(); }
     } catch (e) { /* 后端不可达时退化为本地演示数据 */ }
     render();
   })();

@@ -8,7 +8,7 @@
 //! W 端 Tauri 壳加载同一套 `ui/`，所以「L 端日常使用与 W 端业务面无异」
 //! 是共用前端 + 共用 `rhine-core` 的结果，不是复制粘贴。
 
-use axum::extract::{Path, State};
+use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderMap, HeaderValue, Method, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::routing::{any, get, patch, post};
@@ -221,6 +221,11 @@ async fn business_test(
         content_type: m.content_type,
         latency_ms: started.elapsed().as_millis() as u64,
         mapping_id: m.id,
+        at: std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_millis() as i64).unwrap_or(0),
+        method: m.method.as_str().to_string(),
+        path: m.path.clone(),
+        delay_ms: m.delay_ms,
+        human: false,
     }))
 }
 
@@ -235,6 +240,16 @@ async fn business_stats(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Stats>> {
 }
 
 // ================================================================== 管理面
+async fn business_audit(
+    st: Ctx,
+    headers: HeaderMap,
+    Query(q): Query<std::collections::HashMap<String, String>>,
+) -> ApiResult<Json<Vec<MockHit>>> {
+    let _u = auth(&st, &headers)?;
+    let limit = q.get("limit").and_then(|v| v.parse::<usize>().ok()).unwrap_or(80);
+    Ok(Json(st.store.hits(limit)))
+}
+
 async fn business_patch_rules(
     st: Ctx,
     headers: HeaderMap,
@@ -498,6 +513,18 @@ async fn mock_engine(
                 header::HeaderName::from_static("x-rhine-human"),
                 HeaderValue::from_static("pending"),
             );
+            st.store.log_hit(MockHit {
+                at: std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_millis() as i64).unwrap_or(0),
+                mapping_id: m.id.clone(),
+                method: method.as_str().to_string(),
+                path: path.clone(),
+                status: 202,
+                delay_ms: m.delay_ms,
+                human: true,
+                body: String::new(),
+                content_type: m.content_type.clone(),
+                latency_ms: 0,
+            });
             return res;
         }
     }
@@ -523,6 +550,18 @@ async fn mock_engine(
         header::HeaderName::from_static("x-rhine-mapping"),
         HeaderValue::from_str(&m.id).unwrap_or_else(|_| HeaderValue::from_static("-")),
     );
+    st.store.log_hit(MockHit {
+        at: std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_millis() as i64).unwrap_or(0),
+        mapping_id: m.id.clone(),
+        method: method.as_str().to_string(),
+        path: path.clone(),
+        status: m.status,
+        delay_ms: m.delay_ms,
+        human: false,
+        body: String::new(),
+        content_type: m.content_type.clone(),
+        latency_ms: m.delay_ms as u64,
+    });
     res
 }
 
@@ -582,6 +621,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/business/mappings/:id/test", post(business_test))
         .route("/business/logs", get(business_logs))
         .route("/business/stats", get(business_stats))
+        .route("/business/audit", get(business_audit))
         .route("/business/mappings/:id/rules", patch(business_patch_rules))
         .route("/business/mappings/:id/human", post(business_resolve_mock_human))
         .route("/business/tasks", get(business_tasks).post(business_create_task))

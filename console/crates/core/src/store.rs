@@ -82,6 +82,8 @@ struct Persisted {
     #[serde(default)]
     endpoints: Vec<MockEndpoint>,
     #[serde(default)]
+    hits: VecDeque<MockHit>,
+    #[serde(default)]
     tasks: Vec<UpgradeTask>,
     users: Vec<User>,
     mappings: Vec<Mapping>,
@@ -90,6 +92,7 @@ struct Persisted {
 }
 
 struct Inner {
+    hits: VecDeque<MockHit>,
     tasks: Vec<UpgradeTask>,
     endpoints: Vec<MockEndpoint>,
     users: Vec<User>,
@@ -124,6 +127,7 @@ impl Store {
             seq: 0,
             started_at: now_ms(),
             endpoints: vec![],
+            hits: VecDeque::new(),
             tasks: vec![],
         };
 
@@ -136,6 +140,7 @@ impl Store {
                     inner.nodes = p.nodes;
                     inner.seq = p.seq;
                         inner.endpoints = p.endpoints;
+                        inner.hits = p.hits;
                         inner.tasks = p.tasks;
                 }
                 Err(e) => {
@@ -174,6 +179,7 @@ impl Store {
             nodes: inner.nodes.clone(),
             seq: inner.seq,
             endpoints: inner.endpoints.clone(),
+            hits: inner.hits.clone(),
             tasks: inner.tasks.clone(),
         };
         let json = serde_json::to_string_pretty(&doc).map_err(|e| Error::Io(e.to_string()))?;
@@ -189,6 +195,19 @@ impl Store {
     /// 后台任务持有独立句柄（内部是 Arc<Mutex<..>>，共享同一份状态）
     pub fn clone_for_task(&self) -> Self {
         self.clone()
+    }
+
+    // ---------------- 审计 ----------------
+    pub fn log_hit(&self, hit: MockHit) {
+        let mut i = self.inner.lock().unwrap();
+        i.hits.push_front(hit);
+        while i.hits.len() > 200 { i.hits.pop_back(); }
+        let _ = self.persist_locked(&i);
+    }
+
+    pub fn hits(&self, limit: usize) -> Vec<MockHit> {
+        let i = self.inner.lock().unwrap();
+        i.hits.iter().take(limit.clamp(1, 200)).cloned().collect()
     }
 
     // ---------------- MOCK 规则 ----------------
