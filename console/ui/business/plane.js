@@ -71,6 +71,7 @@
         ],
       },
     },
+    ifaceVariants: {},  // mappingId -> 多规则数组
     neDraft: null,     // 当前编辑中的网元草稿（flow / checks）
     groupDraft: [],    // 成组选中的网元
     topoLevel: 'element',
@@ -256,6 +257,7 @@
           }] : [],
           raw: m,
         };
+      S.ifaceVariants[m.id] = (m.variants || []).map((v) => Object.assign({}, v));
       });
       if (!S.ifaces.find((x) => x.id === S.ifaceSel) && S.ifaces.length) S.ifaceSel = S.ifaces[0].id;
     } catch (e) { /* 离线时保留本地演示数据 */ }
@@ -388,7 +390,7 @@
         </div>
         <div class="pl-card">
           <div class="pl-card__t">人机交互节点（界面）</div>
-          ${S.human.map((h, i) => `<div style="border:1px solid var(--line);padding:10px;margin-bottom:8px">
+          ${(((S.ifaceRules[S.ifaceSel] || {}).human) || []).map((h, i) => `<div style="border:1px solid var(--line);padding:10px;margin-bottom:8px">
             <div style="font-size:8px;letter-spacing:.18em;color:var(--ink-3)">HUMAN STEP ${i + 1}</div>
             <div style="margin:6px 0 8px;font-size:10.5px;line-height:1.7">${esc(h.prompt)}</div>
             <div class="pl-muted" style="font-size:8.5px">超时 ${h.timeout}s · 选项 ${h.options.map((o) => esc(o.l)).join(' / ')}</div>
@@ -1000,6 +1002,22 @@
             <div class="pl-field"><label>Content-Type</label><input value="application/json" readonly /></div>
           </div>
 
+          <div class="pl-card__t">多规则匹配（按顺序，首个条件命中即生效）</div>
+          <table class="pl-table">
+            <thead><tr><th>条件（req.mode=="fast"，留空=兜底）</th><th>Status</th><th>Delay</th><th>响应体</th><th>备注</th><th></th></tr></thead>
+            <tbody>
+              ${((S.ifaceVariants[id]) || []).map((v, i) => `<tr>
+                <td><input data-var-when="${i}" value="${esc(v.when || '')}" placeholder='req.mode=="fast"' style="width:100%;font:inherit;font-size:10px;padding:3px;background:#fff;border:1px solid var(--line-2)"/></td>
+                <td><input data-var-status="${i}" value="${v.status == null ? '' : v.status}" style="width:54px;font:inherit;font-size:10px;padding:3px;background:#fff;border:1px solid var(--line-2)"/></td>
+                <td><input data-var-delay="${i}" value="${v.delay_ms == null ? '' : v.delay_ms}" style="width:56px;font:inherit;font-size:10px;padding:3px;background:#fff;border:1px solid var(--line-2)"/></td>
+                <td><input data-var-body="${i}" value="${esc(v.body || '')}" style="width:100%;font:inherit;font-size:10px;padding:3px;background:#fff;border:1px solid var(--line-2)"/></td>
+                <td><input data-var-note="${i}" value="${esc(v.note || '')}" style="width:64px;font:inherit;font-size:10px;padding:3px;background:#fff;border:1px solid var(--line-2)"/></td>
+                <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-var-del="${i}">删除</button></td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+          <div class="pl-row-end"><button class="pl-btn pl-btn--sm" id="btnVarAdd">＋ 规则</button></div>
+
           <div class="pl-card__t" style="margin-top:16px">响应字段（对象化管理）</div>
           <table class="pl-table">
             <thead><tr><th>Field</th><th>Type</th><th>Behavior</th><th>Param</th><th></th></tr></thead>
@@ -1412,12 +1430,46 @@
         await api('/api/business/mappings/' + S.ifaceSel, {
           method: 'PATCH', headers: headers(), body: JSON.stringify({ status: r.status, delay_ms: r.delay }),
         });
+
+      // 多规则编辑（条件 / 状态码 / 延迟 / 响应体）
+      const varArr = () => (S.ifaceVariants[S.ifaceSel] || (S.ifaceVariants[S.ifaceSel] = []));
+      const bindVar = (sel, key) => {
+        $$(sel).forEach((el) => el.addEventListener('input', () => {
+          const i = +(el.dataset.varWhen ?? el.dataset.varStatus ?? el.dataset.varDelay ?? el.dataset.varBody ?? el.dataset.varNote);
+          const arr = varArr();
+          const v = arr[i] || (arr[i] = {});
+          if (key === 'status' || key === 'delay_ms') v[key] = el.value === '' ? null : Number(el.value);
+          else v[key] = el.value;
+        }));
+      };
+      bindVar('[data-var-when]', 'when');
+      bindVar('[data-var-status]', 'status');
+      bindVar('[data-var-delay]', 'delay_ms');
+      bindVar('[data-var-body]', 'body');
+      bindVar('[data-var-note]', 'note');
+      $$('[data-var-del]').forEach((b) => b.addEventListener('click', () => {
+        varArr().splice(+b.dataset.varDel, 1);
+        render();
+      }));
+      const varAddBtn = $('#btnVarAdd');
+      if (varAddBtn) varAddBtn.addEventListener('click', () => {
+        varArr().push({ when: '', status: null, delay_ms: null, body: '', note: '' });
+        render();
+      });
+
         await api('/api/business/mappings/' + S.ifaceSel + '/rules', {
           method: 'PATCH', headers: headers(), body: JSON.stringify({
             fields: r.fields.map((f) => ({
               name: f.name, kind: f.type, source: f.src, value: f.value || '',
               step: f.step || 1, max: f.max || 0, condition: f.value || '',
             })),
+              variants: (S.ifaceVariants[S.ifaceSel] || []).map((v) => ({
+                when: v.when || '',
+                status: v.status == null ? null : Number(v.status),
+                delay_ms: v.delay_ms == null ? null : Number(v.delay_ms),
+                body: v.body == null ? null : v.body,
+                note: v.note || '',
+              })),
             human: r.human.length ? {
               prompt: r.human[0].prompt,
               options: r.human[0].options.map((o) => ({ label: o.l, effect: o.effect })),

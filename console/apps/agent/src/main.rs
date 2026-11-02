@@ -618,6 +618,23 @@ async fn mock_engine(
         }
     };
     // 人机交互未确认 → 202 + 待确认载荷
+        // 多规则匹配：按顺序取第一条 when 命中的变体，覆盖状态码 / 延迟 / 响应体
+        let req_match = body.as_ref().map(|Json(v)| v.clone()).unwrap_or_else(|| json!({}));
+        let mut eff_status = m.status;
+        let mut eff_delay = m.delay_ms;
+        let mut eff_body = m.body.clone();
+        let mut matched_when = String::new();
+        for v in &m.variants {
+            let expr = if v.when.contains('?') { v.when.clone() } else { format!("{}?true:false", v.when) };
+            let hit = v.when.trim().is_empty() || eval_condition(&expr, &req_match) == "true";
+            if !hit { continue; }
+            if let Some(s) = v.status { eff_status = s; }
+            if let Some(d) = v.delay_ms { eff_delay = d; }
+            if let Some(b) = &v.body { eff_body = b.clone(); }
+            matched_when = if v.when.trim().is_empty() { "default".to_string() } else { v.when.clone() };
+            break;
+        }
+
     if let Some(h) = m.human.as_ref() {
         if h.state == "pending" {
             let payload = json!({
@@ -637,7 +654,7 @@ async fn mock_engine(
                 method: method.as_str().to_string(),
                 path: path.clone(),
                 status: 202,
-                delay_ms: m.delay_ms,
+                delay_ms: eff_delay,
                 human: true,
                 body: String::new(),
                 content_type: m.content_type.clone(),
@@ -647,22 +664,28 @@ async fn mock_engine(
         }
     }
 
-    if m.delay_ms > 0 {
-        tokio::time::sleep(Duration::from_millis(m.delay_ms as u64)).await;
+      if eff_delay > 0 {
+        tokio::time::sleep(Duration::from_millis(eff_delay as u64)).await;
     }
     let req_json = body.map(|Json(v)| v).unwrap_or_else(|| json!({}));
     let out_body = if m.fields.is_empty() {
-        m.body.clone()
+          eff_body.clone()
     } else {
         match st.store.advance_rules(&m.id) {
-            Ok(fs) => build_body(&fs, &req_json, &m.body),
-            Err(_) => m.body.clone(),
+            Ok(fs) => build_body(&fs, &req_json, &eff_body),
+            Err(_) => eff_body.clone(),
         }
     };
     let ct = HeaderValue::from_str(&m.content_type)
         .unwrap_or_else(|_| HeaderValue::from_static("application/json"));
     let mut res = Response::new(axum::body::Body::from(out_body));
-    *res.status_mut() = StatusCode::from_u16(m.status).unwrap_or(StatusCode::OK);
+    *res.status_mut() = StatusCode::from_u16(eff_status).unwrap_or(StatusCode::OK);
+      if !matched_when.is_empty() {
+          res.headers_mut().insert(
+              header::HeaderName::from_static("x-rhine-rule"),
+              HeaderValue::from_str(&matched_when).unwrap_or_else(|_| HeaderValue::from_static("-")),
+          );
+      }
     res.headers_mut().insert(header::CONTENT_TYPE, ct);
     res.headers_mut().insert(
         header::HeaderName::from_static("x-rhine-mapping"),
@@ -673,8 +696,8 @@ async fn mock_engine(
         mapping_id: m.id.clone(),
         method: method.as_str().to_string(),
         path: path.clone(),
-        status: m.status,
-        delay_ms: m.delay_ms,
+        status: eff_status,
+        delay_ms: eff_delay,
         human: false,
         body: String::new(),
         content_type: m.content_type.clone(),

@@ -91,10 +91,24 @@ impl Method {
     }
 }
 
-/// 一条「本地映射」：把某个路径映射成指定的 mock 响应。
-/// 业务面用户可以自己创建（限自己的 owner），管理面可以看见全部。
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Mapping {
+
+  /// 一条「条件规则」：when 命中时覆盖状态码 / 延迟 / 响应体
+  #[derive(Clone, Debug, Serialize, Deserialize, Default)]
+  pub struct RuleVariant {
+      /// 条件表达式，如 req.mode=="fast"；空串 = 兜底
+      #[serde(default)]
+      pub when: String,
+      pub status: Option<u16>,
+      pub delay_ms: Option<u32>,
+      pub body: Option<String>,
+      #[serde(default)]
+      pub note: String,
+  }
+
+  /// 一条「本地映射」：把某个路径映射成指定的 mock 响应。
+  /// 业务面用户可以自己创建（限自己的 owner），管理面可以看见全部。
+  #[derive(Clone, Debug, Serialize, Deserialize)]
+  pub struct Mapping {
     pub id: String,
     pub owner: String,
     pub name: String,
@@ -109,6 +123,8 @@ pub struct Mapping {
     /// 结构化响应字段（为空时用 body 原样返回）
     #[serde(default)]
     pub fields: Vec<RuleField>,
+    #[serde(default)]
+    pub variants: Vec<RuleVariant>,
     /// 人机交互节点
     #[serde(default)]
     pub human: Option<RuleHuman>,
@@ -584,6 +600,7 @@ pub struct RuleHuman {
 
 #[derive(Debug, Deserialize)]
 pub struct PatchRulesReq {
+    pub variants: Option<Vec<RuleVariant>>,
     #[serde(default)]
     pub fields: Option<Vec<RuleField>>,
     #[serde(default)]

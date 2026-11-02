@@ -655,6 +655,7 @@ impl Store {
         {
             let m = &mut i.mappings[idx];
             if let Some(f) = req.fields { m.fields = f; }
+        if let Some(v) = req.variants { m.variants = v; }
             if req.clear_human { m.human = None; } else if let Some(h) = req.human { m.human = Some(h); }
         }
         let out = i.mappings[idx].clone();
@@ -1034,6 +1035,7 @@ impl Store {
             body: req.body.unwrap_or_else(|| "{}".into()),
             enabled: true,
             fields: vec![],
+            variants: vec![],
             human: None,
             hits: 0,
             last_hit_at: None,
@@ -1346,6 +1348,7 @@ fn seed(inner: &mut Inner) {
             body: body.into(),
             enabled: true,
             fields: vec![],
+            variants: vec![],
             human: None,
               version: ["0.1.1", "0.1.0", "0.2.0"][i % 3].to_string(),
             hits: (i as u64) * 7,
