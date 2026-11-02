@@ -1,0 +1,557 @@
+/* ============================================================================
+   RHINE LAB · PLANE（业务面）
+   ----------------------------------------------------------------------------
+   结构：两层
+     LAYER 1 运行态 → MOCK 管理 / MOCK 流程 / 运行审计
+     LAYER 2 准备态 → 网元自定义 / 拓扑 / 平台能力(LCM·OMC·FS)
+   说明：本轮为界面实现，人机交互只做操作界面（状态机 UI），不接业务执行。
+   ==========================================================================*/
+(function () {
+  'use strict';
+
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  /* ---------------------------------------------------------------- 状态 */
+  const S = {
+    layer: 'runtime',
+    view: 'mock-admin',
+    endpoint: { host: '127.0.0.1', port: '9443', enabled: false, cert: null, caps: [] },
+    caps: ['NEMP', 'NEF', 'ALARM', 'PERF', 'FM'],
+    ifaces: [
+      { id: 'if-1', method: 'POST', path: '/nemp/v1/ne/register', status: 200, delay: 120, rules: 3, human: 0, hits: 0 },
+      { id: 'if-2', method: 'GET', path: '/nemp/v1/ne/list', status: 200, delay: 40, rules: 2, human: 0, hits: 0 },
+      { id: 'if-3', method: 'POST', path: '/necm/v1/upgrade/start', status: 202, delay: 300, rules: 4, human: 2, hits: 0 },
+    ],
+    audit: [],
+    fields: [
+      { name: 'neId', type: 'string', source: 'static', value: 'GNB-HZ-0904' },
+      { name: 'seq', type: 'number', source: 'autoIncrement', step: 1, max: 999 },
+      { name: 'token', type: 'string', source: 'once', value: 'tk-0001' },
+      { name: 'result', type: 'string', source: 'conditional', condition: 'status==200 ? "ok" : "fail"' },
+    ],
+    human: [
+      { prompt: '升级即将进入主备倒换，请确认现场可以操作', timeout: 60, options: [{ l: '确认继续', next: 'activate' }, { l: '稍后处理', next: 'hold' }] },
+    ],
+    elements: [
+      { id: 'ne-0001', name: 'gNB-HZ-0904', arch: 'SA', type: 'gNB', version: '5.2.1', sw: 'NR-RAN', group: 'g-hz-01', comps: ['主控板', '交换板', '业务板', '电源', '风扇'] },
+      { id: 'ne-0002', name: 'gNB-HZ-0905', arch: 'SA', type: 'gNB', version: '5.2.0', sw: 'NR-RAN', group: 'g-hz-01', comps: ['主控板', '业务板', '电源'] },
+      { id: 'ne-0003', name: 'MME-HZ-01', arch: 'EPC', type: 'MME', version: '4.8.4', sw: 'EPC-CORE', group: 'g-hz-02', comps: ['主控板', '信令板', '电源'] },
+    ],
+    groups: [
+      { id: 'g-hz-01', name: '杭州 gNB 组', elements: ['ne-0001', 'ne-0002'] },
+      { id: 'g-hz-02', name: '杭州 核心网组', elements: ['ne-0003'] },
+    ],
+    site: { id: 'site-hz', name: 'HZ 主站点', role: 'primary' },
+    topoLevel: 'element',
+    topoSel: null,
+  };
+
+  /* ---------------------------------------------------------------- 导航 */
+  const NAV = [
+    {
+      layer: 'runtime', title: 'LAYER 1 · 运行态', items: [
+        { id: 'mock-admin', t: 'MOCK 管理', s: 'PORT' },
+        { id: 'mock-flow', t: 'MOCK 流程', s: 'FLOW' },
+        { id: 'audit', t: '运行审计', s: 'LOG' },
+      ],
+    },
+    {
+      layer: 'prep', title: 'LAYER 2 · 准备态（下层）', items: [
+        { id: 'elements', t: '网元自定义', s: 'NE' },
+        { id: 'topo', t: '拓扑连接', s: 'TOPO' },
+        { id: 'platforms', t: '平台能力', s: 'LCM·OMC·FS' },
+      ],
+    },
+  ];
+
+  function renderRail() {
+    $('#plRail').innerHTML = NAV.map((g) => `
+      <div class="pl-rail__grp">
+        <div class="pl-rail__hd">${esc(g.title)}</div>
+        ${g.items.map((it) => `
+          <button class="pl-rail__item${S.view === it.id ? ' is-on' : ''}" data-view="${it.id}">
+            <span>${esc(it.t)}</span><small>${esc(it.s)}</small>
+          </button>`).join('')}
+      </div>`).join('');
+  }
+
+  /* ---------------------------------------------------------------- 通用块 */
+  function head(title, sub, file) {
+    return `<div class="pl-hd">
+      <div><h1>${esc(title)}</h1><p>${esc(sub)}</p></div>
+      <div class="pl-hd__file">${esc(file || '')}</div>
+    </div>`;
+  }
+
+  /* ---------------------------------------------------------------- 视图：MOCK 管理 */
+  function viewMockAdmin() {
+    const e = S.endpoint;
+    const step = !e.host ? 1 : !e.cert ? 2 : e.caps.length === 0 ? 3 : e.enabled ? 4 : 4;
+    const steps = ['登记监听', '签发证书', '挂载能力', '开启服务'];
+    return head('MOCK 管理', 'Register endpoint · issue certificate · mount capabilities · start', 'FILE NO. MOCK-001') + `
+      <div class="pl-steps">
+        ${steps.map((t, i) => `<div class="pl-step${step === i + 1 ? ' is-on' : (step > i + 1 ? ' is-done' : '')}">
+          <div class="pl-step__n">STEP ${i + 1}</div><div class="pl-step__t">${esc(t)}</div></div>`).join('')}
+      </div>
+      <div class="pl-grid pl-grid--side">
+        <div class="pl-card">
+          <div class="pl-card__t">01 · 注册本机 IP 与端口</div>
+          <div class="pl-form">
+            <div class="pl-field--row">
+              <div class="pl-field"><label>Host / IP</label><input id="epHost" value="${esc(e.host)}" /></div>
+              <div class="pl-field"><label>Port</label><input id="epPort" value="${esc(e.port)}" /></div>
+            </div>
+            <div class="pl-field"><label>挂载平台能力（可多选）</label>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
+                ${S.caps.map((c) => `<button class="pl-btn pl-btn--sm" data-cap="${esc(c)}"
+                  style="${e.caps.includes(c) ? 'background:#17140f;color:#f3eee7;border-color:#17140f' : ''}">${esc(c)}</button>`).join('')}
+              </div>
+            </div>
+            <div class="pl-row-end">
+              <button class="pl-btn" id="btnCert">02 · 生成证书</button>
+              <button class="pl-btn pl-btn--solid" id="btnStart">${e.enabled ? '停止服务' : '04 · 开启服务'}</button>
+            </div>
+          </div>
+        </div>
+        <div class="pl-card">
+          <div class="pl-card__t">端点状态</div>
+          <dl class="pl-kv">
+            <dt>Endpoint</dt><dd>${esc(e.host)}:${esc(e.port)}</dd>
+            <dt>Service</dt><dd>${e.enabled ? '<span class="pl-dot pl-dot--on"></span>运行中' : '<span class="pl-dot"></span>未启动'}</dd>
+            <dt>Certificate</dt><dd>${e.cert ? esc(e.cert.cn) + ' · SAN ' + e.cert.san.length : '<span class="pl-muted">未签发</span>'}</dd>
+            <dt>Capabilities</dt><dd>${e.caps.length ? e.caps.map((c) => `<span class="pl-tag pl-tag--on">${esc(c)}</span>`).join(' ') : '<span class="pl-muted">未挂载</span>'}</dd>
+            <dt>Interfaces</dt><dd>${S.ifaces.length} 个</dd>
+          </dl>
+          <div style="margin-top:12px">
+            <div class="pl-card__t" style="margin-bottom:6px">证书内容（签发后）</div>
+            <pre class="pl-muted" style="margin:0;font-size:8.5px;line-height:1.6;white-space:pre-wrap">${e.cert ? esc(e.cert.pem) : '—'}</pre>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  /* ---------------------------------------------------------------- 视图：MOCK 流程 */
+  function viewMockFlow() {
+    return head('MOCK 流程', 'Response rules · field behaviors · human-in-the-loop · audit', 'FILE NO. MOCK-002') + `
+      <div class="pl-grid pl-grid--side">
+        <div class="pl-card">
+          <div class="pl-card__t">接口列表</div>
+          <table class="pl-table">
+            <thead><tr><th>Method</th><th>Path</th><th>Status</th><th>Delay</th><th>Rules</th><th>Human</th><th></th></tr></thead>
+            <tbody>${S.ifaces.map((i) => `<tr>
+              <td>${esc(i.method)}</td><td>${esc(i.path)}</td>
+              <td class="num">${i.status}</td><td class="num">${i.delay} ms</td>
+              <td class="num">${i.rules}</td>
+              <td>${i.human ? `<span class="pl-tag pl-tag--on">${i.human}</span>` : '<span class="pl-muted">—</span>'}</td>
+              <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-iface="${esc(i.id)}">编辑</button></td>
+            </tr>`).join('')}</tbody>
+          </table>
+        </div>
+        <div class="pl-card">
+          <div class="pl-card__t">人机交互节点（界面）</div>
+          ${S.human.map((h, i) => `<div style="border:1px solid var(--line);padding:10px;margin-bottom:8px">
+            <div style="font-size:8px;letter-spacing:.18em;color:var(--ink-3)">HUMAN STEP ${i + 1}</div>
+            <div style="margin:6px 0 8px;font-size:10.5px;line-height:1.7">${esc(h.prompt)}</div>
+            <div class="pl-muted" style="font-size:8.5px">超时 ${h.timeout}s · 选项 ${h.options.map((o) => esc(o.l)).join(' / ')}</div>
+            <div style="margin-top:8px"><button class="pl-btn pl-btn--sm" id="btnHumanPreview">预览确认界面</button></div>
+          </div>`).join('')}
+          <button class="pl-btn pl-btn--sm" id="btnHumanAdd">＋ 插入人机交互</button>
+        </div>
+      </div>
+      <div class="pl-card" style="margin-top:14px">
+        <div class="pl-card__t">响应字段（面向对象：静态 / 自增 / 单次 / 条件）</div>
+        <table class="pl-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Behavior</th><th>Param</th><th></th></tr></thead>
+          <tbody>${S.fields.map((f, i) => `<tr>
+            <td>${esc(f.name)}</td><td>${esc(f.type)}</td>
+            <td><select data-field-src="${i}" style="font:inherit;font-size:10px;padding:3px;background:#fff;border:1px solid var(--line-2)">
+              ${['static', 'autoIncrement', 'once', 'conditional'].map((v) => `<option${f.source === v ? ' selected' : ''}>${v}</option>`).join('')}
+            </select></td>
+            <td class="pl-muted">${esc(f.value || (f.source === 'autoIncrement' ? 'step=' + f.step + ' max=' + f.max : f.condition || '—'))}</td>
+            <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-field-del="${i}">移除</button></td>
+          </tr>`).join('')}</tbody>
+        </table>
+        <div class="pl-row-end"><button class="pl-btn pl-btn--sm" id="btnFieldAdd">＋ 添加字段</button></div>
+      </div>`;
+  }
+
+  /* ---------------------------------------------------------------- 视图：审计 */
+  function viewAudit() {
+    const rows = S.audit.length ? S.audit : [];
+    return head('运行审计', 'Request / response trail', 'FILE NO. MOCK-003') + `
+      <div class="pl-card">
+        <div class="pl-card__t">请求与响应</div>
+        ${rows.length ? `<table class="pl-table"><thead><tr><th>Time</th><th>Method</th><th>Path</th><th>Status</th><th>Delay</th><th>Human</th></tr></thead>
+          <tbody>${rows.map((r) => `<tr><td class="pl-muted">${esc(r.t)}</td><td>${esc(r.m)}</td><td>${esc(r.p)}</td>
+            <td class="num">${r.s}</td><td class="num">${r.d} ms</td><td>${r.h ? '<span class="pl-tag pl-tag--on">WAIT</span>' : '—'}</td></tr>`).join('')}</tbody></table>`
+          : `<div class="pl-muted" style="padding:14px 0;font-size:10px">还没有请求。开启 MOCK 服务后，这里会出现请求与响应审计（含人机交互挂起记录）。</div>`}
+      </div>`;
+  }
+
+  /* ---------------------------------------------------------------- 视图：网元自定义 */
+  function viewElements() {
+    return head('网元自定义', 'Architecture · type · version · software · upgrade steps · grouping', 'FILE NO. NE-001') + `
+      <div class="pl-grid pl-grid--side">
+        <div class="pl-card">
+          <div class="pl-card__t">网元清单</div>
+          <table class="pl-table">
+            <thead><tr><th>Name</th><th>Arch</th><th>Type</th><th>Version</th><th>组</th><th></th></tr></thead>
+            <tbody>${S.elements.map((e) => `<tr>
+              <td>${esc(e.name)}</td><td>${esc(e.arch)}</td><td>${esc(e.type)}</td>
+              <td class="num">${esc(e.version)}</td><td class="pl-muted">${esc(e.group || '—')}</td>
+              <td style="text-align:right">
+                <button class="pl-btn pl-btn--sm" data-ne="${esc(e.id)}">编辑</button>
+                <button class="pl-btn pl-btn--sm" data-ne-copy="${esc(e.id)}">复制</button>
+              </td></tr>`).join('')}</tbody>
+          </table>
+          <div class="pl-row-end"><button class="pl-btn pl-btn--solid pl-btn--sm" id="btnNeAdd">＋ 新建网元</button></div>
+        </div>
+        <div class="pl-card">
+          <div class="pl-card__t">组件模板（内置）</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            ${['主控板', '交换板', '业务板', '信令板', '电源', '风扇', '时钟板'].map((c) => `<span class="pl-tag">${esc(c)}</span>`).join(' ')}
+          </div>
+          <div class="pl-card__t" style="margin-top:14px">升级流程步骤</div>
+          <ol style="margin:0;padding-left:18px;font-size:10.5px;line-height:1.9">
+            <li>上传软件包 <span class="pl-muted">（校验 checksum）</span></li>
+            <li>预检查 <span class="pl-muted">（参数校验：版本兼容 / 主备状态）</span></li>
+            <li>激活 <span class="pl-tag pl-tag--on">含人机交互</span></li>
+            <li>主备倒换 <span class="pl-tag pl-tag--on">含人机交互</span></li>
+            <li>完成与回执</li>
+          </ol>
+        </div>
+      </div>`;
+  }
+
+  /* ---------------------------------------------------------------- 视图：拓扑 */
+  function viewTopo() {
+    return head('拓扑连接', 'Site → element group → element → component（正交连线，双击下钻）', 'FILE NO. TOPO-001') + `
+      <div class="pl-grid pl-grid--side">
+        <div class="pl-card" style="padding:0;overflow:hidden">
+          <div class="pl-topo" id="topoBox">
+            <svg id="topoSvg" viewBox="0 0 880 430" preserveAspectRatio="xMidYMid meet"></svg>
+            <div class="topo-tip" id="topoTip"></div>
+          </div>
+          <div style="display:flex;gap:6px;padding:10px 12px;border-top:1px solid var(--line)">
+            ${['element', 'group', 'component'].map((l) => `<button class="pl-btn pl-btn--sm" data-level="${l}"
+              style="${S.topoLevel === l ? 'background:#17140f;color:#f3eee7;border-color:#17140f' : ''}">${
+              l === 'element' ? '站点/网元' : l === 'group' ? '网元组' : '组件级'}</button>`).join('')}
+            <span class="pl-muted" style="margin-left:auto;font-size:8.5px;align-self:center">双击节点下钻</span>
+          </div>
+        </div>
+        <div class="pl-card">
+          <div class="pl-card__t">选中对象</div>
+          <div id="topoDetail" class="pl-muted" style="font-size:10px;line-height:1.9">在左侧点击节点查看详情</div>
+        </div>
+      </div>`;
+  }
+
+  /* ---------------------------------------------------------------- 视图：平台能力 */
+  function viewPlatforms() {
+    return head('平台能力', 'LCM 管版本 · OMC 管升级 · FS 为独立支线', 'FILE NO. PLAT-001') + `
+      <div class="pl-grid pl-grid--3">
+        <div class="pl-card">
+          <div class="pl-card__t">LCM · 生命周期</div>
+          <dl class="pl-kv">
+            <dt>纳管网元</dt><dd>${S.elements.length} 个</dd>
+            <dt>软件包</dt><dd>6 个 · 3 厂商</dd>
+            <dt>共部署</dt><dd>可与 OMC 同机部署</dd>
+          </dl>
+          <div class="pl-card__t" style="margin-top:12px">软件包（类型/厂商/版本）</div>
+          <table class="pl-table"><tbody>
+            <tr><td>NR-RAN 5.2.1</td><td class="pl-muted">华为</td><td class="num">已验证</td></tr>
+            <tr><td>NR-RAN 5.2.0</td><td class="pl-muted">华为</td><td class="num">历史版本</td></tr>
+            <tr><td>EPC-CORE 4.8.4</td><td class="pl-muted">中兴</td><td class="num">已验证</td></tr>
+          </tbody></table>
+        </div>
+        <div class="pl-card">
+          <div class="pl-card__t">OMC · 运维</div>
+          <dl class="pl-kv">
+            <dt>纳管网元</dt><dd>${S.groups.length} 组 / ${S.elements.length} 网元</dd>
+            <dt>账号</dt><dd>2 个（按网元范围授权）</dd>
+            <dt>站点</dt><dd>${esc(S.site.name)} · ${esc(S.site.role)}</dd>
+          </dl>
+          <div class="pl-card__t" style="margin-top:12px">一体化升级任务</div>
+          <table class="pl-table"><tbody>
+            <tr><td>UPG-0091</td><td class="pl-muted">gNB ×2</td><td>5.2.0 → 5.2.1</td></tr>
+            <tr><td>UPG-0090</td><td class="pl-muted">MME ×1</td><td>4.8.4 → 4.8.5</td></tr>
+          </tbody></table>
+        </div>
+        <div class="pl-card">
+          <div class="pl-card__t">FS · 虚层（独立支线）</div>
+          <dl class="pl-kv">
+            <dt>CPU 数量</dt><dd>16 vCPU</dd>
+            <dt>站点</dt><dd>主 HZ / 备 NB</dd>
+            <dt>平台版本</dt><dd>2.4.0</dd>
+            <dt>包校验</dt><dd>checksum + 签名</dd>
+          </dl>
+          <div style="margin-top:12px"><button class="pl-btn pl-btn--sm" id="btnFsFlow">查看升级流程</button></div>
+        </div>
+      </div>`;
+  }
+
+  /* ---------------------------------------------------------------- 拓扑渲染 */
+  function renderTopo() {
+    const svg = $('#topoSvg');
+    if (!svg) return;
+    const box = [];
+    const nodes = [];
+    const links = [];
+    const mk = (id, x, y, w, h, t, s, kind) => nodes.push({ id, x, y, w, h, t, s, kind });
+
+    if (S.topoLevel === 'element') {
+      mk('site', 360, 24, 170, 40, S.site.name, 'SITE · ' + S.site.role, 'site');
+      S.groups.forEach((g, gi) => {
+        const gx = 120 + gi * 330;
+        mk(g.id, gx, 120, 200, 38, g.name, 'GROUP · ' + g.elements.length + ' NE', 'group');
+        links.push(['site', g.id]);
+        g.elements.forEach((eid, ei) => {
+          const e = S.elements.find((x) => x.id === eid);
+          if (!e) return;
+          const ex = gx + 10 + ei * 105;
+          mk(e.id, ex, 210, 95, 40, e.name, e.version, 'ne');
+          links.push([g.id, e.id]);
+        });
+      });
+    } else if (S.topoLevel === 'group') {
+      mk('site', 360, 24, 170, 40, S.site.name, 'SITE', 'site');
+      S.elements.forEach((e, i) => {
+        const x = 80 + i * 250;
+        mk(e.id, x, 140, 180, 42, e.name, e.type + ' · v' + e.version, 'ne');
+        links.push(['site', e.id]);
+      });
+    } else {
+      const e = S.elements.find((x) => x.id === S.topoSel) || S.elements[0];
+      mk('ne', 40, 170, 150, 44, e.name, 'NE · v' + e.version, 'ne');
+      e.comps.forEach((c, i) => {
+        mk('c' + i, 300, 40 + i * 62, 150, 40, c, 'COMPONENT', 'comp');
+        links.push(['ne', 'c' + i]);
+      });
+      mk('bus', 560, 170, 150, 44, '内部总线', 'BACKPLANE', 'comp');
+      links.push(['ne', 'bus']);
+    }
+
+    const wOf = (id) => nodes.find((n) => n.id === id);
+    let html = '';
+    // 正交连线：父底 → 子顶（先竖后横再竖）
+    links.forEach(([a, b]) => {
+      const A = wOf(a), B = wOf(b);
+      if (!A || !B) return;
+      const x1 = A.x + A.w / 2, y1 = A.y + A.h;
+      const x2 = B.x + B.w / 2, y2 = B.y;
+      const midY = (y1 + y2) / 2;
+      const d = S.topoLevel === 'component'
+        ? `M ${x1} ${y1} L ${x1} ${midY} L ${x2} ${midY} L ${x2} ${y2}`
+        : `M ${x1} ${y1} L ${x1} ${midY} L ${x2} ${midY} L ${x2} ${y2}`;
+      html += `<path class="topo-link" d="${d}" />`;
+    });
+    // 节点
+    nodes.forEach((n) => {
+      html += `<g class="topo-node${S.topoSel === n.id ? ' is-on' : ''}" data-node="${n.id}">
+        <rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" />
+        <text class="topo-node__t" x="${n.x + 10}" y="${n.y + 17}">${esc(n.t)}</text>
+        <text class="topo-node__s" x="${n.x + 10}" y="${n.y + 31}">${esc(n.s)}</text>
+      </g>`;
+    });
+    svg.innerHTML = html;
+
+    // hover 档案卡 + 点击 + 双击下钻
+    const tip = $('#topoTip');
+    $$('.topo-node', svg).forEach((g) => {
+      g.addEventListener('mousemove', (ev) => {
+        const id = g.dataset.node;
+        const n = nodes.find((x) => x.id === id);
+        if (!n) return;
+        tip.innerHTML = `<b>${esc(n.t)}</b><br><span class="pl-muted">${esc(n.s)}</span>`;
+        tip.classList.add('on');
+        const r = $('#topoBox').getBoundingClientRect();
+        tip.style.left = Math.min(ev.clientX - r.left + 14, r.width - 250) + 'px';
+        tip.style.top = (ev.clientY - r.top + 14) + 'px';
+      });
+      g.addEventListener('mouseleave', () => tip.classList.remove('on'));
+      g.addEventListener('click', () => {
+        S.topoSel = g.dataset.node;
+        renderTopo();
+        renderTopoDetail();
+      });
+      g.addEventListener('dblclick', () => {
+        const id = g.dataset.node;
+        if (S.topoLevel === 'element' && id.startsWith('g-')) { S.topoLevel = 'group'; S.topoSel = id; }
+        else if (S.topoLevel === 'element' || S.topoLevel === 'group') {
+          const el = S.elements.find((x) => x.id === id);
+          if (el) { S.topoSel = el.id; S.topoLevel = 'component'; }
+        }
+        renderTopo(); renderTopoDetail();
+      });
+    });
+  }
+
+  function renderTopoDetail() {
+    const box = $('#topoDetail');
+    if (!box) return;
+    const id = S.topoSel;
+    if (!id) { box.innerHTML = '在左侧点击节点查看详情'; return; }
+    const e = S.elements.find((x) => x.id === id);
+    if (e) {
+      box.innerHTML = `<dl class="pl-kv">
+        <dt>Name</dt><dd>${esc(e.name)}</dd>
+        <dt>Arch</dt><dd>${esc(e.arch)}</dd>
+        <dt>Type</dt><dd>${esc(e.type)}</dd>
+        <dt>Version</dt><dd>v${esc(e.version)}</dd>
+        <dt>Software</dt><dd>${esc(e.sw)}</dd>
+        <dt>Group</dt><dd>${esc(e.group)}</dd>
+        <dt>Components</dt><dd>${e.comps.map((c) => `<span class="pl-tag">${esc(c)}</span>`).join(' ')}</dd>
+      </dl>`;
+      return;
+    }
+    const g = S.groups.find((x) => x.id === id);
+    if (g) {
+      box.innerHTML = `<dl class="pl-kv"><dt>Group</dt><dd>${esc(g.name)}</dd>
+        <dt>Members</dt><dd>${g.elements.length} 个网元</dd></dl>`;
+      return;
+    }
+    box.innerHTML = `<dl class="pl-kv"><dt>Site</dt><dd>${esc(S.site.name)} · ${esc(S.site.role)}</dd>
+      <dt>Groups</dt><dd>${S.groups.length}</dd><dt>Elements</dt><dd>${S.elements.length}</dd></dl>`;
+  }
+
+  /* ---------------------------------------------------------------- 人机交互弹窗 */
+  let humanTimer = 0, humanLeft = 0;
+  function openHuman(opts) {
+    const h = opts || S.human[0];
+    $('#plHuman').hidden = false;
+    $('#plHumanPrompt').textContent = h.prompt;
+    $('#plHumanSub').textContent = 'HUMAN-IN-THE-LOOP · 超时 ' + h.timeout + 's';
+    const stEl = $('#plHumanState');
+    stEl.textContent = 'PENDING';
+    stEl.className = 'pl-human__state';
+    $('#plHumanOpts').innerHTML = h.options.map((o) => `<button class="pl-human__opt" data-next="${esc(o.next)}">
+      <span>${esc(o.l)}</span><small>NEXT · ${esc(o.next)}</small></button>`).join('');
+    humanLeft = h.timeout;
+    $('#plHumanBar').style.width = '100%';
+    clearInterval(humanTimer);
+    humanTimer = setInterval(() => {
+      humanLeft -= 1;
+      $('#plHumanBar').style.width = Math.max(0, (humanLeft / h.timeout) * 100) + '%';
+      if (humanLeft <= 0) {
+        clearInterval(humanTimer);
+        stEl.textContent = 'EXPIRED';
+        stEl.className = 'pl-human__state is-expired';
+        $('#plHumanOpts').innerHTML = '<div class="pl-muted" style="font-size:10px">已超时。按流程配置：挂起等待 / 重试 / 跳过。</div>';
+      }
+    }, 1000);
+  }
+  function closeHuman() { clearInterval(humanTimer); $('#plHuman').hidden = true; }
+
+  /* ---------------------------------------------------------------- 路由 */
+  const VIEWS = {
+    'mock-admin': viewMockAdmin,
+    'mock-flow': viewMockFlow,
+    audit: viewAudit,
+    elements: viewElements,
+    topo: viewTopo,
+    platforms: viewPlatforms,
+  };
+
+  function render() {
+    renderRail();
+    const fn = VIEWS[S.view] || viewMockAdmin;
+    $('#plMain').innerHTML = fn();
+    $$('.pl-layer').forEach((b) => b.classList.toggle('is-on', b.dataset.layer === S.layer));
+    bindView();
+    if (S.view === 'topo') { renderTopo(); renderTopoDetail(); }
+  }
+
+  /* ---------------------------------------------------------------- 事件 */
+  function bindView() {
+    // MOCK 管理
+    const host = $('#epHost'), port = $('#epPort');
+    if (host) host.addEventListener('input', () => { S.endpoint.host = host.value; });
+    if (port) port.addEventListener('input', () => { S.endpoint.port = port.value; });
+    $$('[data-cap]').forEach((b) => b.addEventListener('click', () => {
+      const c = b.dataset.cap;
+      const i = S.endpoint.caps.indexOf(c);
+      if (i >= 0) S.endpoint.caps.splice(i, 1); else S.endpoint.caps.push(c);
+      render();
+    }));
+    const btnCert = $('#btnCert');
+    if (btnCert) btnCert.addEventListener('click', () => {
+      S.endpoint.cert = {
+        cn: S.endpoint.host,
+        san: [S.endpoint.host, 'localhost'],
+        pem: '-----BEGIN CERTIFICATE-----\n' + 'MIIB' + Math.random().toString(36).slice(2, 18).toUpperCase() + '\n...\n-----END CERTIFICATE-----',
+      };
+      render();
+    });
+    const btnStart = $('#btnStart');
+    if (btnStart) btnStart.addEventListener('click', () => {
+      if (!S.endpoint.cert) { S.endpoint.enabled = false; }
+      S.endpoint.enabled = !S.endpoint.enabled;
+      render();
+    });
+
+    // MOCK 流程
+    $$('[data-field-src]').forEach((sel) => sel.addEventListener('change', () => {
+      S.fields[+sel.dataset.fieldSrc].source = sel.value; render();
+    }));
+    $$('[data-field-del]').forEach((b) => b.addEventListener('click', () => {
+      S.fields.splice(+b.dataset.fieldDel, 1); render();
+    }));
+    const fa = $('#btnFieldAdd');
+    if (fa) fa.addEventListener('click', () => {
+      S.fields.push({ name: 'newField', type: 'string', source: 'static', value: '' }); render();
+    });
+    const hAdd = $('#btnHumanAdd');
+    if (hAdd) hAdd.addEventListener('click', () => openHuman());
+    const hPrev = $('#btnHumanPreview');
+    if (hPrev) hPrev.addEventListener('click', () => openHuman());
+
+    // 网元
+    const na = $('#btnNeAdd');
+    if (na) na.addEventListener('click', () => {
+      const n = S.elements.length + 1;
+      S.elements.push({ id: 'ne-000' + n, name: 'gNB-HZ-09' + (4 + n), arch: 'SA', type: 'gNB', version: '5.2.1', sw: 'NR-RAN', group: 'g-hz-01', comps: ['主控板', '业务板', '电源'] });
+      render();
+    });
+    $$('[data-ne-copy]').forEach((b) => b.addEventListener('click', () => {
+      const src = S.elements.find((x) => x.id === b.dataset.neCopy);
+      if (!src) return;
+      const n = S.elements.length + 1;
+      S.elements.push(Object.assign({}, src, { id: 'ne-000' + n, name: src.name + '-copy' }));
+      render();
+    }));
+
+    // 拓扑层级
+    $$('[data-level]').forEach((b) => b.addEventListener('click', () => { S.topoLevel = b.dataset.level; render(); }));
+
+    // 左侧导航
+    $$('[data-view]').forEach((b) => b.addEventListener('click', () => {
+      S.view = b.dataset.view;
+      S.layer = ['mock-admin', 'mock-flow', 'audit'].includes(S.view) ? 'runtime' : 'prep';
+      render();
+    }));
+    // 两层切换：切到该层第一个视图
+    $$('.pl-layer').forEach((b) => b.addEventListener('click', () => {
+      S.layer = b.dataset.layer;
+      S.view = S.layer === 'runtime' ? 'mock-admin' : 'elements';
+      render();
+    }));
+
+    // 人机交互弹窗
+    $$('.pl-human__opt').forEach((b) => b.addEventListener('click', () => {
+      const st = $('#plHumanState');
+      st.textContent = 'RESOLVED';
+      st.className = 'pl-human__state is-resolved';
+      clearInterval(humanTimer);
+      setTimeout(closeHuman, 500);
+    }));
+    if ($('#plHuman')) {
+      $('#plHuman').addEventListener('click', (e) => { if (e.target.id === 'plHuman') closeHuman(); });
+    }
+  }
+
+  $('#plExit') && $('#plExit').addEventListener('click', () => { location.href = '/'; });
+  render();
+  window.Plane = { S, render, openHuman };
+})();
