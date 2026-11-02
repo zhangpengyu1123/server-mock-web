@@ -211,7 +211,7 @@ class Rig {
     this.scene.add(new THREE.HemisphereLight(0xffffff, 0xc8bfb6, 0.60));
 
     const key = new THREE.DirectionalLight(0xfff6ea, 1.12);
-    key.position.set(4.2, 5.4, 5.2);
+    key.position.set(-3.4, 6.6, 3.4);   // 左后上方：避免近处卡面被正面直射打爆
     key.castShadow = true;
     key.shadow.mapSize.set(2048, 2048);
     const sc = key.shadow.camera;
@@ -386,7 +386,17 @@ class Rig {
       used.set(bi, slot + 1);
 
       const root = this.clonePrefab(this.prefabs[kind] || this.prefabs.LCM);
-      const bay = board.bays[slot];
+      // 卡片材质压暗一档：白卡正对主光时容易过曝
+    root.traverse((o) => {
+      if (!o.isMesh || !o.material) return;
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      mats.forEach((mat) => {
+        if (mat.color && mat.emissiveIntensity === undefined) mat.color.multiplyScalar(0.93);
+        if (mat.roughness !== undefined) mat.roughness = Math.max(0.62, mat.roughness);
+        if (mat.metalness !== undefined) mat.metalness = 0;
+      });
+    });
+    const bay = board.bays[slot];
       root.position.set(bay.x, G.cardSeatY + G.insertLift, bay.z);
       root.scale.setScalar(1.06);
       board.root.add(root);
@@ -585,7 +595,7 @@ class Rig {
       const delay = 0.08 + i * 0.05;
       const k = Math.max(0, Math.min(1, (this.intro - delay) * 1.45));
       const ease = 1 - Math.pow(1 - k, 3);
-      m.root.position.y = m.seatY + G.insertLift * (1 - ease);   // 竖直插入
+      if (this.intro < 1) m.root.position.y = m.seatY + G.insertLift * (1 - ease);   // 入场结束后把 y 交给特效层   // 竖直插入
       const settle = Math.sin(Math.min(1, Math.max(0, (k - 0.85) / 0.15)) * Math.PI) * 0.005;
       m.root.position.y -= settle;
 

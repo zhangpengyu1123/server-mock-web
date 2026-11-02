@@ -56,6 +56,7 @@ const TEX_SOFT = softTex();
 const state = new WeakMap();     // board -> { flow, scan }
 const modState = new WeakMap();  // module -> { top[], hoverGlow, prevHits, hotplug }
 const clock = new THREE.Clock();
+const LIFT = 0.090;              // 热插拔上浮高度（90mm）
 
 function findIn(root, prefix) {
   const out = [];
@@ -73,7 +74,7 @@ function setupBoard(s, b) {
 
   // —— 1. 前缘光流：贴在板前缘光条上方的一层加性流线 ——
   const flow = new THREE.Mesh(
-    new THREE.PlaneGeometry(0.42, 0.014),
+    new THREE.PlaneGeometry(0.42, 0.022),
     new THREE.MeshBasicMaterial({
       map: TEX_FLOW.clone(), color: AMBER, transparent: true, opacity: 0.9,
       blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false,
@@ -173,14 +174,16 @@ function update() {
     const seed = m.seed || 0;
 
     // 3. 热插拔：命中数增长 → 上浮再落位
-    if (hits > st.prevHits) st.lift = 0.062;   // 命中增长 → 触发热插拔
+    if (hits > st.prevHits) st.lift = LIFT;   // 命中增长 → 触发热插拔
     st.prevHits = hits;
     st.lift = Math.max(0, st.lift - dt * 0.26);
     if (st.lift > 0) {
-      const e = Math.sin((st.lift / 0.062) * Math.PI);   // 上去再回来
-      m.root.position.y = m.seatY + e * 0.062;
+      const e = Math.sin((st.lift / LIFT) * Math.PI);     // 上去再回来
+      m.root.position.y = m.seatY + e * LIFT;
+      m.root.rotation.z = -e * 0.049;                     // 2.8° 倾斜，像被抽出一点
     } else if (m.root.position.y !== m.seatY) {
       m.root.position.y = m.seatY;
+      m.root.rotation.z = 0;
     }
 
     // 2. 卡顶光带：呼吸 + 命中闪
@@ -224,6 +227,6 @@ window.RhineEffects = {
     if (!s) return;
     const m = s.byMapping && s.byMapping.get(mappingId);
     const st = m && modState.get(m);
-    if (st) st.lift = 0.062;
+    if (st) st.lift = LIFT;
   },
 };
