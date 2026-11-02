@@ -240,6 +240,15 @@ async fn business_stats(st: Ctx, headers: HeaderMap) -> ApiResult<Json<Stats>> {
 }
 
 // ================================================================== 管理面
+async fn business_fs_verify(st: Ctx, headers: HeaderMap) -> ApiResult<Json<PlatformCfg>> {
+    let u = auth(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    let cfg = st.store.run_fs_verify()?;
+    let fails = cfg.fs.verify_runs.iter().filter(|r| r.status == "fail").count();
+    st.store.push_log("business", "fs.verify", &format!("FS 包校验完成，失败 {} 项", fails), if fails > 0 { "warn" } else { "info" });
+    Ok(Json(cfg))
+}
+
 async fn business_human_template(st: Ctx, headers: HeaderMap) -> ApiResult<Json<HumanTemplate>> {
     let _u = auth(&st, &headers)?;
     Ok(Json(st.store.human_template()))
@@ -715,6 +724,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/business/logs", get(business_logs))
         .route("/business/stats", get(business_stats))
         .route("/business/human-template", get(business_human_template).patch(business_patch_human_template))
+        .route("/business/platform/fs/verify", post(business_fs_verify))
         .route("/business/packages", get(business_packages).post(business_create_package))
         .route("/business/packages/:id/upgrade", post(business_package_upgrade))
         .route("/business/platform", get(business_platform).patch(business_patch_platform))

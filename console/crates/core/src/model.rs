@@ -330,6 +330,16 @@ pub struct Account {
     pub scope: Vec<String>,
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct VerifyRun {
+    pub step: String,
+    /// pass | fail | pending
+    pub status: String,
+    pub at: Millis,
+    #[serde(default)]
+    pub note: String,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, Default)]
 pub struct FsConfig {
     pub cpus: u32,
@@ -340,6 +350,8 @@ pub struct FsConfig {
     pub verify_steps: Vec<String>,
     #[serde(default)]
     pub upgrade_steps: Vec<String>,
+    #[serde(default)]
+    pub verify_runs: Vec<VerifyRun>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, Default)]
