@@ -534,7 +534,14 @@
           <dl class="pl-kv">
             <dt>纳管网元</dt><dd>${S.groups.length} 组 / ${S.elements.length} 网元</dd>
             <dt>账号</dt><dd>2 个（按网元范围授权）</dd>
-            <dt>站点</dt><dd>${esc(S.site.name)} · ${esc(S.site.role)}</dd>
+            <dt>站点</dt><dd>
+              <input id="siteName" value="${esc((S.platform && S.platform.site_name) || S.site.name)}"
+                style="font:inherit;font-size:10px;padding:2px 4px;background:#fff;border:1px solid var(--line-2);width:120px"/>
+              <select id="siteRole" style="font:inherit;font-size:10px;padding:2px;background:#fff;border:1px solid var(--line-2);margin-left:4px">
+                ${['primary', 'secondary'].map((r) => `<option${(((S.platform && S.platform.site_role) || S.site.role) === r) ? ' selected' : ''}>${r}</option>`).join('')}
+              </select>
+              <button class="pl-btn pl-btn--sm" id="btnSiteSave" style="margin-left:6px">保存</button>
+            </dd>
           </dl>
           <div class="pl-card__t" style="margin-top:12px">一体化升级任务</div>
           <table class="pl-table"><tbody>
@@ -751,7 +758,14 @@
           <dl class="pl-kv">
             <dt>纳管数量</dt><dd>${managed.length} / ${S.elements.length}</dd>
             <dt>网元组</dt><dd>${(cfg.omc_groups || []).length ? cfg.omc_groups.join(' · ') : '—'}</dd>
-            <dt>站点</dt><dd>${esc(S.site.name)} · ${esc(S.site.role)}</dd>
+            <dt>站点</dt><dd>
+              <input id="siteName" value="${esc((S.platform && S.platform.site_name) || S.site.name)}"
+                style="font:inherit;font-size:10px;padding:2px 4px;background:#fff;border:1px solid var(--line-2);width:120px"/>
+              <select id="siteRole" style="font:inherit;font-size:10px;padding:2px;background:#fff;border:1px solid var(--line-2);margin-left:4px">
+                ${['primary', 'secondary'].map((r) => `<option${(((S.platform && S.platform.site_role) || S.site.role) === r) ? ' selected' : ''}>${r}</option>`).join('')}
+              </select>
+              <button class="pl-btn pl-btn--sm" id="btnSiteSave" style="margin-left:6px">保存</button>
+            </dd>
           </dl>
           <div class="pl-card__t" style="margin-top:14px">账号（按网元范围授权）</div>
           <table class="pl-table">
@@ -1611,12 +1625,26 @@
       render();
     }));
 
+    // OMC · 站点保存
+    const siteSave = $('#btnSiteSave');
+    if (siteSave) siteSave.addEventListener('click', async () => {
+      const name = ($('#siteName') || {}).value || '';
+      const role = ($('#siteRole') || {}).value || 'primary';
+      try {
+        S.platform = await api('/api/business/platform', {
+          method: 'PATCH', headers: headers(), body: JSON.stringify({ site_name: name.trim(), site_role: role }),
+        });
+        S.site = Object.assign({}, S.site, { name: name.trim() || S.site.name, role });
+      } catch (e) { console.warn(e); }
+      render();
+    });
+
     // LCM · 包升级 → 生成任务
     $$('[data-pkg-up]').forEach((b) => b.addEventListener('click', async () => {
       try {
         const task = await api('/api/business/packages/' + b.dataset.pkgUp + '/upgrade', {
           method: 'POST', headers: headers(),
-          body: JSON.stringify({ site: 'site-hz', to_version: b.dataset.pkgVer }),
+          body: JSON.stringify({ site: (S.platform && S.platform.site_name) || 'site-hz', to_version: b.dataset.pkgVer }),
         });
         S.tasks.unshift(task);
         S.taskSel = task.id;
@@ -1657,7 +1685,7 @@
       try {
         const t3 = await api('/api/business/tasks', {
           method: 'POST', headers: headers(),
-          body: JSON.stringify({ site: 'site-hz', element_ids: ['ne-0001', 'ne-0002'], from_version: '5.2.0', to_version: '5.2.1' }),
+          body: JSON.stringify({ site: (S.platform && S.platform.site_name) || 'site-hz', element_ids: ['ne-0001', 'ne-0002'], from_version: '5.2.0', to_version: '5.2.1' }),
         });
         S.tasks.unshift(t3);
         S.taskSel = t3.id;
@@ -1677,7 +1705,7 @@
       try {
         const t3 = await api('/api/business/tasks', {
           method: 'POST', headers: headers(),
-          body: JSON.stringify({ site: 'site-hz', element_ids: ['ne-0001', 'ne-0002'], from_version: '5.2.0', to_version: '5.2.1' }),
+          body: JSON.stringify({ site: (S.platform && S.platform.site_name) || 'site-hz', element_ids: ['ne-0001', 'ne-0002'], from_version: '5.2.0', to_version: '5.2.1' }),
         });
         S.tasks.unshift(t3);
         S.taskSel = t3.id;

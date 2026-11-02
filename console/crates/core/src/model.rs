@@ -366,11 +366,18 @@ pub struct PlatformCfg {
     pub omc_groups: Vec<String>,
     #[serde(default)]
     pub accounts: Vec<Account>,
+    /// 站点（一体化升级任务关联的站点）
+    #[serde(default)]
+    pub site_name: String,
+    #[serde(default)]
+    pub site_role: String,
     pub fs: FsConfig,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct PatchPlatformReq {
+    pub site_name: Option<String>,
+    pub site_role: Option<String>,
     pub lcm_elements: Option<Vec<String>>,
     pub co_deploy: Option<bool>,
     pub omc_elements: Option<Vec<String>>,

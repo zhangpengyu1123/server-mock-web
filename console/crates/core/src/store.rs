@@ -159,6 +159,8 @@ impl Store {
             platform: PlatformCfg {
                 lcm_elements: vec![], co_deploy: true, omc_elements: vec![], omc_groups: vec![],
                 accounts: vec![],
+                site_name: "HZ 主站点".into(),
+                site_role: "primary".into(),
                 fs: FsConfig {
                     cpus: 16,
                     site_primary: "HZ 主站点".into(),
@@ -405,6 +407,8 @@ impl Store {
             if let Some(v) = req.omc_elements { p.omc_elements = v; }
             if let Some(v) = req.omc_groups { p.omc_groups = v; }
             if let Some(v) = req.accounts { p.accounts = v; }
+            if let Some(v) = req.site_name { p.site_name = v; }
+            if let Some(v) = req.site_role { p.site_role = v; }
             if let Some(v) = req.fs { p.fs = v; }
         }
         let out = i.platform.clone();
