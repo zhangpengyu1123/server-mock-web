@@ -1388,9 +1388,12 @@
       });
       g.addEventListener('mouseleave', () => tip.classList.remove('on'));
       g.addEventListener('click', () => {
-        S.topoSel = g.dataset.node;
+        const raw = g.dataset.node || '';
+        if (raw.startsWith('go-')) { S.topoSel = raw.slice(3); S.topoLevel = 'group'; }
+        else { S.topoSel = raw; }
         renderTopo();
         renderTopoDetail();
+        if (window.PlaneTopo3D && S.topoDim === '3d') window.PlaneTopo3D.rebuild();
       });
       g.addEventListener('dblclick', () => {
         const id = g.dataset.node;
@@ -1668,7 +1671,11 @@
         b2.style.cssText = '';
         if (window.PlaneTopo3D) window.PlaneTopo3D.mount(
           box3, S,
-          (id) => { S.topoSel = id; renderTopoDetail(); },
+          (id, data) => {
+            S.topoSel = id;
+            if (S.topoLevel === 'group' && data && data.kind === 'group' && window.PlaneTopo3D) window.PlaneTopo3D.rebuild();
+            renderTopoDetail();
+          },
           (kind, id) => {
             if (kind === 'ne') { S.topoSel = id; S.topoLevel = 'component'; }
             else if (kind === 'site' || kind === 'group') { S.topoLevel = 'element'; }

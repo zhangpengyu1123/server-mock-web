@@ -388,6 +388,17 @@ class Topo3D {
           this.edge(g.id, e.id);
         });
       }
+      // 其他组：后排小托盘，可点切换焦点
+      const others = st.groups.filter((x) => !g || x.id !== g.id);
+      others.forEach((og, i) => {
+        const tray = this.inst('group') || this.plate(1.2, 0.06, 0.4, 0xe6e1d9);
+        tray.scale.setScalar(0.55);
+        tray.position.set(-1.5 + i * 1.5, Y - 0.02, -2.15);
+        this.root.add(tray);
+        addPick(tray, { kind: 'group', id: og.id, label: og.name });
+        this.addLabel(tray, og.name, og.elements.length + ' NE', 0.20, 0.8, { big: 44, small: 24 });
+      });
+
       this.controls.target.set(0, Y + 0.12, -0.15);
       this.camera.position.set(2.6, Y + 2.1, 2.9);
       return;
