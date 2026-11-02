@@ -433,7 +433,8 @@
             <td>${esc(r.path)}</td>
             <td class="num ${r.status >= 400 ? 'pl-tag--bad' : ''}">${r.status}</td>
             <td class="num">${r.delay_ms || 0} ms</td>
-            <td>${r.human ? '<span class="pl-tag pl-tag--on">HUMAN 202</span>' : '<span class="pl-muted">—</span>'}</td>
+            <td>${r.human ? `<span class="pl-tag pl-tag--on">HUMAN 202</span>
+              <button class="pl-btn pl-btn--sm" data-human-resolve="${esc(r.mapping_id || '')}" style="margin-left:6px">确认</button>` : '<span class="pl-muted">—</span>'}</td>
           </tr>`).join('')}</tbody>
         </table>` : `<div class="pl-muted" style="padding:14px 0;font-size:10px">
           还没有请求记录。开一个 Mock 服务并打一次 <code>/mock/...</code>，这里会出现真实的请求与响应审计。
@@ -1802,6 +1803,20 @@
       } catch (e) { console.warn(e); }
       render();
     });
+
+    // 审计：确认人机交互（放行 202）
+    $$('[data-human-resolve]').forEach((b) => b.addEventListener('click', async () => {
+      const id = b.dataset.humanResolve;
+      if (!id) return;
+      b.disabled = true;
+      try {
+        await api('/api/business/mappings/' + id + '/human', {
+          method: 'POST', headers: headers(), body: JSON.stringify({ option: 0 }),
+        });
+        await loadAudit();
+      } catch (e) { console.warn(e); }
+      render();
+    }));
 
     // LCM · 包升级 → 生成任务
     $$('[data-pkg-up]').forEach((b) => b.addEventListener('click', async () => {
