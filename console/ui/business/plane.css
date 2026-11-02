@@ -3,16 +3,18 @@
    米白卡纸 / 黑墨字 / 1px 发丝线 / 大写宽字距小标签 / 琥珀信号色
    ==========================================================================*/
 :root {
-  --ink: #17140f;
-  --ink-2: rgba(23, 20, 15, .62);
-  --ink-3: rgba(23, 20, 15, .40);
-  --line: rgba(23, 20, 15, .16);
-  --line-2: rgba(23, 20, 15, .28);
-  --paper: #f3eee7;
-  --paper-2: #eae4dc;
-  --signal: #d79a44;
+  /* 取自 RhineLabUI 设计基准：暖灰白底 / 近黑墨 / 暖杏金信号 */
+  --ink: #171713;
+  --ink-2: rgba(23, 23, 19, .62);
+  --ink-3: rgba(23, 23, 19, .40);
+  --line: rgba(23, 23, 19, .16);
+  --line-2: rgba(23, 23, 19, .28);
+  --paper: #eae5e1;
+  --paper-2: #e7e3d9;
+  --sand: #c1b8a7;
+  --signal: #a67d48;
   --danger: #7d2f22;
-  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -35,7 +37,7 @@ body.pl {
   position: sticky; top: 0; z-index: 20;
 }
 .pl-brand { display: flex; align-items: center; gap: 10px; }
-.pl-mark { width: 26px; height: 26px; color: var(--ink); }
+.pl-mark { width: 62px; height: 29px; color: var(--ink); flex: none; }
 .pl-brand__t { font-size: 13px; letter-spacing: .22em; font-weight: 600; }
 .pl-brand__s { font-size: 8.5px; letter-spacing: .22em; color: var(--ink-3); margin-top: 2px; }
 
@@ -155,7 +157,7 @@ body.pl {
 .pl-dot--warn { background: var(--signal); }
 .pl-dot--bad { background: var(--danger); }
 .pl-tag { display: inline-block; font-size: 8px; letter-spacing: .16em; padding: 2px 6px; border: 1px solid var(--line-2); }
-.pl-tag--on { border-color: var(--signal); color: #a9761f; }
+.pl-tag--on { border-color: var(--signal); color: #8a6a3c; }
 .pl-tag--bad { border-color: var(--danger); color: var(--danger); }
 .pl-mono { font-variant-numeric: tabular-nums; }
 .pl-muted { color: var(--ink-3); }
@@ -193,7 +195,7 @@ body.pl {
   padding: 13px 16px 10px; border-bottom: 1px solid var(--line-2); }
 .pl-human__t { font-size: 13px; font-weight: 600; letter-spacing: .04em; }
 .pl-human__s { margin-top: 3px; font-size: 8px; letter-spacing: .2em; color: var(--ink-3); }
-.pl-human__state { font-size: 8.5px; letter-spacing: .18em; padding: 3px 7px; border: 1px solid var(--signal); color: #a9761f; }
+.pl-human__state { font-size: 8.5px; letter-spacing: .18em; padding: 3px 7px; border: 1px solid var(--signal); color: #8a6a3c; }
 .pl-human__state.is-resolved { border-color: var(--ink); color: var(--ink); }
 .pl-human__state.is-expired { border-color: var(--danger); color: var(--danger); }
 .pl-human__bd { padding: 14px 16px 16px; }
