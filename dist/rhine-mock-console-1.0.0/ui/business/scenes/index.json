@@ -1,0 +1,17 @@
+[
+  {
+    "file": "baseline.json",
+    "name": "基线：单站点三网元",
+    "desc": "标准演示起点，OMC/LCM 均可用"
+  },
+  {
+    "file": "co-deploy.json",
+    "name": "双站点共部署",
+    "desc": "CPU 32、共部署开启、版本 5.3.0 待升级"
+  },
+  {
+    "file": "fault-drill.json",
+    "name": "故障演练",
+    "desc": "注入 500 规则 + 15s 人机超时"
+  }
+]

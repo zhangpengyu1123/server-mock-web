@@ -1,0 +1,373 @@
+{
+  "endpoints": [
+    {
+      "id": "ep-0001",
+      "host": "127.0.0.1",
+      "port": 8443,
+      "capabilities": [
+        "NEMP"
+      ],
+      "cert": null,
+      "enabled": false,
+      "created_at": 1793636597619
+    }
+  ],
+  "elements": [
+    {
+      "id": "ne-0001",
+      "name": "gNB-HZ-0904",
+      "arch": "SA",
+      "kind": "gNB",
+      "version": "5.2.1",
+      "software": "NR-RAN",
+      "prev_versions": [
+        "5.1.9",
+        "5.1.4"
+      ],
+      "group": "g-hz-01",
+      "components": [
+        "主控板",
+        "交换板",
+        "业务板",
+        "电源",
+        "风扇"
+      ],
+      "checks": [
+        {
+          "field": "version",
+          "rule": "目标版本 > 当前版本",
+          "msg": "不支持降级"
+        },
+        {
+          "field": "arch",
+          "rule": "必须与网元架构一致",
+          "msg": "架构不匹配"
+        }
+      ],
+      "flow": [],
+      "created_at": 1793636597175
+    },
+    {
+      "id": "ne-0002",
+      "name": "gNB-HZ-0905",
+      "arch": "SA",
+      "kind": "gNB",
+      "version": "5.2.0",
+      "software": "NR-RAN",
+      "prev_versions": [
+        "5.1.9"
+      ],
+      "group": "g-hz-01",
+      "components": [
+        "主控板",
+        "业务板",
+        "电源"
+      ],
+      "checks": [],
+      "flow": [],
+      "created_at": 1793636597175
+    },
+    {
+      "id": "ne-0003",
+      "name": "MME-HZ-01",
+      "arch": "EPC",
+      "kind": "MME",
+      "version": "4.8.4",
+      "software": "EPC-CORE",
+      "prev_versions": [
+        "4.8.3"
+      ],
+      "group": "g-hz-02",
+      "components": [
+        "主控板",
+        "信令板",
+        "电源"
+      ],
+      "checks": [],
+      "flow": [],
+      "created_at": 1793636597175
+    }
+  ],
+  "groups": [
+    {
+      "id": "g-hz-01",
+      "name": "杭州 gNB 组",
+      "site": "site-hz",
+      "element_ids": [
+        "ne-0001",
+        "ne-0002"
+      ],
+      "created_at": 1793636597175
+    },
+    {
+      "id": "g-hz-02",
+      "name": "杭州 核心网组",
+      "site": "site-hz",
+      "element_ids": [
+        "ne-0003"
+      ],
+      "created_at": 1793636597175
+    }
+  ],
+  "packages": [
+    {
+      "id": "pkg-001",
+      "name": "NR-RAN",
+      "kind": "网元软件包",
+      "owner": "ne-0001",
+      "vendor": "华为",
+      "version": "5.2.1",
+      "verified": true,
+      "created_at": 1793636597175
+    },
+    {
+      "id": "pkg-002",
+      "name": "NR-RAN",
+      "kind": "网元软件包",
+      "owner": "ne-0001",
+      "vendor": "华为",
+      "version": "5.2.0",
+      "verified": true,
+      "created_at": 1793636597175
+    },
+    {
+      "id": "pkg-003",
+      "name": "EPC-CORE",
+      "kind": "核心网软件包",
+      "owner": "ne-0003",
+      "vendor": "中兴",
+      "version": "4.8.4",
+      "verified": true,
+      "created_at": 1793636597175
+    }
+  ],
+  "platform": {
+    "lcm_elements": [
+      "ne-0001",
+      "ne-0002",
+      "ne-0003"
+    ],
+    "co_deploy": true,
+    "omc_elements": [
+      "ne-0001",
+      "ne-0002"
+    ],
+    "omc_groups": [
+      "g-hz-01"
+    ],
+    "accounts": [
+      {
+        "id": "acc-01",
+        "name": "omc-ops",
+        "role": "运维",
+        "scope": [
+          "ne-0001"
+        ]
+      },
+      {
+        "id": "acc-02",
+        "name": "omc-view",
+        "role": "只读",
+        "scope": [
+          "ne-0001",
+          "ne-0002"
+        ]
+      }
+    ],
+    "site_name": "",
+    "site_role": "",
+    "fs": {
+      "cpus": 16,
+      "site_primary": "HZ 主站点",
+      "site_secondary": "NB 备站点",
+      "version": "2.4.0",
+      "verify_steps": [
+        "校验 checksum（sha256）",
+        "校验签名（GPG）",
+        "校验包与平台版本兼容性",
+        "校验主备站点一致性"
+      ],
+      "upgrade_steps": [
+        "挂载安装镜像",
+        "预检查（CPU/内存/存储）",
+        "停业务",
+        "安装",
+        "启动并自检",
+        "主备切换验证"
+      ],
+      "verify_runs": []
+    }
+  },
+  "human": {
+    "states": [
+      {
+        "id": "PENDING",
+        "label": "待确认",
+        "tone": "signal"
+      },
+      {
+        "id": "RESOLVED",
+        "label": "已确认",
+        "tone": "ink"
+      },
+      {
+        "id": "EXPIRED",
+        "label": "已超时",
+        "tone": "danger"
+      },
+      {
+        "id": "SKIPPED",
+        "label": "已跳过",
+        "tone": "muted"
+      }
+    ],
+    "outcomes": [
+      {
+        "option": "确认继续",
+        "effect": "continue",
+        "to": "RESOLVED",
+        "set_field": "humanResult=ok"
+      },
+      {
+        "option": "稍后处理",
+        "effect": "hold",
+        "to": "PENDING",
+        "set_field": "humanResult=hold"
+      },
+      {
+        "option": "终止升级",
+        "effect": "abort",
+        "to": "EXPIRED",
+        "set_field": "humanResult=abort"
+      }
+    ]
+  },
+  "hits": [],
+  "tasks": [],
+  "users": [
+    {
+      "id": "user-0001",
+      "username": "admin",
+      "display": "莱茵生命 · 管理员",
+      "role": "admin",
+      "hash": "$argon2id$v=19$m=19456,t=2,p=1$DHBPxhAMZx8h3uEM5fo++Q$unU94GB1IQ337PhTNTYILg1opMbwmwaDU9Otb4jIStc",
+      "created_at": 1793636597397
+    },
+    {
+      "id": "user-0002",
+      "username": "viewer",
+      "display": "观测站 · 业务用户",
+      "role": "operator",
+      "hash": "$argon2id$v=19$m=19456,t=2,p=1$8cDPqz60UbFuCnNYjxKsJg$CGZD4mjlyqH2ZTPGzKhqQlrWMTEY/aNw9Y9aLMp44oc",
+      "created_at": 1793636597619
+    }
+  ],
+  "mappings": [
+    {
+      "id": "map-0001",
+      "owner": "user-0002",
+      "name": "注册网元",
+      "method": "post",
+      "path": "/nemp/v1/ne/register",
+      "status": 200,
+      "delay_ms": 120,
+      "content_type": "application/json",
+      "body": "{\"code\":\"0\",\"message\":\"success\",\"data\":{\"neId\":\"GNB-HZ-0904\"}}",
+      "enabled": true,
+      "fields": [],
+      "variants": [],
+      "human": null,
+      "version": "0.1.1",
+      "hits": 0,
+      "last_hit_at": null,
+      "created_at": 1793636597619
+    },
+    {
+      "id": "map-0002",
+      "owner": "user-0002",
+      "name": "网元列表",
+      "method": "get",
+      "path": "/nemp/v1/ne/list",
+      "status": 200,
+      "delay_ms": 60,
+      "content_type": "application/json",
+      "body": "{\"code\":\"0\",\"data\":{\"items\":[{\"neId\":\"GNB-HZ-0904\",\"site\":\"杭州主站点\"}]}}",
+      "enabled": true,
+      "fields": [],
+      "variants": [],
+      "human": null,
+      "version": "0.1.0",
+      "hits": 7,
+      "last_hit_at": null,
+      "created_at": 1793636537619
+    },
+    {
+      "id": "map-0003",
+      "owner": "user-0002",
+      "name": "告警上报",
+      "method": "post",
+      "path": "/alarm/v1/report",
+      "status": 202,
+      "delay_ms": 240,
+      "content_type": "application/json",
+      "body": "{\"code\":\"0\",\"message\":\"accepted\"}",
+      "enabled": true,
+      "fields": [],
+      "variants": [],
+      "human": null,
+      "version": "0.2.0",
+      "hits": 14,
+      "last_hit_at": null,
+      "created_at": 1793636477619
+    },
+    {
+      "id": "map-0004",
+      "owner": "user-0002",
+      "name": "鉴权失败样例",
+      "method": "get",
+      "path": "/nemp/v1/auth/probe",
+      "status": 401,
+      "delay_ms": 30,
+      "content_type": "application/json",
+      "body": "{\"code\":\"401\",\"message\":\"token expired\"}",
+      "enabled": true,
+      "fields": [],
+      "variants": [],
+      "human": null,
+      "version": "0.1.1",
+      "hits": 21,
+      "last_hit_at": null,
+      "created_at": 1793636417619
+    }
+  ],
+  "nodes": [
+    {
+      "id": "node-0001",
+      "name": "RHINE-L-01",
+      "addr": "10.0.0.21:9443",
+      "version": "0.1.0",
+      "status": "online",
+      "last_seen": 1793636597619,
+      "mappings": 4
+    },
+    {
+      "id": "node-0002",
+      "name": "RHINE-L-02",
+      "addr": "10.0.0.22:9443",
+      "version": "0.1.0",
+      "status": "online",
+      "last_seen": 1793636555619,
+      "mappings": 2
+    },
+    {
+      "id": "node-0003",
+      "name": "RHINE-L-03",
+      "addr": "10.0.0.23:9443",
+      "version": "0.0.9",
+      "status": "offline",
+      "last_seen": 1793632997619,
+      "mappings": 0
+    }
+  ],
+  "seq": 10
+}

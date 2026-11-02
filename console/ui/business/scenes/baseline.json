@@ -12,11 +12,6 @@
           "field": "arch",
           "msg": "架构不匹配",
           "rule": "必须与网元架构一致"
-        },
-        {
-          "field": "field",
-          "msg": "缺失参数",
-          "rule": "必填"
         }
       ],
       "components": [
@@ -26,29 +21,8 @@
         "电源",
         "风扇"
       ],
-      "created_at": 1793636596242,
-      "flow": [
-        {
-          "human": true,
-          "step": "上传软件包（校验 MD5）"
-        },
-        {
-          "human": false,
-          "step": "预检查（参数校验）"
-        },
-        {
-          "human": true,
-          "step": "激活"
-        },
-        {
-          "human": true,
-          "step": "主备倒换"
-        },
-        {
-          "human": false,
-          "step": "完成与回执"
-        }
-      ],
+      "created_at": 1793640234202,
+      "flow": [],
       "group": "g-hz-01",
       "id": "ne-0001",
       "kind": "gNB",
@@ -68,7 +42,7 @@
         "业务板",
         "电源"
       ],
-      "created_at": 1793636596242,
+      "created_at": 1793640234202,
       "flow": [],
       "group": "g-hz-01",
       "id": "ne-0002",
@@ -88,7 +62,7 @@
         "信令板",
         "电源"
       ],
-      "created_at": 1793636596242,
+      "created_at": 1793640234202,
       "flow": [],
       "group": "g-hz-02",
       "id": "ne-0003",
@@ -107,17 +81,17 @@
         "NEMP"
       ],
       "cert": null,
-      "created_at": 1793636596684,
+      "created_at": 1793640234652,
       "enabled": false,
       "host": "127.0.0.1",
       "id": "ep-0001",
       "port": 8443
     }
   ],
-  "exported_at": 1793638983862,
+  "exported_at": 1793640241472,
   "groups": [
     {
-      "created_at": 1793636596242,
+      "created_at": 1793640234202,
       "element_ids": [
         "ne-0001",
         "ne-0002"
@@ -127,22 +101,12 @@
       "site": "site-hz"
     },
     {
-      "created_at": 1793636596242,
+      "created_at": 1793640234202,
       "element_ids": [
         "ne-0003"
       ],
       "id": "g-hz-02",
       "name": "杭州 核心网组",
-      "site": "site-hz"
-    },
-    {
-      "created_at": 1793637935078,
-      "element_ids": [
-        "ne-0001",
-        "ne-0002"
-      ],
-      "id": "g-0003",
-      "name": "新网元组 3",
       "site": "site-hz"
     }
   ],
@@ -187,11 +151,6 @@
         "id": "SKIPPED",
         "label": "已跳过",
         "tone": "muted"
-      },
-      {
-        "id": "NEW_STATE",
-        "label": "新状态",
-        "tone": "muted"
       }
     ]
   },
@@ -200,7 +159,7 @@
     {
       "body": "{\"code\":\"0\",\"message\":\"success\",\"data\":{\"neId\":\"GNB-HZ-0904\"}}",
       "content_type": "application/json",
-      "created_at": 1793636596684,
+      "created_at": 1793640234652,
       "delay_ms": 120,
       "enabled": true,
       "fields": [],
@@ -219,7 +178,7 @@
     {
       "body": "{\"code\":\"0\",\"data\":{\"items\":[{\"neId\":\"GNB-HZ-0904\",\"site\":\"杭州主站点\"}]}}",
       "content_type": "application/json",
-      "created_at": 1793636536684,
+      "created_at": 1793640174652,
       "delay_ms": 60,
       "enabled": true,
       "fields": [],
@@ -238,7 +197,7 @@
     {
       "body": "{\"code\":\"0\",\"message\":\"accepted\"}",
       "content_type": "application/json",
-      "created_at": 1793636476684,
+      "created_at": 1793640114652,
       "delay_ms": 240,
       "enabled": true,
       "fields": [],
@@ -257,7 +216,7 @@
     {
       "body": "{\"code\":\"401\",\"message\":\"token expired\"}",
       "content_type": "application/json",
-      "created_at": 1793636416684,
+      "created_at": 1793640054652,
       "delay_ms": 30,
       "enabled": true,
       "fields": [],
@@ -272,205 +231,11 @@
       "status": 401,
       "variants": [],
       "version": "0.1.1"
-    },
-    {
-      "body": "{\"ok\":true}",
-      "content_type": "application/json",
-      "created_at": 1793637738557,
-      "delay_ms": 0,
-      "enabled": true,
-      "fields": [],
-      "hits": 1,
-      "human": {
-        "chosen": 0,
-        "options": [
-          {
-            "effect": "continue",
-            "label": "确认"
-          },
-          {
-            "effect": "abort",
-            "label": "终止"
-          }
-        ],
-        "prompt": "确认放行？",
-        "state": "resolved"
-      },
-      "id": "map-0011",
-      "last_hit_at": 1793637738561,
-      "method": "post",
-      "name": "人机审计演示",
-      "owner": "user-0001",
-      "path": "/demo/v1/audit-human",
-      "status": 200,
-      "variants": [],
-      "version": "0.1.0"
-    },
-    {
-      "body": "{\"mode\":\"none\"}",
-      "content_type": "application/json",
-      "created_at": 1793638694828,
-      "delay_ms": 0,
-      "enabled": true,
-      "fields": [],
-      "hits": 9,
-      "human": null,
-      "id": "map-0012",
-      "last_hit_at": 1793638719851,
-      "method": "post",
-      "name": "多规则演示",
-      "owner": "user-0001",
-      "path": "/demo/v1/variant",
-      "status": 200,
-      "variants": [],
-      "version": "0.1.0"
-    },
-    {
-      "body": "{}",
-      "content_type": "application/json",
-      "created_at": 1793638716120,
-      "delay_ms": 0,
-      "enabled": true,
-      "fields": [],
-      "hits": 0,
-      "human": null,
-      "id": "map-0013",
-      "last_hit_at": null,
-      "method": "post",
-      "name": "x",
-      "owner": "user-0001",
-      "path": "/demo/v1/v2",
-      "status": 200,
-      "variants": [],
-      "version": "0.1.0"
-    },
-    {
-      "body": "{\"mode\":\"none\"}",
-      "content_type": "application/json",
-      "created_at": 1793638722885,
-      "delay_ms": 0,
-      "enabled": true,
-      "fields": [],
-      "hits": 3,
-      "human": null,
-      "id": "map-0014",
-      "last_hit_at": 1793638722962,
-      "method": "post",
-      "name": "多规则演示",
-      "owner": "user-0001",
-      "path": "/demo/v1/variant-1793638722883",
-      "status": 200,
-      "variants": [
-        {
-          "body": "{\"mode\":\"fast\",\"ok\":true}",
-          "delay_ms": 0,
-          "note": "快速通道",
-          "status": 201,
-          "when": "req.mode==\"fast\""
-        },
-        {
-          "body": "{\"error\":\"boom\"}",
-          "delay_ms": 0,
-          "note": "故障注入",
-          "status": 500,
-          "when": "req.mode==\"fail\""
-        },
-        {
-          "body": "{\"mode\":\"default\"}",
-          "delay_ms": 120,
-          "note": "兜底",
-          "status": 200,
-          "when": ""
-        }
-      ],
-      "version": "0.1.0"
-    },
-    {
-      "body": "{\"mode\":\"none\"}",
-      "content_type": "application/json",
-      "created_at": 1793638742831,
-      "delay_ms": 0,
-      "enabled": true,
-      "fields": [],
-      "hits": 3,
-      "human": null,
-      "id": "map-0015",
-      "last_hit_at": 1793638742881,
-      "method": "post",
-      "name": "多规则演示",
-      "owner": "user-0001",
-      "path": "/demo/v1/variant-1793638742828",
-      "status": 200,
-      "variants": [
-        {
-          "body": "{\"mode\":\"fast\",\"ok\":true}",
-          "delay_ms": 0,
-          "note": "快速通道",
-          "status": 201,
-          "when": "req.mode==\"fast\""
-        },
-        {
-          "body": "{\"error\":\"boom\"}",
-          "delay_ms": 0,
-          "note": "故障注入",
-          "status": 500,
-          "when": "req.mode==\"fail\""
-        },
-        {
-          "body": "{\"mode\":\"default\"}",
-          "delay_ms": 120,
-          "note": "兜底",
-          "status": 200,
-          "when": ""
-        }
-      ],
-      "version": "0.1.0"
-    },
-    {
-      "body": "{\"mode\":\"none\"}",
-      "content_type": "application/json",
-      "created_at": 1793638759817,
-      "delay_ms": 0,
-      "enabled": true,
-      "fields": [],
-      "hits": 3,
-      "human": null,
-      "id": "map-0016",
-      "last_hit_at": 1793638759848,
-      "method": "post",
-      "name": "多规则演示",
-      "owner": "user-0001",
-      "path": "/demo/v1/variant-1793638759815",
-      "status": 200,
-      "variants": [
-        {
-          "body": "{\"mode\":\"fast\",\"ok\":true}",
-          "delay_ms": 0,
-          "note": "快速通道",
-          "status": 201,
-          "when": "req.mode==\"fast\""
-        },
-        {
-          "body": "{\"error\":\"boom\"}",
-          "delay_ms": 0,
-          "note": "故障注入",
-          "status": 500,
-          "when": "req.mode==\"fail\""
-        },
-        {
-          "body": "{\"mode\":\"default\"}",
-          "delay_ms": 120,
-          "note": "兜底",
-          "status": 200,
-          "when": ""
-        }
-      ],
-      "version": "0.1.0"
     }
   ],
   "packages": [
     {
-      "created_at": 1793636596242,
+      "created_at": 1793640234202,
       "id": "pkg-001",
       "kind": "网元软件包",
       "name": "NR-RAN",
@@ -480,7 +245,7 @@
       "version": "5.2.1"
     },
     {
-      "created_at": 1793636596242,
+      "created_at": 1793640234202,
       "id": "pkg-002",
       "kind": "网元软件包",
       "name": "NR-RAN",
@@ -490,7 +255,7 @@
       "version": "5.2.0"
     },
     {
-      "created_at": 1793636596242,
+      "created_at": 1793640234202,
       "id": "pkg-003",
       "kind": "核心网软件包",
       "name": "EPC-CORE",
@@ -518,55 +283,22 @@
           "ne-0001",
           "ne-0002"
         ]
-      },
-      {
-        "id": "acc-03",
-        "name": "omc-audit",
-        "role": "管理员",
-        "scope": [
-          "ne-0002"
-        ]
       }
     ],
     "co_deploy": true,
     "fs": {
       "cpus": 16,
       "site_primary": "HZ 主站点",
-      "site_secondary": "HZ 主站点",
+      "site_secondary": "NB 备站点",
       "upgrade_steps": [
         "挂载安装镜像",
-        "预检查",
+        "预检查（CPU/内存/存储）",
         "停业务",
         "安装",
         "启动并自检",
         "主备切换验证"
       ],
-      "verify_runs": [
-        {
-          "at": 1793637035776,
-          "note": "sha256 匹配",
-          "status": "pass",
-          "step": "校验 checksum（sha256）"
-        },
-        {
-          "at": 1793637035776,
-          "note": "GPG 签名有效",
-          "status": "pass",
-          "step": "校验签名（GPG）"
-        },
-        {
-          "at": 1793637035776,
-          "note": "3 个软件包与平台版本兼容",
-          "status": "pass",
-          "step": "校验包与平台版本兼容性"
-        },
-        {
-          "at": 1793637035776,
-          "note": "主备站点同名，校验失败",
-          "status": "fail",
-          "step": "校验主备站点一致性"
-        }
-      ],
+      "verify_runs": [],
       "verify_steps": [
         "校验 checksum（sha256）",
         "校验签名（GPG）",
@@ -581,6 +313,7 @@
       "ne-0003"
     ],
     "omc_elements": [
+      "ne-0001",
       "ne-0002"
     ],
     "omc_groups": [

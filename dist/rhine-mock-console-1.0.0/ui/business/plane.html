@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>业务面 · RHINE LAB PLANE</title>
+<link rel="stylesheet" href="../shared/base.css" />
+<link rel="stylesheet" href="./plane.css?v=20261103005550" />
+</head>
+<body class="pl">
+
+<!-- 顶栏 -->
+<header class="pl-top">
+  <div class="pl-brand">
+    <svg class="pl-mark" viewBox="0 0 310 145" aria-hidden="true"><path d="M156 75C127 48 103 15 70 15C37 15 15 39 15 70S38 128 70 128C103 128 127 96 176 52M155 75C182 99 208 128 240 128C273 128 295 105 295 73S273 15 240 15C221 15 207 23 192 38" fill="none" stroke="currentColor" stroke-width="26"/><path d="M44 70h50M69 45v50M219 70h44" fill="none" stroke="currentColor" stroke-width="15"/></svg>
+    <div>
+      <div class="pl-brand__t">RHINE LAB</div>
+      <div class="pl-brand__s">PLANE · 业务面</div>
+    </div>
+  </div>
+
+  <!-- 两层语义：运行态 / 准备态 -->
+  <div class="pl-layers">
+    <button class="pl-layer is-on" data-layer="runtime">
+      <span class="pl-layer__k">LAYER 1</span>
+      <span class="pl-layer__t">运行态</span>
+      <span class="pl-layer__d">端口在跑 · 请求在流动</span>
+    </button>
+    <div class="pl-layer__link" aria-hidden="true">
+      <span>定义 ↓ 执行</span>
+    </div>
+    <button class="pl-layer" data-layer="prep">
+      <span class="pl-layer__k">LAYER 2</span>
+      <span class="pl-layer__t">准备态</span>
+      <span class="pl-layer__d">网元与拓扑 · 平台能力</span>
+    </button>
+  </div>
+
+  <div class="pl-meta">
+    <span id="plNode">—</span>
+    <button class="pl-ghost" id="plExit">退出</button>
+  </div>
+</header>
+
+<div class="pl-body">
+  <!-- 左导航：按层分组，有主从关系 -->
+  <nav class="pl-rail" id="plRail"></nav>
+
+  <main class="pl-main" id="plMain"></main>
+</div>
+
+<!-- 人机交互弹窗（只做界面：提示 + 选项 + 超时态） -->
+<div class="pl-human" id="plHuman" hidden>
+  <div class="pl-human__box">
+    <div class="pl-human__hd">
+      <div>
+        <div class="pl-human__t">人工确认</div>
+        <div class="pl-human__s" id="plHumanSub">HUMAN-IN-THE-LOOP</div>
+      </div>
+      <div class="pl-human__state" id="plHumanState">PENDING</div>
+    </div>
+    <div class="pl-human__bd">
+      <p class="pl-human__prompt" id="plHumanPrompt">—</p>
+      <div class="pl-human__opts" id="plHumanOpts"></div>
+      <div class="pl-human__timer"><i id="plHumanBar"></i></div>
+      <div class="pl-human__hint">超时未确认将进入 EXPIRED，可按流程配置挂起或重试</div>
+    </div>
+  </div>
+</div>
+
+<script src="../shared/api.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "../vendor/three.module.min.js",
+  "three/addons/": "../vendor/"
+} }
+</script>
+<script src="./plane.js?v=20261103011754"></script>
+<script type="module" src="./plane-topo3d.js?v=20261103012121"></script>
+</body>
+</html>
