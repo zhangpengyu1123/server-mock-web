@@ -1,0 +1,116 @@
+- generic [ref=f19e1]:
+  - banner [ref=f19e2]:
+    - generic [ref=f19e6]:
+      - generic [ref=f19e7]: MOCK PLATFORM
+      - generic [ref=f19e8]: 节点调测仿真台 · OPS CONSOLE
+    - group "本机信息" [ref=f19e9]:
+      - generic [ref=f19e10]: MOCK-WIN-01
+      - generic [ref=f19e11]: /
+      - generic [ref=f19e12]: 10.18.32.104
+      - generic [ref=f19e13]: /
+      - generic [ref=f19e14]: Windows 11 23H2 · 22631
+      - generic [ref=f19e15]: /
+      - generic [ref=f19e16]: MockAgent 4.2.1
+    - generic "实时遥测" [ref=f19e17]:
+      - generic [ref=f19e18]: TELEMETRY
+      - generic [ref=f19e19]:
+        - generic [ref=f19e20]: REQ 8
+        - generic [ref=f19e22]: OK 6
+        - generic [ref=f19e24]: ERR 2
+        - generic [ref=f19e26]: AVG 345ms
+        - generic [ref=f19e28]: RUN 1/3
+        - generic [ref=f19e30]: HUMAN 1
+    - generic [ref=f19e32]:
+      - button "开关界面音效" [ref=f19e33] [cursor=pointer]:
+        - generic [ref=f19e37]: SFX
+      - generic [ref=f19e38]: 00:41:32
+  - generic [ref=f19e39]:
+    - navigation "主导航" [ref=f19e40]:
+      - button "MOCK 管理 端口 · 证书 · 能力 3" [ref=f19e41] [cursor=pointer]:
+        - generic [ref=f19e46]: MOCK 管理
+        - generic [ref=f19e47]: 端口 · 证书 · 能力
+        - generic [ref=f19e48]: "3"
+      - button "MOCK 流程 审计 · 预期响应 1" [active] [ref=f19e49] [cursor=pointer]:
+        - generic [ref=f19e54]: MOCK 流程
+        - generic [ref=f19e55]: 审计 · 预期响应
+        - generic [ref=f19e56]: "1"
+      - button "网元管理 属性 · 升级流程 5" [ref=f19e57] [cursor=pointer]:
+        - generic [ref=f19e61]: 网元管理
+        - generic [ref=f19e62]: 属性 · 升级流程
+        - generic [ref=f19e63]: "5"
+      - button "网元管理平台 账号 · 一体化任务 1" [ref=f19e64] [cursor=pointer]:
+        - generic [ref=f19e70]: 网元管理平台
+        - generic [ref=f19e71]: 账号 · 一体化任务
+        - generic [ref=f19e72]: "1"
+      - button "生命周期平台 软件包 · 共部署 4" [ref=f19e73] [cursor=pointer]:
+        - generic [ref=f19e77]: 生命周期平台
+        - generic [ref=f19e78]: 软件包 · 共部署
+        - generic [ref=f19e79]: "4"
+      - button "虚层管理平台 CPU · 主副站点 —" [ref=f19e80] [cursor=pointer]:
+        - generic [ref=f19e84]: 虚层管理平台
+        - generic [ref=f19e85]: CPU · 主副站点
+        - generic [ref=f19e86]: —
+      - generic [ref=f19e87]:
+        - generic [ref=f19e88]: SIG 0x17B4
+        - generic [ref=f19e89]: UP 5d 0h
+    - main [ref=f19e90]:
+      - generic [ref=f19e260]:
+        - generic [ref=f19e261]:
+          - heading "MOCK 流程 AUDIT TRAIL / EXPECTED RESPONSE STUDIO" [level=1] [ref=f19e262]:
+            - generic [ref=f19e263]: MOCK 流程
+            - generic [ref=f19e264]: AUDIT TRAIL / EXPECTED RESPONSE STUDIO
+          - generic [ref=f19e265]:
+            - generic [ref=f19e266]:
+              - generic [ref=f19e267]: 请求
+              - generic [ref=f19e268]: "8"
+            - generic [ref=f19e269]:
+              - generic [ref=f19e270]: 成功
+              - generic [ref=f19e271]: "6"
+            - generic [ref=f19e272]:
+              - generic [ref=f19e273]: 异常
+              - generic [ref=f19e274]: "2"
+            - generic [ref=f19e275]:
+              - generic [ref=f19e276]: 待人工
+              - generic [ref=f19e277]: "1"
+        - generic [ref=f19e278]:
+          - generic [ref=f19e281]:
+            - heading "接口清单" [level=2] [ref=f19e282]
+            - generic [ref=f19e283]: 按能力分组
+          - heading "预期响应定制" [level=2] [ref=f19e288]
+        - generic [ref=f19e290]:
+          - generic [ref=f19e291]:
+            - heading "请求 / 响应审计" [level=2] [ref=f19e292]
+            - generic [ref=f19e293]:
+              - generic [ref=f19e294]:
+                - button "全部" [ref=f19e295] [cursor=pointer]
+                - button "成功" [ref=f19e296] [cursor=pointer]
+                - button "异常" [ref=f19e297] [cursor=pointer]
+                - button "待人工" [ref=f19e298] [cursor=pointer]
+              - textbox "搜索日志" [ref=f19e299]:
+                - /placeholder: 搜索路径 / 网元 / 判定
+              - generic [ref=f19e300]: LIVE
+          - table [ref=f19e303]:
+            - rowgroup [ref=f19e304]:
+              - row [ref=f19e305]:
+                - columnheader "时间" [ref=f19e306]
+                - columnheader "端口" [ref=f19e307]
+                - columnheader "方法" [ref=f19e308]
+                - columnheader "路径" [ref=f19e309]
+                - columnheader "状态" [ref=f19e310]
+                - columnheader "时延" [ref=f19e311]
+                - columnheader "网元" [ref=f19e312]
+                - columnheader "判定" [ref=f19e313]
+                - columnheader [ref=f19e314]
+            - rowgroup
+  - contentinfo [ref=f19e249]:
+    - generic [ref=f19e250]:
+      - text: SIM
+      - generic [ref=f19e252]: RUNNING
+    - generic [ref=f19e254]:
+      - text: LAST
+      - generic [ref=f19e255]: 00:35:15 POST /nemp/v1/ne/register → 200
+    - generic [ref=f19e256]: GET /nemp/v1/ne/GNB-HZ-0001/state 200 · POST /alarm/v1/report 200 · POST /nemp/v1/ne/GNB-HZ-0002/upgrade 202
+    - generic [ref=f19e258]:
+      - text: VARIANT
+      - generic [ref=f19e259]: V1 · OPS CONSOLE
+  - status

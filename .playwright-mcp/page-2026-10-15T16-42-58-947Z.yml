@@ -1,0 +1,234 @@
+- generic [ref=f21e1]:
+  - banner [ref=f21e2]:
+    - generic [ref=f21e6]:
+      - generic [ref=f21e7]: MOCK PLATFORM
+      - generic [ref=f21e8]: 节点调测仿真台 · OPS CONSOLE
+    - group "本机信息" [ref=f21e9]:
+      - generic [ref=f21e10]: MOCK-WIN-01
+      - generic [ref=f21e11]: /
+      - generic [ref=f21e12]: 10.18.32.104
+      - generic [ref=f21e13]: /
+      - generic [ref=f21e14]: Windows 11 23H2 · 22631
+      - generic [ref=f21e15]: /
+      - generic [ref=f21e16]: MockAgent 4.2.1
+    - generic "实时遥测" [ref=f21e17]:
+      - generic [ref=f21e18]: TELEMETRY
+      - generic [ref=f21e19]:
+        - generic [ref=f21e20]: REQ 22
+        - generic [ref=f21e22]: OK 16
+        - generic [ref=f21e24]: ERR 6
+        - generic [ref=f21e26]: AVG 328ms
+        - generic [ref=f21e28]: RUN 1/3
+        - generic [ref=f21e30]: HUMAN 2
+    - generic [ref=f21e32]:
+      - button "开关界面音效" [ref=f21e33] [cursor=pointer]:
+        - generic [ref=f21e37]: SFX
+      - generic [ref=f21e38]: 00:42:58
+  - generic [ref=f21e39]:
+    - navigation "主导航" [ref=f21e40]:
+      - button "MOCK 管理 端口 · 证书 · 能力 3" [ref=f21e41] [cursor=pointer]:
+        - generic [ref=f21e46]: MOCK 管理
+        - generic [ref=f21e47]: 端口 · 证书 · 能力
+        - generic [ref=f21e48]: "3"
+      - button "MOCK 流程 审计 · 预期响应 2" [ref=f21e378] [cursor=pointer]:
+        - generic [ref=f21e54]: MOCK 流程
+        - generic [ref=f21e55]: 审计 · 预期响应
+        - generic [ref=f21e56]: "2"
+      - button "网元管理 属性 · 升级流程 5" [ref=f21e57] [cursor=pointer]:
+        - generic [ref=f21e61]: 网元管理
+        - generic [ref=f21e62]: 属性 · 升级流程
+        - generic [ref=f21e63]: "5"
+      - button "网元管理平台 账号 · 一体化任务 1" [active] [ref=f21e64] [cursor=pointer]:
+        - generic [ref=f21e70]: 网元管理平台
+        - generic [ref=f21e71]: 账号 · 一体化任务
+        - generic [ref=f21e72]: "1"
+      - button "生命周期平台 软件包 · 共部署 4" [ref=f21e73] [cursor=pointer]:
+        - generic [ref=f21e77]: 生命周期平台
+        - generic [ref=f21e78]: 软件包 · 共部署
+        - generic [ref=f21e79]: "4"
+      - button "虚层管理平台 CPU · 主副站点 —" [ref=f21e80] [cursor=pointer]:
+        - generic [ref=f21e84]: 虚层管理平台
+        - generic [ref=f21e85]: CPU · 主副站点
+        - generic [ref=f21e86]: —
+      - generic [ref=f21e87]:
+        - generic [ref=f21e88]: SIG 0x17B4
+        - generic [ref=f21e89]: UP 5d 0h
+    - main [ref=f21e90]:
+      - generic [ref=f21e379]:
+        - generic [ref=f21e380]:
+          - heading "网元管理平台 MANAGED SCOPE / ACCOUNTS / INTEGRATED TASK" [level=1] [ref=f21e381]:
+            - generic [ref=f21e382]: 网元管理平台
+            - generic [ref=f21e383]: MANAGED SCOPE / ACCOUNTS / INTEGRATED TASK
+          - generic [ref=f21e384]:
+            - generic [ref=f21e385]:
+              - generic [ref=f21e386]: 受管网元
+              - generic [ref=f21e387]: 5个
+            - generic [ref=f21e388]:
+              - generic [ref=f21e389]: 账号
+              - generic [ref=f21e390]: 2个
+            - generic [ref=f21e391]:
+              - generic [ref=f21e392]: 进行中任务
+              - generic [ref=f21e393]: 1个
+            - generic [ref=f21e394]:
+              - generic [ref=f21e395]: 共部署
+              - generic [ref=f21e396]: "ON"
+        - generic [ref=f21e397]:
+          - generic [ref=f21e399]:
+            - generic [ref=f21e400]:
+              - heading "受管网元" [level=2] [ref=f21e401]
+              - generic [ref=f21e402]: 5 个网元 / 2 个组
+            - generic [ref=f21e403]:
+              - generic [ref=f21e404]:
+                - generic [ref=f21e405]:
+                  - generic [ref=f21e406]: 杭州·基站 01
+                  - generic [ref=f21e407]: GNB · ARM64 裸机
+                - generic [ref=f21e408]: 杭州基站组
+              - generic [ref=f21e410]:
+                - generic [ref=f21e411]:
+                  - generic [ref=f21e412]: 杭州·基站 02
+                  - generic [ref=f21e413]: GNB · ARM64 裸机
+                - generic [ref=f21e414]: 杭州基站组
+              - generic [ref=f21e416]:
+                - generic [ref=f21e417]:
+                  - generic [ref=f21e418]: 南京·核心网 AMF
+                  - generic [ref=f21e419]: AMF · x86_64 虚拟机
+                - generic [ref=f21e420]: 南京核心网组
+              - generic [ref=f21e422]:
+                - generic [ref=f21e423]:
+                  - generic [ref=f21e424]: 南京·用户面 UPF
+                  - generic [ref=f21e425]: UPF · 容器化（K8s）
+                - generic [ref=f21e426]: 南京核心网组
+              - generic [ref=f21e428]:
+                - generic [ref=f21e429]:
+                  - generic [ref=f21e430]: 西安·灾备 OMC
+                  - generic [ref=f21e431]: OMC · 异构刀片
+                - generic [ref=f21e432]: 未纳入平台
+              - generic [ref=f21e434]:
+                - generic [ref=f21e435]:
+                  - generic [ref=f21e436]: 组 · 杭州基站组
+                  - generic [ref=f21e437]: 串行 · 每台间隔 60s
+                - generic [ref=f21e438]: 2 成员
+              - generic [ref=f21e440]:
+                - generic [ref=f21e441]:
+                  - generic [ref=f21e442]: 组 · 南京核心网组
+                  - generic [ref=f21e443]: 并行 · 保留备用
+                - generic [ref=f21e444]: 2 成员
+          - generic [ref=f21e447]:
+            - generic [ref=f21e448]:
+              - heading "账号管理" [level=2] [ref=f21e449]
+              - generic [ref=f21e450]: 2 个账号
+            - generic [ref=f21e451]:
+              - generic [ref=f21e452]:
+                - generic [ref=f21e453]:
+                  - generic [ref=f21e454]: zhangwei
+                  - generic [ref=f21e455]: 升级操作员 · 授权 2 个网元 · 09-28 10:20
+                - switch "zhangwei" [checked] [ref=f21e458] [cursor=pointer]
+              - generic [ref=f21e461]:
+                - generic [ref=f21e462]:
+                  - generic [ref=f21e463]: ops_nj
+                  - generic [ref=f21e464]: 只读审计 · 授权 2 个网元 · 10-06 15:44
+                - switch "ops_nj" [checked] [ref=f21e467] [cursor=pointer]
+            - generic [ref=f21e471]:
+              - generic [ref=f21e472]:
+                - generic [ref=f21e473]:
+                  - generic [ref=f21e474]: 账号
+                  - textbox "账号" [ref=f21e475]:
+                    - /placeholder: 例如 ops_hz_02
+                - generic [ref=f21e476]:
+                  - generic [ref=f21e477]: 角色
+                  - combobox "角色" [ref=f21e478]:
+                    - option "升级操作员" [selected]
+                    - option "只读审计"
+                    - option "平台管理员"
+              - generic [ref=f21e479]:
+                - generic [ref=f21e480]: 授权网元（可多选）
+                - generic [ref=f21e481]:
+                  - generic [ref=f21e482] [cursor=pointer]:
+                    - checkbox "授权网元（可多选） 杭州·基站 01 杭州·基站 02 南京·核心网 AMF 南京·用户面 UPF 西安·灾备 OMC" [ref=f21e483]
+                    - text: 杭州·基站 01
+                  - generic [ref=f21e484] [cursor=pointer]:
+                    - checkbox "杭州·基站 02" [ref=f21e485]
+                    - text: 杭州·基站 02
+                  - generic [ref=f21e486] [cursor=pointer]:
+                    - checkbox "南京·核心网 AMF" [ref=f21e487]
+                    - text: 南京·核心网 AMF
+                  - generic [ref=f21e488] [cursor=pointer]:
+                    - checkbox "南京·用户面 UPF" [ref=f21e489]
+                    - text: 南京·用户面 UPF
+                  - generic [ref=f21e490] [cursor=pointer]:
+                    - checkbox "西安·灾备 OMC" [ref=f21e491]
+                    - text: 西安·灾备 OMC
+              - generic [ref=f21e492]:
+                - button "创建账号" [ref=f21e493] [cursor=pointer]
+                - generic [ref=f21e494]: 账号只能操作被授权的网元
+          - generic [ref=f21e496]:
+            - generic [ref=f21e497]:
+              - heading "一体化升级任务" [level=2] [ref=f21e498]
+              - generic [ref=f21e499]: 关联站点
+            - generic [ref=f21e500]:
+              - generic [ref=f21e502]:
+                - generic [ref=f21e503]:
+                  - generic [ref=f21e504]: 杭州基站组 一体化升级
+                  - generic [ref=f21e505]: 杭州主站点
+                  - generic [ref=f21e506]: 等待人工
+                  - generic [ref=f21e507]: zhangwei
+                - generic [ref=f21e508]:
+                  - generic "升级进度 46%" [ref=f21e509]:
+                    - generic [ref=f21e512]:
+                      - generic [ref=f21e513]: "46"
+                      - generic [ref=f21e514]: "%"
+                  - generic [ref=f21e515]:
+                    - generic [ref=f21e516]: 1. 任务下发
+                    - generic [ref=f21e517]: 2. NE-1 健康检查
+                    - generic [ref=f21e518]: 3. NE-1 包校验
+                    - generic [ref=f21e519]: 4. 人工放行
+                    - generic [ref=f21e520]: 5. NE-1 倒换升级
+                    - generic [ref=f21e521]: 6. NE-2 串行升级
+                    - generic [ref=f21e522]: 创建于 10-15 20:10 · 关联站点 杭州主站点
+                  - button "推进下一步" [ref=f21e523] [cursor=pointer]
+              - generic [ref=f21e525]:
+                - generic [ref=f21e526]:
+                  - generic [ref=f21e527]: 虚层扩容 · 南京
+                  - generic [ref=f21e528]: 南京副站点
+                  - generic [ref=f21e529]: 已完成
+                  - generic [ref=f21e530]: ops_nj
+                - generic [ref=f21e531]:
+                  - generic "升级进度 100%" [ref=f21e532]:
+                    - generic [ref=f21e535]:
+                      - generic [ref=f21e536]: "100"
+                      - generic [ref=f21e537]: "%"
+                  - generic [ref=f21e538]:
+                    - generic [ref=f21e539]: 1. 创建虚层
+                    - generic [ref=f21e540]: 2. 软件包校验
+                    - generic [ref=f21e541]: 创建于 10-13 14:02 · 关联站点 南京副站点
+                  - button "推进下一步" [ref=f21e542] [cursor=pointer]
+            - generic [ref=f21e544]:
+              - generic [ref=f21e545]:
+                - generic [ref=f21e546]: 任务名称
+                - textbox "任务名称" [ref=f21e547]:
+                  - /placeholder: 例如：南京核心网组一体化升级
+              - generic [ref=f21e548]:
+                - generic [ref=f21e549]:
+                  - generic [ref=f21e550]: 关联站点
+                  - combobox "关联站点" [ref=f21e551]:
+                    - option "杭州主站点（ZJ-HZ）" [selected]
+                    - option "南京副站点（JS-NJ）"
+                    - option "西安灾备站点（SN-XA）"
+                - generic [ref=f21e552]:
+                  - generic [ref=f21e553]: 目标网元组
+                  - combobox "目标网元组" [ref=f21e554]:
+                    - option "杭州基站组 · 2 个网元" [selected]
+                    - option "南京核心网组 · 2 个网元"
+              - button "创建任务" [ref=f21e556] [cursor=pointer]
+  - contentinfo [ref=f21e249]:
+    - generic [ref=f21e250]:
+      - text: SIM
+      - generic [ref=f21e252]: RUNNING
+    - generic [ref=f21e254]:
+      - text: LAST
+      - generic [ref=f21e255]: 00:42:56 POST /nemp/v1/ne/register → 200
+    - generic [ref=f21e256]: POST /nemp/v1/ne/GNB-HZ-0008/upgrade 202 · GET /nemp/v1/ne/GNB-HZ-0001/state 200 · GET /lcmp/v1/package/list 200
+    - generic [ref=f21e258]:
+      - text: VARIANT
+      - generic [ref=f21e259]: V1 · OPS CONSOLE
+  - status

@@ -1,0 +1,164 @@
+
+/* ============================================================================
+ * V8-R2 追加：两种时间（运行台 / 准备台）的界面件
+ *   .modes        模式开关（运行台 / 准备台）
+ *   .mode         模式块，激活压近黑
+ *   .lockchip     运行中"准备台被锁"的说明 + 一键停止
+ *   .runhero      运行状态大块（首屏主角）
+ *   .chain / .chainstep   就绪链（端点→证书→能力→运行）
+ *   .feed         实时审计流
+ *   .tab.is-locked 运行中不可用的准备页签
+ * ==========================================================================*/
+
+/* ---------------- 模式开关（页签条左侧） ---------------- */
+.tabsbar { position: relative; z-index: 3; display: flex; align-items: stretch; gap: 10px; }
+.modes { display: flex; gap: 0; flex: none; }
+.mode {
+  display: flex; flex-direction: column; justify-content: center; gap: 1px;
+  min-width: 92px; padding: 0 14px;
+  background: var(--block); color: var(--ink);
+  border: 1px solid rgba(42, 41, 35, .3);
+  cursor: pointer; text-align: left;
+  box-shadow: var(--shadow-s);
+  transition: background var(--d2) var(--ease), color var(--d2);
+}
+.mode + .mode { border-left: 0; }
+.mode b { font-size: 15px; font-weight: 400; letter-spacing: .14em; }
+.mode i {
+  font-style: normal; font-family: var(--en); font-size: 8px; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.mode:hover { background: var(--block-hi); }
+.mode.is-on { background: var(--charcoal); color: var(--on-dark); border-color: #2e2c26; }
+.mode.is-on i { color: rgba(221, 216, 196, .6); }
+.mode:focus-visible { outline: 2px dashed var(--on-dark); outline-offset: -4px; }
+
+/* 运行中：准备台锁 ---------------- */
+.lockchip {
+  display: none; align-items: center; gap: 10px; margin-left: auto;
+  padding: 0 12px; background: rgba(140, 58, 46, .12);
+  border: 1px solid var(--accent); color: var(--accent);
+  font-size: 12px; letter-spacing: .06em;
+}
+body[data-running="on"] .lockchip { display: flex; }
+.lockchip b { font-weight: 600; }
+.lockchip .blk { min-height: 26px; padding: 0 10px; font-size: 12px; box-shadow: none; }
+.tab.is-locked { opacity: .38; }
+.tab.is-locked .tab__lb { text-decoration: line-through; text-decoration-thickness: 1px; }
+
+/* ---------------- 运行状态大块（首屏主角） ---------------- */
+.runhero {
+  position: relative; padding: 18px 20px 16px;
+  background: var(--paper-2); border: 1px solid rgba(42, 41, 35, .22);
+  box-shadow: var(--shadow);
+}
+.runhero::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px;
+  background: var(--ink-4);
+}
+.runhero.is-on::before { background: var(--ok); }
+.runhero__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.runhero__st {
+  font-size: 34px; letter-spacing: .22em; line-height: 1.1; color: var(--ink);
+  display: flex; align-items: center; gap: 14px;
+}
+.runhero__st .dot { width: 12px; height: 12px; background: var(--ink-4); }
+.runhero.is-on .runhero__st .dot { background: var(--ok); animation: runPulse 1.8s steps(1, end) infinite; }
+@keyframes runPulse { 0%, 62% { opacity: 1; } 63%, 100% { opacity: .35; } }
+.runhero__sub { margin-top: 8px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); letter-spacing: .04em; }
+.runhero__acts { display: flex; flex-direction: column; gap: 8px; align-items: stretch; min-width: 208px; }
+.runhero__acts .blk { min-height: 40px; font-size: 14px; justify-content: center; }
+.runhero__hint { margin-top: 10px; font-size: 11.5px; color: var(--ink-3); letter-spacing: .04em; }
+
+/* ---------------- 就绪链 ---------------- */
+.chain { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
+.chainstep {
+  position: relative; display: flex; flex-direction: column; gap: 3px;
+  padding: 12px 14px 13px; text-align: left;
+  background: var(--paper-3); border: 1px solid rgba(42, 41, 35, .2);
+  color: var(--ink); cursor: pointer; min-width: 0;
+  transition: background var(--d2) var(--ease);
+}
+.chainstep + .chainstep { border-left: 0; }
+.chainstep::after {
+  content: ""; position: absolute; right: -7px; top: 50%; width: 7px; height: 7px;
+  margin-top: -4px; background: var(--paper-3); transform: rotate(45deg);
+  border-top: 1px solid rgba(42, 41, 35, .2); border-right: 1px solid rgba(42, 41, 35, .2);
+  z-index: 2;
+}
+.chainstep:last-child::after { display: none; }
+.chainstep__i { font-family: var(--mono); font-size: 10px; color: var(--ink-3); }
+.chainstep__t { font-size: 13.5px; letter-spacing: .06em; display: flex; align-items: center; gap: 7px; }
+.chainstep__t .mk { width: 9px; height: 9px; border: 1.5px solid var(--ink-4); flex: none; }
+.chainstep__m { font-family: var(--mono); font-size: 10px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chainstep.is-done { background: var(--block); }
+.chainstep.is-done .mk { background: var(--ok); border-color: var(--ok); }
+.chainstep.is-now { box-shadow: inset 0 3px 0 0 var(--accent); background: var(--paper-2); }
+.chainstep.is-now .mk { border-color: var(--accent); }
+.chainstep:hover { background: var(--block-hi); }
+.chainstep.is-done:hover { background: var(--block-hi); }
+
+/* ---------------- 实时审计流 ---------------- */
+.feed { display: flex; flex-direction: column; }
+.feed__r {
+  display: grid; grid-template-columns: 62px 40px minmax(0, 1fr) auto; gap: 8px; align-items: center;
+  padding: 5px 6px; border-bottom: 1px solid rgba(42, 41, 35, .1);
+  font-family: var(--mono); font-size: 11px;
+}
+.feed__r:last-child { border-bottom: 0; }
+.feed__t { color: var(--ink-3); }
+.feed__p { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.feed__r.is-new { animation: feedIn 420ms var(--ease); }
+@keyframes feedIn { from { background: rgba(180, 83, 9, .18); } to { background: transparent; } }
+.feed__gate { display: flex; align-items: center; gap: 6px; }
+.pendcard {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 10px 12px; margin-bottom: 8px;
+  background: rgba(180, 83, 9, .10); border: 1px solid var(--warn);
+}
+.pendcard__t { font-size: 12.5px; letter-spacing: .06em; }
+.pendcard__m { font-family: var(--mono); font-size: 10.5px; color: var(--ink-2); }
+.pendcard .blk { min-height: 26px; padding: 0 10px; font-size: 12px; box-shadow: none; }
+
+/* ---------------- 触发台 ---------------- */
+.trigrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+.trigrow .inp { height: 34px; }
+.trigmeta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 9px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); }
+.trigmeta b { color: var(--ink); font-weight: 500; }
+
+/* ---------------- 闸门 ---------------- */
+.gatelist { display: flex; flex-direction: column; gap: 8px; }
+.gatecard {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center;
+  padding: 12px 14px; background: var(--paper-2); border: 1px solid rgba(42, 41, 35, .2);
+  border-left: 4px solid var(--warn);
+}
+.gatecard__t { font-size: 13.5px; letter-spacing: .04em; }
+.gatecard__m { font-family: var(--mono); font-size: 10.5px; color: var(--ink-2); margin-top: 3px; }
+
+/* ---------------- 窄屏 ---------------- */
+@media (max-width: 1200px) {
+  .chain { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .chainstep + .chainstep { border-left: 1px solid rgba(42, 41, 35, .2); }
+  .chainstep:nth-child(2n)::after { display: none; }
+  .chainstep:nth-child(2n+1)::after { display: block; }
+  .chainstep:nth-child(n+3) { border-top: 0; }
+  .runhero__st { font-size: 26px; }
+  .runhero__acts { min-width: 168px; }
+}
+@media (max-width: 900px) {
+  .tabsbar { flex-wrap: wrap; }
+  .modes { width: 100%; }
+  .mode { flex: 1; min-width: 0; align-items: center; }
+  .lockchip { width: 100%; margin-left: 0; }
+  .runhero__top { flex-direction: column; }
+  .runhero__acts { width: 100%; flex-direction: row; }
+  .runhero__acts .blk { flex: 1; }
+}
+@media (max-width: 640px) {
+  .chain { grid-template-columns: minmax(0, 1fr); }
+  .chainstep + .chainstep { border-left: 1px solid rgba(42, 41, 35, .2); border-top: 0; }
+  .chainstep::after { display: none; }
+  .runhero { padding: 14px 14px 12px; }
+  .runhero__st { font-size: 22px; letter-spacing: .12em; }
+}

@@ -1,0 +1,10 @@
+﻿# Rust
+target/
+desktop/target/
+desktop/gen/
+# 运行时状态（首次启动会自动播种）
+data/
+# 编辑器
+.vscode/
+.idea/
+*.user

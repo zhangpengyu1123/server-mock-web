@@ -1,0 +1,205 @@
+- generic [ref=f23e1]:
+  - banner [ref=f23e2]:
+    - generic [ref=f23e6]:
+      - generic [ref=f23e7]: MOCK PLATFORM
+      - generic [ref=f23e8]: 节点调测仿真台 · OPS CONSOLE
+    - group "本机信息" [ref=f23e9]:
+      - generic [ref=f23e10]: MOCK-WIN-01
+      - generic [ref=f23e11]: /
+      - generic [ref=f23e12]: 10.18.32.104
+      - generic [ref=f23e13]: /
+      - generic [ref=f23e14]: Windows 11 23H2 · 22631
+      - generic [ref=f23e15]: /
+      - generic [ref=f23e16]: MockAgent 4.2.1
+    - generic "实时遥测" [ref=f23e17]:
+      - generic [ref=f23e18]: TELEMETRY
+      - generic [ref=f23e19]:
+        - generic [ref=f23e20]: REQ 11
+        - generic [ref=f23e22]: OK 9
+        - generic [ref=f23e24]: ERR 2
+        - generic [ref=f23e26]: AVG 350ms
+        - generic [ref=f23e28]: RUN 1/3
+        - generic [ref=f23e30]: HUMAN 1
+    - generic [ref=f23e32]:
+      - button "开关界面音效" [ref=f23e33] [cursor=pointer]:
+        - generic [ref=f23e37]: SFX
+      - generic [ref=f23e38]: 00:51:59
+  - generic [ref=f23e39]:
+    - navigation "主导航" [ref=f23e40]:
+      - button "MOCK 管理 端口 · 证书 · 能力 3" [ref=f23e41] [cursor=pointer]:
+        - generic [ref=f23e46]: MOCK 管理
+        - generic [ref=f23e47]: 端口 · 证书 · 能力
+        - generic [ref=f23e48]: "3"
+      - button "MOCK 流程 审计 · 预期响应 1" [ref=f23e49] [cursor=pointer]:
+        - generic [ref=f23e54]: MOCK 流程
+        - generic [ref=f23e55]: 审计 · 预期响应
+        - generic [ref=f23e56]: "1"
+      - button "网元管理 属性 · 升级流程 5" [ref=f23e57] [cursor=pointer]:
+        - generic [ref=f23e61]: 网元管理
+        - generic [ref=f23e62]: 属性 · 升级流程
+        - generic [ref=f23e63]: "5"
+      - button "网元管理平台 账号 · 一体化任务 1" [ref=f23e64] [cursor=pointer]:
+        - generic [ref=f23e70]: 网元管理平台
+        - generic [ref=f23e71]: 账号 · 一体化任务
+        - generic [ref=f23e72]: "1"
+      - button "生命周期平台 软件包 · 共部署 4" [active] [ref=f23e73] [cursor=pointer]:
+        - generic [ref=f23e77]: 生命周期平台
+        - generic [ref=f23e78]: 软件包 · 共部署
+        - generic [ref=f23e79]: "4"
+      - button "虚层管理平台 CPU · 主副站点 —" [ref=f23e80] [cursor=pointer]:
+        - generic [ref=f23e84]: 虚层管理平台
+        - generic [ref=f23e85]: CPU · 主副站点
+        - generic [ref=f23e86]: —
+      - generic [ref=f23e87]:
+        - generic [ref=f23e88]: SIG 0x17B4
+        - generic [ref=f23e89]: UP 5d 0h
+    - main [ref=f23e90]:
+      - generic [ref=f23e260]:
+        - generic [ref=f23e261]:
+          - heading "生命周期平台 PACKAGE LIFE CYCLE / CO-DEPLOY" [level=1] [ref=f23e262]:
+            - generic [ref=f23e263]: 生命周期平台
+            - generic [ref=f23e264]: PACKAGE LIFE CYCLE / CO-DEPLOY
+          - generic [ref=f23e265]:
+            - generic [ref=f23e266]:
+              - generic [ref=f23e267]: 软件包
+              - generic [ref=f23e268]: 4个
+            - generic [ref=f23e269]:
+              - generic [ref=f23e270]: 已校验
+              - generic [ref=f23e271]: 2个
+            - generic [ref=f23e272]:
+              - generic [ref=f23e273]: 受管网元
+              - generic [ref=f23e274]: 5个
+            - generic [ref=f23e275]:
+              - generic [ref=f23e276]: 共部署
+              - generic [ref=f23e277]: "ON"
+        - generic [ref=f23e278]:
+          - generic [ref=f23e280]:
+            - generic [ref=f23e281]:
+              - heading "软件包" [level=2] [ref=f23e282]
+              - generic [ref=f23e283]:
+                - generic [ref=f23e284]:
+                  - button "全部" [ref=f23e286] [cursor=pointer]
+                  - button "已校验" [ref=f23e287] [cursor=pointer]
+                  - button "待校验" [ref=f23e288] [cursor=pointer]
+                - generic [ref=f23e289]: 4 / 4
+            - generic [ref=f23e290]:
+              - generic [ref=f23e291]:
+                - generic [ref=f23e292]:
+                  - generic [ref=f23e293]: GNB_R7.2.0_full.pkg
+                  - generic [ref=f23e294]: 整包 · 华为 · V7.2.0 · 1840MB · MD5 c41f9a...7d20 · 所属 杭州·基站 01
+                - generic [ref=f23e295]:
+                  - generic [ref=f23e296]: 已校验
+                  - button "移除软件包" [ref=f23e297] [cursor=pointer]: ×
+              - generic [ref=f23e298]:
+                - generic [ref=f23e299]:
+                  - generic [ref=f23e300]: AMF_R9.0.3_patch.pkg
+                  - generic [ref=f23e301]: 补丁 · 中兴 · V9.0.3 · 260MB · MD5 88be31...0ac9 · 所属 南京·核心网 AMF
+                - generic [ref=f23e302]:
+                  - button "走校验" [ref=f23e303] [cursor=pointer]
+                  - button "移除软件包" [ref=f23e304] [cursor=pointer]: ×
+              - generic [ref=f23e305]:
+                - generic [ref=f23e306]:
+                  - generic [ref=f23e307]: UPF_R5.4.2_hot.pkg
+                  - generic [ref=f23e308]: 热补丁 · 烽火 · V5.4.2 · 42MB · MD5 1d77c0...5e11 · 所属 南京·用户面 UPF
+                - generic [ref=f23e309]:
+                  - generic [ref=f23e310]: 已校验
+                  - button "移除软件包" [ref=f23e311] [cursor=pointer]: ×
+              - generic [ref=f23e312]:
+                - generic [ref=f23e313]:
+                  - generic [ref=f23e314]: VLMP_R3.1.0_stack.pkg
+                  - generic [ref=f23e315]: 整包 · 自研 · V3.1.0 · 905MB · MD5 90ab44...2f7c · 所属 平台级
+                - generic [ref=f23e316]:
+                  - button "走校验" [ref=f23e317] [cursor=pointer]
+                  - button "移除软件包" [ref=f23e318] [cursor=pointer]: ×
+            - generic [ref=f23e320]:
+              - generic [ref=f23e321]:
+                - generic [ref=f23e322]:
+                  - generic [ref=f23e323]: 名称
+                  - textbox "名称" [ref=f23e324]:
+                    - /placeholder: XXX_R1.0.0_full.pkg
+                - generic [ref=f23e325]:
+                  - generic [ref=f23e326]: 类型
+                  - combobox "类型" [ref=f23e327]:
+                    - option "整包" [selected]
+                    - option "补丁"
+                    - option "热补丁"
+                    - option "配置包"
+                - generic [ref=f23e328]:
+                  - generic [ref=f23e329]: 所属网元
+                  - combobox "所属网元" [ref=f23e330]:
+                    - option "（平台级）" [selected]
+                    - option "杭州·基站 01"
+                    - option "杭州·基站 02"
+                    - option "南京·核心网 AMF"
+                    - option "南京·用户面 UPF"
+                    - option "西安·灾备 OMC"
+                - generic [ref=f23e331]:
+                  - generic [ref=f23e332]: 厂商
+                  - combobox "厂商" [ref=f23e333]:
+                    - option "华为" [selected]
+                    - option "中兴"
+                    - option "烽火"
+                    - option "自研"
+                - generic [ref=f23e334]:
+                  - generic [ref=f23e335]: 版本
+                  - textbox "版本" [ref=f23e336]:
+                    - /placeholder: 1.0.0
+                - generic [ref=f23e337]:
+                  - generic [ref=f23e338]: 大小 (MB)
+                  - textbox "大小 (MB)" [ref=f23e339]:
+                    - /placeholder: "420"
+              - generic [ref=f23e340]:
+                - button "登记软件包" [ref=f23e341] [cursor=pointer]
+                - generic [ref=f23e342]: 登记后需走校验流程才能用于升级
+          - generic [ref=f23e343]:
+            - generic [ref=f23e344]:
+              - generic [ref=f23e345]:
+                - heading "受管网元" [level=2] [ref=f23e346]
+                - generic [ref=f23e347]: 5 个受管网元
+              - generic [ref=f23e348]:
+                - generic [ref=f23e349] [cursor=pointer]:
+                  - checkbox "杭州·基站 01 V7.2.0" [checked] [ref=f23e350]
+                  - text: 杭州·基站 01
+                  - emphasis [ref=f23e351]: V7.2.0
+                - generic [ref=f23e352] [cursor=pointer]:
+                  - checkbox "杭州·基站 02 V7.1.3" [checked] [ref=f23e353]
+                  - text: 杭州·基站 02
+                  - emphasis [ref=f23e354]: V7.1.3
+                - generic [ref=f23e355] [cursor=pointer]:
+                  - checkbox "南京·核心网 AMF V9.0.2" [checked] [ref=f23e356]
+                  - text: 南京·核心网 AMF
+                  - emphasis [ref=f23e357]: V9.0.2
+                - generic [ref=f23e358] [cursor=pointer]:
+                  - checkbox "南京·用户面 UPF V5.4.1" [checked] [ref=f23e359]
+                  - text: 南京·用户面 UPF
+                  - emphasis [ref=f23e360]: V5.4.1
+                - generic [ref=f23e361] [cursor=pointer]:
+                  - checkbox "西安·灾备 OMC V3.3.0" [checked] [ref=f23e362]
+                  - text: 西安·灾备 OMC
+                  - emphasis [ref=f23e363]: V3.3.0
+            - generic [ref=f23e364]:
+              - heading "部署形态" [level=2] [ref=f23e366]
+              - generic [ref=f23e368]:
+                - generic [ref=f23e369]:
+                  - generic [ref=f23e370]: 与网元管理平台共部署
+                  - switch "共部署" [checked] [ref=f23e372] [cursor=pointer]
+                - generic [ref=f23e375]: 共部署时两个平台复用同一 mock 端点与证书（10.18.32.104:8443），端口只需注册一次；当前 LCMP 与 NEMP 共用该端点。
+                - generic [ref=f23e376]:
+                  - generic [ref=f23e377]:
+                    - generic [ref=f23e378]: LCMP 端点
+                    - generic [ref=f23e379]: 10.18.32.104:8443
+                  - generic [ref=f23e380]:
+                    - generic [ref=f23e381]: 软件包
+                    - generic [ref=f23e382]: 4 个
+  - contentinfo [ref=f23e249]:
+    - generic [ref=f23e250]:
+      - text: SIM
+      - generic [ref=f23e252]: RUNNING
+    - generic [ref=f23e254]:
+      - text: LAST
+      - generic [ref=f23e255]: 00:52:00 POST /nemp/v1/ne/register → 200
+    - generic [ref=f23e256]: POST /nemp/v1/ne/GNB-HZ-0003/upgrade 202 · GET /nemp/v1/ne/GNB-HZ-0005/state 200 · POST /nemp/v1/ne/register 200
+    - generic [ref=f23e258]:
+      - text: VARIANT
+      - generic [ref=f23e259]: V1 · OPS CONSOLE
+  - status

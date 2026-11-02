@@ -1,0 +1,215 @@
+- generic [ref=f23e1]:
+  - banner [ref=f23e2]:
+    - generic [ref=f23e6]:
+      - generic [ref=f23e7]: MOCK PLATFORM
+      - generic [ref=f23e8]: 节点调测仿真台 · OPS CONSOLE
+    - group "本机信息" [ref=f23e9]:
+      - generic [ref=f23e10]: MOCK-WIN-01
+      - generic [ref=f23e11]: /
+      - generic [ref=f23e12]: 10.18.32.104
+      - generic [ref=f23e13]: /
+      - generic [ref=f23e14]: Windows 11 23H2 · 22631
+      - generic [ref=f23e15]: /
+      - generic [ref=f23e16]: MockAgent 4.2.1
+    - generic "实时遥测" [ref=f23e17]:
+      - generic [ref=f23e18]: TELEMETRY
+      - generic [ref=f23e19]:
+        - generic [ref=f23e20]: REQ 24
+        - generic [ref=f23e22]: OK 22
+        - generic [ref=f23e24]: ERR 2
+        - generic [ref=f23e26]: AVG 339ms
+        - generic [ref=f23e28]: RUN 1/3
+        - generic [ref=f23e30]: HUMAN 4
+    - generic [ref=f23e32]:
+      - button "开关界面音效" [ref=f23e33] [cursor=pointer]:
+        - generic [ref=f23e37]: SFX
+      - generic [ref=f23e38]: 00:52:21
+  - generic [ref=f23e39]:
+    - navigation "主导航" [ref=f23e40]:
+      - button "MOCK 管理 端口 · 证书 · 能力 3" [ref=f23e41] [cursor=pointer]:
+        - generic [ref=f23e46]: MOCK 管理
+        - generic [ref=f23e47]: 端口 · 证书 · 能力
+        - generic [ref=f23e48]: "3"
+      - button "MOCK 流程 审计 · 预期响应 4" [ref=f23e383] [cursor=pointer]:
+        - generic [ref=f23e54]: MOCK 流程
+        - generic [ref=f23e55]: 审计 · 预期响应
+        - generic [ref=f23e56]: "4"
+      - button "网元管理 属性 · 升级流程 5" [ref=f23e57] [cursor=pointer]:
+        - generic [ref=f23e61]: 网元管理
+        - generic [ref=f23e62]: 属性 · 升级流程
+        - generic [ref=f23e63]: "5"
+      - button "网元管理平台 账号 · 一体化任务 1" [ref=f23e64] [cursor=pointer]:
+        - generic [ref=f23e70]: 网元管理平台
+        - generic [ref=f23e71]: 账号 · 一体化任务
+        - generic [ref=f23e72]: "1"
+      - button "生命周期平台 软件包 · 共部署 4" [ref=f23e73] [cursor=pointer]:
+        - generic [ref=f23e77]: 生命周期平台
+        - generic [ref=f23e78]: 软件包 · 共部署
+        - generic [ref=f23e79]: "4"
+      - button "虚层管理平台 CPU · 主副站点 —" [active] [ref=f23e80] [cursor=pointer]:
+        - generic [ref=f23e84]: 虚层管理平台
+        - generic [ref=f23e85]: CPU · 主副站点
+        - generic [ref=f23e86]: —
+      - generic [ref=f23e87]:
+        - generic [ref=f23e88]: SIG 0x17B4
+        - generic [ref=f23e89]: UP 5d 0h
+    - main [ref=f23e90]:
+      - generic [ref=f23e384]:
+        - generic [ref=f23e385]:
+          - heading "虚层管理平台 VIRTUAL LAYER / SITE PAIR / VALIDATION CHAIN" [level=1] [ref=f23e386]:
+            - generic [ref=f23e387]: 虚层管理平台
+            - generic [ref=f23e388]: VIRTUAL LAYER / SITE PAIR / VALIDATION CHAIN
+          - generic [ref=f23e389]:
+            - generic [ref=f23e390]:
+              - generic [ref=f23e391]: 平台版本
+              - generic [ref=f23e392]: R3.1.0
+            - generic [ref=f23e393]:
+              - generic [ref=f23e394]: CPU
+              - generic [ref=f23e395]: 8核
+            - generic [ref=f23e396]:
+              - generic [ref=f23e397]: 校验通过
+              - generic [ref=f23e398]: 2/4
+            - generic [ref=f23e399]:
+              - generic [ref=f23e400]: 流程
+              - generic [ref=f23e401]: 1/4
+        - generic [ref=f23e402]:
+          - generic [ref=f23e403]:
+            - generic [ref=f23e404]:
+              - generic [ref=f23e405]:
+                - heading "平台版本 · CPU 配额" [level=2] [ref=f23e406]
+                - generic [ref=f23e407]: 独立简单流程
+              - generic [ref=f23e408]:
+                - generic [ref=f23e409]:
+                  - generic [ref=f23e410]:
+                    - generic [ref=f23e411]: 平台版本
+                    - combobox "平台版本" [ref=f23e412]:
+                      - option "VLMP R3.1.0" [selected]
+                      - option "VLMP R3.0.6（回滚点）"
+                  - generic [ref=f23e413]:
+                    - generic [ref=f23e414]: CPU 配额（4–64 核）
+                    - generic [ref=f23e415]:
+                      - slider [ref=f23e416]:
+                        - generic [ref=f23e417]: CPU
+                        - generic [ref=f23e418]: 8 核
+                      - button "−2" [ref=f23e419] [cursor=pointer]
+                      - button "+2" [ref=f23e420] [cursor=pointer]
+                - generic [ref=f23e421]:
+                  - generic "CPU 配额 6.666666666666667%" [ref=f23e422]:
+                    - generic [ref=f23e425]:
+                      - generic [ref=f23e426]: "7"
+                      - generic [ref=f23e427]: "%"
+                  - generic [ref=f23e428]:
+                    - generic [ref=f23e429]:
+                      - generic [ref=f23e430]: 主站点可分配余量
+                      - generic [ref=f23e431]: 12 核
+                    - generic [ref=f23e432]:
+                      - generic [ref=f23e433]: 副站点可分配余量
+                      - generic [ref=f23e434]: 8 核
+                    - generic [ref=f23e435]: 卷 stack-vol-07 · 升级时会先做倒换演练再切版本
+            - generic [ref=f23e436]:
+              - generic [ref=f23e437]:
+                - heading "主副站点" [level=2] [ref=f23e438]
+                - generic [ref=f23e439]: 主站承载 · 副站容灾
+              - generic [ref=f23e440]:
+                - generic [ref=f23e441]:
+                  - generic [ref=f23e442]:
+                    - generic [ref=f23e443]:
+                      - text: 杭州主站点
+                      - generic [ref=f23e444]: ZJ-HZ
+                    - generic [ref=f23e445]: 可分配 CPU 12 核 · 主站点
+                  - generic [ref=f23e446]:
+                    - generic [ref=f23e447]: 主站点
+                    - button "设为主站" [ref=f23e448] [cursor=pointer]
+                    - button "设为副站" [ref=f23e449] [cursor=pointer]
+                - generic [ref=f23e450]:
+                  - generic [ref=f23e451]:
+                    - generic [ref=f23e452]:
+                      - text: 南京副站点
+                      - generic [ref=f23e453]: JS-NJ
+                    - generic [ref=f23e454]: 可分配 CPU 8 核 · 副站点
+                  - generic [ref=f23e455]:
+                    - generic [ref=f23e456]: 副站点
+                    - button "设为主站" [ref=f23e457] [cursor=pointer]
+                    - button "设为副站" [ref=f23e458] [cursor=pointer]
+                - generic [ref=f23e459]:
+                  - generic [ref=f23e460]:
+                    - generic [ref=f23e461]:
+                      - text: 西安灾备站点
+                      - generic [ref=f23e462]: SN-XA
+                    - generic [ref=f23e463]: 可分配 CPU 6 核 · 副站点
+                  - generic [ref=f23e464]:
+                    - button "设为主站" [ref=f23e465] [cursor=pointer]
+                    - button "设为副站" [ref=f23e466] [cursor=pointer]
+          - generic [ref=f23e467]:
+            - generic [ref=f23e468]:
+              - generic [ref=f23e469]:
+                - heading "升级流程详情" [level=2] [ref=f23e470]
+                - generic [ref=f23e471]:
+                  - button "推进下一步" [ref=f23e472] [cursor=pointer]
+                  - button "重置" [ref=f23e473] [cursor=pointer]
+              - list [ref=f23e475]:
+                - listitem [ref=f23e476]:
+                  - generic [ref=f23e477]: "1"
+                  - generic [ref=f23e478]:
+                    - generic [ref=f23e479]: 平台预检（CPU / 存储 / 网络）
+                    - generic [ref=f23e480]:
+                      - generic [ref=f23e481]: 自动
+                      - text: · 已完成
+                - listitem [ref=f23e482]:
+                  - generic [ref=f23e483]: "2"
+                  - generic [ref=f23e484]:
+                    - generic [ref=f23e485]: 软件包完整性校验
+                    - generic [ref=f23e486]:
+                      - generic [ref=f23e487]: 自动
+                      - text: · 进行中
+                - listitem [ref=f23e488]:
+                  - generic [ref=f23e489]: "3"
+                  - generic [ref=f23e490]:
+                    - generic [ref=f23e491]: 主副站点倒换演练
+                    - generic [ref=f23e492]:
+                      - generic [ref=f23e493]: 手动
+                      - text: · 待执行
+                - listitem [ref=f23e494]:
+                  - generic [ref=f23e495]: "4"
+                  - generic [ref=f23e496]:
+                    - generic [ref=f23e497]: 版本切换与回滚点确认
+                    - generic [ref=f23e498]:
+                      - generic [ref=f23e499]: 人工
+                      - text: · 待执行
+            - generic [ref=f23e500]:
+              - generic [ref=f23e501]:
+                - heading "软件包校验流程" [level=2] [ref=f23e502]
+                - generic [ref=f23e503]: 2/4 通过
+              - generic [ref=f23e505]:
+                - generic [ref=f23e506]:
+                  - generic [ref=f23e512]:
+                    - generic [ref=f23e513]: MD5 校验
+                    - generic [ref=f23e514]: VLMP_R3.1.0_stack.pkg · 90ab44…2f7c 一致
+                  - generic [ref=f23e515]: 通过
+                - generic [ref=f23e517]:
+                  - generic [ref=f23e523]:
+                    - generic [ref=f23e524]: 签名校验
+                    - generic [ref=f23e525]: VLMP_R3.1.0_stack.pkg · 厂商签名有效（自研）
+                  - generic [ref=f23e526]: 通过
+                - generic [ref=f23e528]:
+                  - generic [ref=f23e534]:
+                    - generic [ref=f23e535]: 依赖校验
+                    - generic [ref=f23e536]: stack-vol-07 · 南京副站点可分配 CPU 仅剩 8 核
+                  - button "执行校验" [ref=f23e538] [cursor=pointer]
+                - generic [ref=f23e539]:
+                  - generic [ref=f23e545]:
+                    - generic [ref=f23e546]: 回滚点校验
+                    - generic [ref=f23e547]: VLMP R3.0.6 · 未执行
+                  - button "执行校验" [ref=f23e549] [cursor=pointer]
+  - contentinfo [ref=f23e249]:
+    - generic [ref=f23e250]:
+      - text: SIM
+      - generic [ref=f23e252]: RUNNING
+    - generic [ref=f23e254]:
+      - text: LAST
+      - generic [ref=f23e255]: 00:52:20 POST /nemp/v1/ne/GNB-HZ-0006/upgrade → 202
+    - generic [ref=f23e256]: GET /lcmp/v1/package/list 200 · GET /lcmp/v1/package/list 200 · GET /lcmp/v1/package/list 200
+    - generic [ref=f23e258]:
+      - text: VARIANT
+      - generic [ref=f23e259]: V1 · OPS CONSOLE
+  - status

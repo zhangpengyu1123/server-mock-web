@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>管理面 · RHINE LAB FLEET</title>
+<meta name="color-scheme" content="light" />
+<link rel="stylesheet" href="../shared/base.css" />
+<link rel="stylesheet" href="./scene.css" />
+<!-- three.js 本地化：vendor 目录已镜像 examples/jsm 结构，离线可用 -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "../vendor/three.module.min.js",
+    "three/addons/": "../vendor/"
+  }
+}
+</script>
+<style>
+  /* 管理面是独立平台：顶栏显示"平台身份"，不出现业务面入口 */
+  .plat { display: flex; align-items: center; gap: 10px; margin-left: 4px; }
+  .plat .badge { letter-spacing: .2em; }
+  .fleetbar { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); margin-bottom: 16px; }
+  .fleetbar > div { background: var(--paper-2); padding: 10px 14px; }
+  .fleetbar span { display: block; font-family: var(--mono); font-size: 8.5px; letter-spacing: .2em; color: var(--ink-3); }
+  .fleetbar b { font-family: var(--mono); font-size: 19px; font-weight: 500; }
+  .node__env { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; color: var(--ink-4); }
+</style>
+</head>
+<body>
+
+<!-- 平台入口：管理面自己的登录（与业务面无关） -->
+<div class="auth" id="auth">
+  <div class="auth__grid" aria-hidden="true"></div>
+  <div class="auth__grain" aria-hidden="true"></div>
+  <div class="auth__scan" aria-hidden="true"></div>
+  <div class="auth__flicker" id="authFlicker" aria-hidden="true"></div>
+  <div class="ticks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+  <header class="brand">
+    <div class="brand__mark">
+      <svg viewBox="0 0 64 64" width="46" height="46" aria-hidden="true">
+        <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="1.2" />
+        <circle cx="32" cy="32" r="21" fill="none" stroke="currentColor" stroke-width=".7" stroke-dasharray="1 3" />
+        <path d="M32 6 L32 24 M32 40 L32 58 M6 32 L20 32 M44 32 L58 32" stroke="currentColor" stroke-width="1.2" />
+        <rect x="28" y="28" width="8" height="8" fill="currentColor" />
+      </svg>
+    </div>
+    <div class="brand__lines">
+      <span class="brand__l1">RHINE LAB</span>
+      <span class="brand__l2">FLEET CONTROL</span>
+      <span class="brand__l3">ADMIN</span>
+    </div>
+    <p class="brand__legal">管理面 · 独立平台 · 用于管理 Linux 侧节点与部署 · 所有操作均被记录</p>
+  </header>
+
+  <div class="auth__meta">
+    <div class="kv"><span>PLATFORM</span><b>FLEET</b></div>
+    <div class="kv"><span>BUILD</span><b id="metaBuild">0.1.0</b></div>
+    <div class="kv"><span>CLOCK</span><b id="metaClock" class="mono">--:--:--</b></div>
+  </div>
+
+  <main class="auth__stage">
+    <section class="seq" id="seq">
+      <svg class="seq__rings" viewBox="0 0 220 220" aria-hidden="true">
+        <circle class="ring ring--outer" cx="110" cy="110" r="96" />
+        <circle class="ring ring--mid" cx="110" cy="110" r="76" />
+        <g class="seq__arcs">
+          <path class="arc arc--a" d="M110 14 A96 96 0 0 1 206 110" />
+          <path class="arc arc--b" d="M110 206 A96 96 0 0 1 14 110" />
+        </g>
+        <circle class="seq__node" cx="110" cy="14" r="4.5" />
+        <circle class="seq__node seq__node--b" cx="110" cy="206" r="3" />
+        <rect class="seq__core" x="102" y="102" width="16" height="16" />
+      </svg>
+      <div class="seq__log mono" id="seqLog"></div>
+      <div class="seq__verb" id="seqVerb">REQUEST RECEIVED</div>
+    </section>
+
+    <section class="card" id="card" hidden>
+      <div class="card__head">
+        <span class="card__idx mono">X-001</span>
+        <h1 class="card__title"><span class="roll">平台授权</span></h1>
+        <p class="card__sub">以管理员身份接入节点，才能下发部署</p>
+      </div>
+      <form class="form" id="loginForm" autocomplete="off" novalidate>
+        <label class="fld">
+          <span class="fld__lb">目标节点 <i>ENDPOINT</i></span>
+          <input class="inp mono" id="fServer" spellcheck="false" placeholder="http://10.0.0.21:9600" />
+        </label>
+        <label class="fld">
+          <span class="fld__lb">身份 <i>IDENTITY</i></span>
+          <input class="inp" id="fUser" autocomplete="username" spellcheck="false" required />
+        </label>
+        <label class="fld">
+          <span class="fld__lb">授权码 <i>ACCESS CODE</i></span>
+          <input class="inp mono" id="fPass" type="password" autocomplete="current-password" required />
+        </label>
+        <div class="card__acts">
+          <button class="btn btn--primary" id="btnLogin" type="submit">
+            <span class="btn__lb">接入节点</span><span class="btn__en mono">CONNECT</span>
+          </button>
+          <button class="btn btn--ghost" id="btnDemo" type="button">填入演示管理员</button>
+        </div>
+        <p class="card__err mono" id="loginErr" hidden></p>
+        <p class="card__hint">演示凭据：<b>admin / rhine-admin-2026</b>（管理员，可下发部署）</p>
+      </form>
+      <div class="card__foot mono"><span id="footMsg">等待输入</span><span class="dotsep">·</span><span id="footVer">v0.1.0</span></div>
+    </section>
+    <div class="whiteout" id="whiteout" aria-hidden="true"></div>
+  </main>
+
+  <footer class="auth__foot mono"><span>RHINE LAB · FLEET CONTROL</span><span class="dotsep">·</span><span>管理面 · 独立平台</span></footer>
+</div>
+
+<!-- 管理平台主体：只有舰队 / 账号 / 作业 / 审计，没有业务面视图 -->
+<div class="app" id="app" hidden>
+  <div class="app__grain" aria-hidden="true"></div>
+  <header class="top">
+    <div class="top__brand">
+      <svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true">
+        <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M32 8 L32 26 M32 38 L32 56 M8 32 L26 32 M38 32 L56 32" stroke="currentColor" stroke-width="2" />
+        <rect x="28" y="28" width="8" height="8" fill="currentColor" />
+      </svg>
+      <span class="top__wordmark">FLEET <b>CONTROL</b></span>
+      <span class="plat"><span class="badge badge--amber">ADMIN</span><span class="mono" style="font-size:10px;color:var(--ink-3)" id="topTarget">—</span></span>
+    </div>
+    <div class="top__right">
+      <div class="top__stat"><span>NODES</span><b id="topNodes" class="mono">0</b></div>
+      <div class="top__stat"><span>ONLINE</span><b id="topOnline" class="mono">0</b></div>
+      <div class="top__stat"><span>JOBS</span><b id="topJobs" class="mono">0</b></div>
+      <div class="user">
+        <span class="user__dot" aria-hidden="true"></span>
+        <span class="user__name" id="userName">—</span>
+        <span class="user__role mono" id="userRole">ADMIN</span>
+      </div>
+      <button class="btn btn--ghost btn--sm" id="btnLogout" type="button">退出</button>
+    </div>
+  </header>
+  <div class="shell">
+    <aside class="rail" id="rail"></aside>
+    <main class="main" id="main"></main>
+  </div>
+  <footer class="statusbar mono">
+    <span id="sbLeft">READY</span><span class="dotsep">·</span><span id="sbMid">—</span>
+    <span class="sb__spacer"></span><span id="sbRight">—</span>
+  </footer>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="../shared/api.js"></script>
+<script src="./app.js"></script>
+<!-- 三维机架视图（ES module，依赖 importmap 里的 three） -->
+<script type="module" src="./scene.js"></script>
+</body>
+</html>

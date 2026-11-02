@@ -1,0 +1,148 @@
+- generic [active] [ref=f5e1]:
+  - banner [ref=f5e2]:
+    - link "一次曝光 One Exposure" [ref=f5e3] [cursor=pointer]:
+      - /url: "#top"
+      - generic [ref=f5e5]: 一次曝光
+    - navigation "Systems" [ref=f5e6]:
+      - link "01 透镜" [ref=f5e7] [cursor=pointer]:
+        - /url: "#lens"
+        - generic [ref=f5e8]: "01"
+        - generic [ref=f5e9]: 透镜
+      - link "02 点阵" [ref=f5e10] [cursor=pointer]:
+        - /url: "#lattice"
+        - generic [ref=f5e11]: "02"
+        - generic [ref=f5e12]: 点阵
+      - link "03 序曲" [ref=f5e13] [cursor=pointer]:
+        - /url: "#overture"
+        - generic [ref=f5e14]: "03"
+        - generic [ref=f5e15]: 序曲
+    - generic [ref=f5e16]:
+      - button "Language / 语言" [ref=f5e17] [cursor=pointer]:
+        - generic [ref=f5e18]: 中
+        - generic [ref=f5e19]: EN
+      - button "动效 完整" [pressed] [ref=f5e20] [cursor=pointer]:
+        - generic [ref=f5e21]: 动效
+        - generic [ref=f5e22]: 完整
+      - button "声音 关" [ref=f5e23] [cursor=pointer]:
+        - generic [ref=f5e24]: 声音
+        - generic [ref=f5e25]: 关
+      - link "GitHub ↗" [ref=f5e26] [cursor=pointer]:
+        - /url: https://github.com/ruiqichenbiec/design-systems
+  - main [ref=f5e27]:
+    - region [ref=f5e28]:
+      - generic [ref=f5e29]: 滚动 · 曝光
+      - generic [ref=f5e30]:
+        - heading "一次曝光 透镜、点阵、序曲：三套原生 Web 设计体系" [level=1] [ref=f5e31]:
+          - text: 一次曝光
+          - generic [ref=f5e32]: 透镜、点阵、序曲：三套原生 Web 设计体系
+        - paragraph [ref=f5e33]: 往下滚动，光点会依次打开它们。窗里每一帧都是体系自己的实时渲染，不是录屏也不是截图；每个体系两页：首屏和组件集成页，展开后直接操作。在页面里滚到底，再向下滚 3 格进入下一站。
+      - generic [ref=f5e34]: MIT · 开源 3 套体系 · 78 个组件 零框架 · 原生 HTML/CSS/JS
+    - region "透镜 Lens" [ref=f5e35]:
+      - generic [ref=f5e36]:
+        - generic [aria-hidden]:
+          - generic:
+            - generic: 01 / 03
+            - heading [level=2]: 透镜
+            - generic:
+              - text: Lens ·
+              - generic: 玻璃 · 液体 · 光
+        - generic:
+          - generic:
+            - heading "01 透镜 玻璃 · 液体 · 光 18 类组件 · WebGL2 · 13 种合成音效 · 零运行时依赖" [level=3]:
+              - generic: "01"
+              - generic: 透镜
+              - generic: 玻璃 · 液体 · 光
+              - generic: 18 类组件 · WebGL2 · 13 种合成音效 · 零运行时依赖
+            - paragraph: 玻璃承载信息，液体表达连续变化，光表达状态。实时背景折射、弹簧形变和原创合成音；所有可交互的部分都由同一块透镜承载。
+          - generic:
+            - link "完整展示":
+              - /url: lens/lens-showcase.html
+            - link "单文件版":
+              - /url: lens/lens-showcase-standalone.html
+            - link "源码":
+              - /url: https://github.com/ruiqichenbiec/design-systems/tree/main/lens
+    - region "点阵 Lattice" [ref=f5e37]:
+      - generic [ref=f5e38]:
+        - generic [aria-hidden]:
+          - generic:
+            - generic: 02 / 03
+            - heading [level=2]: 点阵
+            - generic:
+              - text: Lattice ·
+              - generic: 点 · 集 · 映射
+        - generic:
+          - generic:
+            - heading "02 点阵 点 · 集 · 映射 14 类组件 · three.js · WebGL2 · 真实定理依赖数据" [level=3]:
+              - generic: "02"
+              - generic: 点阵
+              - generic: 点 · 集 · 映射
+              - generic: 14 类组件 · three.js · WebGL2 · 真实定理依赖数据
+            - paragraph: 万物皆点集，交互即映射。文字、吸引子、定理之瀑和证明树都是同一张 GPU 点阵：点先被放进无散度流场，再被弹簧拉进下一个集合。
+          - generic:
+            - link "完整展示":
+              - /url: lattice/dist/lattice-showcase.html
+            - link "组件目录":
+              - /url: lattice/dist/catalog/index.html
+            - link "源码":
+              - /url: https://github.com/ruiqichenbiec/design-systems/tree/main/lattice
+    - region "序曲 Overture" [ref=f5e39]:
+      - generic [ref=f5e40]:
+        - generic [aria-hidden]:
+          - generic:
+            - generic: 03 / 03
+            - heading [level=2]: 序曲
+            - generic:
+              - text: Overture ·
+              - generic: 光圈 · 显影 · 弹簧
+        - generic:
+          - generic:
+            - heading "03 序曲 光圈 · 显影 · 弹簧 46 类组件 · WebGPU / WebGL2 · 品牌工坊 · 示例照片为 AI 生成" [level=3]:
+              - generic: "03"
+              - generic: 序曲
+              - generic: 光圈 · 显影 · 弹簧
+              - generic: 46 类组件 · WebGPU / WebGL2 · 品牌工坊 · 示例照片为 AI 生成
+            - paragraph: 摄影、歌剧与时装。开幕是光圈，显影是显影，共振是弹簧：三个运动原语驱动全部交互。暗场、印纸、夜场三套主题，WebGPU / WebGL2 渲染。
+          - generic:
+            - link "完整展示":
+              - /url: overture/dist/overture-showcase.html?motion=full
+            - link "46 个组件":
+              - /url: overture/dist/components.html
+            - link "组件目录":
+              - /url: overture/dist/catalog/index.html
+            - link "源码":
+              - /url: https://github.com/ruiqichenbiec/design-systems/tree/main/overture
+    - region [ref=f5e41]:
+      - generic [ref=f5e42]:
+        - heading "拿去用。 三套体系都以 MIT 许可证开源：可以商用、修改、闭源，只需保留版权声明。仓库按原样提供，不再维护。" [level=2] [ref=f5e43]:
+          - text: 拿去用。
+          - generic [ref=f5e44]: 三套体系都以 MIT 许可证开源：可以商用、修改、闭源，只需保留版权声明。仓库按原样提供，不再维护。
+        - generic [ref=f5e45]:
+          - term [ref=f5e46]: 本地运行
+          - definition [ref=f5e47]:
+            - code [ref=f5e48]: git clone https://github.com/ruiqichenbiec/design-systems
+            - code [ref=f5e49]: node serve.mjs
+            - text: →
+            - code [ref=f5e50]: http://127.0.0.1:4300/
+          - term [ref=f5e51]: 各体系
+          - definition [ref=f5e52]:
+            - link "lens/" [ref=f5e53] [cursor=pointer]:
+              - /url: lens/START-HERE.md
+            - text: ·
+            - link "lattice/" [ref=f5e54] [cursor=pointer]:
+              - /url: lattice/README.md
+            - text: ·
+            - link "overture/" [ref=f5e55] [cursor=pointer]:
+              - /url: overture/README.md
+            - text: ·
+            - link "ds-viewer/" [ref=f5e56] [cursor=pointer]:
+              - /url: ds-viewer/README.md
+            - text: （组件目录生成器）
+          - term [ref=f5e57]: 第三方
+          - definition [ref=f5e58]: three.js（MIT）；Bodoni Moda、Manrope、Inter Tight 等字体（SIL OFL）。序曲的示例照片由 AI 生成。
+          - term [ref=f5e59]: 浏览器
+          - definition [ref=f5e60]: 需要 WebGL2；序曲在支持时使用 WebGPU。系统开启“减弱动态”时，页面默认仍播放完整动效，可在右上角切换。
+      - generic [ref=f5e61]:
+        - generic [ref=f5e62]: MIT License
+        - generic [ref=f5e63]: 按原样提供 · 不再维护
+        - link "回到光点 ↑" [ref=f5e64] [cursor=pointer]:
+          - /url: "#top"

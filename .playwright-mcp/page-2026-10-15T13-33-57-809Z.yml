@@ -1,0 +1,730 @@
+- generic [ref=f14e2]:
+  - link "跳到内容" [ref=f14e3] [cursor=pointer]:
+    - /url: "#material"
+  - banner [ref=f14e4]:
+    - link "Lens" [ref=f14e5] [cursor=pointer]:
+      - /url: "#material"
+    - navigation "页面导航" [ref=f14e6]:
+      - link "材质" [ref=f14e7] [cursor=pointer]:
+        - /url: "#material"
+      - link "组件" [ref=f14e8] [cursor=pointer]:
+        - /url: "#component-index"
+      - link "光学交互" [ref=f14e9] [cursor=pointer]:
+        - /url: "#optical-demo"
+      - link "图与表" [ref=f14e10] [cursor=pointer]:
+        - /url: "#charts"
+    - button "English" [ref=f14e11] [cursor=pointer]
+  - main [ref=f14e12]:
+    - generic [ref=f14e13]:
+      - generic [ref=f14e14]:
+        - heading "可触摸的光。" [level=1] [ref=f14e15]
+        - paragraph [ref=f14e16]: 看见折射的层次，感受拖动的弹性。让每一次操作，都留下轻轻的回应。
+        - link "体验全部组件" [ref=f14e17] [cursor=pointer]:
+          - /url: "#component-index"
+      - generic [ref=f14e18]:
+        - heading "自由透镜 lens" [level=3] [ref=f14e19]:
+          - generic [ref=f14e20]: 自由透镜
+          - code [ref=f14e21]: lens
+        - generic "透镜材质体验" [ref=f14e22]:
+          - slider "拖动玻璃透镜，或使用方向键移动" [ref=f14e23]:
+            - generic [ref=f14e26]: 按住，轻轻移动
+        - group [ref=f14e27]:
+          - generic "使用示例" [ref=f14e28] [cursor=pointer]
+    - generic [ref=f14e29]:
+      - generic [ref=f14e30]: 材质
+      - group "材质" [ref=f14e31]:
+        - button "厚润" [pressed] [ref=f14e32] [cursor=pointer]
+        - button "通透" [ref=f14e33] [cursor=pointer]
+        - button "柔和" [ref=f14e34] [cursor=pointer]
+      - generic [ref=f14e35]:
+        - generic [ref=f14e36]: 背景
+        - combobox "背景" [ref=f14e37] [cursor=pointer]:
+          - option "纸面网格" [selected]
+          - option "流光"
+          - option "深海"
+    - generic [ref=f14e38]:
+      - generic [ref=f14e39]:
+        - heading "玻璃 × 纸面" [level=2] [ref=f14e40]
+        - paragraph [ref=f14e41]: 拖动透镜，听见玻璃掠过纸面的细微颗粒声。
+      - generic [ref=f14e42]:
+        - generic [ref=f14e43]:
+          - checkbox "交互声音" [ref=f14e44]
+          - generic [ref=f14e45]: 交互声音
+        - generic [ref=f14e46]:
+          - generic [ref=f14e47]: 音量
+          - slider "音量" [disabled] [ref=f14e48]: "28"
+          - status [ref=f14e49]: 28%
+        - button "试听摩擦声" [disabled] [ref=f14e50]
+        - status [ref=f14e51]: 声音只在操作时响起。速度决定摩擦的轻重。
+    - generic [ref=f14e52]:
+      - heading "组件索引" [level=2] [ref=f14e53]
+      - paragraph [ref=f14e54]: 18 个可复用组件与 4 个数据展示。按固定名称定位，每处都附有使用示例。
+      - list [ref=f14e55]:
+        - listitem [ref=f14e56]:
+          - link "玻璃按钮 button" [ref=f14e57] [cursor=pointer]:
+            - /url: "#component-button"
+            - generic [ref=f14e58]: 玻璃按钮
+            - code [ref=f14e59]: button
+        - listitem [ref=f14e60]:
+          - link "图标按钮 icon-button" [ref=f14e61] [cursor=pointer]:
+            - /url: "#component-icon-button"
+            - generic [ref=f14e62]: 图标按钮
+            - code [ref=f14e63]: icon-button
+        - listitem [ref=f14e64]:
+          - link "滑动开关 switch" [ref=f14e65] [cursor=pointer]:
+            - /url: "#component-switch"
+            - generic [ref=f14e66]: 滑动开关
+            - code [ref=f14e67]: switch
+        - listitem [ref=f14e68]:
+          - link "连接开关 toggle-tile" [ref=f14e69] [cursor=pointer]:
+            - /url: "#component-toggle-tile"
+            - generic [ref=f14e70]: 连接开关
+            - code [ref=f14e71]: toggle-tile
+        - listitem [ref=f14e72]:
+          - link "选项胶囊 choices" [ref=f14e73] [cursor=pointer]:
+            - /url: "#component-choices"
+            - generic [ref=f14e74]: 选项胶囊
+            - code [ref=f14e75]: choices
+        - listitem [ref=f14e76]:
+          - link "分段标签 tabs" [ref=f14e77] [cursor=pointer]:
+            - /url: "#component-tabs"
+            - generic [ref=f14e78]: 分段标签
+            - code [ref=f14e79]: tabs
+        - listitem [ref=f14e80]:
+          - link "浮动导航 dock" [ref=f14e81] [cursor=pointer]:
+            - /url: "#component-dock"
+            - generic [ref=f14e82]: 浮动导航
+            - code [ref=f14e83]: dock
+        - listitem [ref=f14e84]:
+          - link "光学滑杆 slider" [ref=f14e85] [cursor=pointer]:
+            - /url: "#component-slider"
+            - generic [ref=f14e86]: 光学滑杆
+            - code [ref=f14e87]: slider
+        - listitem [ref=f14e88]:
+          - link "数值步进器 stepper" [ref=f14e89] [cursor=pointer]:
+            - /url: "#component-stepper"
+            - generic [ref=f14e90]: 数值步进器
+            - code [ref=f14e91]: stepper
+        - listitem [ref=f14e92]:
+          - link "玻璃通知 notification" [ref=f14e93] [cursor=pointer]:
+            - /url: "#component-notification"
+            - generic [ref=f14e94]: 玻璃通知
+            - code [ref=f14e95]: notification
+        - listitem [ref=f14e96]:
+          - link "操作菜单 menu" [ref=f14e97] [cursor=pointer]:
+            - /url: "#component-menu"
+            - generic [ref=f14e98]: 操作菜单
+            - code [ref=f14e99]: menu
+        - listitem [ref=f14e100]:
+          - link "折射搜索框 search" [ref=f14e101] [cursor=pointer]:
+            - /url: "#component-search"
+            - generic [ref=f14e102]: 折射搜索框
+            - code [ref=f14e103]: search
+        - listitem [ref=f14e104]:
+          - link "弹性面板 panel" [ref=f14e105] [cursor=pointer]:
+            - /url: "#component-panel"
+            - generic [ref=f14e106]: 弹性面板
+            - code [ref=f14e107]: panel
+        - listitem [ref=f14e108]:
+          - link "自由透镜 lens" [ref=f14e109] [cursor=pointer]:
+            - /url: "#component-lens"
+            - generic [ref=f14e110]: 自由透镜
+            - code [ref=f14e111]: lens
+        - listitem [ref=f14e112]:
+          - link "透镜卡片列表 card-list" [ref=f14e113] [cursor=pointer]:
+            - /url: "#component-card-list"
+            - generic [ref=f14e114]: 透镜卡片列表
+            - code [ref=f14e115]: card-list
+        - listitem [ref=f14e116]:
+          - link "光导进度条 progress" [ref=f14e117] [cursor=pointer]:
+            - /url: "#component-progress"
+            - generic [ref=f14e118]: 光导进度条
+            - code [ref=f14e119]: progress
+        - listitem [ref=f14e120]:
+          - link "凹槽吸附选择 drop-select" [ref=f14e121] [cursor=pointer]:
+            - /url: "#component-drop-select"
+            - generic [ref=f14e122]: 凹槽吸附选择
+            - code [ref=f14e123]: drop-select
+        - listitem [ref=f14e124]:
+          - link "二维滤镜滑块 xy-slider" [ref=f14e125] [cursor=pointer]:
+            - /url: "#component-xy-slider"
+            - generic [ref=f14e126]: 二维滤镜滑块
+            - code [ref=f14e127]: xy-slider
+        - listitem [ref=f14e128]:
+          - link "玻璃光导折线 line-chart" [ref=f14e129] [cursor=pointer]:
+            - /url: "#component-line-chart"
+            - generic [ref=f14e130]: 玻璃光导折线
+            - code [ref=f14e131]: line-chart
+        - listitem [ref=f14e132]:
+          - link "液体柱状图 bar-chart" [ref=f14e133] [cursor=pointer]:
+            - /url: "#component-bar-chart"
+            - generic [ref=f14e134]: 液体柱状图
+            - code [ref=f14e135]: bar-chart
+        - listitem [ref=f14e136]:
+          - link "彩色玻璃环图 ring-chart" [ref=f14e137] [cursor=pointer]:
+            - /url: "#component-ring-chart"
+            - generic [ref=f14e138]: 彩色玻璃环图
+            - code [ref=f14e139]: ring-chart
+        - listitem [ref=f14e140]:
+          - link "光学记录表 records-table" [ref=f14e141] [cursor=pointer]:
+            - /url: "#component-records-table"
+            - generic [ref=f14e142]: 光学记录表
+            - code [ref=f14e143]: records-table
+    - generic [ref=f14e144]:
+      - generic [ref=f14e145]:
+        - heading "小动作，也有回应。" [level=2] [ref=f14e146]
+        - paragraph [ref=f14e147]: 从一次点击，到一段专注。每个控件都有清楚的状态，也有恰到好处的触感。
+        - status [ref=f14e148]: 点击、拖动，也可以使用键盘。
+        - generic [ref=f14e149]:
+          - heading "弹性面板 panel" [level=3] [ref=f14e150]:
+            - generic [ref=f14e151]: 弹性面板
+            - code [ref=f14e152]: panel
+          - region "按住拖动面板" [ref=f14e154]:
+            - generic [ref=f14e155]:
+              - strong [ref=f14e156]: 给想法，一点空间。
+              - paragraph [ref=f14e157]: 拖动后松手，感受柔和回弹。
+          - group [ref=f14e158]:
+            - generic "使用示例" [ref=f14e159] [cursor=pointer]
+      - generic [ref=f14e160]:
+        - generic [ref=f14e161]:
+          - heading "玻璃按钮 button" [level=3] [ref=f14e162]:
+            - generic [ref=f14e163]: 玻璃按钮
+            - code [ref=f14e164]: button
+          - button "保存此刻" [ref=f14e165] [cursor=pointer]
+          - button "暂不可用" [disabled] [ref=f14e166]
+          - group [ref=f14e167]:
+            - generic "使用示例" [ref=f14e168] [cursor=pointer]
+        - generic [ref=f14e169]:
+          - heading "滑动开关 switch" [level=3] [ref=f14e170]:
+            - generic [ref=f14e171]: 滑动开关
+            - code [ref=f14e172]: switch
+          - generic [ref=f14e173]: 专注模式
+          - switch "专注模式" [ref=f14e174] [cursor=pointer]
+          - group [ref=f14e175]:
+            - generic "使用示例" [ref=f14e176] [cursor=pointer]
+        - generic [ref=f14e177]:
+          - heading "光学滑杆 slider" [level=3] [ref=f14e178]:
+            - generic [ref=f14e179]: 光学滑杆
+            - code [ref=f14e180]: slider
+          - generic [ref=f14e181]:
+            - generic [ref=f14e182]:
+              - generic [ref=f14e183]: 明亮程度
+              - status "明亮程度" [ref=f14e184]: "70"
+            - slider "明亮程度" [ref=f14e186]: "70"
+          - group [ref=f14e187]:
+            - generic "使用示例" [ref=f14e188] [cursor=pointer]
+        - generic [ref=f14e189]:
+          - heading "数值步进器 stepper" [level=3] [ref=f14e190]:
+            - generic [ref=f14e191]: 数值步进器
+            - code [ref=f14e192]: stepper
+          - generic [ref=f14e193]: 专注时长
+          - group "专注时长" [ref=f14e194]:
+            - button "减少时长" [ref=f14e195] [cursor=pointer]
+            - status [ref=f14e197]: 25 分钟
+            - button "增加时长" [ref=f14e198] [cursor=pointer]
+          - group [ref=f14e201]:
+            - generic "使用示例" [ref=f14e202] [cursor=pointer]
+        - generic [ref=f14e203]:
+          - heading "玻璃通知 notification" [level=3] [ref=f14e204]:
+            - generic [ref=f14e205]: 玻璃通知
+            - code [ref=f14e206]: notification
+          - region "准备好，进入心流。" [ref=f14e207]:
+            - strong [ref=f14e208]: 准备好，进入心流。
+            - paragraph [ref=f14e209]: 从 25 分钟开始，把注意力留给眼前。
+            - button "收起通知" [ref=f14e210] [cursor=pointer]
+          - group [ref=f14e213]:
+            - generic "使用示例" [ref=f14e214] [cursor=pointer]
+    - generic [ref=f14e215]:
+      - heading "导航与操作" [level=2] [ref=f14e216]
+      - paragraph [ref=f14e217]: 从原版实验室补齐的控件。点击、拖动，或使用键盘检查它们的状态。
+      - generic [ref=f14e218]:
+        - generic [ref=f14e219]:
+          - heading "图标按钮 icon-button" [level=3] [ref=f14e220]:
+            - generic [ref=f14e221]: 图标按钮
+            - code [ref=f14e222]: icon-button
+          - generic [ref=f14e223]:
+            - button "收藏组件" [ref=f14e224] [cursor=pointer]
+            - button "重置收藏" [ref=f14e228] [cursor=pointer]
+            - button "禁用图标按钮" [disabled] [ref=f14e232]
+          - group [ref=f14e236]:
+            - generic "使用示例" [ref=f14e237] [cursor=pointer]
+        - generic [ref=f14e238]:
+          - heading "连接开关 toggle-tile" [level=3] [ref=f14e239]:
+            - generic [ref=f14e240]: 连接开关
+            - code [ref=f14e241]: toggle-tile
+          - generic [ref=f14e242]:
+            - switch "Wi-Fi" [checked] [ref=f14e243] [cursor=pointer]:
+              - generic [ref=f14e247]:
+                - strong [ref=f14e248]: Wi-Fi
+                - generic [ref=f14e249]: 已连接
+            - switch "蓝牙" [ref=f14e250] [cursor=pointer]:
+              - generic [ref=f14e254]:
+                - strong [ref=f14e255]: 蓝牙
+                - generic [ref=f14e256]: 已关闭
+          - group [ref=f14e257]:
+            - generic "使用示例" [ref=f14e258] [cursor=pointer]
+        - generic [ref=f14e259]:
+          - heading "分段标签 tabs" [level=3] [ref=f14e260]:
+            - generic [ref=f14e261]: 分段标签
+            - code [ref=f14e262]: tabs
+          - generic [ref=f14e263]:
+            - tablist "组件视图" [ref=f14e264]:
+              - tab "总览" [selected] [ref=f14e265] [cursor=pointer]
+              - tab "材质" [ref=f14e266] [cursor=pointer]
+              - tab "禁用" [disabled] [ref=f14e267]
+            - tabpanel "总览" [ref=f14e268]: 标签页让相关内容共享一处空间。拖动玻璃选中层，或用方向键切换。
+          - group [ref=f14e269]:
+            - generic "使用示例" [ref=f14e270] [cursor=pointer]
+        - generic [ref=f14e271]:
+          - heading "浮动导航 dock" [level=3] [ref=f14e272]:
+            - generic [ref=f14e273]: 浮动导航
+            - code [ref=f14e274]: dock
+          - navigation "浮动导航示例" [ref=f14e276]:
+            - button "总览" [ref=f14e277] [cursor=pointer]
+            - button "材质" [ref=f14e282] [cursor=pointer]
+            - button "收藏" [ref=f14e287] [cursor=pointer]
+          - status [ref=f14e292]: 当前视图 · 总览
+          - group [ref=f14e293]:
+            - generic "使用示例" [ref=f14e294] [cursor=pointer]
+        - generic [ref=f14e295]:
+          - heading "操作菜单 menu" [level=3] [ref=f14e296]:
+            - generic [ref=f14e297]: 操作菜单
+            - code [ref=f14e298]: menu
+          - button "更多操作" [ref=f14e300] [cursor=pointer]
+          - status [ref=f14e302]: 打开菜单，试试方向键和 Escape。
+          - group [ref=f14e303]:
+            - generic "使用示例" [ref=f14e304] [cursor=pointer]
+    - generic [ref=f14e305]:
+      - heading "一列透镜，多种内容。" [level=2] [ref=f14e306]
+      - paragraph [ref=f14e307]: 横向卡片自动循环；拖动卡片空白处即可浏览，悬停或操作控件时会暂停。按钮、滑杆与进度可以自由组合。
+      - generic [ref=f14e308]:
+        - heading "透镜卡片列表 card-list" [level=3] [ref=f14e309]:
+          - generic [ref=f14e310]: 透镜卡片列表
+          - code [ref=f14e311]: card-list
+        - region "推荐应用" [ref=f14e312]:
+          - region "推荐应用" [ref=f14e313]:
+            - list [ref=f14e314]:
+              - listitem [ref=f14e315]:
+                - region [ref=f14e316]:
+                  - generic [ref=f14e318]:
+                    - heading "便笺" [level=3] [ref=f14e319]
+                    - paragraph [ref=f14e320]: 快速记下刚刚闪过的想法。
+              - listitem [ref=f14e321]:
+                - region [ref=f14e322]:
+                  - generic [ref=f14e324]:
+                    - heading "脉动同步" [level=3] [ref=f14e325]
+                    - paragraph [ref=f14e326]: 让当下进度保持连接。
+                  - generic [ref=f14e327]:
+                    - button "连接" [ref=f14e328] [cursor=pointer]
+                    - status [ref=f14e329]: 尚未连接
+              - listitem [ref=f14e330]:
+                - region [ref=f14e331]:
+                  - generic [ref=f14e333]:
+                    - heading "专注调音台" [level=3] [ref=f14e334]
+                    - paragraph [ref=f14e335]: 滑动并立即看见强度变化。
+                  - generic [ref=f14e336]:
+                    - generic [ref=f14e337]:
+                      - generic [ref=f14e338]:
+                        - generic [ref=f14e339]: 调整强度
+                        - status "调整强度" [ref=f14e340]: "62"
+                      - slider "调整强度" [ref=f14e342]: "62"
+                    - generic [ref=f14e343]:
+                      - generic [ref=f14e344]:
+                        - generic [ref=f14e345]: 专注强度
+                        - status [ref=f14e346]: 62%
+                      - progressbar "专注强度" [ref=f14e347]
+                      - status [ref=f14e352]
+              - listitem [ref=f14e353]:
+                - region [ref=f14e354]:
+                  - generic [ref=f14e356]:
+                    - heading "金色收尾" [level=3] [ref=f14e357]
+                    - paragraph [ref=f14e358]: 完成时让光带落在金色。
+                  - generic [ref=f14e359]:
+                    - generic [ref=f14e360]:
+                      - generic [ref=f14e361]:
+                        - generic [ref=f14e362]: 今日目标
+                        - status [ref=f14e363]: 100% · 已完成
+                      - progressbar "今日目标" [ref=f14e364]
+                      - status [ref=f14e369]: 已完成
+                    - button "再来一轮" [ref=f14e370] [cursor=pointer]
+                    - status [ref=f14e371]: 本轮已完成
+          - generic [ref=f14e372]:
+            - button "暂停自动滚动" [ref=f14e373] [cursor=pointer]
+            - button "上一张" [ref=f14e374] [cursor=pointer]
+            - button "下一张" [ref=f14e375] [cursor=pointer]
+        - group [ref=f14e376]:
+          - generic "使用示例" [ref=f14e377] [cursor=pointer]
+    - region [ref=f14e378]:
+      - heading "让光，回应每一次操作" [level=2] [ref=f14e379]
+      - paragraph [ref=f14e380]: 进度、落点与二维调节。保留玻璃的通透，让反馈沿着光线发生。
+      - generic [ref=f14e382]:
+        - generic [ref=f14e383]: 背景
+        - combobox "背景" [ref=f14e384] [cursor=pointer]:
+          - option "流光" [selected]
+          - option "深海"
+          - option "光学网格"
+      - generic [ref=f14e385]:
+        - generic [ref=f14e386]:
+          - heading "光导进度条 progress" [level=3] [ref=f14e387]:
+            - generic [ref=f14e388]: 光导进度条
+            - code [ref=f14e389]: progress
+          - paragraph [ref=f14e390]: 光纤在已完成区内轻轻波动；完成时，流光带出新的颜色。
+          - generic [ref=f14e391]:
+            - generic [ref=f14e392]:
+              - generic [ref=f14e393]: 完成颜色
+              - combobox "完成颜色" [ref=f14e394] [cursor=pointer]:
+                - option "绿色" [selected]
+                - option "金色"
+            - generic [ref=f14e395]:
+              - generic [ref=f14e396]: 动效
+              - combobox "动效" [ref=f14e397] [cursor=pointer]:
+                - option "跟随系统" [selected]
+                - option "播放波动"
+                - option "静止"
+          - generic [ref=f14e398]:
+            - generic [ref=f14e399]:
+              - generic [ref=f14e400]:
+                - generic [ref=f14e401]: 当前进度
+                - status [ref=f14e402]: 38%
+              - progressbar "当前进度" [ref=f14e403]
+              - status [ref=f14e408]
+            - generic [ref=f14e409]:
+              - generic [ref=f14e410]: 调整进度
+              - slider "调整进度" [ref=f14e411]: "38"
+            - generic [ref=f14e412]:
+              - button "推进 25%" [ref=f14e413] [cursor=pointer]
+              - button "完成" [ref=f14e414] [cursor=pointer]
+              - button "重置" [ref=f14e415] [cursor=pointer]
+          - group [ref=f14e416]:
+            - generic "使用示例" [ref=f14e417] [cursor=pointer]
+        - generic [ref=f14e418]:
+          - heading "凹槽吸附选择 drop-select" [level=3] [ref=f14e419]:
+            - generic [ref=f14e420]: 凹槽吸附选择
+            - code [ref=f14e421]: drop-select
+          - paragraph [ref=f14e422]: 松手后吸附最近的凹槽，透明玻璃顺势汇入，落点随之隆起并泛出绿色反光。
+          - generic [ref=f14e424]:
+            - generic [ref=f14e425]: 拖动形态
+            - combobox "拖动形态" [ref=f14e426] [cursor=pointer]:
+              - option "透镜" [selected]
+              - option "胶囊"
+          - group "拖放选择" [ref=f14e428]:
+            - paragraph [ref=f14e429]: 松手吸附最近凹槽。点击和方向键也会沿途流入。
+            - generic [ref=f14e430]:
+              - radiogroup "拖放选择" [ref=f14e431]:
+                - radio "专注" [checked] [ref=f14e432] [cursor=pointer]
+                - radio "日光" [ref=f14e441] [cursor=pointer]
+                - radio "晚间" [ref=f14e450] [cursor=pointer]
+              - 'button "拖放选择: 专注" [ref=f14e459]'
+            - status [ref=f14e460]: 专注
+          - group [ref=f14e461]:
+            - generic "使用示例" [ref=f14e462] [cursor=pointer]
+        - generic [ref=f14e463]:
+          - heading "二维滤镜滑块 xy-slider" [level=3] [ref=f14e464]:
+            - generic [ref=f14e465]: 二维滤镜滑块
+            - code [ref=f14e466]: xy-slider
+          - paragraph [ref=f14e467]: 在色域中游移，用放大透镜看清细微的变化。
+          - generic [ref=f14e469]:
+            - generic [ref=f14e470]: 选择方式
+            - combobox "选择方式" [ref=f14e471] [cursor=pointer]:
+              - option "普通触点"
+              - option "放大透镜 · 1.8×" [selected]
+          - group "色彩调节" [ref=f14e473]:
+            - group "色彩调节" [ref=f14e474]
+            - status [ref=f14e475]: 色温 0 · 色调 0
+            - generic [ref=f14e476]:
+              - generic [ref=f14e477]:
+                - generic [ref=f14e478]: 色温
+                - slider "色温" [ref=f14e479]: "0"
+              - generic [ref=f14e480]:
+                - generic [ref=f14e481]: 色调
+                - slider "色调" [ref=f14e482]: "0"
+            - paragraph [ref=f14e483]: 拖动或使用方向键；Shift 加速，Home 复位。
+          - group [ref=f14e484]:
+            - generic "使用示例" [ref=f14e485] [cursor=pointer]
+        - generic [ref=f14e486]:
+          - heading "选项胶囊 choices" [level=3] [ref=f14e487]:
+            - generic [ref=f14e488]: 选项胶囊
+            - code [ref=f14e489]: choices
+          - paragraph [ref=f14e490]: 边缘由冷光转为金色，流转一周后安静停驻。
+          - generic [ref=f14e492]:
+            - status [ref=f14e497]: 当前选择 · 专注
+            - group "场景选项" [ref=f14e498]:
+              - button "专注" [pressed] [ref=f14e499] [cursor=pointer]
+              - button "日光" [ref=f14e503] [cursor=pointer]
+              - button "晚间" [ref=f14e507] [cursor=pointer]
+            - paragraph [ref=f14e511]: 点击胶囊，或用方向键切换。
+          - group [ref=f14e512]:
+            - generic "使用示例" [ref=f14e513] [cursor=pointer]
+    - generic [ref=f14e514]:
+      - generic [ref=f14e516]:
+        - heading "让数据，也透一口气。" [level=2] [ref=f14e517]
+        - paragraph [ref=f14e518]: 沿着曲线读趋势，让柱形承接分量，用圆环看见全貌。图表与表格共用同一组示例数据。
+      - generic [ref=f14e519]:
+        - group "图表周期" [ref=f14e520]:
+          - button "近 7 天" [pressed] [ref=f14e521] [cursor=pointer]
+          - button "近 14 天" [ref=f14e522] [cursor=pointer]
+        - paragraph [ref=f14e523]: 示例数据 · 2026 年 9 月 5–18 日
+      - generic [ref=f14e524]:
+        - article [ref=f14e525]:
+          - heading "玻璃光导折线 line-chart" [level=3] [ref=f14e526]:
+            - generic [ref=f14e527]: 玻璃光导折线
+            - code [ref=f14e528]: line-chart
+          - status [ref=f14e529]: 9 月 18 日 / 5小时 20分
+          - img "每日专注时长，单位分钟" [ref=f14e531]:
+            - generic [ref=f14e532]:
+              - generic [ref=f14e533]: "0"
+              - generic [ref=f14e534]: "120"
+              - generic [ref=f14e535]: "240"
+              - generic [ref=f14e536]: "360"
+          - generic [ref=f14e540]:
+            - generic [ref=f14e541]: 9 月 12 日
+            - generic [ref=f14e542]: 9 月 18 日
+          - slider "浏览每日专注时长" [ref=f14e543]: "6"
+          - paragraph [ref=f14e544]: 沿曲线移动，或使用滑杆查看每一天。
+          - group [ref=f14e545]:
+            - generic "使用示例" [ref=f14e546] [cursor=pointer]
+        - article [ref=f14e547]:
+          - heading "彩色玻璃环图 ring-chart" [level=3] [ref=f14e548]:
+            - generic [ref=f14e549]: 彩色玻璃环图
+            - code [ref=f14e550]: ring-chart
+          - generic [ref=f14e551]:
+            - img "各分类占总时长的比例" [ref=f14e552]:
+              - generic [ref=f14e553] [cursor=pointer]
+              - generic [ref=f14e554] [cursor=pointer]
+              - generic [ref=f14e555] [cursor=pointer]
+              - generic [ref=f14e556] [cursor=pointer]
+            - generic:
+              - strong: "2030"
+              - generic: 分钟
+          - generic [ref=f14e557]:
+            - button "设计 850 分钟，42%" [ref=f14e558] [cursor=pointer]:
+              - generic [ref=f14e560]: 设计
+              - strong [ref=f14e561]: 42%
+            - button "阅读 360 分钟，18%" [ref=f14e562] [cursor=pointer]:
+              - generic [ref=f14e564]: 阅读
+              - strong [ref=f14e565]: 18%
+            - button "制作 615 分钟，30%" [ref=f14e566] [cursor=pointer]:
+              - generic [ref=f14e568]: 制作
+              - strong [ref=f14e569]: 30%
+            - button "整理 205 分钟，10%" [ref=f14e570] [cursor=pointer]:
+              - generic [ref=f14e572]: 整理
+              - strong [ref=f14e573]: 10%
+          - paragraph [ref=f14e574]: 全貌始终可见，所选部分浮现于光中。
+          - group [ref=f14e575]:
+            - generic "使用示例" [ref=f14e576] [cursor=pointer]
+        - article [ref=f14e577]:
+          - heading "液体柱状图 bar-chart" [level=3] [ref=f14e578]:
+            - generic [ref=f14e579]: 液体柱状图
+            - code [ref=f14e580]: bar-chart
+          - paragraph [ref=f14e581]: 选择一个分类，联动查看曲线与下方记录。
+          - generic [ref=f14e582]:
+            - button "设计 850 分钟" [ref=f14e583] [cursor=pointer]:
+              - generic [ref=f14e584]: 设计
+              - strong [ref=f14e587]: 850 分钟
+            - button "阅读 360 分钟" [ref=f14e588] [cursor=pointer]:
+              - generic [ref=f14e589]: 阅读
+              - strong [ref=f14e592]: 360 分钟
+            - button "制作 615 分钟" [ref=f14e593] [cursor=pointer]:
+              - generic [ref=f14e594]: 制作
+              - strong [ref=f14e597]: 615 分钟
+            - button "整理 205 分钟" [ref=f14e598] [cursor=pointer]:
+              - generic [ref=f14e599]: 整理
+              - strong [ref=f14e602]: 205 分钟
+          - group [ref=f14e603]:
+            - generic "使用示例" [ref=f14e604] [cursor=pointer]
+      - group [ref=f14e605]:
+        - generic "查看图表数据" [ref=f14e606] [cursor=pointer]
+      - generic [ref=f14e607]:
+        - heading "光学记录表 records-table" [level=2] [ref=f14e608]:
+          - generic [ref=f14e609]: 光学记录表
+          - code [ref=f14e610]: records-table
+        - paragraph [ref=f14e611]: 搜索、排序或选择一条记录，让玻璃为信息留出空间。
+        - generic [ref=f14e612]:
+          - generic [ref=f14e613]:
+            - generic [ref=f14e614]:
+              - heading "折射搜索框 search" [level=3] [ref=f14e615]:
+                - generic [ref=f14e616]: 折射搜索框
+                - code [ref=f14e617]: search
+              - searchbox "搜索记录" [ref=f14e623]
+              - group [ref=f14e624]:
+                - generic "使用示例" [ref=f14e625] [cursor=pointer]
+            - status [ref=f14e626]: 28 条记录
+          - region "活动记录" [ref=f14e627]:
+            - table [ref=f14e628]:
+              - caption [ref=f14e629]: 示例数据 · 2026 年 9 月 5–18 日
+              - rowgroup [ref=f14e630]:
+                - row [ref=f14e631]:
+                  - columnheader "活动" [ref=f14e632]
+                  - columnheader [ref=f14e633]:
+                    - button "日期 · 按此列排序" [ref=f14e634] [cursor=pointer]: 日期 ↓
+                  - columnheader [ref=f14e635]:
+                    - button "时长 · 按此列排序" [ref=f14e636] [cursor=pointer]: 时长
+                  - columnheader [ref=f14e637]:
+                    - button "进度 · 按此列排序" [ref=f14e638] [cursor=pointer]: 进度
+                  - columnheader "查看记录" [ref=f14e639]
+              - rowgroup [ref=f14e640]:
+                - row [ref=f14e641]:
+                  - cell "组件制作 制作" [ref=f14e642]:
+                    - generic [ref=f14e646]:
+                      - strong [ref=f14e647]: 组件制作
+                      - generic [ref=f14e648]: 制作
+                  - cell "9 月 18 日" [ref=f14e649]
+                  - cell "95 分钟" [ref=f14e650]
+                  - cell [ref=f14e651]:
+                    - generic [ref=f14e652]:
+                      - generic [aria-hidden] [ref=f14e653]:
+                        - generic [ref=f14e654]: 组件制作 进度
+                        - status [ref=f14e655]: 72%
+                      - progressbar "组件制作 进度" [ref=f14e656]
+                      - status [aria-hidden] [ref=f14e661]
+                    - text: 72%
+                  - cell [ref=f14e662]:
+                    - button "查看记录 · 组件制作 · 9 月 18 日" [ref=f14e663] [cursor=pointer]:
+                      - generic [ref=f14e664]: 查看
+                - row [ref=f14e667]:
+                  - cell "界面草图 设计" [ref=f14e668]:
+                    - generic [ref=f14e672]:
+                      - strong [ref=f14e673]: 界面草图
+                      - generic [ref=f14e674]: 设计
+                  - cell "9 月 18 日" [ref=f14e675]
+                  - cell "135 分钟" [ref=f14e676]
+                  - cell [ref=f14e677]:
+                    - generic [ref=f14e678]:
+                      - generic [aria-hidden] [ref=f14e679]:
+                        - generic [ref=f14e680]: 界面草图 进度
+                        - status [ref=f14e681]: 100% · 已完成
+                      - progressbar "界面草图 进度" [ref=f14e682]
+                      - status [aria-hidden] [ref=f14e687]: 已完成
+                    - text: 已完成
+                  - cell [ref=f14e688]:
+                    - button "查看记录 · 界面草图 · 9 月 18 日" [ref=f14e689] [cursor=pointer]:
+                      - generic [ref=f14e690]: 查看
+                - row [ref=f14e693]:
+                  - cell "下周的想法 整理" [ref=f14e694]:
+                    - generic [ref=f14e698]:
+                      - strong [ref=f14e699]: 下周的想法
+                      - generic [ref=f14e700]: 整理
+                  - cell "9 月 18 日" [ref=f14e701]
+                  - cell "40 分钟" [ref=f14e702]
+                  - cell [ref=f14e703]:
+                    - generic [ref=f14e704]:
+                      - generic [aria-hidden] [ref=f14e705]:
+                        - generic [ref=f14e706]: 下周的想法 进度
+                        - status [ref=f14e707]: 100% · 已完成
+                      - progressbar "下周的想法 进度" [ref=f14e708]
+                      - status [aria-hidden] [ref=f14e713]: 已完成
+                    - text: 已完成
+                  - cell [ref=f14e714]:
+                    - button "查看记录 · 下周的想法 · 9 月 18 日" [ref=f14e715] [cursor=pointer]:
+                      - generic [ref=f14e716]: 查看
+                - row [ref=f14e719]:
+                  - cell "阅读时光 阅读" [ref=f14e720]:
+                    - generic [ref=f14e724]:
+                      - strong [ref=f14e725]: 阅读时光
+                      - generic [ref=f14e726]: 阅读
+                  - cell "9 月 18 日" [ref=f14e727]
+                  - cell "50 分钟" [ref=f14e728]
+                  - cell [ref=f14e729]:
+                    - generic [ref=f14e730]:
+                      - generic [aria-hidden] [ref=f14e731]:
+                        - generic [ref=f14e732]: 阅读时光 进度
+                        - status [ref=f14e733]: 100% · 已完成
+                      - progressbar "阅读时光 进度" [ref=f14e734]
+                      - status [aria-hidden] [ref=f14e739]: 已完成
+                    - text: 已完成
+                  - cell [ref=f14e740]:
+                    - button "查看记录 · 阅读时光 · 9 月 18 日" [ref=f14e741] [cursor=pointer]:
+                      - generic [ref=f14e742]: 查看
+                - row [ref=f14e745]:
+                  - cell "透镜实验 制作" [ref=f14e746]:
+                    - generic [ref=f14e750]:
+                      - strong [ref=f14e751]: 透镜实验
+                      - generic [ref=f14e752]: 制作
+                  - cell "9 月 17 日" [ref=f14e753]
+                  - cell "60 分钟" [ref=f14e754]
+                  - cell [ref=f14e755]:
+                    - generic [ref=f14e756]:
+                      - generic [aria-hidden] [ref=f14e757]:
+                        - generic [ref=f14e758]: 透镜实验 进度
+                        - status [ref=f14e759]: 100% · 已完成
+                      - progressbar "透镜实验 进度" [ref=f14e760]
+                      - status [aria-hidden] [ref=f14e765]: 已完成
+                    - text: 已完成
+                  - cell [ref=f14e766]:
+                    - button "查看记录 · 透镜实验 · 9 月 17 日" [ref=f14e767] [cursor=pointer]:
+                      - generic [ref=f14e768]: 查看
+                - row [ref=f14e771]:
+                  - cell "材质与光线 设计" [ref=f14e772]:
+                    - generic [ref=f14e776]:
+                      - strong [ref=f14e777]: 材质与光线
+                      - generic [ref=f14e778]: 设计
+                  - cell "9 月 17 日" [ref=f14e779]
+                  - cell "80 分钟" [ref=f14e780]
+                  - cell [ref=f14e781]:
+                    - generic [ref=f14e782]:
+                      - generic [aria-hidden] [ref=f14e783]:
+                        - generic [ref=f14e784]: 材质与光线 进度
+                        - status [ref=f14e785]: 100% · 已完成
+                      - progressbar "材质与光线 进度" [ref=f14e786]
+                      - status [aria-hidden] [ref=f14e791]: 已完成
+                    - text: 已完成
+                  - cell [ref=f14e792]:
+                    - button "查看记录 · 材质与光线 · 9 月 17 日" [ref=f14e793] [cursor=pointer]:
+                      - generic [ref=f14e794]: 查看
+                - row [ref=f14e797]:
+                  - cell "归档与整理 整理" [ref=f14e798]:
+                    - generic [ref=f14e802]:
+                      - strong [ref=f14e803]: 归档与整理
+                      - generic [ref=f14e804]: 整理
+                  - cell "9 月 17 日" [ref=f14e805]
+                  - cell "25 分钟" [ref=f14e806]
+                  - cell [ref=f14e807]:
+                    - generic [ref=f14e808]:
+                      - generic [aria-hidden] [ref=f14e809]:
+                        - generic [ref=f14e810]: 归档与整理 进度
+                        - status [ref=f14e811]: 100% · 已完成
+                      - progressbar "归档与整理 进度" [ref=f14e812]
+                      - status [aria-hidden] [ref=f14e817]: 已完成
+                    - text: 已完成
+                  - cell [ref=f14e818]:
+                    - button "查看记录 · 归档与整理 · 9 月 17 日" [ref=f14e819] [cursor=pointer]:
+                      - generic [ref=f14e820]: 查看
+                - row [ref=f14e823]:
+                  - cell "灵感笔记 阅读" [ref=f14e824]:
+                    - generic [ref=f14e828]:
+                      - strong [ref=f14e829]: 灵感笔记
+                      - generic [ref=f14e830]: 阅读
+                  - cell "9 月 17 日" [ref=f14e831]
+                  - cell "75 分钟" [ref=f14e832]
+                  - cell [ref=f14e833]:
+                    - generic [ref=f14e834]:
+                      - generic [aria-hidden] [ref=f14e835]:
+                        - generic [ref=f14e836]: 灵感笔记 进度
+                        - status [ref=f14e837]: 100% · 已完成
+                      - progressbar "灵感笔记 进度" [ref=f14e838]
+                      - status [aria-hidden] [ref=f14e843]: 已完成
+                    - text: 已完成
+                  - cell [ref=f14e844]:
+                    - button "查看记录 · 灵感笔记 · 9 月 17 日" [ref=f14e845] [cursor=pointer]:
+                      - generic [ref=f14e846]: 查看
+          - generic [ref=f14e849]:
+            - button "上一页" [disabled] [ref=f14e850]
+            - generic [ref=f14e851]: 1–8 / 28
+            - button "下一页" [ref=f14e852] [cursor=pointer]
+          - status [ref=f14e853]: 选择一条记录，查看它的细节。
+        - group [ref=f14e854]:
+          - generic "使用示例" [ref=f14e855] [cursor=pointer]
+    - generic [ref=f14e856]:
+      - generic [ref=f14e857]:
+        - heading "从一束光，开始构建。" [level=2] [ref=f14e858]
+        - paragraph [ref=f14e859]: 18 类语义化组件、共享材质与弹性、可独立使用的声音。原生网页，无运行时依赖。
+        - generic [ref=f14e860]:
+          - link "打开组件目录" [ref=f14e861] [cursor=pointer]:
+            - /url: lab/design-system/index.html
+          - link "阅读组件 API" [ref=f14e862] [cursor=pointer]:
+            - /url: lab/design-system/README.md
+          - link "材质实验室" [ref=f14e863] [cursor=pointer]:
+            - /url: lens.html
+      - generic "最小接入示例" [ref=f14e864]:
+        - code [ref=f14e865]: "const lens = createComponent('lens', { label: 'Move the glass' }); stage.append(lens.element); const glass = createGlassSystem(stage);"
+      - paragraph [ref=f14e866]: 基于 1.0.0 恢复基线继续开发。所有示例只影响当前网页。 1.1.0-showcase.1

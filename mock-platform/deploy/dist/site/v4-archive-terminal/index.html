@@ -1,0 +1,673 @@
+﻿<!doctype html>
+<html lang="zh-CN" data-variant="v4" data-theme="dawn">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light dark" />
+<meta name="description" content="Mock 平台 · V4 档案终端：左侧竖排刻度导航 + 磨砂盖板解密揭示。数据与动作全部来自 _shared。" />
+<title>Mock 平台 · V4 档案终端 / RHINE LAB ARCHIVE TERMINAL</title>
+<link rel="stylesheet" href="./app.css" />
+</head>
+<body class="v4">
+
+<a class="skip" href="#stage">跳到档案区</a>
+
+<!-- 程序化背景：极淡的点阵与细网格（纯 CSS，不引 canvas，不抢戏） -->
+<div class="bg" aria-hidden="true">
+  <span class="bg__dots"></span>
+  <span class="bg__rule bg__rule--v1"></span>
+  <span class="bg__rule bg__rule--v2"></span>
+</div>
+
+<!-- ============================== 页眉 ============================== -->
+<header class="hd">
+  <div class="hd__brand">
+    <svg class="hd__mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="hd__mark-out" d="M16 2.6 28 9.5v13.2L16 29.6 4 22.7V9.5z" />
+      <path class="hd__mark-in" d="M16 8.8 22.8 12.7v7.6L16 23.6 9.2 20.3v-7.6z" />
+      <path class="hd__mark-core" d="M16 13.6 18.9 15.3v3.4L16 20.4 13.1 18.7v-3.4z" />
+    </svg>
+    <span class="hd__names">
+      <b class="hd__zh">莱茵生命 · 档案终端</b>
+      <i class="hd__en">RHINE LAB</i>
+      <i class="hd__en hd__en--sub">ANALYSIS OS · SYNTHESIZE INFORMATION</i>
+    </span>
+  </div>
+
+  <div class="hd__host" role="group" aria-label="检定机信息">
+    <span class="hd__hostrow"><i>宿主</i><b id="hostName">—</b></span>
+    <span class="hd__hostrow"><i>档案号</i><b id="hostId" class="mono">—</b></span>
+    <span class="hd__hostrow"><i>网卡</i><b id="hostIp" class="mono">—</b></span>
+    <span class="hd__hostrow hd__hostrow--wide"><i>检定代理</i><b id="hostAgent">—</b></span>
+  </div>
+
+  <div class="hd__spacer"></div>
+
+  <div class="hd__idx">
+    <button class="hlink" id="idxBtn" type="button" data-fx="subtle" aria-haspopup="dialog" aria-label="打开档案索引">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M14.8 14.8 20 20" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      <span>ARCHIVE INDEX</span><kbd class="kbd">/</kbd>
+    </button>
+    <span class="hd__saved mono" title="已归档（已签发证书）的端点">+ <b id="savedN">0</b> SAVED</span>
+  </div>
+
+  <div class="hd__tele" role="group" aria-label="实时遥测">
+    <span class="hd__tv"><i>REQ</i><b id="tkReq">0</b></span>
+    <span class="hd__tv"><i>OK</i><b id="tkOk">0</b></span>
+    <span class="hd__tv"><i>ERR</i><b id="tkErr">0</b></span>
+    <span class="hd__tv"><i>AVG</i><b id="tkLat">0</b><s>ms</s></span>
+    <span class="hd__tv"><i>RUN</i><b id="tkRun">0</b></span>
+    <span class="hd__tv"><i>PEND</i><b id="tkHuman">0</b></span>
+  </div>
+
+  <div class="hd__acts">
+    <button class="tbtn" id="themeBtn" type="button" aria-pressed="false" aria-label="切换主题：晨雾 / 深夜" data-fx="subtle">
+      <svg class="tbtn__ico" viewBox="0 0 24 24" aria-hidden="true">
+        <circle class="tbtn__sun" cx="12" cy="12" r="4.1" />
+        <path class="tbtn__ray" d="M12 2.6v3M12 18.4v3M2.6 12h3M18.4 12h3M5.4 5.4l2.1 2.1M16.5 16.5l2.1 2.1M18.6 5.4l-2.1 2.1M7.5 16.5l-2.1 2.1" />
+        <path class="tbtn__moon" d="M20 14.6A8.6 8.6 0 0 1 9.4 4a8.6 8.6 0 1 0 10.6 10.6z" />
+      </svg>
+      <span class="tbtn__txt"><b id="themeName">晨雾</b><i id="themeEn">DAWN</i></span>
+    </button>
+    <button class="tbtn tbtn--icon" id="sfxBtn" type="button" aria-pressed="false" aria-label="开关界面音效" title="界面音效（合成音，默认关闭）" data-fx="subtle">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.4v5.2h3l4 3.6V5.8L7 9.4H4z" /><path d="M15 8.6a4.8 4.8 0 0 1 0 6.8" /></svg>
+      <span class="tbtn__txt"><b>音效</b><i>SFX</i></span>
+    </button>
+    <span class="hd__clock mono" id="clock">--:--:--</span>
+  </div>
+</header>
+
+<!-- ============================== 导航：竖排刻度尺 ============================== -->
+<nav class="rail" id="rail" aria-label="档案区导航">
+  <span class="rail__cap">INDEX</span>
+  <span class="rail__track" aria-hidden="true">
+    <span class="rail__bar" id="railBar"></span>
+  </span>
+
+  <button class="tick is-active" data-nav="mock" type="button" aria-current="page">
+    <span class="tick__mark" aria-hidden="true"></span>
+    <span class="tick__txt">
+      <span class="tick__no mono" data-rn="mock">01</span>
+      <b class="tick__zh">Mock 管理</b>
+      <i class="tick__en">PORT / CERT</i>
+    </span>
+    <span class="tick__badge mono" data-badge="ports">0</span>
+  </button>
+
+  <button class="tick" data-nav="flow" type="button">
+    <span class="tick__mark" aria-hidden="true"></span>
+    <span class="tick__txt">
+      <span class="tick__no mono" data-rn="flow">02</span>
+      <b class="tick__zh">Mock 流程</b>
+      <i class="tick__en">AUDIT / RESPONSE</i>
+    </span>
+    <span class="tick__badge mono" data-badge="human">0</span>
+  </button>
+
+  <button class="tick" data-nav="ne" type="button">
+    <span class="tick__mark" aria-hidden="true"></span>
+    <span class="tick__txt">
+      <span class="tick__no mono" data-rn="ne">03</span>
+      <b class="tick__zh">网元管理</b>
+      <i class="tick__en">NE SPECIMEN</i>
+    </span>
+    <span class="tick__badge mono" data-badge="ne">0</span>
+  </button>
+
+  <button class="tick" data-nav="omp" type="button">
+    <span class="tick__mark" aria-hidden="true"></span>
+    <span class="tick__txt">
+      <span class="tick__no mono" data-rn="omp">04</span>
+      <b class="tick__zh">网元管理平台</b>
+      <i class="tick__en">OMP / ACCOUNT</i>
+    </span>
+    <span class="tick__badge mono" data-badge="tasks">0</span>
+  </button>
+
+  <button class="tick" data-nav="lcm" type="button">
+    <span class="tick__mark" aria-hidden="true"></span>
+    <span class="tick__txt">
+      <span class="tick__no mono" data-rn="lcm">05</span>
+      <b class="tick__zh">生命周期平台</b>
+      <i class="tick__en">LCMP / PACKAGE</i>
+    </span>
+    <span class="tick__badge mono" data-badge="packages">0</span>
+  </button>
+
+  <button class="tick" data-nav="vlp" type="button">
+    <span class="tick__mark" aria-hidden="true"></span>
+    <span class="tick__txt">
+      <span class="tick__no mono" data-rn="vlp">06</span>
+      <b class="tick__zh">虚层管理平台</b>
+      <i class="tick__en">VLMP / STACK</i>
+    </span>
+    <span class="tick__badge mono" data-badge="vlp">—</span>
+  </button>
+
+  <span class="rail__foot">
+    <b class="rail__no mono" id="railNo">NO.001</b>
+    <i class="rail__db">INTERNAL DATABASE</i>
+    <span class="rail__sec mono">RL-SEC / 01–06</span>
+  </span>
+</nav>
+
+<!-- ============================== 档案区 ============================== -->
+<div class="ovw">
+  <button class="ovw__back" id="ovwBtn" type="button" data-fx="subtle" aria-label="返回档案总览">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+    <span>ARCHIVE OVERVIEW</span><kbd class="kbd">ESC</kbd>
+  </button>
+</div>
+
+<main class="stage" id="stage">
+
+  <!-- ======================= 01 · Mock 管理 ======================= -->
+  <section class="screen is-active" data-screen="mock">
+    <header class="sc-head">
+      <span class="sc-head__no mono" aria-hidden="true">01</span>
+      <div class="sc-head__txt">
+        <h1>Mock 管理</h1>
+        <p class="sc-head__sub">登记本机端点 · 签发证书文件 · 挂载平台能力 · 起停 mock 服务</p>
+      </div>
+      <p class="sc-head__lat">PORT REGISTRY</p>
+      <span class="sec-lv" data-lv="public">PUBLIC · 端点登记</span>
+      <div class="sc-head__kpis" id="mockKpis"></div>
+    </header>
+
+    <div class="grid grid--1-2">
+      <div class="col">
+        <section class="card" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-001</span>
+            <h2>端点登记簿</h2>
+            <span class="card__meta"><b id="portCount">0</b> 条记录</span>
+          </header>
+          <div class="card__bd">
+            <div class="card__in" id="portList"></div>
+          </div>
+          <footer class="card__ft">
+            <form class="form" id="portForm" novalidate>
+              <div class="frow frow--2">
+                <label class="field" for="pfIp">
+                  <span class="field__lbl">本机 IP <i>HOST NIC</i></span>
+                  <select class="input" id="pfIp" aria-describedby="pfIpErr"></select>
+                  <em class="field__hint">取自本机网卡，可选「手动输入」</em>
+                </label>
+                <label class="field" for="pfPort">
+                  <span class="field__lbl">端口 <i>PORT</i></span>
+                  <input class="input mono" id="pfPort" inputmode="numeric" value="10443" aria-describedby="pfPortErr" />
+                  <em class="field__err" id="pfPortErr" role="alert" hidden></em>
+                </label>
+                <label class="field" for="pfProto">
+                  <span class="field__lbl">协议</span>
+                  <select class="input" id="pfProto"><option>HTTPS</option><option>HTTP</option><option>gRPC</option></select>
+                </label>
+                <label class="field" for="pfTls">
+                  <span class="field__lbl">TLS 版本</span>
+                  <select class="input" id="pfTls"><option>TLS1.3</option><option>TLS1.2</option><option>—</option></select>
+                </label>
+                <label class="field field--wide" for="pfNote">
+                  <span class="field__lbl">备注</span>
+                  <input class="input" id="pfNote" placeholder="例如：本机主端口 · 网元管理 + 生命周期" />
+                </label>
+              </div>
+              <em class="field__err" id="pfIpErr" role="alert" hidden></em>
+              <div class="frow frow--acts">
+                <button class="barbtn" data-fx="standard" type="submit" id="pfSubmit" data-ripple="never">
+                  <span class="barbtn__l">＋ 登记端点</span>
+                  <em class="barbtn__r">REGISTER PORT</em>
+                </button>
+                <span class="note">登记后需签发证书、挂载能力，服务才可启动</span>
+              </div>
+            </form>
+          </footer>
+        </section>
+      </div>
+
+      <div class="col">
+        <section class="card card--tall" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-002</span>
+            <h2>端点档案</h2>
+            <svg class="rings" viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="rings__out" cx="60" cy="60" r="52" />
+              <circle class="rings__mid" cx="60" cy="60" r="36" />
+              <circle class="rings__in" cx="60" cy="60" r="20" />
+              <path class="rings__gold" d="M60 8a52 52 0 0 1 36.8 15.2" />
+            </svg>
+            <div class="card__tools">
+              <span class="tag" id="pdProto">—</span>
+              <span class="tag tag--ghost mono" id="pdPort">—</span>
+              <button class="abtn abtn--sm" id="accessFile" type="button" data-fx="magnetic" data-ripple="never" aria-label="访问该端点的档案文件（磁吸主行动）">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg><span>ACCESS FILE</span>
+              </button>
+            </div>
+          </header>
+          <div class="card__bd card__bd--roll">
+            <div class="card__in" id="portDetailBody"></div>
+          </div>
+          <div class="card__kv" id="pdKv"></div>
+          <footer class="card__ft card__ft--rule">磨砂盖板在进入时自上而下解密 · 内容由模糊转清晰</footer>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 02 · Mock 流程 ======================= -->
+  <section class="screen" data-screen="flow" hidden>
+    <header class="sc-head">
+      <span class="sc-head__no mono" aria-hidden="true">02</span>
+      <div class="sc-head__txt">
+        <h1>Mock 流程</h1>
+        <p class="sc-head__sub">请求响应审计 · 预期响应定制 · 字段级规则 · 人机交互放行</p>
+      </div>
+      <p class="sc-head__lat">RESPONSE STUDIO</p>
+      <span class="sec-lv" data-lv="restricted">RESTRICTED · 定制响应</span>
+      <div class="sc-head__kpis" id="flowKpis"></div>
+    </header>
+
+    <div class="grid grid--240">
+      <div class="col">
+        <section class="card card--tall" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-003</span>
+            <h2>接口清单</h2>
+            <div class="card__tools"><div id="apiFilter"></div></div>
+          </header>
+          <div class="card__bd card__bd--roll">
+            <div class="card__in" id="apiList"></div>
+          </div>
+        </section>
+      </div>
+      <div class="col">
+        <section class="card card--tall" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-004</span>
+            <h2>预期响应定制</h2>
+            <div class="card__tools" id="apiTools"></div>
+          </header>
+          <div class="card__bd card__bd--roll">
+            <div class="card__in" id="respStudio"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <section class="card card--logs" data-card>
+      <header class="card__hd">
+        <span class="card__no mono">X-005</span>
+        <h2>请求 / 响应审计</h2>
+        <div class="card__tools">
+          <div id="logFilter"></div>
+          <input class="input input--sm" id="logQuery" placeholder="搜索路径 / 网元 / 判定" aria-label="搜索审计日志" />
+          <span class="live"><i aria-hidden="true"></i>LIVE</span>
+        </div>
+      </header>
+      <div class="card__bd card__bd--roll">
+        <div class="card__in card__in--scroll" id="logWrap">
+          <table class="tbl">
+            <caption class="sr">请求与响应审计日志</caption>
+            <thead>
+              <tr>
+                <th scope="col">时间</th><th scope="col">端口</th><th scope="col">方法</th><th scope="col">路径</th>
+                <th scope="col">状态</th><th scope="col">时延</th><th scope="col">网元</th><th scope="col">判定</th>
+                <th scope="col"><span class="sr">操作</span></th>
+              </tr>
+            </thead>
+            <tbody id="logBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- ======================= 03 · 网元管理 ======================= -->
+  <section class="screen" data-screen="ne" hidden>
+    <header class="sc-head">
+      <span class="sc-head__no mono" aria-hidden="true">03</span>
+      <div class="sc-head__txt">
+        <h1>网元管理</h1>
+        <p class="sc-head__sub">属性与架构 · 版本与软件名 · 升级流程步骤 · 成组复制 · 参数校验</p>
+      </div>
+      <p class="sc-head__lat">NE SPECIMEN</p>
+      <span class="sec-lv" data-lv="restricted">RESTRICTED · 网元档案</span>
+      <div class="sc-head__kpis" id="neKpis"></div>
+    </header>
+
+    <div class="grid grid--1-2">
+      <div class="col">
+        <section class="card" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-006</span>
+            <h2>网元清单</h2>
+            <button class="abtn abtn--sm" data-fx="standard" id="neNew" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg><span>新建网元</span>
+            </button>
+          </header>
+          <div class="card__bd card__bd--roll">
+            <div class="card__in" id="neList"></div>
+          </div>
+        </section>
+        <section class="card" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-007</span>
+            <h2>网元组</h2>
+            <span class="card__meta">同组批量下发</span>
+          </header>
+          <div class="card__bd">
+            <div class="card__in" id="groupList"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="col">
+        <section class="card card--tall" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-008</span>
+            <h2><span id="neDetailTitle">网元档案</span></h2>
+            <div class="card__tools" id="neTools"></div>
+          </header>
+          <nav class="tabs" id="neTabs" role="tablist" aria-label="网元档案分区">
+            <button class="tabs__t is-active" data-netab="profile" role="tab" aria-selected="true" type="button">属性 / 版本</button>
+            <button class="tabs__t" data-netab="valid" role="tab" aria-selected="false" type="button">参数校验</button>
+            <button class="tabs__t" data-netab="flow" role="tab" aria-selected="false" type="button">升级流程</button>
+            <button class="tabs__t" data-netab="group" role="tab" aria-selected="false" type="button">成组 / 复制</button>
+            <span class="tabs__ink" id="neTabInk" aria-hidden="true"></span>
+          </nav>
+          <div class="card__bd card__bd--roll">
+            <div class="card__in" id="neBody"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 04 · 网元管理平台 ======================= -->
+  <section class="screen" data-screen="omp" hidden>
+    <header class="sc-head">
+      <span class="sc-head__no mono" aria-hidden="true">04</span>
+      <div class="sc-head__txt">
+        <h1>网元管理平台</h1>
+        <p class="sc-head__sub">受管网元与网元组 · 账号与授权范围 · 一体化升级任务与关联站点</p>
+      </div>
+      <p class="sc-head__lat">MANAGED SCOPE</p>
+      <span class="sec-lv" data-lv="secret">TOP SECRET · 受管范围</span>
+      <div class="sc-head__kpis" id="ompKpis"></div>
+    </header>
+
+    <div class="grid grid--3">
+      <div class="col">
+        <section class="card card--tall" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-009</span>
+            <h2>受管网元与组</h2>
+            <span class="card__meta" id="ompScopeMeta">—</span>
+          </header>
+          <div class="card__bd card__bd--roll">
+            <div class="card__in" id="ompScope"></div>
+          </div>
+        </section>
+      </div>
+      <div class="col">
+        <section class="card card--tall" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-010</span>
+            <h2>账号管理</h2>
+            <span class="card__meta" id="accCount">0</span>
+          </header>
+          <div class="card__bd card__bd--roll">
+            <div class="card__in" id="accList"></div>
+          </div>
+          <footer class="card__ft">
+            <form class="form" id="accForm" novalidate>
+              <div class="frow frow--2">
+                <label class="field" for="acName">
+                  <span class="field__lbl">账号名称</span>
+                  <input class="input mono" id="acName" placeholder="ops_hz_02" required aria-describedby="acNameErr" />
+                  <em class="field__err" id="acNameErr" role="alert" hidden></em>
+                </label>
+                <label class="field" for="acRole">
+                  <span class="field__lbl">角色</span>
+                  <select class="input" id="acRole"><option>升级操作员</option><option>只读审计</option><option>平台管理员</option></select>
+                </label>
+              </div>
+              <div class="field">
+                <span class="field__lbl">授权网元组（决定账号的网元范围）</span>
+                <div class="checks" id="acScopes"></div>
+              </div>
+              <div class="field">
+                <span class="field__lbl">授权网元</span>
+                <div class="checks" id="acNes"></div>
+              </div>
+              <div class="frow frow--acts">
+                <button class="abtn" data-fx="standard" type="submit"><span>创建账号</span></button>
+                <span class="note">账号只能操作被授权范围内的网元</span>
+              </div>
+            </form>
+          </footer>
+        </section>
+      </div>
+      <div class="col">
+        <section class="card card--tall" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-011</span>
+            <h2>一体化升级任务</h2>
+            <span class="card__meta">关联站点</span>
+          </header>
+          <div class="card__bd card__bd--roll">
+            <div class="card__in" id="taskWrap"></div>
+          </div>
+          <footer class="card__ft">
+            <form class="form" id="taskForm" novalidate>
+              <label class="field" for="tkName">
+                <span class="field__lbl">任务名称</span>
+                <input class="input" id="tkName" placeholder="杭州基站组 一体化升级" required aria-describedby="tkNameErr" />
+                <em class="field__err" id="tkNameErr" role="alert" hidden></em>
+              </label>
+              <div class="frow frow--2">
+                <label class="field" for="tkSite"><span class="field__lbl">关联站点</span><select class="input" id="tkSite"></select></label>
+                <label class="field" for="tkGroup"><span class="field__lbl">目标网元组</span><select class="input" id="tkGroup"></select></label>
+              </div>
+              <div class="frow frow--acts">
+                <button class="abtn" data-fx="standard" type="submit"><span>创建任务</span></button>
+                <span class="note">按组内网元串行生成步骤，遇人工步骤自动挂起</span>
+              </div>
+            </form>
+          </footer>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 05 · 生命周期平台 ======================= -->
+  <section class="screen" data-screen="lcm" hidden>
+    <header class="sc-head">
+      <span class="sc-head__no mono" aria-hidden="true">05</span>
+      <div class="sc-head__txt">
+        <h1>生命周期平台</h1>
+        <p class="sc-head__sub">受管网元 · 软件包登记与校验 · 与网元管理平台共部署</p>
+      </div>
+      <p class="sc-head__lat">PACKAGE LIFE CYCLE</p>
+      <span class="sec-lv" data-lv="restricted">RESTRICTED · 软件包库</span>
+      <div class="sc-head__kpis" id="lcmKpis"></div>
+    </header>
+
+    <div class="grid grid--2-1">
+      <div class="col">
+        <section class="card card--tall" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-012</span>
+            <h2>软件包库</h2>
+            <div class="card__tools"><div id="pkgFilter"></div><span class="card__meta" id="pkgCount">0</span></div>
+          </header>
+          <div class="card__bd card__bd--roll">
+            <div class="card__in" id="pkgList"></div>
+          </div>
+          <footer class="card__ft">
+            <form class="form" id="pkgForm" novalidate>
+              <div class="frow frow--3">
+                <label class="field" for="pkgName">
+                  <span class="field__lbl">包名</span>
+                  <input class="input mono" id="pkgName" placeholder="GNB_R7.3.0_full.pkg" required aria-describedby="pkgNameErr" />
+                  <em class="field__err" id="pkgNameErr" role="alert" hidden></em>
+                </label>
+                <label class="field" for="pkgType"><span class="field__lbl">类型</span><select class="input" id="pkgType"></select></label>
+                <label class="field" for="pkgNe"><span class="field__lbl">所属网元</span><select class="input" id="pkgNe"></select></label>
+                <label class="field" for="pkgVendor"><span class="field__lbl">厂商</span><select class="input" id="pkgVendor"></select></label>
+                <label class="field" for="pkgVer">
+                  <span class="field__lbl">版本</span>
+                  <input class="input mono" id="pkgVer" placeholder="7.3.0" required aria-describedby="pkgVerErr" />
+                  <em class="field__err" id="pkgVerErr" role="alert" hidden></em>
+                </label>
+                <label class="field" for="pkgSize"><span class="field__lbl">大小 / MB</span><input class="input mono" id="pkgSize" inputmode="numeric" placeholder="420" /></label>
+              </div>
+              <div class="frow frow--acts">
+                <button class="abtn" data-fx="standard" type="submit"><span>登记软件包</span></button>
+                <span class="note">登记后须通过校验流程才可用于升级</span>
+              </div>
+            </form>
+          </footer>
+        </section>
+      </div>
+      <div class="col">
+        <section class="card" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-013</span>
+            <h2>受管网元</h2>
+            <span class="card__meta" id="lcmScopeMeta">—</span>
+          </header>
+          <div class="card__bd">
+            <div class="card__in" id="lcmScope"></div>
+          </div>
+        </section>
+        <section class="card" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-014</span>
+            <h2>部署形态</h2>
+            <span class="card__meta">共部署 · 端口复用</span>
+          </header>
+          <div class="card__bd">
+            <div class="card__in" id="deployBox"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 06 · 虚层管理平台 ======================= -->
+  <section class="screen" data-screen="vlp" hidden>
+    <header class="sc-head">
+      <span class="sc-head__no mono" aria-hidden="true">06</span>
+      <div class="sc-head__txt">
+        <h1>虚层管理平台</h1>
+        <p class="sc-head__sub">CPU 配额 · 主副站点 · 升级流程详情 · 平台版本 · 软件包校验流程</p>
+      </div>
+      <p class="sc-head__lat">VIRTUAL LAYER</p>
+      <span class="sec-lv" data-lv="secret">TOP SECRET · 虚层栈</span>
+      <div class="sc-head__kpis" id="vlpKpis"></div>
+    </header>
+
+    <div class="grid grid--2">
+      <div class="col">
+        <section class="card" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-015</span>
+            <h2>平台版本 · CPU 配额</h2>
+            <span class="card__meta">独立简单流程</span>
+          </header>
+          <div class="card__bd">
+            <div class="card__in" id="vlpCore"></div>
+          </div>
+        </section>
+        <section class="card" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-016</span>
+            <h2>主副站点</h2>
+            <span class="card__meta">主站承载 · 副站容灾</span>
+          </header>
+          <div class="card__bd">
+            <div class="card__in" id="vlpSites"></div>
+          </div>
+        </section>
+      </div>
+      <div class="col">
+        <section class="card" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-017</span>
+            <h2>升级流程详情</h2>
+            <div class="card__tools">
+              <button class="abtn abtn--sm" id="vlpAdvance" type="button" data-fx="standard"><span>推进下一步</span></button>
+              <button class="abtn abtn--sm abtn--quiet" id="vlpReset" type="button"><span>重置流程</span></button>
+            </div>
+          </header>
+          <div class="card__bd">
+            <div class="card__in" id="vlpFlow"></div>
+          </div>
+        </section>
+        <section class="card" data-card>
+          <header class="card__hd">
+            <span class="card__no mono">X-018</span>
+            <h2>软件包校验流程</h2>
+            <span class="card__meta" id="vlpCheckMeta">—</span>
+          </header>
+          <div class="card__bd">
+            <div class="card__in" id="vlpChecks"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================== 页脚 ============================== -->
+<footer class="ft">
+  <span class="ft__cell ft__cell--auth">
+    <i class="dot dot--ok" data-live aria-hidden="true"></i><b class="mono">SESSION AUTHORIZED</b>
+  </span>
+  <span class="ft__cell ft__cell--user"><i>访问者</i><b class="mono" id="ftUser">—</b></span>
+  <span class="ft__cell ft__cell--grow">
+    <i>当前分类</i>
+    <b id="ftCat">01 · MOCK 管理 / PORT REGISTRY</b>
+  </span>
+  <span class="ft__cell"><i>索引 / 总计</i><b class="mono" id="ftIdx">01 / 06</b></span>
+  <span class="ft__cell"><i>分类标签</i><b id="ftLv">PUBLIC</b></span>
+  <span class="ft__cell"><i>模拟器</i><b class="mono" id="stSim">RUNNING</b></span>
+  <span class="ft__cell ft__cell--grow"><i>最近一次</i><b class="mono" id="stLast">—</b></span>
+  <span class="ft__cell"><i>版本</i><b class="mono">V4 / ARCHIVE TERMINAL</b></span>
+  <span class="ft__cell ft__cell--power">POWERED BY <b>RHINE LAB</b></span>
+  <button class="ft__link mono" id="reinitBtn" type="button" data-fx="subtle" aria-label="重新初始化界面">REINITIALIZE ↗</button>
+</footer>
+
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<!-- ===================== 档案索引（ARCHIVE INDEX，对应原图 3） ===================== -->
+<div class="modal" id="idxModal" hidden>
+  <div class="modal__scrim" data-close="1"></div>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="idxTitle">
+    <header class="modal__hd">
+      <span class="mono">RHINE LAB / ARCHIVE DIRECTORY</span>
+      <button class="modal__x" type="button" data-close="1" data-fx="subtle">CLOSE <b>✕</b></button>
+    </header>
+    <h2 class="modal__t" id="idxTitle">ARCHIVE INDEX <em>内部档案检索</em></h2>
+    <div class="modal__search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M14.8 14.8 20 20" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      <input class="modal__input mono" id="idxInput" placeholder="检索档案 / 端点 / 能力 / 网元 / 软件包…" aria-label="检索档案" />
+      <kbd class="kbd">ESC</kbd>
+    </div>
+    <div class="modal__chips" id="idxChips" role="tablist" aria-label="档案分类"></div>
+    <div class="modal__list" id="idxList"></div>
+    <footer class="modal__ft">
+      <span class="mono" id="idxCount">00 RECORDS FOUND</span>
+      <span class="mono">INTERNAL DATABASE <i class="dot dot--ok" aria-hidden="true"></i> CONNECTED</span>
+    </footer>
+  </div>
+</div>
+
+<script src="../_shared/domain.js"></script>
+<script src="../_shared/motion.js"></script>
+<script src="../_shared/micro.js"></script>
+<script src="../_shared/button-fx.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>

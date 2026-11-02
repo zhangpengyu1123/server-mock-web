@@ -1,0 +1,670 @@
+- generic [active] [ref=f4e1]:
+  - banner [ref=f4e2]:
+    - link "Oil UI home" [ref=f4e3] [cursor=pointer]:
+      - /url: /en/
+      - generic [ref=f4e4]: Oil UI
+    - generic [ref=f4e5]:
+      - group "Language" [ref=f4e6]:
+        - button "中文" [ref=f4e7] [cursor=pointer]
+        - generic [aria-hidden] [ref=f4e8]: /
+        - button "EN" [pressed] [ref=f4e9] [cursor=pointer]
+      - link "Sign in" [ref=f4e11] [cursor=pointer]:
+        - /url: /en/login/
+    - navigation "Get Oil UI" [ref=f4e12]:
+      - button "Partner program" [ref=f4e13] [cursor=pointer]
+      - link "How it works" [ref=f4e19] [cursor=pointer]:
+        - /url: /en/intro/
+      - link "Oil UI (open source) 1501 stars on GitHub" [ref=f4e20] [cursor=pointer]:
+        - /url: https://github.com/oil-oil/oil-ui
+        - generic [ref=f4e21]: Oil UI (open source)
+        - generic "1501 stars on GitHub" [ref=f4e22]:
+          - generic [aria-hidden] [ref=f4e25]: 1.5k
+        - generic [aria-hidden] [ref=f4e27]: ↗
+      - link "Oil UI Pro" [ref=f4e28] [cursor=pointer]:
+        - /url: /en/pro/
+        - text: Oil UI Pro
+        - generic [aria-hidden] [ref=f4e29]: →
+  - main [ref=f4e30]:
+    - generic [ref=f4e31]:
+      - group "Filter by model" [ref=f4e32]:
+        - button "All 91" [pressed] [ref=f4e33] [cursor=pointer]:
+          - generic [ref=f4e34]:
+            - text: All
+            - generic [ref=f4e35]: "91"
+        - button "GPT 6.1 Sol 78" [ref=f4e36] [cursor=pointer]:
+          - generic [ref=f4e37]:
+            - generic [ref=f4e39]: GPT
+            - text: 6.1 Sol
+            - generic [ref=f4e40]: "78"
+        - button "GPT 6 Luna 2" [ref=f4e41] [cursor=pointer]:
+          - generic [ref=f4e42]:
+            - generic [ref=f4e44]: GPT
+            - text: 6 Luna
+            - generic [ref=f4e45]: "2"
+        - button "GPT 6 Astra 3" [ref=f4e46] [cursor=pointer]:
+          - generic [ref=f4e47]:
+            - generic [ref=f4e49]: GPT
+            - text: 6 Astra
+            - generic [ref=f4e50]: "3"
+        - button "GPT 5.4 3" [ref=f4e51] [cursor=pointer]:
+          - generic [ref=f4e52]:
+            - generic [ref=f4e54]: GPT
+            - text: "5.4"
+            - generic [ref=f4e55]: "3"
+        - button "Claude Opus 5.5 2" [ref=f4e56] [cursor=pointer]:
+          - generic [ref=f4e57]:
+            - generic [ref=f4e59]: Claude
+            - text: Opus 5.5
+            - generic [ref=f4e60]: "2"
+        - button "Claude Sonnet 5.5 2" [ref=f4e61] [cursor=pointer]:
+          - generic [ref=f4e62]:
+            - generic [ref=f4e64]: Claude
+            - text: Sonnet 5.5
+            - generic [ref=f4e65]: "2"
+        - button "Claude Fable 5.1 1" [ref=f4e66] [cursor=pointer]:
+          - generic [ref=f4e67]:
+            - generic [ref=f4e69]: Claude
+            - text: Fable 5.1
+            - generic [ref=f4e70]: "1"
+      - combobox "Filter by type" [ref=f4e72] [cursor=pointer]:
+        - generic [ref=f4e73]: All types
+    - generic [ref=f4e77]:
+      - region [ref=f4e78]:
+        - generic [ref=f4e79]:
+          - link "Explore the Oil UI method and examples" [ref=f4e81] [cursor=pointer]:
+            - /url: /en/intro/
+            - generic [ref=f4e82]:
+              - text: Step inside and see how it works
+              - generic [aria-hidden] [ref=f4e83]: →
+          - generic [ref=f4e84]:
+            - generic [ref=f4e85]:
+              - generic [ref=f4e86]: Oil UI
+              - generic [ref=f4e87]: A UI design skill for AI
+            - heading "Build interfaces with character." [level=1] [ref=f4e88]
+            - generic [ref=f4e89]:
+              - generic [ref=f4e90]:
+                - generic [ref=f4e91]: Oil UI (open source) · Free
+                - link "GitHub" [ref=f4e93] [cursor=pointer]:
+                  - /url: https://github.com/oil-oil/oil-ui
+                  - text: GitHub ↗
+              - generic [ref=f4e94]:
+                - code [ref=f4e95]: npx skills add oil-oil/oil-ui
+                - button "Copy the open-source install command" [ref=f4e96] [cursor=pointer]: Copy
+            - link "See how it works" [ref=f4e97] [cursor=pointer]:
+              - /url: /en/intro/
+              - text: See how it works
+              - generic [aria-hidden] [ref=f4e98]: →
+            - generic [ref=f4e99]:
+              - generic [ref=f4e100]:
+                - heading "Oil UI Pro" [level=2] [ref=f4e101]
+                - paragraph [ref=f4e102]:
+                  - strong [ref=f4e103]: $9.99
+                  - text: · One-time purchase
+              - paragraph [ref=f4e104]: "Goes beyond the free skill: usability, existing projects and stricter review."
+              - generic [ref=f4e105]:
+                - code [ref=f4e106]: "Install Oil UI Pro for me: run npx github:oil-oil/oil-cli install oil-ui-pro"
+                - button "Copy the Pro install prompt" [ref=f4e107] [cursor=pointer]: Copy
+              - generic [ref=f4e108]:
+                - paragraph [ref=f4e109]: Send it to your Agent to pay and install.
+                - link "See what Pro adds" [ref=f4e110] [cursor=pointer]:
+                  - /url: /en/pro/
+                  - text: See what Pro adds
+                  - generic [aria-hidden] [ref=f4e111]: →
+        - navigation "Design resources" [ref=f4e112]:
+          - link "Installation & usage guide" [ref=f4e113] [cursor=pointer]:
+            - /url: /en/guide/
+          - link "Website Design Examples & Prompts for Claude Code and Codex" [ref=f4e114] [cursor=pointer]:
+            - /url: /en/inspiration/web-design/
+          - link "Mobile App Design Examples & Prompts for Claude Code and Codex" [ref=f4e115] [cursor=pointer]:
+            - /url: /en/inspiration/mobile-app-design/
+          - link "Desktop App Design Examples & Prompts for Claude Code and Codex" [ref=f4e116] [cursor=pointer]:
+            - /url: /en/inspiration/desktop-app-design/
+          - link "UI Component Examples & Prompts for Claude Code and Codex" [ref=f4e117] [cursor=pointer]:
+            - /url: /en/inspiration/component-design/
+      - link "Fieldwork Type, Independent type foundry" [ref=f4e118] [cursor=pointer]:
+        - /url: /en/works/foundry/
+        - img "Fieldwork Type · Independent type foundry" [ref=f4e120]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e121]:
+          - generic [ref=f4e123]: GPT
+          - generic [ref=f4e124]: 6.1 Sol
+      - link "Nightwatch, Operations monitoring and incident response" [ref=f4e125] [cursor=pointer]:
+        - /url: /en/works/ops/
+        - img "Nightwatch · Operations monitoring and incident response" [ref=f4e127]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e128]:
+          - generic [ref=f4e130]: GPT
+          - generic [ref=f4e131]: 6.1 Sol
+      - link "Tide, Surf and tide forecast app" [ref=f4e132] [cursor=pointer]:
+        - /url: /en/works/tide/
+        - img "Tide · Surf and tide forecast app" [ref=f4e134]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e135]:
+          - generic [ref=f4e137]: GPT
+          - generic [ref=f4e138]: 6.1 Sol
+      - link "Herbarium, Alpine Botanical Specimen Fabric" [ref=f4e139] [cursor=pointer]:
+        - /url: /en/works/herbarium/
+        - img "Herbarium · Alpine Botanical Specimen Fabric" [ref=f4e141]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e142]:
+          - generic [ref=f4e144]: GPT
+          - generic [ref=f4e145]: 6.1 Sol
+      - link "Atelier Volders · Grain & Tenon, Handcrafted furniture workshop website" [ref=f4e146] [cursor=pointer]:
+        - /url: /en/works/volders-grain/
+        - img "Atelier Volders · Grain & Tenon · Handcrafted furniture workshop website" [ref=f4e148]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e149]:
+          - generic [ref=f4e151]: GPT
+          - generic [ref=f4e152]: 6.1 Sol
+      - link "Vesper, API usage billing console" [ref=f4e153] [cursor=pointer]:
+        - /url: /en/works/vesper/
+        - img "Vesper · API usage billing console" [ref=f4e155]
+        - generic "Made by GPT-5.4" [ref=f4e156]:
+          - generic [ref=f4e158]: GPT
+          - generic [ref=f4e159]: "5.4"
+      - link "Forkside, Chess tactics lessons" [ref=f4e160] [cursor=pointer]:
+        - /url: /en/works/chess/
+        - img "Forkside · Chess tactics lessons" [ref=f4e162]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e163]:
+          - generic [ref=f4e165]: GPT
+          - generic [ref=f4e166]: 6.1 Sol
+      - link "Splitwater, Swimming workout watch app" [ref=f4e167] [cursor=pointer]:
+        - /url: /en/works/wrist/
+        - img "Splitwater · Swimming workout watch app" [ref=f4e169]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e170]:
+          - generic [ref=f4e172]: GPT
+          - generic [ref=f4e173]: 6.1 Sol
+      - link "Minutes, AI meeting notes" [ref=f4e174] [cursor=pointer]:
+        - /url: /en/works/minutes/
+        - img "Minutes · AI meeting notes" [ref=f4e176]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e177]:
+          - generic [ref=f4e179]: GPT
+          - generic [ref=f4e180]: 6.1 Sol
+      - link "Luma, Meditation and sleep" [ref=f4e181] [cursor=pointer]:
+        - /url: /en/works/sleep/
+        - img "Luma · Meditation and sleep" [ref=f4e183]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e184]:
+          - generic [ref=f4e186]: GPT
+          - generic [ref=f4e187]: 6.1 Sol
+      - link "Chronos, Astronomical Horology Manufacture" [ref=f4e188] [cursor=pointer]:
+        - /url: /en/works/chronos/
+        - img "Chronos · Astronomical Horology Manufacture" [ref=f4e190]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e191]:
+          - generic [ref=f4e193]: GPT
+          - generic [ref=f4e194]: 6.1 Sol
+      - link "Roam, Group trip planner" [ref=f4e195] [cursor=pointer]:
+        - /url: /en/works/itinerary/
+        - img "Roam · Group trip planner" [ref=f4e197]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e198]:
+          - generic [ref=f4e200]: GPT
+          - generic [ref=f4e201]: 6.1 Sol
+      - link "Archon, Distributed Agent Runtime" [ref=f4e202] [cursor=pointer]:
+        - /url: /en/works/archon/
+        - img "Archon · Distributed Agent Runtime" [ref=f4e204]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e205]:
+          - generic [ref=f4e207]: GPT
+          - generic [ref=f4e208]: 6.1 Sol
+      - link "Pact, Digital banking" [ref=f4e209] [cursor=pointer]:
+        - /url: /en/works/bank/
+        - img "Pact · Digital banking" [ref=f4e211]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e212]:
+          - generic [ref=f4e214]: GPT
+          - generic [ref=f4e215]: 6.1 Sol
+      - link "Fonderie Mercier · Bronze, with a Voice, Family bronze bell foundry website" [ref=f4e216] [cursor=pointer]:
+        - /url: /en/works/mercier-voice/
+        - img "Fonderie Mercier · Bronze, with a Voice · Family bronze bell foundry website" [ref=f4e218]
+        - generic "Made by GPT-5.4" [ref=f4e219]:
+          - generic [ref=f4e221]: GPT
+          - generic [ref=f4e222]: "5.4"
+      - link "Still, Now-playing music widget" [ref=f4e223] [cursor=pointer]:
+        - /url: /en/works/nowplaying/
+        - img "Still · Now-playing music widget" [ref=f4e225]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e226]:
+          - generic [ref=f4e228]: GPT
+          - generic [ref=f4e229]: 6.1 Sol
+      - link "Fold, Interactive mathematics learning" [ref=f4e230] [cursor=pointer]:
+        - /url: /en/works/math/
+        - img "Fold · Interactive mathematics learning" [ref=f4e232]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e233]:
+          - generic [ref=f4e235]: GPT
+          - generic [ref=f4e236]: 6.1 Sol
+      - link "Meridian, SaaS pricing page" [ref=f4e237] [cursor=pointer]:
+        - /url: /en/works/pricing/
+        - img "Meridian · SaaS pricing page" [ref=f4e239]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e240]:
+          - generic [ref=f4e242]: GPT
+          - generic [ref=f4e243]: 6.1 Sol
+      - link "Neuron, Interactive science explanation" [ref=f4e244] [cursor=pointer]:
+        - /url: /en/works/neuron/
+        - img "Neuron · Interactive science explanation" [ref=f4e246]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e247]:
+          - generic [ref=f4e249]: GPT
+          - generic [ref=f4e250]: 6.1 Sol
+      - link "Agenflow, AI Agent Orchestration Engine" [ref=f4e251] [cursor=pointer]:
+        - /url: /en/works/agenflow/
+        - img "Agenflow · AI Agent Orchestration Engine" [ref=f4e253]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e254]:
+          - generic [ref=f4e256]: GPT
+          - generic [ref=f4e257]: 6.1 Sol
+      - link "Runrate, SaaS revenue dashboard" [ref=f4e258] [cursor=pointer]:
+        - /url: /en/works/revenue/
+        - img "Runrate · SaaS revenue dashboard" [ref=f4e260]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e261]:
+          - generic [ref=f4e263]: GPT
+          - generic [ref=f4e264]: 6.1 Sol
+      - link "Skillset, Agent Skill collection" [ref=f4e265] [cursor=pointer]:
+        - /url: /en/works/skills/
+        - img "Skillset · Agent Skill collection" [ref=f4e267]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e268]:
+          - generic [ref=f4e270]: GPT
+          - generic [ref=f4e271]: 6.1 Sol
+      - link "Phase, Cycle and women's health" [ref=f4e272] [cursor=pointer]:
+        - /url: /en/works/cycle/
+        - img "Phase · Cycle and women's health" [ref=f4e274]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e275]:
+          - generic [ref=f4e277]: GPT
+          - generic [ref=f4e278]: 6.1 Sol
+      - link "Dispatch, Developer API docs" [ref=f4e279] [cursor=pointer]:
+        - /url: /en/works/apidocs/
+        - img "Dispatch · Developer API docs" [ref=f4e281]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e282]:
+          - generic [ref=f4e284]: GPT
+          - generic [ref=f4e285]: 6.1 Sol
+      - link "Off Hours, Specialty tea subscription store" [ref=f4e286] [cursor=pointer]:
+        - /url: /en/works/teashop/
+        - img "Off Hours · Specialty tea subscription store" [ref=f4e288]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e289]:
+          - generic [ref=f4e291]: GPT
+          - generic [ref=f4e292]: 6.1 Sol
+      - link "Atelier Volders · River Timber, Handcrafted furniture workshop website" [ref=f4e293] [cursor=pointer]:
+        - /url: /en/works/volders-hearth/
+        - img "Atelier Volders · River Timber · Handcrafted furniture workshop website" [ref=f4e295]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e296]:
+          - generic [ref=f4e298]: GPT
+          - generic [ref=f4e299]: 6.1 Sol
+      - link "Fonderie Mercier · Eighteen Bells, Family bronze bell foundry website" [ref=f4e300] [cursor=pointer]:
+        - /url: /en/works/mercier-pour/
+        - img "Fonderie Mercier · Eighteen Bells · Family bronze bell foundry website" [ref=f4e302]
+        - generic "Made by GPT-5.4" [ref=f4e303]:
+          - generic [ref=f4e305]: GPT
+          - generic [ref=f4e306]: "5.4"
+      - link "Yeying, TV streaming app" [ref=f4e307] [cursor=pointer]:
+        - /url: /en/works/tv/
+        - img "Yeying · TV streaming app" [ref=f4e309]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e310]:
+          - generic [ref=f4e312]: GPT
+          - generic [ref=f4e313]: 6.1 Sol
+      - link "Sonar, Team messaging" [ref=f4e314] [cursor=pointer]:
+        - /url: /en/works/chat2/
+        - img "Sonar · Team messaging" [ref=f4e316]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e317]:
+          - generic [ref=f4e319]: GPT
+          - generic [ref=f4e320]: 6.1 Sol
+      - link "Klak · After-Work Club, Capsule toy collecting app" [ref=f4e321] [cursor=pointer]:
+        - /url: /en/works/gacha/
+        - img "Klak · After-Work Club · Capsule toy collecting app" [ref=f4e323]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e324]:
+          - generic [ref=f4e326]: GPT
+          - generic [ref=f4e327]: 6.1 Sol
+      - link "Yantu, In-car infotainment" [ref=f4e328] [cursor=pointer]:
+        - /url: /en/works/car/
+        - img "Yantu · In-car infotainment" [ref=f4e330]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e331]:
+          - generic [ref=f4e333]: GPT
+          - generic [ref=f4e334]: 6.1 Sol
+      - link "Heye, Sign-in and onboarding" [ref=f4e335] [cursor=pointer]:
+        - /url: /en/works/onboard/
+        - img "Heye · Sign-in and onboarding" [ref=f4e337]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e338]:
+          - generic [ref=f4e340]: GPT
+          - generic [ref=f4e341]: 6.1 Sol
+      - link "Candy Glass Arcade, Fruit slot machine game" [ref=f4e342] [cursor=pointer]:
+        - /url: /en/works/slots/
+        - img "Candy Glass Arcade · Fruit slot machine game" [ref=f4e344]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e345]:
+          - generic [ref=f4e347]: GPT
+          - generic [ref=f4e348]: 6.1 Sol
+      - link "Around the Table, Team messaging" [ref=f4e349] [cursor=pointer]:
+        - /url: /en/works/chat/
+        - img "Around the Table · Team messaging" [ref=f4e351]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e352]:
+          - generic [ref=f4e354]: GPT
+          - generic [ref=f4e355]: 6.1 Sol
+      - link "Post, Email client" [ref=f4e356] [cursor=pointer]:
+        - /url: /en/works/mail/
+        - img "Post · Email client" [ref=f4e358]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e359]:
+          - generic [ref=f4e361]: GPT
+          - generic [ref=f4e362]: 6.1 Sol
+      - link "Moments, Short-video app" [ref=f4e363] [cursor=pointer]:
+        - /url: /en/works/clips/
+        - img "Moments · Short-video app" [ref=f4e365]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e366]:
+          - generic [ref=f4e368]: GPT
+          - generic [ref=f4e369]: 6.1 Sol
+      - link "Circuit Lab, Physics teaching laboratory" [ref=f4e370] [cursor=pointer]:
+        - /url: /en/works/circuit/
+        - img "Circuit Lab · Physics teaching laboratory" [ref=f4e372]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e373]:
+          - generic [ref=f4e375]: GPT
+          - generic [ref=f4e376]: 6.1 Sol
+      - link "Tempo · 2026 Wrapped, Year in music" [ref=f4e377] [cursor=pointer]:
+        - /url: /en/works/wrapped/
+        - img "Tempo · 2026 Wrapped · Year in music" [ref=f4e379]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e380]:
+          - generic [ref=f4e382]: GPT
+          - generic [ref=f4e383]: 6.1 Sol
+      - link "Ohm 1, Hardware product website" [ref=f4e384] [cursor=pointer]:
+        - /url: /en/works/device/
+        - img "Ohm 1 · Hardware product website" [ref=f4e386]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e387]:
+          - generic [ref=f4e389]: GPT
+          - generic [ref=f4e390]: 6.1 Sol
+      - link "Listen, Podcast app" [ref=f4e391] [cursor=pointer]:
+        - /url: /en/works/podcast/
+        - img "Listen · Podcast app" [ref=f4e393]
+        - generic "Made by GPT-6 Luna" [ref=f4e394]:
+          - generic [ref=f4e396]: GPT
+          - generic [ref=f4e397]: 6 Luna
+      - link "ROOMIN, Recording studio booking website" [ref=f4e398] [cursor=pointer]:
+        - /url: /en/works/studio/
+        - img "ROOMIN · Recording studio booking website" [ref=f4e400]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e401]:
+          - generic [ref=f4e403]: GPT
+          - generic [ref=f4e404]: 6.1 Sol
+      - link "In Tune, Dating app" [ref=f4e405] [cursor=pointer]:
+        - /url: /en/works/match/
+        - img "In Tune · Dating app" [ref=f4e407]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e408]:
+          - generic [ref=f4e410]: GPT
+          - generic [ref=f4e411]: 6.1 Sol
+      - link "Loom Whiteboard, Collaborative whiteboard" [ref=f4e412] [cursor=pointer]:
+        - /url: /en/works/canvas/
+        - img "Loom Whiteboard · Collaborative whiteboard" [ref=f4e414]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e415]:
+          - generic [ref=f4e417]: GPT
+          - generic [ref=f4e418]: 6.1 Sol
+      - link "Ding! Mint Arcade, Coin pusher game" [ref=f4e419] [cursor=pointer]:
+        - /url: /en/works/pusher/
+        - img "Ding! Mint Arcade · Coin pusher game" [ref=f4e421]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e422]:
+          - generic [ref=f4e424]: GPT
+          - generic [ref=f4e425]: 6.1 Sol
+      - link "Slow Groove, Vinyl music player" [ref=f4e426] [cursor=pointer]:
+        - /url: /en/works/vinyl/
+        - img "Slow Groove · Vinyl music player" [ref=f4e428]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e429]:
+          - generic [ref=f4e431]: GPT
+          - generic [ref=f4e432]: 6.1 Sol
+      - link "Inner Circle, Interest communities and local events" [ref=f4e433] [cursor=pointer]:
+        - /url: /en/works/club/
+        - img "Inner Circle · Interest communities and local events" [ref=f4e435]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e436]:
+          - generic [ref=f4e438]: GPT
+          - generic [ref=f4e439]: 6.1 Sol
+      - link "Chute, File upload module" [ref=f4e440] [cursor=pointer]:
+        - /url: /en/works/upload/
+        - img "Chute · File upload module" [ref=f4e442]
+        - generic "Made by Claude-Fable 5.1" [ref=f4e443]:
+          - generic [ref=f4e445]: Claude
+          - generic [ref=f4e446]: Fable 5.1
+      - link "TRACE, Perfume brand store" [ref=f4e447] [cursor=pointer]:
+        - /url: /en/works/scent/
+        - img "TRACE · Perfume brand store" [ref=f4e449]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e450]:
+          - generic [ref=f4e452]: GPT
+          - generic [ref=f4e453]: 6.1 Sol
+      - link "Grove, Focus timer that grows a forest" [ref=f4e454] [cursor=pointer]:
+        - /url: /en/works/grove/
+        - img "Grove · Focus timer that grows a forest" [ref=f4e456]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e457]:
+          - generic [ref=f4e459]: GPT
+          - generic [ref=f4e460]: 6.1 Sol
+      - link "Forge, AI coding assistant" [ref=f4e461] [cursor=pointer]:
+        - /url: /en/works/copilot/
+        - img "Forge · AI coding assistant" [ref=f4e463]
+        - generic "Made by GPT-6 Astra" [ref=f4e464]:
+          - generic [ref=f4e466]: GPT
+          - generic [ref=f4e467]: 6 Astra
+      - link "Bu · Stride 3, Running shoe product page" [ref=f4e468] [cursor=pointer]:
+        - /url: /en/works/sneaker/
+        - img "Bu · Stride 3 · Running shoe product page" [ref=f4e470]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e471]:
+          - generic [ref=f4e473]: GPT
+          - generic [ref=f4e474]: 6.1 Sol
+      - link "Between Molecules, Chemistry learning · Molecule building" [ref=f4e475] [cursor=pointer]:
+        - /url: /en/works/molecule/
+        - img "Between Molecules · Chemistry learning · Molecule building" [ref=f4e477]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e478]:
+          - generic [ref=f4e480]: GPT
+          - generic [ref=f4e481]: 6.1 Sol
+      - link "Routewise, AI API platform website" [ref=f4e482] [cursor=pointer]:
+        - /url: /en/works/relay/
+        - img "Routewise · AI API platform website" [ref=f4e484]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e485]:
+          - generic [ref=f4e487]: GPT
+          - generic [ref=f4e488]: 6.1 Sol
+      - link "Letters from Afar, Slow social postcard app" [ref=f4e489] [cursor=pointer]:
+        - /url: /en/works/letter/
+        - img "Letters from Afar · Slow social postcard app" [ref=f4e491]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e492]:
+          - generic [ref=f4e494]: GPT
+          - generic [ref=f4e495]: 6.1 Sol
+      - link "North Latitude Roasters, Specialty coffee subscription website" [ref=f4e496] [cursor=pointer]:
+        - /url: /en/works/roast/
+        - img "North Latitude Roasters · Specialty coffee subscription website" [ref=f4e498]
+        - generic "Made by GPT-6 Astra" [ref=f4e499]:
+          - generic [ref=f4e501]: GPT
+          - generic [ref=f4e502]: 6 Astra
+      - link "DIAL, Smartwatch face store" [ref=f4e503] [cursor=pointer]:
+        - /url: /en/works/watch/
+        - img "DIAL · Smartwatch face store" [ref=f4e505]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e506]:
+          - generic [ref=f4e508]: GPT
+          - generic [ref=f4e509]: 6.1 Sol
+      - link "Cup Line, Coffee machine brewing component" [ref=f4e510] [cursor=pointer]:
+        - /url: /en/works/brew/
+        - img "Cup Line · Coffee machine brewing component" [ref=f4e512]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e513]:
+          - generic [ref=f4e515]: GPT
+          - generic [ref=f4e516]: 6.1 Sol
+      - link "Ridge Trail, Hiking app" [ref=f4e517] [cursor=pointer]:
+        - /url: /en/works/trail/
+        - img "Ridge Trail · Hiking app" [ref=f4e519]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e520]:
+          - generic [ref=f4e522]: GPT
+          - generic [ref=f4e523]: 6.1 Sol
+      - link "Lin Yu’s Workshop, Indie developer personal website" [ref=f4e524] [cursor=pointer]:
+        - /url: /en/works/maker/
+        - img "Lin Yu’s Workshop · Indie developer personal website" [ref=f4e526]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e527]:
+          - generic [ref=f4e529]: GPT
+          - generic [ref=f4e530]: 6.1 Sol
+      - link "Gotcha!, Online claw machine" [ref=f4e531] [cursor=pointer]:
+        - /url: /en/works/claw/
+        - img "Gotcha! · Online claw machine" [ref=f4e533]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e534]:
+          - generic [ref=f4e536]: GPT
+          - generic [ref=f4e537]: 6.1 Sol
+      - link "Pinch Checkout, E-commerce checkout module" [ref=f4e538] [cursor=pointer]:
+        - /url: /en/works/checkout/
+        - img "Pinch Checkout · E-commerce checkout module" [ref=f4e540]
+        - generic "Made by Claude-Sonnet 5.5" [ref=f4e541]:
+          - generic [ref=f4e543]: Claude
+          - generic [ref=f4e544]: Sonnet 5.5
+      - link "Cadence, Calendar app" [ref=f4e545] [cursor=pointer]:
+        - /url: /en/works/calendar/
+        - img "Cadence · Calendar app" [ref=f4e547]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e548]:
+          - generic [ref=f4e550]: GPT
+          - generic [ref=f4e551]: 6.1 Sol
+      - link "GridStore, Laboratory sample management system" [ref=f4e552] [cursor=pointer]:
+        - /url: /en/works/lims/
+        - img "GridStore · Laboratory sample management system" [ref=f4e554]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e555]:
+          - generic [ref=f4e557]: GPT
+          - generic [ref=f4e558]: 6.1 Sol
+      - link "Margins, Tablet e-reader" [ref=f4e559] [cursor=pointer]:
+        - /url: /en/works/reader/
+        - img "Margins · Tablet e-reader" [ref=f4e561]
+        - generic "Made by Claude-Opus 5.5" [ref=f4e562]:
+          - generic [ref=f4e564]: Claude
+          - generic [ref=f4e565]: Opus 5.5
+      - link "MORROW · Arc Band, Independent silver jewelry website" [ref=f4e566] [cursor=pointer]:
+        - /url: /en/works/silver/
+        - img "MORROW · Arc Band · Independent silver jewelry website" [ref=f4e568]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e569]:
+          - generic [ref=f4e571]: GPT
+          - generic [ref=f4e572]: 6.1 Sol
+      - link "Corner · Film Camera, Film simulation camera app" [ref=f4e573] [cursor=pointer]:
+        - /url: /en/works/camera/
+        - img "Corner · Film Camera · Film simulation camera app" [ref=f4e575]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e576]:
+          - generic [ref=f4e578]: GPT
+          - generic [ref=f4e579]: 6.1 Sol
+      - link "Lin Xiaoman, Illustrator portfolio" [ref=f4e580] [cursor=pointer]:
+        - /url: /en/works/folio/
+        - img "Lin Xiaoman · Illustrator portfolio" [ref=f4e582]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e583]:
+          - generic [ref=f4e585]: GPT
+          - generic [ref=f4e586]: 6.1 Sol
+      - link "Penny, Budgeting app" [ref=f4e587] [cursor=pointer]:
+        - /url: /en/works/ledger/
+        - img "Penny · Budgeting app" [ref=f4e589]
+        - generic "Made by GPT-6 Luna" [ref=f4e590]:
+          - generic [ref=f4e592]: GPT
+          - generic [ref=f4e593]: 6 Luna
+      - link "MOQI, AI contract review website" [ref=f4e594] [cursor=pointer]:
+        - /url: /en/works/contract/
+        - img "MOQI · AI contract review website" [ref=f4e596]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e597]:
+          - generic [ref=f4e599]: GPT
+          - generic [ref=f4e600]: 6.1 Sol
+      - link "Island Coding, Coding adventures for children" [ref=f4e601] [cursor=pointer]:
+        - /url: /en/works/robot/
+        - img "Island Coding · Coding adventures for children" [ref=f4e603]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e604]:
+          - generic [ref=f4e606]: GPT
+          - generic [ref=f4e607]: 6.1 Sol
+      - link "Sky, Weather widget" [ref=f4e608] [cursor=pointer]:
+        - /url: /en/works/weather/
+        - img "Sky · Weather widget" [ref=f4e610]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e611]:
+          - generic [ref=f4e613]: GPT
+          - generic [ref=f4e614]: 6.1 Sol
+      - link "Cut, Video editor" [ref=f4e615] [cursor=pointer]:
+        - /url: /en/works/editor/
+        - img "Cut · Video editor" [ref=f4e617]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e618]:
+          - generic [ref=f4e620]: GPT
+          - generic [ref=f4e621]: 6.1 Sol
+      - link "KEEB · Key Order, Mechanical keyboard configurator" [ref=f4e622] [cursor=pointer]:
+        - /url: /en/works/keeb/
+        - img "KEEB · Key Order · Mechanical keyboard configurator" [ref=f4e624]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e625]:
+          - generic [ref=f4e627]: GPT
+          - generic [ref=f4e628]: 6.1 Sol
+      - link "Pulse, Fitness and recovery app" [ref=f4e629] [cursor=pointer]:
+        - /url: /en/works/pulse/
+        - img "Pulse · Fitness and recovery app" [ref=f4e631]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e632]:
+          - generic [ref=f4e634]: GPT
+          - generic [ref=f4e635]: 6.1 Sol
+      - link "Linked Cards, Linked card notes" [ref=f4e636] [cursor=pointer]:
+        - /url: /en/works/cards/
+        - img "Linked Cards · Linked card notes" [ref=f4e638]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e639]:
+          - generic [ref=f4e641]: GPT
+          - generic [ref=f4e642]: 6.1 Sol
+      - link "Hearth, Kitchen recipe app for tablets" [ref=f4e643] [cursor=pointer]:
+        - /url: /en/works/recipe/
+        - img "Hearth · Kitchen recipe app for tablets" [ref=f4e645]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e646]:
+          - generic [ref=f4e648]: GPT
+          - generic [ref=f4e649]: 6.1 Sol
+      - link "knot Bracelet Studio, Custom handmade bracelets" [ref=f4e650] [cursor=pointer]:
+        - /url: /en/works/knot/
+        - img "knot Bracelet Studio · Custom handmade bracelets" [ref=f4e652]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e653]:
+          - generic [ref=f4e655]: GPT
+          - generic [ref=f4e656]: 6.1 Sol
+      - link "Pickup, Ride-hailing app" [ref=f4e657] [cursor=pointer]:
+        - /url: /en/works/ride/
+        - img "Pickup · Ride-hailing app" [ref=f4e659]
+        - generic "Made by Claude-Sonnet 5.5" [ref=f4e660]:
+          - generic [ref=f4e662]: Claude
+          - generic [ref=f4e663]: Sonnet 5.5
+      - link "DOVO, Cross-border logistics SaaS website" [ref=f4e664] [cursor=pointer]:
+        - /url: /en/works/freight/
+        - img "DOVO · Cross-border logistics SaaS website" [ref=f4e666]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e667]:
+          - generic [ref=f4e669]: GPT
+          - generic [ref=f4e670]: 6.1 Sol
+      - link "Relay, Project and sprint management" [ref=f4e671] [cursor=pointer]:
+        - /url: /en/works/tracker/
+        - img "Relay · Project and sprint management" [ref=f4e673]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e674]:
+          - generic [ref=f4e676]: GPT
+          - generic [ref=f4e677]: 6.1 Sol
+      - link "Oil Git, Git visualization tool website" [ref=f4e678] [cursor=pointer]:
+        - /url: /en/works/oil-git/
+        - img "Oil Git · Git visualization tool website" [ref=f4e680]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e681]:
+          - generic [ref=f4e683]: GPT
+          - generic [ref=f4e684]: 6.1 Sol
+      - link "Pip, Language learning app" [ref=f4e685] [cursor=pointer]:
+        - /url: /en/works/lingo/
+        - img "Pip · Language learning app" [ref=f4e687]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e688]:
+          - generic [ref=f4e690]: GPT
+          - generic [ref=f4e691]: 6.1 Sol
+      - link "The Last Train of Summer, Original anime series website" [ref=f4e692] [cursor=pointer]:
+        - /url: /en/works/anime/
+        - img "The Last Train of Summer · Original anime series website" [ref=f4e694]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e695]:
+          - generic [ref=f4e697]: GPT
+          - generic [ref=f4e698]: 6.1 Sol
+      - link "In-between, Smart home dashboard" [ref=f4e699] [cursor=pointer]:
+        - /url: /en/works/home/
+        - img "In-between · Smart home dashboard" [ref=f4e701]
+        - generic "Made by GPT-6 Astra" [ref=f4e702]:
+          - generic [ref=f4e704]: GPT
+          - generic [ref=f4e705]: 6 Astra
+      - link "Gathered Pages, Photo collage journal app" [ref=f4e706] [cursor=pointer]:
+        - /url: /en/works/diary/
+        - img "Gathered Pages · Photo collage journal app" [ref=f4e708]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e709]:
+          - generic [ref=f4e711]: GPT
+          - generic [ref=f4e712]: 6.1 Sol
+      - link "Nest · Wanting Lakeside Cabin, Cabin details and booking" [ref=f4e713] [cursor=pointer]:
+        - /url: /en/works/stay/
+        - img "Nest · Wanting Lakeside Cabin · Cabin details and booking" [ref=f4e715]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e716]:
+          - generic [ref=f4e718]: GPT
+          - generic [ref=f4e719]: 6.1 Sol
+      - link "muse, AI image and video canvas" [ref=f4e720] [cursor=pointer]:
+        - /url: /en/works/muse/
+        - img "muse · AI image and video canvas" [ref=f4e722]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e723]:
+          - generic [ref=f4e725]: GPT
+          - generic [ref=f4e726]: 6.1 Sol
+      - link "Kiln, Component library website" [ref=f4e727] [cursor=pointer]:
+        - /url: /en/works/components/
+        - img "Kiln · Component library website" [ref=f4e729]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e730]:
+          - generic [ref=f4e732]: GPT
+          - generic [ref=f4e733]: 6.1 Sol
+      - link "reel, AI storyboard editor" [ref=f4e734] [cursor=pointer]:
+        - /url: /en/works/reel/
+        - img "reel · AI storyboard editor" [ref=f4e736]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e737]:
+          - generic [ref=f4e739]: GPT
+          - generic [ref=f4e740]: 6.1 Sol
+      - link "Oil Find, macOS file search website" [ref=f4e741] [cursor=pointer]:
+        - /url: /en/works/oil-find/
+        - img "Oil Find · macOS file search website" [ref=f4e743]
+        - generic "Made by GPT-6.1 Sol" [ref=f4e744]:
+          - generic [ref=f4e746]: GPT
+          - generic [ref=f4e747]: 6.1 Sol
+      - link "Echo, AI voice assistant" [ref=f4e748] [cursor=pointer]:
+        - /url: /en/works/voice/
+        - img "Echo · AI voice assistant" [ref=f4e750]
+        - generic "Made by Claude-Opus 5.5" [ref=f4e751]:
+          - generic [ref=f4e753]: Claude
+          - generic [ref=f4e754]: Opus 5.5
+  - alert [ref=f4e755]

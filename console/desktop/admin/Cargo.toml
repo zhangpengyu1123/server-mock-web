@@ -1,0 +1,14 @@
+﻿[package]
+name = "rhine-desktop-admin"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "W 端管理面：独立平台，登录后管理 Linux 节点"
+
+[workspace]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }

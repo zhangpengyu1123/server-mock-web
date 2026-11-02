@@ -1,0 +1,255 @@
+﻿<!doctype html>
+<html lang="zh-CN" data-theme="dawn">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light dark" />
+<title>Mock 平台 · V5 · 音乐调测台 · RHINE MUSIC CONSOLE</title>
+<link rel="stylesheet" href="./app.css" />
+</head>
+<body>
+<div class="mc" id="mc">
+
+  <!-- ===================================================== 顶部品牌行 -->
+  <header class="mcb" id="topbar">
+    <div class="mcb__brand">
+      <span class="mcb__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M4 17V7l8-4 8 4v10l-8 4-8-4z" />
+          <path d="M12 3v18M4 7l8 4 8-4" />
+        </svg>
+      </span>
+      <span class="mcb__title">
+        <b>RHINE LAB</b>
+        <i>MUSIC CONSOLE <span>／</span> 音乐调测台</i>
+      </span>
+    </div>
+
+    <div class="mcb__tools">
+      <button type="button" id="libraryBtn" class="mct" data-fx="subtle" aria-label="调测台索引">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <rect x="3.5" y="4.5" width="7" height="7" /><rect x="13.5" y="4.5" width="7" height="7" />
+          <rect x="3.5" y="13.5" width="7" height="7" /><rect x="13.5" y="13.5" width="7" height="7" />
+        </svg>
+        <span>索引</span>
+      </button>
+
+      <button type="button" id="thumbBtn" class="mct" data-fx="subtle" aria-pressed="false" aria-label="切换略缩图模式">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.6" y="3.6" width="7" height="7" /><rect x="13.4" y="3.6" width="7" height="7" /><rect x="3.6" y="13.4" width="7" height="7" /><rect x="13.4" y="13.4" width="7" height="7" /></svg>
+        <span>略缩图模式</span>
+      </button>
+      <div class="mcswap" id="themeSwitch" role="group" aria-label="主题：晨雾／月影">
+        <span class="mcswap__pill" aria-hidden="true"></span>
+        <button type="button" class="mcswap__opt" data-theme-set="dawn" data-fx="none" aria-pressed="true">
+          <i class="mcswap__dot" aria-hidden="true"></i><span>晨雾</span>
+        </button>
+        <button type="button" class="mcswap__opt" data-theme-set="moon" data-fx="none" aria-pressed="false">
+          <i class="mcswap__dot" aria-hidden="true"></i><span>月影</span>
+        </button>
+      </div>
+
+      <button type="button" id="settingsBtn" class="mct mct--icon" data-fx="subtle" aria-label="调测台设置">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M5 8h14M5 16h14" /><circle cx="9.5" cy="8" r="2.1" /><circle cx="14.5" cy="16" r="2.1" />
+        </svg>
+      </button>
+
+      <button type="button" id="sfxBtn" class="mct mct--icon" data-fx="subtle" aria-pressed="false" aria-label="界面音效（默认关闭）" title="界面音效 · 默认关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M4 9.5h3l4.2-3.3v11.6L7 14.5H4z" /><path class="sfx-wave" d="M15 9.4c1.5 1.6 1.5 3.6 0 5.2M18 7c2.6 3 2.6 7 0 10" />
+          <path class="sfx-slash" d="M15.5 8.5l5 7" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- 索引 / 设置抽屉（顶栏工具用） -->
+  <section class="mcpop" id="popDrawer" hidden aria-label="调测台索引">
+    <div class="mcpop__hd">
+      <b id="popTitle">调测台索引</b>
+      <button type="button" class="mct mct--icon" id="popClose" data-fx="subtle" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+      </button>
+    </div>
+    <div class="mcpop__bd" id="popBody"></div>
+  </section>
+
+  <!-- ===================================================== 刻度尺导航 -->
+  <nav class="mcr" id="ruler" aria-label="六个界面 · 刻度尺导航">
+    <div class="mcr__inner" id="rulerTicks"></div>
+    <div class="mcr__now">
+      <small>CONSOLE / SCREEN</small>
+      <b id="rulerLabel">MOCK 管理</b>
+    </div>
+  </nav>
+
+  <!-- ===================================================== 六个界面 -->
+  <main class="mcw" id="stage">
+    <section class="mcs" data-screen="mock" aria-label="Mock 管理">
+      <div class="mcs__ct">
+        <div class="mcs__meta">
+          <span class="mc2">01</span>
+          <h1>MOCK 管理</h1>
+          <small>PORT REGISTER / CERTIFICATE / CAPABILITY</small>
+          <p>把本机 IP 与端口注册成 mock 端口，为它签发证书文件，再挂载一种或多种平台能力。</p>
+        </div>
+        <div class="mcar" data-car="mock" id="mockCar"></div>
+        <div class="mcdt" id="mockDetail"></div>
+      </div>
+    </section>
+
+    <section class="mcs" data-screen="flow" aria-label="Mock 流程">
+      <div class="mcs__ct">
+        <div class="mcs__meta">
+          <span class="mc2">02</span>
+          <h1>MOCK 流程</h1>
+          <small>AUDIT LOG / CUSTOM RESPONSE / FIELD RULES</small>
+          <p>审计日志实时追加；延迟、HTTP 状态、字段规则与人机交互都在这条流水线上定制。</p>
+        </div>
+        <div class="mcar" data-car="flow" id="flowCar"></div>
+        <div class="mcdt" id="flowDetail"></div>
+      </div>
+    </section>
+
+    <section class="mcs" data-screen="ne" aria-label="网元管理">
+      <div class="mcs__ct">
+        <div class="mcs__meta">
+          <span class="mc2">03</span>
+          <h1>网元管理</h1>
+          <small>ABOUT / ARCH / TYPE / UPGRADE FLOW / VALIDATION</small>
+          <p>网元的属性、架构、类型、版本与旧版本；升级流程步骤与其中的人机交互、成组、复制与参数校验。</p>
+        </div>
+        <div class="mcar" data-car="ne" id="neCar"></div>
+        <div class="mcdt" id="neDetail"></div>
+      </div>
+    </section>
+
+    <section class="mcs" data-screen="omp" aria-label="网元管理平台">
+      <div class="mcs__ct">
+        <div class="mcs__meta">
+          <span class="mc2">04</span>
+          <h1>网元管理平台</h1>
+          <small>MANAGED NE / ACCOUNT / INTEGRATED TASK</small>
+          <p>受管网元与网元组、账号的网元范围与创建账号、一体化升级任务并关联站点。</p>
+        </div>
+        <div class="mcar" data-car="omp" id="ompCar"></div>
+        <div class="mcdt" id="ompDetail"></div>
+      </div>
+    </section>
+
+    <section class="mcs" data-screen="lcm" aria-label="生命周期平台">
+      <div class="mcs__ct">
+        <div class="mcs__meta">
+          <span class="mc2">05</span>
+          <h1>生命周期平台</h1>
+          <small>PACKAGE / NE / VENDOR / CO-DEPLOY</small>
+          <p>受管网元与软件包（类型／所属网元／厂商／版本），并可与网元管理平台共部署。</p>
+        </div>
+        <div class="mcar" data-car="lcm" id="lcmCar"></div>
+        <div class="mcdt" id="lcmDetail"></div>
+      </div>
+    </section>
+
+    <section class="mcs" data-screen="vlp" aria-label="虚层管理平台">
+      <div class="mcs__ct">
+        <div class="mcs__meta">
+          <span class="mc2">06</span>
+          <h1>虚层管理平台</h1>
+          <small>CPU / PRIMARY SECONDARY SITE / PACKAGE CHECK</small>
+          <p>CPU 数量、主副站点、升级流程详情、平台版本与软件包校验流程。</p>
+        </div>
+        <div class="mcar" data-car="vlp" id="vlpCar"></div>
+        <div class="mcdt" id="vlpDetail"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================================================== 底部 transport 条 -->
+  <section class="mct-bar" id="transport" aria-label="调测台 transport · 服务启停与流量时间轴">
+    <div class="mct__now">
+      <span class="mct__cover" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.1">
+          <circle cx="16" cy="16" r="12.4" /><circle cx="16" cy="16" r="4.2" /><path d="M16 3.6v6.2" />
+        </svg>
+      </span>
+      <span class="mct__info">
+        <small>NOW SERVING / 正在服务</small>
+        <b id="npEndpoint">—</b>
+        <i id="npCaps">—</i>
+      </span>
+    </div>
+
+    <div class="mct__ctl">
+      <button type="button" id="btnLoop" class="mct__tool" data-fx="subtle" aria-pressed="false"
+              aria-label="循环重放请求" title="循环重放（自动重放请求）">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M4 12a8 8 0 0 1 13.6-5.7M20 12a8 8 0 0 1-13.6 5.7" /><path d="M17.6 3.4v3.4h-3.4M6.4 20.6v-3.4h3.4" />
+        </svg>
+      </button>
+      <button type="button" id="btnMain" class="mct__main" data-fx="transport" aria-pressed="false"
+              aria-label="启动 mock 服务">
+        <span class="mct__ripple" aria-hidden="true"></span>
+        <svg class="mct__glyph mct__glyph--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.2 18 12l-9 5.8z" fill="currentColor" /></svg>
+        <svg class="mct__glyph mct__glyph--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.4 6h2.2v12H9.4zM12.4 6h2.2v12h-2.2z" fill="currentColor" /></svg>
+      </button>
+      <button type="button" id="btnReplay" class="mct__tool" data-fx="subtle" aria-label="重放一次请求" title="重放当前接口">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M20 12a8 8 0 1 1-2.6-5.9" /><path d="M20 3.6V9h-5.4" />
+        </svg>
+      </button>
+      <button type="button" id="btnStopFuse" class="mct__stop" aria-label="停止 mock 服务（可撤销）">停止服务</button>
+    </div>
+
+    <div class="mct__timeline">
+      <div class="mct__tl-hd">
+        <small>TRAFFIC TIMELINE <span>／</span> 会话流量时间轴</small>
+        <b id="tlReadout">00:00 / 00:00</b>
+      </div>
+      <div class="mct__track">
+        <div id="tlTrack" class="mct__scrub" role="slider" tabindex="0"
+             aria-label="拖动查看会话流量时间轴" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"></div>
+        <canvas id="spectrum" class="mct__spec" aria-hidden="true"></canvas>
+      </div>
+      <div class="mct__tl-ft">
+        <span id="tlHint" class="mct__tl-hint">拖动指针回看会话内的请求／响应</span>
+        <button type="button" class="mct__live" id="tlLive" data-fx="none" hidden>回到实时</button>
+        <span class="mct__rate" id="rateWrap" role="slider" tabindex="0" aria-label="流速档位（并发倍率）"></span>
+      </div>
+    </div>
+
+    <div class="mct__meta">
+      <span class="mct__kv"><small>SESSION</small><b id="smRequests">0</b></span>
+      <span class="mct__kv"><small>AVG</small><b id="smLatency">0ms</b></span>
+      <span class="mct__kv"><small>HUMAN</small><b id="smHuman">0</b></span>
+      <span class="mct__kv"><small>THEME</small><b id="smTheme">晨雾</b></span>
+    </div>
+  </section>
+
+  <!-- ===================================================== 底行状态 -->
+  <footer class="mcf" id="footer">
+    <span class="mcf__l">
+      <i class="mcf__dot" id="footDot" aria-hidden="true"></i>
+      <b id="footStatus">服务运行中</b>
+      <span class="mcf__sep">·</span>
+      <span id="footDetail">—</span>
+      <span class="mcf__sep">·</span><span class="mcf__coll" id="collStats">LOCAL COLLECTION 0 / 0</span>
+    </span>
+    <span class="mcf__r">
+      <b id="footIndex">01</b><span class="mcf__sep">/</span><i id="footTotal">06</i>
+      <span class="mcf__sep">·</span><span id="footClock" class="mcf__clock">--:--:--</span>
+      <span class="mcf__sep">·</span><span class="mcf__fps" id="fpsBadge">-- FPS</span>
+      <span class="mcf__sep">·</span><span class="mcf__lat">RHINE MUSIC CONSOLE V5</span>
+    </span>
+  </footer>
+
+  <div class="mctoasts" id="toasts" role="status" aria-live="polite"></div>
+</div>
+
+<script src="../_shared/domain.js"></script>
+<script src="../_shared/motion.js"></script>
+<script src="../_shared/micro.js"></script>
+<script src="../_shared/button-fx.js"></script>
+<script src="../_shared/fx.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>

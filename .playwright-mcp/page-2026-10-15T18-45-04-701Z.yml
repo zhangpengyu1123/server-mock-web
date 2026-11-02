@@ -1,0 +1,429 @@
+- generic [ref=f121e2]:
+  - banner [ref=f121e3]:
+    - generic [ref=f121e9]:
+      - generic [ref=f121e10]: RHINE LAB
+      - generic [ref=f121e11]: MUSIC CONSOLE ／ 音乐调测台
+    - generic [ref=f121e12]:
+      - button "调测台索引" [ref=f121e13] [cursor=pointer]:
+        - generic [ref=f121e19]: 索引
+      - button "切换略缩图模式" [ref=f121e20] [cursor=pointer]:
+        - generic [ref=f121e26]: 略缩图模式
+      - group "主题：晨雾／月影" [ref=f121e27]:
+        - button "晨雾主题" [ref=f121e29] [cursor=pointer]:
+          - generic [ref=f121e31]: 晨雾
+        - button "月影主题（当前）" [pressed] [ref=f121e32] [cursor=pointer]:
+          - generic [ref=f121e34]: 月影
+      - button "调测台设置" [ref=f121e35] [cursor=pointer]
+      - button "界面音效（默认关闭）" [ref=f121e40] [cursor=pointer]
+  - navigation "六个界面 · 刻度尺导航" [ref=f121e45]:
+    - generic [ref=f121e46]:
+      - button "01 Mock 管理 · PORT / CERT / CAP" [ref=f121e47] [cursor=pointer]:
+        - generic [ref=f121e49]: "01"
+        - generic [ref=f121e50]: Mock 管理
+      - button "02 Mock 流程 · AUDIT / RESPONSE" [ref=f121e51] [cursor=pointer]:
+        - generic [ref=f121e53]: "02"
+      - button "03 网元管理 · NE / UPGRADE" [ref=f121e54] [cursor=pointer]:
+        - generic [ref=f121e56]: "03"
+      - button "04 网元管理平台 · OMP / ACCOUNT" [ref=f121e57] [cursor=pointer]:
+        - generic [ref=f121e59]: "04"
+      - button "05 生命周期平台 · LCMP / PACKAGE" [ref=f121e60] [cursor=pointer]:
+        - generic [ref=f121e62]: "05"
+      - button "06 虚层管理平台 · VLMP / STACK" [ref=f121e63] [cursor=pointer]:
+        - generic [ref=f121e65]: "06"
+    - generic [ref=f121e66]:
+      - generic [ref=f121e67]: CONSOLE / SCREEN
+      - generic [ref=f121e68]: MOCK 管理
+  - main [ref=f121e69]:
+    - region "Mock 管理" [ref=f121e70]:
+      - generic [ref=f121e71]:
+        - generic [ref=f121e72]:
+          - generic [ref=f121e73]: "01"
+          - heading "MOCK 管理" [level=1] [ref=f121e74]
+          - generic [ref=f121e75]: PORT REGISTER / CERTIFICATE / CAPABILITY
+          - paragraph [ref=f121e76]: 把本机 IP 与端口注册成 mock 端口，为它签发证书文件，再挂载一种或多种平台能力。
+        - generic [ref=f121e77]:
+          - generic [ref=f121e78]:
+            - generic [ref=f121e79]:
+              - button "第 01 列 10.18.32.104:8443" [ref=f121e80] [cursor=pointer]:
+                - generic [ref=f121e81]: HTTPS / TLS1.3
+                - generic [ref=f121e82]: 10.18.32.104:8443
+                - generic [ref=f121e83]: 2 项能力 · 运行中
+              - generic [ref=f121e84]:
+                - button "NEMP 网元管理平台 · 已挂载 · 46 个接口" [pressed] [ref=f121e85] [cursor=pointer]:
+                  - generic [ref=f121e86]: NEMP
+                  - generic [ref=f121e87]:
+                    - generic [ref=f121e88]: 网元管理平台
+                    - generic [ref=f121e89]: 已挂载 · 46 个接口
+                    - generic [ref=f121e90]:
+                      - generic [ref=f121e91]: R7.2
+                      - generic [ref=f121e92]: 46 EP
+                - button "LCMP 生命周期平台 · 已挂载 · 32 个接口" [ref=f121e93] [cursor=pointer]:
+                  - generic [ref=f121e94]: LCMP
+                  - generic [ref=f121e95]:
+                    - generic [ref=f121e96]: 生命周期平台
+                    - generic [ref=f121e97]: 已挂载 · 32 个接口
+                    - generic [ref=f121e98]:
+                      - generic [ref=f121e99]: R5.8
+                      - generic [ref=f121e100]: 32 EP
+                - button "VLMP 虚层管理平台 · 未挂载" [ref=f121e101] [cursor=pointer]:
+                  - generic [ref=f121e102]: VLMP
+                  - generic [ref=f121e103]:
+                    - generic [ref=f121e104]: 虚层管理平台
+                    - generic [ref=f121e105]: 未挂载
+                    - generic [ref=f121e106]:
+                      - generic [ref=f121e107]: R3.1
+                      - generic [ref=f121e108]: 21 EP
+                - button "NEMS 网元模拟服务 · 未挂载" [ref=f121e109] [cursor=pointer]:
+                  - generic [ref=f121e110]: NEMS
+                  - generic [ref=f121e111]:
+                    - generic [ref=f121e112]: 网元模拟服务
+                    - generic [ref=f121e113]: 未挂载
+                    - generic [ref=f121e114]:
+                      - generic [ref=f121e115]: R9.0
+                      - generic [ref=f121e116]: 58 EP
+                - button "ALMP 告警上报平台 · 未挂载" [ref=f121e117] [cursor=pointer]:
+                  - generic [ref=f121e118]: ALMP
+                  - generic [ref=f121e119]:
+                    - generic [ref=f121e120]: 告警上报平台
+                    - generic [ref=f121e121]: 未挂载
+                    - generic [ref=f121e122]:
+                      - generic [ref=f121e123]: R2.4
+                      - generic [ref=f121e124]: 12 EP
+                - button "PMFP 性能采集平台 · 未挂载" [ref=f121e125] [cursor=pointer]:
+                  - generic [ref=f121e126]: PMFP
+                  - generic [ref=f121e127]:
+                    - generic [ref=f121e128]: 性能采集平台
+                    - generic [ref=f121e129]: 未挂载
+                    - generic [ref=f121e130]:
+                      - generic [ref=f121e131]: R2.0
+                      - generic [ref=f121e132]: 16 EP
+                - button "SVC 服务运行中 · rps 3.2 · 累计 12480 次" [ref=f121e133] [cursor=pointer]:
+                  - generic [ref=f121e134]: SVC
+                  - generic [ref=f121e135]:
+                    - generic [ref=f121e136]: 服务运行中
+                    - generic [ref=f121e137]: rps 3.2 · 累计 12480 次
+                    - generic [ref=f121e138]: :8443
+            - generic [ref=f121e150]:
+              - button "第 02 列 10.18.32.104:9443" [ref=f121e151] [cursor=pointer]:
+                - generic [ref=f121e152]: HTTPS / TLS1.2
+                - generic [ref=f121e153]: 10.18.32.104:9443
+                - generic [ref=f121e154]: 1 项能力 · 已停止
+              - generic [ref=f121e155]:
+                - button "NEMP 网元管理平台 · 未挂载" [ref=f121e156] [cursor=pointer]:
+                  - generic [ref=f121e157]: NEMP
+                  - generic [ref=f121e158]:
+                    - generic [ref=f121e159]: 网元管理平台
+                    - generic [ref=f121e160]: 未挂载
+                    - generic [ref=f121e161]:
+                      - generic [ref=f121e162]: R7.2
+                      - generic [ref=f121e163]: 46 EP
+                - button "LCMP 生命周期平台 · 未挂载" [ref=f121e164] [cursor=pointer]:
+                  - generic [ref=f121e165]: LCMP
+                  - generic [ref=f121e166]:
+                    - generic [ref=f121e167]: 生命周期平台
+                    - generic [ref=f121e168]: 未挂载
+                    - generic [ref=f121e169]:
+                      - generic [ref=f121e170]: R5.8
+                      - generic [ref=f121e171]: 32 EP
+                - button "VLMP 虚层管理平台 · 已挂载 · 21 个接口" [ref=f121e172] [cursor=pointer]:
+                  - generic [ref=f121e173]: VLMP
+                  - generic [ref=f121e174]:
+                    - generic [ref=f121e175]: 虚层管理平台
+                    - generic [ref=f121e176]: 已挂载 · 21 个接口
+                    - generic [ref=f121e177]:
+                      - generic [ref=f121e178]: R3.1
+                      - generic [ref=f121e179]: 21 EP
+                - button "NEMS 网元模拟服务 · 未挂载" [ref=f121e180] [cursor=pointer]:
+                  - generic [ref=f121e181]: NEMS
+                  - generic [ref=f121e182]:
+                    - generic [ref=f121e183]: 网元模拟服务
+                    - generic [ref=f121e184]: 未挂载
+                    - generic [ref=f121e185]:
+                      - generic [ref=f121e186]: R9.0
+                      - generic [ref=f121e187]: 58 EP
+                - button "ALMP 告警上报平台 · 未挂载" [ref=f121e188] [cursor=pointer]:
+                  - generic [ref=f121e189]: ALMP
+                  - generic [ref=f121e190]:
+                    - generic [ref=f121e191]: 告警上报平台
+                    - generic [ref=f121e192]: 未挂载
+                    - generic [ref=f121e193]:
+                      - generic [ref=f121e194]: R2.4
+                      - generic [ref=f121e195]: 12 EP
+                - button "PMFP 性能采集平台 · 未挂载" [ref=f121e196] [cursor=pointer]:
+                  - generic [ref=f121e197]: PMFP
+                  - generic [ref=f121e198]:
+                    - generic [ref=f121e199]: 性能采集平台
+                    - generic [ref=f121e200]: 未挂载
+                    - generic [ref=f121e201]:
+                      - generic [ref=f121e202]: R2.0
+                      - generic [ref=f121e203]: 16 EP
+                - button "SVC 服务已停止 · 未开启" [ref=f121e204] [cursor=pointer]:
+                  - generic [ref=f121e205]: SVC
+                  - generic [ref=f121e206]:
+                    - generic [ref=f121e207]: 服务已停止
+                    - generic [ref=f121e208]: 未开启
+                    - generic [ref=f121e209]: :9443
+            - generic [ref=f121e211]:
+              - button "第 03 列 10.18.32.77:8080" [ref=f121e212] [cursor=pointer]:
+                - generic [ref=f121e213]: HTTP / —
+                - generic [ref=f121e214]: 10.18.32.77:8080
+                - generic [ref=f121e215]: 1 项能力 · 已停止
+              - generic [ref=f121e216]:
+                - button "NEMP 网元管理平台 · 未挂载" [ref=f121e217] [cursor=pointer]:
+                  - generic [ref=f121e218]: NEMP
+                  - generic [ref=f121e219]:
+                    - generic [ref=f121e220]: 网元管理平台
+                    - generic [ref=f121e221]: 未挂载
+                    - generic [ref=f121e222]:
+                      - generic [ref=f121e223]: R7.2
+                      - generic [ref=f121e224]: 46 EP
+                - button "LCMP 生命周期平台 · 未挂载" [ref=f121e225] [cursor=pointer]:
+                  - generic [ref=f121e226]: LCMP
+                  - generic [ref=f121e227]:
+                    - generic [ref=f121e228]: 生命周期平台
+                    - generic [ref=f121e229]: 未挂载
+                    - generic [ref=f121e230]:
+                      - generic [ref=f121e231]: R5.8
+                      - generic [ref=f121e232]: 32 EP
+                - button "VLMP 虚层管理平台 · 未挂载" [ref=f121e233] [cursor=pointer]:
+                  - generic [ref=f121e234]: VLMP
+                  - generic [ref=f121e235]:
+                    - generic [ref=f121e236]: 虚层管理平台
+                    - generic [ref=f121e237]: 未挂载
+                    - generic [ref=f121e238]:
+                      - generic [ref=f121e239]: R3.1
+                      - generic [ref=f121e240]: 21 EP
+                - button "NEMS 网元模拟服务 · 未挂载" [ref=f121e241] [cursor=pointer]:
+                  - generic [ref=f121e242]: NEMS
+                  - generic [ref=f121e243]:
+                    - generic [ref=f121e244]: 网元模拟服务
+                    - generic [ref=f121e245]: 未挂载
+                    - generic [ref=f121e246]:
+                      - generic [ref=f121e247]: R9.0
+                      - generic [ref=f121e248]: 58 EP
+                - button "ALMP 告警上报平台 · 已挂载 · 12 个接口" [ref=f121e249] [cursor=pointer]:
+                  - generic [ref=f121e250]: ALMP
+                  - generic [ref=f121e251]:
+                    - generic [ref=f121e252]: 告警上报平台
+                    - generic [ref=f121e253]: 已挂载 · 12 个接口
+                    - generic [ref=f121e254]:
+                      - generic [ref=f121e255]: R2.4
+                      - generic [ref=f121e256]: 12 EP
+                - button "PMFP 性能采集平台 · 未挂载" [ref=f121e257] [cursor=pointer]:
+                  - generic [ref=f121e258]: PMFP
+                  - generic [ref=f121e259]:
+                    - generic [ref=f121e260]: 性能采集平台
+                    - generic [ref=f121e261]: 未挂载
+                    - generic [ref=f121e262]:
+                      - generic [ref=f121e263]: R2.0
+                      - generic [ref=f121e264]: 16 EP
+                - button "SVC 服务已停止 · 未开启" [ref=f121e265] [cursor=pointer]:
+                  - generic [ref=f121e266]: SVC
+                  - generic [ref=f121e267]:
+                    - generic [ref=f121e268]: 服务已停止
+                    - generic [ref=f121e269]: 未开启
+                    - generic [ref=f121e270]: :8080
+          - generic [ref=f121e272]:
+            - generic [ref=f121e273]:
+              - generic [ref=f121e274]: CARTRIDGE / 卡列
+              - generic [ref=f121e275]: 01 / 03 · 10.18.32.104:8443 · 卡 01
+            - generic [ref=f121e276]:
+              - button "上一列 / 上一张" [ref=f121e277] [cursor=pointer]
+              - button "下一列 / 下一张" [ref=f121e280] [cursor=pointer]
+            - generic [ref=f121e283]:
+              - generic [ref=f121e284]: ← →
+              - text: 切列
+              - generic [ref=f121e285]: ↑ ↓
+              - text: 切卡
+        - generic [ref=f121e286]:
+          - generic [ref=f121e287]:
+            - generic [ref=f121e288]:
+              - heading "端口参数" [level=2] [ref=f121e289]
+              - generic [ref=f121e290]: PORT / REGISTER
+              - generic [ref=f121e291]: RUNNING
+            - generic [ref=f121e292]:
+              - generic [ref=f121e293]:
+                - generic [ref=f121e294]: IP 地址 本机网卡或手填
+                - combobox "IP 地址 本机网卡或手填" [ref=f121e295]:
+                  - option "10.18.32.104 · 以太网" [selected]
+                  - option "10.18.32.77 · 无线网卡"
+                  - option "手填…"
+                - generic [ref=f121e296]: 注册端口会把它写进 mock 服务监听列表。
+              - generic [ref=f121e297]:
+                - generic [ref=f121e298]: 手填 IP
+                - textbox "手填 IP" [ref=f121e299]:
+                  - /placeholder: 10.18.32.104
+                  - text: 10.18.32.104
+                - generic [ref=f121e300]: 选择「手填…」时使用这里的值。
+              - generic [ref=f121e301]:
+                - generic [ref=f121e302]: 端口 1024–65535
+                - textbox "端口 1024–65535" [ref=f121e303]: "8443"
+              - generic [ref=f121e304]:
+                - generic [ref=f121e305]: 协议
+                - combobox "协议" [ref=f121e306]:
+                  - option "HTTPS" [selected]
+                  - option "HTTP"
+                  - option "HTTP2"
+              - generic [ref=f121e307]:
+                - generic [ref=f121e308]: 传输加密
+                - combobox "传输加密" [ref=f121e309]:
+                  - option "TLS1.3" [selected]
+                  - option "TLS1.2"
+                  - option "—"
+              - generic [ref=f121e310]:
+                - generic [ref=f121e311]: 备注
+                - textbox "备注" [ref=f121e312]: 本机主端口 · 网元管理 + 生命周期
+            - generic [ref=f121e313]:
+              - button "注册为新 mock 端口" [ref=f121e314] [cursor=pointer]
+              - button "移除当前端口" [ref=f121e318] [cursor=pointer]
+              - generic [ref=f121e321]: 当前 3 个端口 · 运行中 1 个
+          - generic [ref=f121e322]:
+            - generic [ref=f121e323]:
+              - heading "证书文件" [level=2] [ref=f121e324]
+              - generic [ref=f121e325]: CERTIFICATE / X.509
+              - generic [ref=f121e326]: 证书就绪
+            - generic [ref=f121e332]:
+              - generic [ref=f121e333]:
+                - generic [ref=f121e334]: STATUS
+                - generic [ref=f121e335]: 已签发
+                - generic [ref=f121e336]: 10-16 02:45:04
+              - generic [ref=f121e337]:
+                - generic [ref=f121e338]: CN
+                - generic [ref=f121e339]: mock-nemp.10.18.32.104
+                - generic [ref=f121e340]: MockCA-Root
+              - generic [ref=f121e341]:
+                - generic [ref=f121e342]: VALID
+                - generic [ref=f121e343]: 365 d
+                - generic [ref=f121e344]: 有效期
+              - generic [ref=f121e345]:
+                - generic [ref=f121e346]: FINGERPRINT
+                - generic [ref=f121e347]: 3A:9F:C2:11:7E:8B:D4:05
+                - generic [ref=f121e348]: SHA-256 摘要
+            - generic [ref=f121e349]:
+              - generic [ref=f121e350]:
+                - generic [ref=f121e351]: CN 通用名
+                - textbox "CN 通用名" [ref=f121e352]: mock-nemp.10.18.32.104
+              - generic [ref=f121e353]:
+                - generic [ref=f121e354]: 签发机构
+                - combobox "签发机构" [ref=f121e355]:
+                  - option "MockCA-Root" [selected]
+                  - option "RhineLab-Internal-CA"
+                  - option "自签"
+              - generic [ref=f121e356]:
+                - generic [ref=f121e357]: 有效期（天）
+                - textbox "有效期（天）" [ref=f121e358]: "365"
+            - generic [ref=f121e359]:
+              - button "重新签发证书" [ref=f121e360] [cursor=pointer]
+              - generic [ref=f121e366]: 证书文件写到端口的工作目录，指纹同步进审计日志。
+          - generic [ref=f121e367]:
+            - generic [ref=f121e368]:
+              - heading "平台能力挂载" [level=2] [ref=f121e369]
+              - generic [ref=f121e370]: CAPABILITY / 6 选 N
+              - generic [ref=f121e371]: 已挂载 2 / 6
+            - generic [ref=f121e372]:
+              - generic [ref=f121e373]:
+                - generic [ref=f121e374]: 网元管理平台 · NEMP R7.2
+                - generic [ref=f121e375]:
+                  - switch "网元管理平台 挂载开关" [checked] [ref=f121e376] [cursor=pointer]
+                  - generic [ref=f121e379]: 46 个接口
+              - generic [ref=f121e380]:
+                - generic [ref=f121e381]: 生命周期平台 · LCMP R5.8
+                - generic [ref=f121e382]:
+                  - switch "生命周期平台 挂载开关" [checked] [ref=f121e383] [cursor=pointer]
+                  - generic [ref=f121e386]: 32 个接口
+              - generic [ref=f121e387]:
+                - generic [ref=f121e388]: 虚层管理平台 · VLMP R3.1
+                - generic [ref=f121e389]:
+                  - switch "虚层管理平台 挂载开关" [ref=f121e390] [cursor=pointer]
+                  - generic [ref=f121e393]: 21 个接口
+              - generic [ref=f121e394]:
+                - generic [ref=f121e395]: 网元模拟服务 · NEMS R9.0
+                - generic [ref=f121e396]:
+                  - switch "网元模拟服务 挂载开关" [ref=f121e397] [cursor=pointer]
+                  - generic [ref=f121e400]: 58 个接口
+              - generic [ref=f121e401]:
+                - generic [ref=f121e402]: 告警上报平台 · ALMP R2.4
+                - generic [ref=f121e403]:
+                  - switch "告警上报平台 挂载开关" [ref=f121e404] [cursor=pointer]
+                  - generic [ref=f121e407]: 12 个接口
+              - generic [ref=f121e408]:
+                - generic [ref=f121e409]: 性能采集平台 · PMFP R2.0
+                - generic [ref=f121e410]:
+                  - switch "性能采集平台 挂载开关" [ref=f121e411] [cursor=pointer]
+                  - generic [ref=f121e414]: 16 个接口
+          - generic [ref=f121e415]:
+            - generic [ref=f121e416]:
+              - heading "mock 服务" [level=2] [ref=f121e417]
+              - generic [ref=f121e418]: SERVICE / LIFECYCLE
+              - generic [ref=f121e419]: 服务运行中
+            - generic [ref=f121e425]:
+              - button "按住开启 mock 服务" [ref=f121e426] [cursor=pointer]
+              - button "停止服务" [ref=f121e428] [cursor=pointer]
+              - generic [ref=f121e431]: 「开启」必须按住到满（防误触）；「停止」完成后 4 秒内可撤销。
+            - generic [ref=f121e432]:
+              - generic [ref=f121e433]:
+                - generic [ref=f121e434]: REQUESTS
+                - generic [ref=f121e435]: "12480"
+                - generic [ref=f121e436]: 累计请求
+              - generic [ref=f121e437]:
+                - generic [ref=f121e438]: OK / ERR
+                - generic [ref=f121e439]: 12102 / 378
+                - generic [ref=f121e440]: 成功 / 异常
+              - generic [ref=f121e441]:
+                - generic [ref=f121e442]: RPS
+                - generic [ref=f121e443]: "3.2"
+                - generic [ref=f121e444]: 当前速率
+              - generic [ref=f121e445]:
+                - generic [ref=f121e446]: SESSION
+                - generic [ref=f121e447]: "0"
+                - generic [ref=f121e448]: 会话记录
+  - region "调测台 transport · 服务启停与流量时间轴" [ref=f121e449]:
+    - generic [ref=f121e456]:
+      - generic [ref=f121e457]: NOW SERVING / 正在服务
+      - generic [ref=f121e458]: 10.18.32.104:8443/nemp/v1/ne/register
+      - generic [ref=f121e459]: POST · 网元注册 · NEMP R7.2 + LCMP R5.8 · NEMP
+    - generic [ref=f121e460]:
+      - button "循环重放请求" [pressed] [ref=f121e461] [cursor=pointer]
+      - button "暂停 mock 服务（当前端口停止应答）" [pressed] [ref=f121e465] [cursor=pointer]
+      - button "重放一次请求" [ref=f121e470] [cursor=pointer]
+      - button "停止 mock 服务（可撤销）" [ref=f121e474] [cursor=pointer]: 停止服务
+    - generic [ref=f121e475]:
+      - generic [ref=f121e476]:
+        - generic [ref=f121e477]: TRAFFIC TIMELINE ／ 会话流量时间轴
+        - generic [ref=f121e478]: 00:00 / 00:00
+      - slider "拖动查看会话流量时间轴" [ref=f121e480]:
+        - generic [ref=f121e481]: "119"
+      - generic [ref=f121e483]:
+        - generic [ref=f121e484]: 实时跟随 · 会话 0 条 · 流速 1.0×
+        - slider "流速档位 2 / 8 · 倍率 1.0×" [ref=f121e485]
+    - generic [ref=f121e486]:
+      - generic [ref=f121e487]:
+        - generic [ref=f121e488]: SESSION
+        - generic [ref=f121e489]: "0"
+      - generic [ref=f121e490]:
+        - generic [ref=f121e491]: AVG
+        - generic [ref=f121e492]: 345ms
+      - generic [ref=f121e493]:
+        - generic [ref=f121e494]: HUMAN
+        - generic [ref=f121e495]: "1"
+      - generic [ref=f121e496]:
+        - generic [ref=f121e497]: THEME
+        - generic [ref=f121e498]: 月影
+  - contentinfo [ref=f121e499]:
+    - generic [ref=f121e500]:
+      - generic [ref=f121e502]: 服务运行中 1 / 3
+      - generic [ref=f121e503]: ·
+      - generic [ref=f121e504]: 10.18.32.104:8443 · 请求 8 · 异常 2 · 平均 345ms · 最近 02:38:48 POST /nemp/v1/ne/register → 200
+      - generic [ref=f121e505]: ·
+      - generic [ref=f121e506]: LOCAL COLLECTION 3 / 111
+    - generic [ref=f121e507]:
+      - generic [ref=f121e508]: "01"
+      - generic [ref=f121e509]: /
+      - generic [ref=f121e510]: "06"
+      - generic [ref=f121e511]: ·
+      - generic [ref=f121e512]: 02:45:04
+      - generic [ref=f121e513]: ·
+      - generic [ref=f121e514]: "-- FPS"
+      - generic [ref=f121e515]: ·
+      - generic [ref=f121e516]: RHINE MUSIC CONSOLE V5
+  - status

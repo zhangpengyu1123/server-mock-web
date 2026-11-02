@@ -1,0 +1,501 @@
+- generic [ref=f20e1]:
+  - banner [ref=f20e2]:
+    - generic [ref=f20e6]:
+      - generic [ref=f20e7]: MOCK PLATFORM
+      - generic [ref=f20e8]: 节点调测仿真台 · OPS CONSOLE
+    - group "本机信息" [ref=f20e9]:
+      - generic [ref=f20e10]: MOCK-WIN-01
+      - generic [ref=f20e11]: /
+      - generic [ref=f20e12]: 10.18.32.104
+      - generic [ref=f20e13]: /
+      - generic [ref=f20e14]: Windows 11 23H2 · 22631
+      - generic [ref=f20e15]: /
+      - generic [ref=f20e16]: MockAgent 4.2.1
+    - generic "实时遥测" [ref=f20e17]:
+      - generic [ref=f20e18]: TELEMETRY
+      - generic [ref=f20e19]:
+        - generic [ref=f20e20]: REQ 8
+        - generic [ref=f20e22]: OK 6
+        - generic [ref=f20e24]: ERR 2
+        - generic [ref=f20e26]: AVG 345ms
+        - generic [ref=f20e28]: RUN 1/3
+        - generic [ref=f20e30]: HUMAN 1
+    - generic [ref=f20e32]:
+      - button "开关界面音效" [ref=f20e33] [cursor=pointer]:
+        - generic [ref=f20e37]: SFX
+      - generic [ref=f20e38]: 00:41:47
+  - generic [ref=f20e39]:
+    - navigation "主导航" [ref=f20e40]:
+      - button "MOCK 管理 端口 · 证书 · 能力 3" [ref=f20e41] [cursor=pointer]:
+        - generic [ref=f20e46]: MOCK 管理
+        - generic [ref=f20e47]: 端口 · 证书 · 能力
+        - generic [ref=f20e48]: "3"
+      - button "MOCK 流程 审计 · 预期响应 1" [active] [ref=f20e49] [cursor=pointer]:
+        - generic [ref=f20e54]: MOCK 流程
+        - generic [ref=f20e55]: 审计 · 预期响应
+        - generic [ref=f20e56]: "1"
+      - button "网元管理 属性 · 升级流程 5" [ref=f20e57] [cursor=pointer]:
+        - generic [ref=f20e61]: 网元管理
+        - generic [ref=f20e62]: 属性 · 升级流程
+        - generic [ref=f20e63]: "5"
+      - button "网元管理平台 账号 · 一体化任务 1" [ref=f20e64] [cursor=pointer]:
+        - generic [ref=f20e70]: 网元管理平台
+        - generic [ref=f20e71]: 账号 · 一体化任务
+        - generic [ref=f20e72]: "1"
+      - button "生命周期平台 软件包 · 共部署 4" [ref=f20e73] [cursor=pointer]:
+        - generic [ref=f20e77]: 生命周期平台
+        - generic [ref=f20e78]: 软件包 · 共部署
+        - generic [ref=f20e79]: "4"
+      - button "虚层管理平台 CPU · 主副站点 —" [ref=f20e80] [cursor=pointer]:
+        - generic [ref=f20e84]: 虚层管理平台
+        - generic [ref=f20e85]: CPU · 主副站点
+        - generic [ref=f20e86]: —
+      - generic [ref=f20e87]:
+        - generic [ref=f20e88]: SIG 0x17B4
+        - generic [ref=f20e89]: UP 5d 0h
+    - main [ref=f20e90]:
+      - generic [ref=f20e260]:
+        - generic [ref=f20e261]:
+          - heading "MOCK 流程 AUDIT TRAIL / EXPECTED RESPONSE STUDIO" [level=1] [ref=f20e262]:
+            - generic [ref=f20e263]: MOCK 流程
+            - generic [ref=f20e264]: AUDIT TRAIL / EXPECTED RESPONSE STUDIO
+          - generic [ref=f20e265]:
+            - generic [ref=f20e266]:
+              - generic [ref=f20e267]: 请求
+              - generic [ref=f20e268]: "8"
+            - generic [ref=f20e269]:
+              - generic [ref=f20e270]: 成功
+              - generic [ref=f20e271]: "6"
+            - generic [ref=f20e272]:
+              - generic [ref=f20e273]: 异常
+              - generic [ref=f20e274]: "2"
+            - generic [ref=f20e275]:
+              - generic [ref=f20e276]: 待人工
+              - generic [ref=f20e277]: "1"
+        - generic [ref=f20e278]:
+          - generic [ref=f20e280]:
+            - generic [ref=f20e281]:
+              - heading "接口清单" [level=2] [ref=f20e282]
+              - generic [ref=f20e283]: 按能力分组
+            - generic [ref=f20e284]:
+              - generic [ref=f20e285]:
+                - generic [ref=f20e286]:
+                  - generic [ref=f20e288]: 网元管理平台
+                  - generic [ref=f20e289]: NEMP · R7.2
+                - button "POST /nemp/v1/ne/register 网元注册 · 120ms · 6 字段 · 4821 次命中" [ref=f20e290]:
+                  - generic [ref=f20e291]:
+                    - generic [ref=f20e292]: POST
+                    - text: /nemp/v1/ne/register
+                  - generic [ref=f20e293]: 网元注册 · 120ms · 6 字段 · 4821 次命中
+                - 'button "GET /nemp/v1/ne/{neId}/state 查询网元状态 · 60ms · 6 字段 · 20140 次命中" [ref=f20e294]':
+                  - generic [ref=f20e295]:
+                    - generic [ref=f20e296]: GET
+                    - text: "/nemp/v1/ne/{neId}/state"
+                  - generic [ref=f20e297]: 查询网元状态 · 60ms · 6 字段 · 20140 次命中
+                - 'button "POST /nemp/v1/ne/{neId}/upgrade 触发升级 · 800ms · 6 字段 · 136 次命中 · 含人机交互" [ref=f20e298]':
+                  - generic [ref=f20e299]:
+                    - generic [ref=f20e300]: POST
+                    - text: "/nemp/v1/ne/{neId}/upgrade"
+                  - generic [ref=f20e301]: 触发升级 · 800ms · 6 字段 · 136 次命中 · 含人机交互
+              - generic [ref=f20e302]:
+                - generic [ref=f20e303]:
+                  - generic [ref=f20e305]: 生命周期平台
+                  - generic [ref=f20e306]: LCMP · R5.8
+                - button "GET /lcmp/v1/package/list 软件包列表 · 90ms · 6 字段 · 902 次命中" [ref=f20e307]:
+                  - generic [ref=f20e308]:
+                    - generic [ref=f20e309]: GET
+                    - text: /lcmp/v1/package/list
+                  - generic [ref=f20e310]: 软件包列表 · 90ms · 6 字段 · 902 次命中
+              - generic [ref=f20e311]:
+                - generic [ref=f20e312]:
+                  - generic [ref=f20e314]: 虚层管理平台
+                  - generic [ref=f20e315]: VLMP · R3.1
+                - button "POST /vlmp/v1/stack/create 创建虚层 · 1500ms · 3 字段 · 24 次命中" [ref=f20e316]:
+                  - generic [ref=f20e317]:
+                    - generic [ref=f20e318]: POST
+                    - text: /vlmp/v1/stack/create
+                  - generic [ref=f20e319]: 创建虚层 · 1500ms · 3 字段 · 24 次命中
+              - generic [ref=f20e320]:
+                - generic [ref=f20e321]:
+                  - generic [ref=f20e323]: 告警上报平台
+                  - generic [ref=f20e324]: ALMP · R2.4
+                - button "POST /alarm/v1/report 告警上报 · 40ms · 6 字段 · 3312 次命中" [ref=f20e325]:
+                  - generic [ref=f20e326]:
+                    - generic [ref=f20e327]: POST
+                    - text: /alarm/v1/report
+                  - generic [ref=f20e328]: 告警上报 · 40ms · 6 字段 · 3312 次命中
+          - generic [ref=f20e330]:
+            - generic [ref=f20e331]:
+              - heading "预期响应定制" [level=2] [ref=f20e332]
+              - generic [ref=f20e333]:
+                - generic [ref=f20e334]: POST /nemp/v1/ne/register
+                - generic [ref=f20e335]: 命中 4821 次
+            - generic [ref=f20e336]:
+              - generic [ref=f20e337]:
+                - generic [ref=f20e338]:
+                  - generic [ref=f20e339]: HTTP Status Code
+                  - combobox "HTTP Status Code" [ref=f20e340]:
+                    - option "200 OK" [selected]
+                    - option "201 Created"
+                    - option "202 Accepted"
+                    - option "400 Bad Request"
+                    - option "403 Forbidden"
+                    - option "404 Not Found"
+                    - option "409 Conflict"
+                    - option "500 Server Error"
+                    - option "503 Unavailable"
+                - generic [ref=f20e341]:
+                  - generic [ref=f20e342]: 响应延迟（拖拽 / 方向键）
+                  - generic [ref=f20e343]:
+                    - slider [ref=f20e344]:
+                      - generic [ref=f20e345]: 延迟
+                      - generic [ref=f20e346]: 120 ms
+                    - generic [ref=f20e347]: 命中后等待该时长再返回
+              - generic [ref=f20e348]:
+                - generic [ref=f20e349]: 响应字段（面向对象定制）
+                - generic [ref=f20e350]: 每个字段可单独设取值方式与生效规则
+                - button "+ 新增字段" [ref=f20e351] [cursor=pointer]
+              - generic [ref=f20e352]:
+                - generic [ref=f20e354]:
+                  - generic [ref=f20e355]:
+                    - textbox "字段路径" [ref=f20e356]: code
+                    - combobox "类型" [ref=f20e357]:
+                      - option "字符串"
+                      - option "整数" [selected]
+                      - option "浮点"
+                      - option "布尔"
+                      - option "枚举"
+                      - option "对象"
+                      - option "数组"
+                      - option "时间戳"
+                      - option "证书指纹"
+                    - combobox "取值方式" [ref=f20e358]:
+                      - option "手工填写"
+                      - option "下拉选择" [selected]
+                    - combobox [ref=f20e360]:
+                      - option "0" [selected]
+                      - option "200"
+                      - option "404"
+                      - option "500"
+                    - generic [ref=f20e361]: 固定
+                    - combobox "生效规则" [ref=f20e362]:
+                      - option "固定" [selected]
+                      - option "自增"
+                      - option "单次生效"
+                      - option "条件"
+                      - option "随机"
+                    - button "删除字段" [ref=f20e363] [cursor=pointer]
+                  - generic [ref=f20e366]: 平台返回码 · 每次都返回同一个值
+                - generic [ref=f20e368]:
+                  - generic [ref=f20e369]:
+                    - textbox "字段路径" [ref=f20e370]: message
+                    - combobox "类型" [ref=f20e371]:
+                      - option "字符串" [selected]
+                      - option "整数"
+                      - option "浮点"
+                      - option "布尔"
+                      - option "枚举"
+                      - option "对象"
+                      - option "数组"
+                      - option "时间戳"
+                      - option "证书指纹"
+                    - combobox "取值方式" [ref=f20e372]:
+                      - option "手工填写" [selected]
+                      - option "下拉选择"
+                    - textbox [ref=f20e374]: success
+                    - generic [ref=f20e375]: 固定
+                    - combobox "生效规则" [ref=f20e376]:
+                      - option "固定" [selected]
+                      - option "自增"
+                      - option "单次生效"
+                      - option "条件"
+                      - option "随机"
+                    - button "删除字段" [ref=f20e377] [cursor=pointer]
+                  - generic [ref=f20e380]: 描述 · 每次都返回同一个值
+                - generic [ref=f20e382]:
+                  - generic [ref=f20e383]:
+                    - textbox "字段路径" [ref=f20e384]: data.neId
+                    - combobox "类型" [ref=f20e385]:
+                      - option "字符串" [selected]
+                      - option "整数"
+                      - option "浮点"
+                      - option "布尔"
+                      - option "枚举"
+                      - option "对象"
+                      - option "数组"
+                      - option "时间戳"
+                      - option "证书指纹"
+                    - combobox "取值方式" [ref=f20e386]:
+                      - option "手工填写" [selected]
+                      - option "下拉选择"
+                    - textbox [ref=f20e388]: GNB-HZ-0001
+                    - generic [ref=f20e389]: 自增
+                    - combobox "生效规则" [ref=f20e390]:
+                      - option "固定"
+                      - option "自增" [selected]
+                      - option "单次生效"
+                      - option "条件"
+                      - option "随机"
+                    - button "删除字段" [ref=f20e391] [cursor=pointer]
+                  - generic [ref=f20e394]:
+                    - generic [ref=f20e395]:
+                      - generic [ref=f20e396]: 起点
+                      - textbox "起点" [ref=f20e397]: "1"
+                    - generic [ref=f20e398]:
+                      - generic [ref=f20e399]: 步长
+                      - textbox "步长" [ref=f20e400]: "1"
+                    - generic [ref=f20e401]:
+                      - generic [ref=f20e402]: 格式
+                      - textbox "格式" [ref=f20e403]:
+                        - /placeholder: "GNB-HZ-{n:04}"
+                        - text: "GNB-HZ-{n:04}"
+                  - generic [ref=f20e404]: 网元编号（自增） · 每次命中按步长累加
+                - generic [ref=f20e406]:
+                  - generic [ref=f20e407]:
+                    - textbox "字段路径" [ref=f20e408]: data.registerTime
+                    - combobox "类型" [ref=f20e409]:
+                      - option "字符串"
+                      - option "整数"
+                      - option "浮点"
+                      - option "布尔"
+                      - option "枚举"
+                      - option "对象"
+                      - option "数组"
+                      - option "时间戳" [selected]
+                      - option "证书指纹"
+                    - combobox "取值方式" [ref=f20e410]:
+                      - option "手工填写"
+                      - option "下拉选择" [selected]
+                    - combobox [ref=f20e412]:
+                      - option "now" [selected]
+                      - option "fixed"
+                      - option "+1h"
+                    - generic [ref=f20e413]: 固定
+                    - combobox "生效规则" [ref=f20e414]:
+                      - option "固定" [selected]
+                      - option "自增"
+                      - option "单次生效"
+                      - option "条件"
+                      - option "随机"
+                    - button "删除字段" [ref=f20e415] [cursor=pointer]
+                  - generic [ref=f20e418]: 注册时间 · 每次都返回同一个值
+                - generic [ref=f20e420]:
+                  - generic [ref=f20e421]:
+                    - textbox "字段路径" [ref=f20e422]: data.token
+                    - combobox "类型" [ref=f20e423]:
+                      - option "字符串" [selected]
+                      - option "整数"
+                      - option "浮点"
+                      - option "布尔"
+                      - option "枚举"
+                      - option "对象"
+                      - option "数组"
+                      - option "时间戳"
+                      - option "证书指纹"
+                    - combobox "取值方式" [ref=f20e424]:
+                      - option "手工填写" [selected]
+                      - option "下拉选择"
+                    - textbox [ref=f20e426]: tk_9f2c
+                    - generic [ref=f20e427]: 单次生效
+                    - combobox "生效规则" [ref=f20e428]:
+                      - option "固定"
+                      - option "自增"
+                      - option "单次生效" [selected]
+                      - option "条件"
+                      - option "随机"
+                    - button "删除字段" [ref=f20e429] [cursor=pointer]
+                  - generic [ref=f20e432]:
+                    - generic [ref=f20e433]:
+                      - generic [ref=f20e434]: 生效次数
+                      - textbox "生效次数" [ref=f20e435]: "1"
+                    - generic [ref=f20e436]:
+                      - generic [ref=f20e437]: 兜底值
+                      - textbox "兜底值" [ref=f20e438]: EXPIRED
+                  - generic [ref=f20e439]: 一次性令牌 · 首次返回设定值，之后走兜底值
+                - generic [ref=f20e441]:
+                  - generic [ref=f20e442]:
+                    - textbox "字段路径" [ref=f20e443]: data.site
+                    - combobox "类型" [ref=f20e444]:
+                      - option "字符串"
+                      - option "整数"
+                      - option "浮点"
+                      - option "布尔"
+                      - option "枚举" [selected]
+                      - option "对象"
+                      - option "数组"
+                      - option "时间戳"
+                      - option "证书指纹"
+                    - combobox "取值方式" [ref=f20e445]:
+                      - option "手工填写"
+                      - option "下拉选择" [selected]
+                    - combobox [ref=f20e447]:
+                      - option "杭州主站点" [selected]
+                      - option "南京副站点"
+                      - option "西安灾备站点"
+                    - generic [ref=f20e448]: 条件
+                    - combobox "生效规则" [ref=f20e449]:
+                      - option "固定"
+                      - option "自增"
+                      - option "单次生效"
+                      - option "条件" [selected]
+                      - option "随机"
+                    - button "删除字段" [ref=f20e450] [cursor=pointer]
+                  - generic [ref=f20e453]:
+                    - generic [ref=f20e454]:
+                      - generic [ref=f20e455]: 条件字段
+                      - combobox "条件字段" [ref=f20e456]:
+                        - option "code"
+                        - option "message"
+                        - option "data.neId" [selected]
+                        - option "data.registerTime"
+                        - option "data.token"
+                    - generic [ref=f20e457]:
+                      - generic [ref=f20e458]: 操作符
+                      - combobox "操作符" [ref=f20e459]:
+                        - option "等于"
+                        - option "包含" [selected]
+                        - option "非空"
+                        - option "末尾为偶数"
+                    - generic [ref=f20e460]:
+                      - generic [ref=f20e461]: 命中时
+                      - textbox "命中时" [ref=f20e462]: 杭州主站点
+                    - generic [ref=f20e463]:
+                      - generic [ref=f20e464]: 否则
+                      - textbox "否则" [ref=f20e465]: 南京副站点
+                  - generic [ref=f20e466]: 按网元类型分派站点 · 按上游字段取值分派
+              - generic [ref=f20e468]:
+                - generic [ref=f20e469]: 人机交互
+                - generic [ref=f20e470]: 在自动响应中间插入需要人操作的环节
+              - generic [ref=f20e471]: 未插入人机交互：命中该接口时会直接返回定制响应
+              - generic [ref=f20e473]:
+                - generic [ref=f20e474]:
+                  - button "人工确认" [ref=f20e476] [cursor=pointer]
+                  - button "验证码" [ref=f20e477] [cursor=pointer]
+                  - button "人工闸门" [ref=f20e478] [cursor=pointer]
+                - button "手动触发一次请求" [ref=f20e479] [cursor=pointer]
+        - generic [ref=f20e481]:
+          - generic [ref=f20e482]:
+            - heading "请求 / 响应审计" [level=2] [ref=f20e483]
+            - generic [ref=f20e484]:
+              - generic [ref=f20e485]:
+                - button "全部" [ref=f20e486] [cursor=pointer]
+                - button "成功" [ref=f20e487] [cursor=pointer]
+                - button "异常" [ref=f20e488] [cursor=pointer]
+                - button "待人工" [ref=f20e489] [cursor=pointer]
+              - textbox "搜索日志" [ref=f20e490]:
+                - /placeholder: 搜索路径 / 网元 / 判定
+              - generic [ref=f20e491]: LIVE
+          - table [ref=f20e494]:
+            - rowgroup [ref=f20e495]:
+              - row [ref=f20e496]:
+                - columnheader "时间" [ref=f20e497]
+                - columnheader "端口" [ref=f20e498]
+                - columnheader "方法" [ref=f20e499]
+                - columnheader "路径" [ref=f20e500]
+                - columnheader "状态" [ref=f20e501]
+                - columnheader "时延" [ref=f20e502]
+                - columnheader "网元" [ref=f20e503]
+                - columnheader "判定" [ref=f20e504]
+                - columnheader [ref=f20e505]
+            - rowgroup [ref=f20e506]:
+              - row [ref=f20e507]:
+                - cell "00:35:29" [ref=f20e508]
+                - cell "8443" [ref=f20e509]
+                - cell "POST" [ref=f20e510]
+                - cell "/nemp/v1/ne/register" [ref=f20e511]
+                - cell "200" [ref=f20e512]
+                - cell "118ms" [ref=f20e513]
+                - cell "GNB-HZ-0001" [ref=f20e514]
+                - cell "匹配规则" [ref=f20e515]
+                - cell [ref=f20e516]:
+                  - button "重放" [ref=f20e517] [cursor=pointer]
+              - row [ref=f20e518]:
+                - cell "00:36:16" [ref=f20e519]
+                - cell "8443" [ref=f20e520]
+                - cell "GET" [ref=f20e521]
+                - cell "/nemp/v1/ne/GNB-HZ-0001/state" [ref=f20e522]
+                - cell "200" [ref=f20e523]
+                - cell "61ms" [ref=f20e524]
+                - cell "GNB-HZ-0001" [ref=f20e525]
+                - cell "匹配规则" [ref=f20e526]
+                - cell [ref=f20e527]:
+                  - button "重放" [ref=f20e528] [cursor=pointer]
+              - row [ref=f20e529]:
+                - cell "00:37:03" [ref=f20e530]
+                - cell "8080" [ref=f20e531]
+                - cell "POST" [ref=f20e532]
+                - cell "/alarm/v1/report" [ref=f20e533]
+                - cell "200" [ref=f20e534]
+                - cell "44ms" [ref=f20e535]
+                - cell "UPF-NJ-0003" [ref=f20e536]
+                - cell "匹配规则" [ref=f20e537]
+                - cell [ref=f20e538]:
+                  - button "重放" [ref=f20e539] [cursor=pointer]
+              - row [ref=f20e540]:
+                - cell "00:37:50" [ref=f20e541]
+                - cell "8443" [ref=f20e542]
+                - cell "POST" [ref=f20e543]
+                - cell "/nemp/v1/ne/GNB-HZ-0002/upgrade" [ref=f20e544]
+                - cell "202" [ref=f20e545]
+                - cell "812ms" [ref=f20e546]
+                - cell "GNB-HZ-0002" [ref=f20e547]
+                - cell "待人工 ·" [ref=f20e548]
+                - cell [ref=f20e550]:
+                  - button "放行" [ref=f20e551] [cursor=pointer]
+                  - button "拒绝" [ref=f20e552] [cursor=pointer]
+              - row [ref=f20e553]:
+                - cell "00:38:37" [ref=f20e554]
+                - cell "8443" [ref=f20e555]
+                - cell "GET" [ref=f20e556]
+                - cell "/lcmp/v1/package/list" [ref=f20e557]
+                - cell "200" [ref=f20e558]
+                - cell "88ms" [ref=f20e559]
+                - cell "—" [ref=f20e560]
+                - cell "匹配规则" [ref=f20e561]
+                - cell [ref=f20e562]:
+                  - button "重放" [ref=f20e563] [cursor=pointer]
+              - row [ref=f20e564]:
+                - cell "00:39:24" [ref=f20e565]
+                - cell "8080" [ref=f20e566]
+                - cell "POST" [ref=f20e567]
+                - cell "/nemp/v1/ne/register" [ref=f20e568]
+                - cell "500" [ref=f20e569]
+                - cell "121ms" [ref=f20e570]
+                - cell "AMF-XA-0009" [ref=f20e571]
+                - cell "定制响应命中" [ref=f20e572]
+                - cell [ref=f20e573]:
+                  - button "重放" [ref=f20e574] [cursor=pointer]
+              - row [ref=f20e575]:
+                - cell "00:40:11" [ref=f20e576]
+                - cell "8443" [ref=f20e577]
+                - cell "POST" [ref=f20e578]
+                - cell "/vlmp/v1/stack/create" [ref=f20e579]
+                - cell "201" [ref=f20e580]
+                - cell "1462ms" [ref=f20e581]
+                - cell "—" [ref=f20e582]
+                - cell "匹配规则" [ref=f20e583]
+                - cell [ref=f20e584]:
+                  - button "重放" [ref=f20e585] [cursor=pointer]
+              - row [ref=f20e586]:
+                - cell "00:40:58" [ref=f20e587]
+                - cell "8443" [ref=f20e588]
+                - cell "GET" [ref=f20e589]
+                - cell "/nemp/v1/ne/GNB-HZ-0001/state" [ref=f20e590]
+                - cell "404" [ref=f20e591]
+                - cell "57ms" [ref=f20e592]
+                - cell "GNB-HZ-0001" [ref=f20e593]
+                - cell "路径未匹配，走兜底" [ref=f20e594]
+                - cell [ref=f20e595]:
+                  - button "重放" [ref=f20e596] [cursor=pointer]
+  - contentinfo [ref=f20e249]:
+    - generic [ref=f20e250]:
+      - text: SIM
+      - generic [ref=f20e252]: RUNNING
+    - generic [ref=f20e254]:
+      - text: LAST
+      - generic [ref=f20e255]: 00:35:29 POST /nemp/v1/ne/register → 200
+    - generic [ref=f20e256]: GET /nemp/v1/ne/GNB-HZ-0001/state 200 · POST /alarm/v1/report 200 · POST /nemp/v1/ne/GNB-HZ-0002/upgrade 202
+    - generic [ref=f20e258]:
+      - text: VARIANT
+      - generic [ref=f20e259]: V1 · OPS CONSOLE
+  - status

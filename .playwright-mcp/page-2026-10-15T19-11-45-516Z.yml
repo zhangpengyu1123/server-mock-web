@@ -1,0 +1,283 @@
+- generic [active] [ref=f139e1]:
+  - banner [ref=f139e2]:
+    - generic [ref=f139e7]:
+      - generic [ref=f139e8]: MOCK 实验台
+      - generic [ref=f139e9]: MOCK LAB · SIGNAL BENCH
+    - generic [ref=f139e10]:
+      - generic [ref=f139e11]:
+        - generic [ref=f139e12]: LOOP
+        - generic [ref=f139e13]: "0"
+      - generic [ref=f139e14]:
+        - generic [ref=f139e15]: LIVE
+        - generic [ref=f139e16]: LIVE
+      - generic [ref=f139e17]:
+        - generic [ref=f139e18]: REQ
+        - generic [ref=f139e19]: "0"
+      - generic [ref=f139e20]:
+        - generic [ref=f139e21]: OK
+        - generic [ref=f139e22]: "0"
+      - generic [ref=f139e23]:
+        - generic [ref=f139e24]: ERR
+        - generic [ref=f139e25]: "0"
+      - generic [ref=f139e26]:
+        - generic [ref=f139e27]: LAT
+        - generic [ref=f139e28]: "0"
+        - generic [ref=f139e29]: ms
+      - generic [ref=f139e30]:
+        - generic [ref=f139e31]: GATE
+        - generic [ref=f139e32]: "0"
+      - generic [ref=f139e33]:
+        - generic [ref=f139e34]: FPS
+        - generic [ref=f139e35]: —
+    - generic [ref=f139e36]:
+      - button "切换主题：晨雾 / 夜航" [ref=f139e37] [cursor=pointer]:
+        - generic [ref=f139e41]: 晨雾
+      - button "录制信号（开关时间带记录）" [pressed] [ref=f139e42] [cursor=pointer]:
+        - generic [ref=f139e44]: REC
+      - button "打开人机交互闸门" [pressed] [ref=f139e45] [cursor=pointer]:
+        - generic [ref=f139e47]: 闸门
+        - generic [ref=f139e48]: "1"
+      - button "开关仪表音效" [ref=f139e49] [cursor=pointer]:
+        - generic [ref=f139e53]: SFX
+      - generic [ref=f139e54]: "--:--:--"
+  - generic [ref=f139e55]:
+    - complementary "信号路径" [ref=f139e56]:
+      - generic [ref=f139e57]: SIGNAL PATH
+      - button "00 对端网元 PEER / DUT 5 标本 · 3 在线" [ref=f139e64] [cursor=pointer]:
+        - generic [ref=f139e65]: "00"
+        - generic [ref=f139e66]:
+          - generic [ref=f139e67]: 对端网元
+          - generic [ref=f139e68]: PEER / DUT
+        - generic [ref=f139e70]: 5 标本 · 3 在线
+      - button "01 接入层 INGRESS 1/3 在服 · 8 请求" [ref=f139e71] [cursor=pointer]:
+        - generic [ref=f139e72]: "01"
+        - generic [ref=f139e73]:
+          - generic [ref=f139e74]: 接入层
+          - generic [ref=f139e75]: INGRESS
+        - generic [ref=f139e77]: 1/3 在服 · 8 请求
+      - button "02 能力矩阵 CAPABILITY MATRIX 4 挂载 · 111 接口 · 6 能力" [ref=f139e78] [cursor=pointer]:
+        - generic [ref=f139e79]: "02"
+        - generic [ref=f139e80]:
+          - generic [ref=f139e81]: 能力矩阵
+          - generic [ref=f139e82]: CAPABILITY MATRIX
+        - generic [ref=f139e84]: 4 挂载 · 111 接口 · 6 能力
+      - button "03 响应引擎 RESPONSE ENGINE 6 接口 · 6 启用" [ref=f139e85] [cursor=pointer]:
+        - generic [ref=f139e86]: "03"
+        - generic [ref=f139e87]:
+          - generic [ref=f139e88]: 响应引擎
+          - generic [ref=f139e89]: RESPONSE ENGINE
+        - generic [ref=f139e91]: 6 接口 · 6 启用
+      - button "04 审计带 AUDIT TAPE 8 条 · 待放行 1" [ref=f139e92] [cursor=pointer]:
+        - generic [ref=f139e93]: "04"
+        - generic [ref=f139e94]:
+          - generic [ref=f139e95]: 审计带
+          - generic [ref=f139e96]: AUDIT TAPE
+        - generic [ref=f139e98]: 8 条 · 待放行 1
+    - main [ref=f139e99]:
+      - tablist "仪器抽屉" [ref=f139e100]:
+        - tab "I 接入 INGRESS" [ref=f139e101] [cursor=pointer]:
+          - generic [ref=f139e102]: I
+          - generic [ref=f139e103]: 接入
+          - generic [ref=f139e104]: INGRESS
+        - tab "II 引擎 ENGINE" [ref=f139e105] [cursor=pointer]:
+          - generic [ref=f139e106]: II
+          - generic [ref=f139e107]: 引擎
+          - generic [ref=f139e108]: ENGINE
+        - tab "III 标本 SPECIMEN" [ref=f139e109] [cursor=pointer]:
+          - generic [ref=f139e110]: III
+          - generic [ref=f139e111]: 标本
+          - generic [ref=f139e112]: SPECIMEN
+        - tab "IV 受管域 MANAGED" [ref=f139e113] [cursor=pointer]:
+          - generic [ref=f139e114]: IV
+          - generic [ref=f139e115]: 受管域
+          - generic [ref=f139e116]: MANAGED
+        - tab "V 库房 PACKAGE" [ref=f139e117] [cursor=pointer]:
+          - generic [ref=f139e118]: V
+          - generic [ref=f139e119]: 库房
+          - generic [ref=f139e120]: PACKAGE
+        - tab "VI 虚层 STACK" [ref=f139e121] [cursor=pointer]:
+          - generic [ref=f139e122]: VI
+          - generic [ref=f139e123]: 虚层
+          - generic [ref=f139e124]: STACK
+      - generic [ref=f139e125]:
+        - generic [ref=f139e126]:
+          - generic [ref=f139e127]: "01"
+          - heading "接入层 · 端点与身份" [level=2] [ref=f139e128]
+          - paragraph [ref=f139e129]: 登记本机端点 · 签发检定证书 · 挂载平台能力 · 起停仿真服务
+          - generic [ref=f139e130]: RUNNING 1/3 · CERT 1/3
+        - generic [ref=f139e131]:
+          - generic [ref=f139e132]:
+            - generic [ref=f139e133]:
+              - generic [ref=f139e134]: 端点
+              - generic [ref=f139e135]: ENDPOINTS
+              - generic [ref=f139e136]: "3"
+            - generic [ref=f139e137]:
+              - button "10.18.32.104:8443 CERT OK HTTPS/TLS1.3 2 CAP rps 3.2 本机主端口 · 网元管理 + 生命周期 · 12480 次请求 · 378 异常" [ref=f139e138] [cursor=pointer]:
+                - generic [ref=f139e139]:
+                  - generic [ref=f139e141]: 10.18.32.104:8443
+                  - generic [ref=f139e142]: CERT OK
+                  - generic [ref=f139e143]: HTTPS/TLS1.3
+                  - generic [ref=f139e144]:
+                    - generic [ref=f139e145]: 2 CAP
+                    - generic [ref=f139e146]: rps 3.2
+                - generic [ref=f139e147]: 本机主端口 · 网元管理 + 生命周期 · 12480 次请求 · 378 异常
+              - button "10.18.32.104:9443 NO CERT HTTPS/TLS1.2 1 CAP rps 0 虚层专用 · 待签发证书 · 0 次请求 · 0 异常" [ref=f139e148] [cursor=pointer]:
+                - generic [ref=f139e149]:
+                  - generic [ref=f139e151]: 10.18.32.104:9443
+                  - generic [ref=f139e152]: NO CERT
+                  - generic [ref=f139e153]: HTTPS/TLS1.2
+                  - generic [ref=f139e154]:
+                    - generic [ref=f139e155]: 1 CAP
+                    - generic [ref=f139e156]: rps 0
+                - generic [ref=f139e157]: 虚层专用 · 待签发证书 · 0 次请求 · 0 异常
+              - button "10.18.32.77:8080 NO CERT HTTP/— 1 CAP rps 0 第二网卡 · 告警上报 · 214 次请求 · 0 异常" [ref=f139e158] [cursor=pointer]:
+                - generic [ref=f139e159]:
+                  - generic [ref=f139e161]: 10.18.32.77:8080
+                  - generic [ref=f139e162]: NO CERT
+                  - generic [ref=f139e163]: HTTP/—
+                  - generic [ref=f139e164]:
+                    - generic [ref=f139e165]: 1 CAP
+                    - generic [ref=f139e166]: rps 0
+                - generic [ref=f139e167]: 第二网卡 · 告警上报 · 214 次请求 · 0 异常
+            - generic [ref=f139e168]:
+              - generic [ref=f139e169]:
+                - generic [ref=f139e170]:
+                  - generic [ref=f139e171]:
+                    - text: 本机 IP
+                    - generic [ref=f139e172]: NIC / 可手填
+                  - combobox "本机 IP NIC / 可手填" [ref=f139e173]: 10.18.32.104
+                - generic [ref=f139e174]:
+                  - generic [ref=f139e175]:
+                    - text: 端口
+                    - generic [ref=f139e176]: PORT
+                  - textbox "端口 PORT" [ref=f139e177]: "10443"
+                - generic [ref=f139e178]:
+                  - generic [ref=f139e179]: 协议
+                  - combobox "协议" [ref=f139e180]:
+                    - option "HTTPS" [selected]
+                    - option "HTTP"
+                    - option "gRPC"
+                - generic [ref=f139e181]:
+                  - generic [ref=f139e182]: TLS
+                  - combobox "TLS" [ref=f139e183]:
+                    - option "TLS1.3" [selected]
+                    - option "TLS1.2"
+                    - option "—"
+              - button "＋ 登记端点 REGISTER" [ref=f139e184] [cursor=pointer]:
+                - generic [ref=f139e185]: ＋ 登记端点
+                - emphasis [ref=f139e186]: REGISTER
+          - generic [ref=f139e187]:
+            - generic [ref=f139e188]:
+              - generic [ref=f139e189]: 检定证书
+              - generic [ref=f139e190]: CERTIFICATE
+              - generic [ref=f139e191]: ISSUED
+            - generic [ref=f139e192]:
+              - generic [ref=f139e193]:
+                - generic [ref=f139e194]:
+                  - generic [ref=f139e195]: CN
+                  - text: mock-nemp.10.18.32.104
+                - generic [ref=f139e196]:
+                  - generic [ref=f139e197]: 有效期
+                  - text: 365 天
+                - generic [ref=f139e198]:
+                  - generic [ref=f139e199]: 签发机构
+                  - text: MockCA-Root
+                - generic [ref=f139e200]:
+                  - generic [ref=f139e201]: 签发时间
+                  - text: 10-16 03:11:45
+              - generic [ref=f139e202]: "-----BEGIN CERTIFICATE----- bW9jay1uZW1wLjEwLjE4LjMyLjEwNHwzQTo5RjpDMjoxMTo3RTo4QjpENDowNXwz NjV8TW9ja0NBLVJvb3R8MTAtMTYgMDM6MTE6NDU= -----END CERTIFICATE-----"
+              - generic [ref=f139e203]:
+                - button "导出 PEM" [ref=f139e204] [cursor=pointer]
+                - button "重新签发" [ref=f139e205] [cursor=pointer]
+          - generic [ref=f139e206]:
+            - generic [ref=f139e207]:
+              - generic [ref=f139e208]: 能力与伺服
+              - generic [ref=f139e209]: MATRIX / SERVO
+            - generic [ref=f139e210]:
+              - generic [ref=f139e211]:
+                - button "NEMP 网元管理平台 46EP" [pressed] [ref=f139e212] [cursor=pointer]:
+                  - generic [ref=f139e213]: NEMP
+                  - text: 网元管理平台
+                  - generic [ref=f139e214]: 46EP
+                - button "LCMP 生命周期平台 32EP" [pressed] [ref=f139e215] [cursor=pointer]:
+                  - generic [ref=f139e216]: LCMP
+                  - text: 生命周期平台
+                  - generic [ref=f139e217]: 32EP
+                - button "VLMP 虚层管理平台 21EP" [ref=f139e218] [cursor=pointer]:
+                  - generic [ref=f139e219]: VLMP
+                  - text: 虚层管理平台
+                  - generic [ref=f139e220]: 21EP
+                - button "NEMS 网元模拟服务 58EP" [ref=f139e221] [cursor=pointer]:
+                  - generic [ref=f139e222]: NEMS
+                  - text: 网元模拟服务
+                  - generic [ref=f139e223]: 58EP
+                - button "ALMP 告警上报平台 12EP" [ref=f139e224] [cursor=pointer]:
+                  - generic [ref=f139e225]: ALMP
+                  - text: 告警上报平台
+                  - generic [ref=f139e226]: 12EP
+                - button "PMFP 性能采集平台 16EP" [ref=f139e227] [cursor=pointer]:
+                  - generic [ref=f139e228]: PMFP
+                  - text: 性能采集平台
+                  - generic [ref=f139e229]: 16EP
+              - generic [ref=f139e231]:
+                - generic [ref=f139e232]:
+                  - generic [ref=f139e233]:
+                    - generic [ref=f139e234]: 服务状态
+                    - text: 运行中
+                  - generic [ref=f139e235]:
+                    - generic [ref=f139e236]: 可启动条件
+                    - text: 已满足
+                - button "停止 mock 服务" [ref=f139e237] [cursor=pointer]
+    - complementary "监视器" [ref=f139e240]:
+      - generic [ref=f139e241]:
+        - generic [ref=f139e242]: 监视器
+        - generic [ref=f139e243]: SCOPE
+        - generic [ref=f139e244]:
+          - button "波形" [ref=f139e245] [cursor=pointer]
+          - button "分布" [ref=f139e246] [cursor=pointer]
+      - generic "实时流量波形" [ref=f139e248]
+      - generic [ref=f139e249]:
+        - generic [ref=f139e250]: 窗口 LIVE
+        - generic [ref=f139e251]: 样本 8
+        - generic [ref=f139e252]: 成功 6
+        - generic [ref=f139e253]: 异常 2
+        - generic [ref=f139e254]: 平均时延 345 ms
+        - generic [ref=f139e255]: RPS 0.0
+      - generic [ref=f139e256]:
+        - generic [ref=f139e257]: 检查器
+        - generic [ref=f139e258]: INSPECTOR
+      - generic [ref=f139e260]:
+        - generic [ref=f139e261]:
+          - generic [ref=f139e263]: 10.18.32.104:8443
+          - generic [ref=f139e264]: CERT OK
+          - generic [ref=f139e265]: HTTPS/TLS1.3
+        - generic [ref=f139e266]:
+          - generic [ref=f139e267]:
+            - generic [ref=f139e268]: CN
+            - text: mock-nemp.10.18.32.104
+          - generic [ref=f139e269]:
+            - generic [ref=f139e270]: 指纹
+            - text: "3A:9F:C2:11:7E:8B:"
+          - generic [ref=f139e271]:
+            - generic [ref=f139e272]: 能力
+            - text: NEMP LCMP
+          - generic [ref=f139e273]:
+            - generic [ref=f139e274]: 窗口内请求
+            - text: 6 条 · 异常 1
+        - generic [ref=f139e275]: "POST /nemp/v1/ne/register → 200 {}"
+  - contentinfo "审计带" [ref=f139e276]:
+    - generic [ref=f139e277]:
+      - button "⟲ 实时" [ref=f139e278] [cursor=pointer]
+      - button "◂ 步进" [ref=f139e279] [cursor=pointer]
+      - button "● LIVE" [pressed] [ref=f139e280] [cursor=pointer]
+      - generic [ref=f139e281]:
+        - generic [ref=f139e282]: RATE
+        - generic [ref=f139e283]:
+          - button "1×" [ref=f139e284] [cursor=pointer]
+          - button "2×" [ref=f139e285] [cursor=pointer]
+          - button "4×" [ref=f139e286] [cursor=pointer]
+          - button "8×" [ref=f139e287] [cursor=pointer]
+    - slider "会话时间轴（拖动回看）" [ref=f139e288]:
+      - generic [ref=f139e301]: 拖动回看 · 松手吸附实时
+    - generic [ref=f139e302]: 最近 03:05:29 POST /nemp/v1/ne/register → 200
+  - status

@@ -1,0 +1,62 @@
+﻿[
+  {
+    "item": "Shaders",
+    "dir": "01-Shaders-WebGPU",
+    "repo": "https://github.com/shader-effects-inc/shaders",
+    "commit": "81fd4ec",
+    "commitDate": "2026-10-09",
+    "commitSubject": "Release v4.0.4 (#20)",
+    "worktreeClean": false,
+    "files": 1222,
+    "sizeMB": 17.5,
+    "licenseFile": "MIT License"
+  },
+  {
+    "item": "Micro (React Bits)",
+    "dir": "02-Micro-ReactBits",
+    "repo": "https://github.com/DavidHDev/react-bits",
+    "commit": "43591e8b",
+    "commitDate": "2026-10-15",
+    "commitSubject": "update title",
+    "worktreeClean": false,
+    "files": 7734,
+    "sizeMB": 374.2,
+    "licenseFile": "MIT + Commons Clause License Condition v1.0"
+  },
+  {
+    "item": "oil-ui",
+    "dir": "03-oil-ui",
+    "repo": "https://github.com/oil-oil/oil-ui",
+    "commit": "1640b36",
+    "commitDate": "2026-10-15",
+    "commitSubject": "润色小改动与排除范围表述，保持正文自然口吻",
+    "worktreeClean": false,
+    "files": 42,
+    "sizeMB": 3.3,
+    "licenseFile": "MIT License"
+  },
+  {
+    "item": "design-systems",
+    "dir": "04-design-systems",
+    "repo": "https://github.com/ruiqichenbiec/design-systems",
+    "commit": "7a424c9",
+    "commitDate": "2026-10-04",
+    "commitSubject": "Merge pull request #3 from ruiqichenbiec/ccr-693e0f06-3by63m",
+    "worktreeClean": false,
+    "files": 572,
+    "sizeMB": 128.5,
+    "licenseFile": "MIT License"
+  },
+  {
+    "item": "onetake",
+    "dir": "05-onetake",
+    "repo": "https://github.com/feitangyuan/onetake",
+    "commit": "4157581",
+    "commitDate": "2026-10-12",
+    "commitSubject": "feat(cases): add infra, replacing unbroken in the Concept ad row",
+    "worktreeClean": false,
+    "files": 113,
+    "sizeMB": 101.8,
+    "licenseFile": "Required Notice: Copyright (c) 2026 Patrick. onetake is free"
+  }
+]

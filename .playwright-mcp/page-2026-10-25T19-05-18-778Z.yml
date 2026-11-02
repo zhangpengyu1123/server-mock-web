@@ -1,0 +1,227 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e16]:
+    - generic [ref=e17]:
+      - group "模式" [ref=e18]:
+        - button "运行台 OPERATION" [ref=e19] [cursor=pointer]:
+          - generic [ref=e20]: 运行台
+          - generic [ref=e21]: OPERATION
+        - button "准备台 PREPARATION" [pressed] [ref=e22] [cursor=pointer]:
+          - generic [ref=e23]: 准备台
+          - generic [ref=e24]: PREPARATION
+      - navigation "界面" [ref=e25]:
+        - button "接入 INGRESS" [ref=e457] [cursor=pointer]:
+          - generic [ref=e461]: 接入
+        - button "接口 RECIPE" [ref=e463] [cursor=pointer]:
+          - generic [ref=e467]: 接口
+        - button "网元 SPECIMEN" [ref=e469] [cursor=pointer]:
+          - generic [ref=e473]: 网元
+        - button "平台 MANAGED" [ref=e475] [cursor=pointer]:
+          - generic [ref=e479]: 平台
+        - button "库房 PACKAGE" [ref=e481] [cursor=pointer]:
+          - generic [ref=e485]: 库房
+        - button "虚层 STACK" [ref=e487] [cursor=pointer]:
+          - generic [ref=e491]: 虚层
+        - button "系统 SYSTEM" [ref=e44] [cursor=pointer]:
+          - generic [ref=e48]: 系统
+    - banner [ref=e51]:
+      - generic [ref=e52]:
+        - heading "接 入 层" [level=1] [ref=e493]
+        - paragraph [ref=e54]: "- 端点与身份登记"
+      - generic [ref=e58]:
+        - generic [ref=e494]:
+          - generic [ref=e495]: ENDPOINTS
+          - text: "3"
+        - generic [ref=e496]:
+          - generic [ref=e497]: RUNNING
+          - text: "0"
+        - generic [ref=e498]:
+          - generic [ref=e499]: CERTS
+          - text: "1"
+    - main [ref=e65]:
+      - region "列表" [ref=e66]:
+        - generic [ref=e67]:
+          - generic [ref=e69]: 端点
+          - generic [ref=e70]: ENDPOINTS
+        - list [ref=e72]:
+          - listitem [ref=e500]:
+            - button "10.18.32.104:8443 HTTPS/TLS1.3 · 已签发 2 CAP" [ref=e501] [cursor=pointer]:
+              - generic [ref=e503]:
+                - generic [ref=e504]: 10.18.32.104:8443
+                - generic [ref=e505]: HTTPS/TLS1.3 · 已签发
+              - generic [ref=e506]: 2 CAP
+          - listitem [ref=e507]:
+            - button "10.18.32.104:9443 HTTPS/TLS1.2 · 待签发 1 CAP" [ref=e508] [cursor=pointer]:
+              - generic [ref=e510]:
+                - generic [ref=e511]: 10.18.32.104:9443
+                - generic [ref=e512]: HTTPS/TLS1.2 · 待签发
+              - generic [ref=e513]: 1 CAP
+          - listitem [ref=e514]:
+            - button "10.18.32.77:8080 HTTP/— · 待签发 1 CAP" [ref=e515] [cursor=pointer]:
+              - generic [ref=e517]:
+                - generic [ref=e518]: 10.18.32.77:8080
+                - generic [ref=e519]: HTTP/— · 待签发
+              - generic [ref=e520]: 1 CAP
+      - region "详情" [ref=e97]:
+        - generic [ref=e521]:
+          - generic [ref=e522]: 这一屏只做离线准备：登记端点、签发证书、挂载能力。启动服务在「运行台」。
+          - generic [ref=e523]:
+            - generic [ref=e524]:
+              - generic [ref=e525]: 端点
+              - generic [ref=e526]: ENDPOINT
+              - generic [ref=e527]: CERT OK
+            - generic [ref=e530]:
+              - generic [ref=e531]:
+                - generic [ref=e532]: 地址
+                - generic [ref=e533]: 10.18.32.104:8443
+              - generic [ref=e534]:
+                - generic [ref=e535]: 协议 / TLS
+                - generic [ref=e536]: HTTPS / TLS1.3
+              - generic [ref=e537]:
+                - generic [ref=e538]: 证书
+                - generic [ref=e539]:
+                  - generic [ref=e540]: CERT OK
+                  - text: 365 天
+              - generic [ref=e541]:
+                - generic [ref=e542]: 签发时间
+                - generic [ref=e543]: 10-26 03:02:10
+              - generic [ref=e544]:
+                - generic [ref=e545]: 签发机构
+                - generic [ref=e546]: MockCA-Root
+              - generic [ref=e547]:
+                - generic [ref=e548]: 指纹
+                - generic [ref=e549]: 3A:9F:C2:11:7E:8B:D4:0
+              - generic [ref=e550]:
+                - generic [ref=e551]: 请求 / 成功 / 异常
+                - generic [ref=e552]: 12,589 / 12,203 / 386
+              - generic [ref=e553]:
+                - generic [ref=e554]: 当前 RPS
+                - generic [ref=e555]: "0.0"
+              - generic [ref=e556]:
+                - generic [ref=e557]: 备注
+                - generic [ref=e558]: 本机主端口 · 网元管理 + 生命周期
+          - generic [ref=e559]:
+            - generic [ref=e560]:
+              - generic [ref=e561]: 端点登记
+              - generic [ref=e562]: REGISTER
+            - generic [ref=e564]:
+              - generic [ref=e565]:
+                - generic [ref=e566]:
+                  - generic [ref=e567]:
+                    - text: 本机 IP
+                    - generic [ref=e568]: IP
+                  - combobox "本机 IP IP" [ref=e569]
+                - generic [ref=e570]:
+                  - generic [ref=e571]:
+                    - text: 端口
+                    - generic [ref=e572]: PORT
+                  - spinbutton "端口 PORT" [ref=e573]
+              - generic [ref=e574]:
+                - generic [ref=e575]:
+                  - generic [ref=e576]:
+                    - text: 协议
+                    - generic [ref=e577]: PROTOCOL
+                  - combobox "协议 PROTOCOL" [ref=e578] [cursor=pointer]:
+                    - option "HTTPS" [selected]
+                    - option "HTTP"
+                - generic [ref=e579]:
+                  - generic [ref=e580]:
+                    - text: TLS 版本
+                    - generic [ref=e581]: TLS
+                  - combobox "TLS 版本 TLS" [ref=e582] [cursor=pointer]:
+                    - option "TLS1.3" [selected]
+                    - option "TLS1.2"
+                    - option "—"
+              - generic [ref=e583]:
+                - button "登记端点" [ref=e584] [cursor=pointer]
+                - button "取本机网卡" [ref=e585] [cursor=pointer]
+              - paragraph [ref=e586]: 登记后可签发证书并挂载平台能力；三者齐备才能启动 mock 服务。
+          - generic [ref=e587]:
+            - generic [ref=e588]:
+              - generic [ref=e589]: 能力挂载
+              - generic [ref=e590]: CAPABILITY
+              - generic [ref=e591]: 2 / 6
+            - generic [ref=e593]:
+              - generic [ref=e594]:
+                - button "NEMP 网元管理平台 46EP" [pressed] [ref=e595] [cursor=pointer]:
+                  - generic [ref=e596]: NEMP
+                  - generic [ref=e597]: 网元管理平台
+                  - generic [ref=e598]: 46EP
+                - button "LCMP 生命周期平台 32EP" [pressed] [ref=e599] [cursor=pointer]:
+                  - generic [ref=e600]: LCMP
+                  - generic [ref=e601]: 生命周期平台
+                  - generic [ref=e602]: 32EP
+                - button "VLMP 虚层管理平台 21EP" [ref=e603] [cursor=pointer]:
+                  - generic [ref=e604]: VLMP
+                  - generic [ref=e605]: 虚层管理平台
+                  - generic [ref=e606]: 21EP
+                - button "NEMS 网元模拟服务 58EP" [ref=e607] [cursor=pointer]:
+                  - generic [ref=e608]: NEMS
+                  - generic [ref=e609]: 网元模拟服务
+                  - generic [ref=e610]: 58EP
+                - button "ALMP 告警上报平台 12EP" [ref=e611] [cursor=pointer]:
+                  - generic [ref=e612]: ALMP
+                  - generic [ref=e613]: 告警上报平台
+                  - generic [ref=e614]: 12EP
+                - button "PMFP 性能采集平台 16EP" [ref=e615] [cursor=pointer]:
+                  - generic [ref=e616]: PMFP
+                  - generic [ref=e617]: 性能采集平台
+                  - generic [ref=e618]: 16EP
+              - paragraph [ref=e619]: 已挂载 2 项能力。能力决定这个端点能仿真哪些接口。
+      - complementary "状态" [ref=e204]:
+        - generic [ref=e620]:
+          - generic [ref=e621]: 状 态
+          - generic [ref=e622]: STATUS
+        - generic [ref=e623]:
+          - generic [ref=e624]:
+            - generic [ref=e625]: MOCK-2B
+            - generic [ref=e626]: "Lv : 06"
+          - generic [ref=e627]:
+            - generic [ref=e628]: 在服端点：
+            - generic [ref=e629]: 0 / 3
+          - generic [ref=e630]:
+            - generic [ref=e631]: 审计记录：
+            - generic [ref=e632]: "118"
+          - generic [ref=e633]:
+            - generic [ref=e634]: 累计命中：
+            - generic [ref=e635]: 29,444
+          - generic [ref=e636]:
+            - generic [ref=e637]: 服务健康：
+            - generic [ref=e639]: 0%
+          - generic [ref=e640]:
+            - generic [ref=e641]: 弱接口：
+            - generic [ref=e642]: "2"
+          - generic [ref=e643]:
+            - generic [ref=e644]: 强接口：
+            - generic [ref=e645]: "4"
+          - generic [ref=e646]:
+            - generic [ref=e647]: 射击接口：
+            - generic [ref=e648]: "0"
+          - generic [ref=e649]:
+            - generic [ref=e650]: 异 常：
+            - generic [ref=e651]: "9"
+          - generic "已挂载能力" [ref=e652]
+          - generic [ref=e664]: 9 项待放行
+    - contentinfo [ref=e250]:
+      - paragraph [ref=e252]: 选择端点，按 Enter 查看检定证书与伺服状态。
+      - generic [ref=e253]:
+        - generic [ref=e254]:
+          - generic [ref=e255]: W
+          - generic [ref=e256]: S
+          - emphasis [ref=e257]: 选择
+        - generic [ref=e258]:
+          - generic [ref=e259]: Enter
+          - emphasis [ref=e260]: 确认
+        - generic [ref=e261]:
+          - generic [ref=e262]: Esc
+          - emphasis [ref=e263]: 返回
+        - generic [ref=e264]:
+          - generic [ref=e265]: "1"
+          - generic [ref=e266]: "-"
+          - generic [ref=e267]: "7"
+          - emphasis [ref=e268]: 界面
+  - status:
+    - generic [ref=e665]:
+      - generic [ref=e666]:
+        - generic [ref=e667]: ✓
+        - text: 服务已停止
+      - generic [ref=e668]: 可以进入准备台编辑了

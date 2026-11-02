@@ -1,0 +1,15 @@
+﻿[package]
+name = "rhine-desktop-business"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "W 端业务面：本机 mock 控制台（免登录）"
+
+# 独立 workspace：Tauri 依赖重，不拖慢 core/agent 的日常编译
+[workspace]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }

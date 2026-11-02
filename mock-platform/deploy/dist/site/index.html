@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mock 平台 · 八版设计前台</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; background: #0b0b10; color: #f2f2f7;
+    font-family: ui-sans-serif, system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+    display: grid; place-items: center; padding: 24px; }
+  .wrap { width: 100%; max-width: 1180px; padding: 40px 0; }
+  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 10px; }
+  h1 { font-size: 27px; margin: 0; letter-spacing: .01em; }
+  .sub { color: #8f8fa6; font-size: 13.5px; line-height: 1.9; margin: 10px 0 26px; max-width: 900px; }
+  .sub code { background: #171722; border: 1px solid #26263a; padding: 2px 6px; border-radius: 5px; font-size: 12px; }
+  .meta { font-family: ui-monospace, Consolas, monospace; font-size: 11px; color: #6f6f88; letter-spacing: .12em; }
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); }
+  a.card { display: flex; flex-direction: column; text-decoration: none; color: inherit; height: 100%;
+    border: 1px solid #24243a; border-radius: 14px; padding: 16px 18px 15px;
+    background: linear-gradient(180deg, #13131d, #0e0e16);
+    transition: transform .25s cubic-bezier(.2,.8,.2,1), border-color .25s, box-shadow .25s; }
+  a.card:hover { transform: translateY(-3px); border-color: #4b4b7a; box-shadow: 0 18px 40px rgba(0,0,0,.45); }
+  a.card:focus-visible { outline: 2px solid #7b7bff; outline-offset: 3px; }
+  .k { font-family: ui-monospace, Consolas, monospace; font-size: 10px; letter-spacing: .2em; color: #6f6f88; text-transform: uppercase; }
+  .t { font-size: 16.5px; font-weight: 650; margin: 7px 0 5px; letter-spacing: .01em; }
+  .d { font-size: 12.5px; color: #9a9aae; line-height: 1.7; flex: 1; }
+  .sw { display: flex; gap: 4px; margin-top: 14px; }
+  .sw i { width: 24px; height: 6px; border-radius: 999px; display: inline-block; border: 1px solid rgba(255,255,255,.10); }
+  .hot { border-color: #4a3f7a; background: linear-gradient(180deg, #191527, #0f0f18); }
+  .badge { display: inline-block; font-family: ui-monospace, monospace; font-size: 9.5px; letter-spacing: .14em;
+    color: #c9b8ff; border: 1px solid #4a3f7a; border-radius: 4px; padding: 1px 6px; margin-left: 8px; vertical-align: 2px; }
+  footer { margin-top: 30px; color: #61617a; font-size: 11.5px; font-family: ui-monospace, Consolas, monospace; letter-spacing: .08em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Mock 平台 · 八版设计前台</h1>
+    <span class="meta">SAME DATA · SAME LOGIC · 8 VISUAL LANGUAGES</span>
+  </header>
+  <p class="sub">
+    同一个 mock 平台、同一批数据、同一套交互逻辑，八种完全不同的视觉语言——六屏功能都在，差异只来自设计与排布。<br />
+    用 <code>node serve.mjs</code> 起服务后直接点卡片；每版都有自己的 README 说明设计依据。
+  </p>
+
+  <div class="grid">
+    <a class="card" href="./v1-ops-console/">
+      <div class="k">Variant 01</div>
+      <div class="t">暗场运维控制台</div>
+      <div class="d">HUD / FUI · 深空蓝 + 琥珀 · 高密度仪表盘 · 适合 7×24 值守大屏</div>
+      <div class="sw"><i style="background:#1E1B4B"></i><i style="background:#F97316"></i><i style="background:#0F0F23"></i></div>
+    </a>
+    <a class="card" href="./v2-swiss-editorial/">
+      <div class="k">Variant 02</div>
+      <div class="t">瑞士网格 · 编辑风</div>
+      <div class="d">Swiss Modernism 2.0 · 白底 + 近黑 + 信号蓝 · 12 栏网格 · 巨号标题与细规则线</div>
+      <div class="sw"><i style="background:#FAFAFA"></i><i style="background:#18181B"></i><i style="background:#0B63F6"></i></div>
+    </a>
+    <a class="card" href="./v3-rhine-lab/">
+      <div class="k">Variant 03</div>
+      <div class="t">莱茵生命 · 临床档案 / 终端</div>
+      <div class="d">PRTS 正交 token · 档案（亮）/ 终端（暗）双主题 · 六边形母题与细线刻度</div>
+      <div class="sw"><i style="background:#18D1FF"></i><i style="background:#FFD800"></i><i style="background:#f5f5f5"></i><i style="background:#0f0f10"></i></div>
+    </a>
+    <a class="card" href="./v4-archive-terminal/">
+      <div class="k">Variant 04</div>
+      <div class="t">莱茵生命 · 档案终端</div>
+      <div class="d">暖灰白 #e8e5e1 + 近黑 + 暖褐 #a67d48 · 竖排刻度导航 · 解密扫描线 · 细线排字</div>
+      <div class="sw"><i style="background:#e8e5e1"></i><i style="background:#080a08"></i><i style="background:#a67d48"></i></div>
+    </a>
+    <a class="card" href="./v5-music-console/">
+      <div class="k">Variant 05</div>
+      <div class="t">莱茵生命 · 音乐调测台</div>
+      <div class="d">晨雾 / 月影双主题 · 卡列 + 底部 transport · 刻度尺导航 · 连续运动语言</div>
+      <div class="sw"><i style="background:#eae5e1"></i><i style="background:#a67d48"></i><i style="background:#171713"></i></div>
+    </a>
+    <a class="card" href="./v6-mock-lab/">
+      <div class="k">Variant 06</div>
+      <div class="t">MOCK 实验台 · 信号链</div>
+      <div class="d">极光玻璃：横向信号链 + 可回放审计带（时间机器）+ 人机交互闸门 + 示波器 · 晨雾 / 夜航</div>
+      <div class="sw"><i style="background:#c3b1ff"></i><i style="background:#ffc4d8"></i><i style="background:#a8ecdd"></i><i style="background:#f4f2fa"></i></div>
+    </a>
+    <a class="card" href="./v7-swiss-bench/">
+      <div class="k">Variant 07</div>
+      <div class="t">MOCK 检证台 · 瑞士版</div>
+      <div class="d">V6 的卡片结构 × V2 的瑞士语言：白底 / 近黑 / 信号蓝 / 宋体巨号 / 细线卡片 · 白昼 / 墨夜</div>
+      <div class="sw"><i style="background:#FAFAFA"></i><i style="background:#18181B"></i><i style="background:#0B63F6"></i><i style="background:#E4E4E7"></i></div>
+    </a>
+    <a class="card hot" href="./v8-blackbox-terminal/">
+      <div class="k">Variant 08<span class="badge">NEW</span></div>
+      <div class="t">BLACKBOX TERMINAL · 尼尔式</div>
+      <div class="d">截图精准还原：纸面 #c8c3ac + 硬边投影 + 打孔虚线 + 菱形光标 + 方形键帽 + 启动自检屏 · 七页签（六屏 + 系统）</div>
+      <div class="sw"><i style="background:#c8c3ac"></i><i style="background:#656256"></i><i style="background:#3e3c34"></i><i style="background:#0e0b07"></i></div>
+    </a>
+  </div>
+
+  <footer>8 VARIANTS · ZERO DEPENDENCIES · OFFLINE · node _verify/oracle.mjs</footer>
+</div>
+</body>
+</html>

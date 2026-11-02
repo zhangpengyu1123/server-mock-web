@@ -1,0 +1,32 @@
+# ============================================================================
+# 形态 B'：不用 nginx，直接让仓库自带的零依赖 serve.mjs 常驻（需要 Node 18+）
+#   /etc/systemd/system/blackbox.service
+#   sudo systemctl daemon-reload && sudo systemctl enable --now blackbox
+#   缺点：多一层 Node 运行时；serve.mjs 是"本地启动器"而非生产服务（无 gzip/缓存头）
+# ============================================================================
+[Unit]
+Description=BLACKBOX TERMINAL (zero-dep static server)
+After=network.target
+
+[Service]
+Type=simple
+User=blackbox
+Group=blackbox
+WorkingDirectory=/srv/blackbox/current
+ExecStart=/usr/bin/node /srv/blackbox/current/serve.mjs . 8088
+Restart=on-failure
+RestartSec=2
+
+# 收权限：只读文件系统 + 最小内核面
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/srv/blackbox
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+MemoryMax=96M
+
+[Install]
+WantedBy=multi-user.target

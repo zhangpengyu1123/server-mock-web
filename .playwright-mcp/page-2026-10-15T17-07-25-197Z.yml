@@ -1,0 +1,239 @@
+- generic [active] [ref=f66e1]:
+  - link "跳到主内容" [ref=f66e2] [cursor=pointer]:
+    - /url: "#stage"
+  - banner [ref=f66e3]:
+    - generic [ref=f66e8]:
+      - generic [ref=f66e9]: MOCK PLATFORM
+      - generic [ref=f66e10]: 节点调测仿真台 · 第 2 版 设计稿
+    - navigation "主导航" [ref=f66e11]:
+      - button "01 MOCK 管理 3" [ref=f66e12] [cursor=pointer]:
+        - generic [ref=f66e13]: "01"
+        - generic [ref=f66e14]: MOCK 管理
+        - generic [ref=f66e15]: "3"
+      - button "02 MOCK 流程 1" [ref=f66e16] [cursor=pointer]:
+        - generic [ref=f66e17]: "02"
+        - generic [ref=f66e18]: MOCK 流程
+        - generic [ref=f66e19]: "1"
+      - button "03 网元管理 5" [ref=f66e20] [cursor=pointer]:
+        - generic [ref=f66e21]: "03"
+        - generic [ref=f66e22]: 网元管理
+        - generic [ref=f66e23]: "5"
+      - button "04 网元管理平台 1" [ref=f66e24] [cursor=pointer]:
+        - generic [ref=f66e25]: "04"
+        - generic [ref=f66e26]: 网元管理平台
+        - generic [ref=f66e27]: "1"
+      - button "05 生命周期平台 4" [ref=f66e28] [cursor=pointer]:
+        - generic [ref=f66e29]: "05"
+        - generic [ref=f66e30]: 生命周期平台
+        - generic [ref=f66e31]: "4"
+      - button "06 虚层管理平台 1/4" [ref=f66e32] [cursor=pointer]:
+        - generic [ref=f66e33]: "06"
+        - generic [ref=f66e34]: 虚层管理平台
+        - generic [ref=f66e35]: 1/4
+    - generic [ref=f66e36]:
+      - button "开关界面音效" [ref=f66e37] [cursor=pointer]:
+        - generic [ref=f66e41]: SFX
+      - generic [ref=f66e42]: 01:07:25
+  - generic "实时遥测" [ref=f66e43]:
+    - generic [ref=f66e44]:
+      - generic [ref=f66e45]:
+        - text: 端点
+        - generic [ref=f66e46]: "0"
+      - generic [ref=f66e48]:
+        - text: 运行中
+        - generic [ref=f66e49]: "0"
+      - generic [ref=f66e51]:
+        - text: 请求
+        - generic [ref=f66e52]: "0"
+      - generic [ref=f66e54]:
+        - text: 成功
+        - generic [ref=f66e55]: "0"
+      - generic [ref=f66e57]:
+        - text: 异常
+        - generic [ref=f66e58]: "0"
+      - generic [ref=f66e60]:
+        - text: 平均时延
+        - generic [ref=f66e61]: "0"
+        - generic [ref=f66e62]: ms
+      - generic [ref=f66e64]:
+        - text: 待人工
+        - generic [ref=f66e65]: "0"
+      - generic [ref=f66e66]: 01:01:09 POST /nemp/v1/ne/register → 200
+  - main [ref=f66e67]:
+    - generic [ref=f66e68]:
+      - generic [ref=f66e69]:
+        - generic [ref=f66e70]:
+          - generic [ref=f66e71]:
+            - generic [ref=f66e72]: "01"
+            - generic [ref=f66e73]: MOCK / 端口与身份
+          - generic [ref=f66e74]:
+            - heading "MOCK 管理" [level=1] [ref=f66e75]
+            - paragraph [ref=f66e76]: 登记本机 IP 与端口作为仿真端点，为端点签发 TLS 证书文件，挂载一种或多种平台能力，然后开启 mock 服务。
+          - generic [ref=f66e77]:
+            - generic [ref=f66e78]: PORT REGISTRY · CERTIFICATE · CAPABILITY
+            - generic [ref=f66e79]: MOCK-WIN-01 · 10.18.32.104 / 10.18.32.77 · Windows 11 23H2 · MockAgent 4.2.1
+        - generic [ref=f66e80]:
+          - generic [ref=f66e81]:
+            - generic [ref=f66e82]: MOCK 端点
+            - generic [ref=f66e83]: 0个
+            - generic [ref=f66e84]: 已登记的本机仿真端口
+          - generic [ref=f66e85]:
+            - generic [ref=f66e86]: 运行中
+            - generic [ref=f66e87]: 0个
+            - generic [ref=f66e88]: 正在接收对端请求
+          - generic [ref=f66e89]:
+            - generic [ref=f66e90]: 总请求
+            - generic [ref=f66e91]: "0"
+            - generic [ref=f66e92]: 含重放与模拟流量
+          - generic [ref=f66e93]:
+            - generic [ref=f66e94]: 平均时延
+            - generic [ref=f66e95]: 0ms
+            - generic [ref=f66e96]: 按端口定制延迟加权
+      - generic [ref=f66e97]:
+        - generic [ref=f66e98]:
+          - generic [ref=f66e99]:
+            - heading "端点清单" [level=2] [ref=f66e100]
+            - generic [ref=f66e101]: 3 个
+          - list "MOCK 端点清单" [ref=f66e103]:
+            - listitem [ref=f66e104]:
+              - button "10.18.32.104:8443 HTTPS · TLS1.3 · 2 项能力 · 10-14 09:12 12,480 请求 · 3.2 rps RUNNING" [pressed] [ref=f66e105] [cursor=pointer]:
+                - generic [ref=f66e107]:
+                  - generic [ref=f66e108]: 10.18.32.104:8443
+                  - generic [ref=f66e109]: HTTPS · TLS1.3 · 2 项能力 · 10-14 09:12
+                  - generic [ref=f66e110]: 12,480 请求 · 3.2 rps
+                - generic [ref=f66e111]: RUNNING
+            - listitem [ref=f66e113]:
+              - button "10.18.32.104:9443 HTTPS · TLS1.2 · 1 项能力 · 10-15 14:40 0 请求 · 0 rps STOPPED" [ref=f66e114] [cursor=pointer]:
+                - generic [ref=f66e116]:
+                  - generic [ref=f66e117]: 10.18.32.104:9443
+                  - generic [ref=f66e118]: HTTPS · TLS1.2 · 1 项能力 · 10-15 14:40
+                  - generic [ref=f66e119]: 0 请求 · 0 rps
+                - generic [ref=f66e120]: STOPPED
+            - listitem [ref=f66e122]:
+              - button "10.18.32.77:8080 HTTP · — · 1 项能力 · 10-15 16:02 214 请求 · 0 rps STOPPED" [ref=f66e123] [cursor=pointer]:
+                - generic [ref=f66e125]:
+                  - generic [ref=f66e126]: 10.18.32.77:8080
+                  - generic [ref=f66e127]: HTTP · — · 1 项能力 · 10-15 16:02
+                  - generic [ref=f66e128]: 214 请求 · 0 rps
+                - generic [ref=f66e129]: STOPPED
+          - generic [ref=f66e132]:
+            - generic [ref=f66e133]:
+              - generic [ref=f66e134]:
+                - generic [ref=f66e135]: 本机 IP / 网卡
+                - combobox "选择本机网卡 IP" [ref=f66e137]:
+                  - option "10.18.32.104（本机网卡）" [selected]
+                  - option "10.18.32.77（本机网卡）"
+                  - option "手动输入…"
+              - generic [ref=f66e138]:
+                - generic [ref=f66e139]: 端口
+                - textbox "端口" [ref=f66e140]: "8443"
+            - generic [ref=f66e141]:
+              - generic [ref=f66e142]:
+                - generic [ref=f66e143]: 协议
+                - combobox "协议" [ref=f66e144]:
+                  - option "HTTPS" [selected]
+                  - option "HTTP"
+                  - option "gRPC"
+              - generic [ref=f66e145]:
+                - generic [ref=f66e146]: TLS
+                - combobox "TLS" [ref=f66e147]:
+                  - option "TLS1.3" [selected]
+                  - option "TLS1.2"
+                  - option "—"
+            - generic [ref=f66e148]:
+              - button "注册 MOCK 端口" [ref=f66e149] [cursor=pointer]
+              - generic [ref=f66e152]: 端口范围 1024–65535；IP 可选本机网卡或手填
+        - generic [ref=f66e153]:
+          - generic [ref=f66e154]:
+            - heading "端点详情" [level=2] [ref=f66e155]
+            - generic [ref=f66e156]:
+              - generic [ref=f66e157]: HTTPS
+              - generic [ref=f66e158]: 10.18.32.104:8443
+          - generic [ref=f66e159]:
+            - generic [ref=f66e160]:
+              - generic [ref=f66e161]:
+                - generic [ref=f66e162]: 协议 / TLS
+                - generic [ref=f66e163]: HTTPS · TLS1.3
+              - generic [ref=f66e164]:
+                - generic [ref=f66e165]: 请求 / 成功 / 异常
+                - generic [ref=f66e166]: 12,480 / 12,102 / 378
+              - generic [ref=f66e167]:
+                - generic [ref=f66e168]: 当前 RPS
+                - generic [ref=f66e169]: "3.2"
+              - generic [ref=f66e170]:
+                - generic [ref=f66e171]: 备注
+                - generic [ref=f66e172]: 本机主端口 · 网元管理 + 生命周期
+            - heading "① 证书文件" [level=3] [ref=f66e174]
+            - generic [ref=f66e175]:
+              - generic [ref=f66e176]: 证书有效 365 天
+              - generic [ref=f66e182]: mock-nemp.10.18.32.104
+              - generic [ref=f66e183]: 已签发
+            - generic [ref=f66e184]:
+              - generic [ref=f66e185]:
+                - generic [ref=f66e186]: 有效期
+                - generic [ref=f66e187]: 365 天
+              - generic [ref=f66e188]:
+                - generic [ref=f66e189]: 签发时间
+                - generic [ref=f66e190]: 10-16 01:07:25
+              - generic [ref=f66e191]:
+                - generic [ref=f66e192]: 签发机构
+                - generic [ref=f66e193]: MockCA-Root
+              - generic [ref=f66e194]:
+                - generic [ref=f66e195]: 指纹
+                - generic [ref=f66e196]: 3A:9F:C2:11:7E:8B:D4:05
+            - generic [ref=f66e197]:
+              - button "导出证书文件（PEM）" [ref=f66e198] [cursor=pointer]
+              - button "重新签发" [ref=f66e199] [cursor=pointer]
+              - generic [ref=f66e200]: 对端用该证书校验本 mock 端点的 TLS 身份
+            - heading "② 挂载平台能力（6 选 N · 可卸载）" [level=3] [ref=f66e202]
+            - generic [ref=f66e203]:
+              - button [pressed] [ref=f66e204] [cursor=pointer]:
+                - text: 网元管理平台
+                - emphasis [ref=f66e205]: NEMP R7.2
+                - emphasis [ref=f66e206]: 46 EP
+              - button [pressed] [ref=f66e207] [cursor=pointer]:
+                - text: 生命周期平台
+                - emphasis [ref=f66e208]: LCMP R5.8
+                - emphasis [ref=f66e209]: 32 EP
+              - button [ref=f66e210] [cursor=pointer]:
+                - text: 虚层管理平台
+                - emphasis [ref=f66e211]: VLMP R3.1
+                - emphasis [ref=f66e212]: 21 EP
+              - button [ref=f66e213] [cursor=pointer]:
+                - text: 网元模拟服务
+                - emphasis [ref=f66e214]: NEMS R9.0
+                - emphasis [ref=f66e215]: 58 EP
+              - button [ref=f66e216] [cursor=pointer]:
+                - text: 告警上报平台
+                - emphasis [ref=f66e217]: ALMP R2.4
+                - emphasis [ref=f66e218]: 12 EP
+              - button [ref=f66e219] [cursor=pointer]:
+                - text: 性能采集平台
+                - emphasis [ref=f66e220]: PMFP R2.0
+                - emphasis [ref=f66e221]: 16 EP
+            - heading "③ MOCK 服务" [level=3] [ref=f66e223]
+            - generic [ref=f66e224]:
+              - generic [ref=f66e225]: 服务运行中
+              - button "停止服务" [ref=f66e231] [cursor=pointer]
+              - button "删除端口" [ref=f66e234] [cursor=pointer]
+  - contentinfo [ref=f66e237]:
+    - generic [ref=f66e238]:
+      - text: VARIANT
+      - generic [ref=f66e239]: V2 · SWISS EDITORIAL
+    - generic [ref=f66e240]:
+      - text: GRID
+      - generic [ref=f66e241]: 12 COL
+    - generic [ref=f66e242]:
+      - text: DENSITY
+      - generic [ref=f66e243]: 4 / 10
+    - generic [ref=f66e244]:
+      - text: MOTION
+      - generic [ref=f66e245]: 6 / 10
+    - generic [ref=f66e246]:
+      - text: SIM
+      - generic [ref=f66e247]: RUNNING
+    - generic [ref=f66e248]:
+      - text: 键盘
+      - generic [ref=f66e249]: 1–6
+      - text: 切换界面
+  - status

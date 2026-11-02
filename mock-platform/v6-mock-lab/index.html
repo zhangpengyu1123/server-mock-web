@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="zh-CN" data-v6="lab">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mock 实验台 · 信号链工作台</title>
+<link rel="stylesheet" href="./app.css" />
+</head>
+<body class="lab">
+
+<!-- 极光背景（只做 transform，不触发重排） -->
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+<!-- ======================= 状态母线 ======================= -->
+<header class="bus">
+  <div class="bus__id">
+    <span class="bus__logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M3 12h4l2-6 3 12 3-9 2 3h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" /></svg>
+    </span>
+    <span class="bus__title">
+      <b>MOCK 实验台</b>
+      <i>MOCK LAB · SIGNAL BENCH</i>
+    </span>
+  </div>
+
+  <div class="bus__readouts" id="busReadouts">
+    <span class="ro"><i>LOOP</i><b class="mono" id="roLoop">0</b></span>
+    <span class="ro"><i>LIVE</i><b class="mono" id="roLive">—</b></span>
+    <span class="ro"><i>REQ</i><b class="mono" id="roReq">0</b></span>
+    <span class="ro"><i>OK</i><b class="mono" id="roOk">0</b></span>
+    <span class="ro"><i>ERR</i><b class="mono" id="roErr">0</b></span>
+    <span class="ro"><i>LAT</i><b class="mono" id="roLat">0</b><s>ms</s></span>
+    <span class="ro ro--gate"><i>GATE</i><b class="mono" id="roGate">0</b></span>
+    <span class="ro"><i>FPS</i><b class="mono" id="roFps">—</b></span>
+  </div>
+
+  <div class="bus__acts">
+    <button class="icobtn" id="themeBtn" type="button" aria-pressed="false" aria-label="切换主题：晨雾 / 夜航">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.4v2.2M12 18.4v2.2M3.4 12h2.2M18.4 12h2.2M6 6l1.6 1.6M16.4 16.4 18 18M18 6l-1.6 1.6M7.6 16.4 6 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="3.6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      <span id="themeName">晨雾</span>
+    </button>
+    <button class="icobtn" id="recBtn" type="button" data-fx="subtle" aria-pressed="true" aria-label="录制信号（开关时间带记录）">
+      <i class="led led--rec" data-rec-led aria-hidden="true"></i><span>REC</span>
+    </button>
+    <button class="icobtn" id="gateBtn" type="button" data-fx="standard" aria-haspopup="dialog" aria-label="打开人机交互闸门">
+      <i class="led led--gate" data-gate-led aria-hidden="true"></i><span>闸门</span><b class="mono" id="gateCount">0</b>
+    </button>
+    <button class="icobtn" id="sfxBtn" type="button" data-fx="subtle" aria-pressed="false" aria-label="开关仪表音效">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.4v5.2h3l4 3.6V5.8L7 9.4H4z" /><path d="M15 8.6a4.8 4.8 0 0 1 0 6.8" /></svg><span>SFX</span>
+    </button>
+    <span class="bus__clock mono" id="busClock">--:--:--</span>
+  </div>
+</header>
+
+<!-- ======================= 主体：信号路径 / 台面 / 监视器 ======================= -->
+<div class="lab__body">
+
+  <!-- 信号路径 -->
+  <aside class="path" aria-label="信号路径">
+    <div class="path__cap">SIGNAL PATH</div>
+    <div class="path__rail" aria-hidden="true">
+      <span class="path__spine"></span>
+      <span class="path__cursor" id="pathCursor"></span>
+      <span class="path__pulses" id="pathPulses"></span>
+    </div>
+
+    <button class="node" data-node="peer" type="button" data-fx="subtle">
+      <span class="node__id mono">00</span>
+      <span class="node__tx"><b>对端网元</b><i>PEER / DUT</i></span>
+      <span class="led" data-node-led="peer" aria-hidden="true"></span>
+      <span class="node__kv mono" id="nodePeer">—</span>
+    </button>
+
+    <button class="node is-active" data-node="ingress" data-nav="mock" type="button" data-fx="subtle">
+      <span class="node__id mono">01</span>
+      <span class="node__tx"><b>接入层</b><i>INGRESS</i></span>
+      <span class="led" data-node-led="ingress" aria-hidden="true"></span>
+      <span class="node__kv mono" id="nodeIngress">—</span>
+    </button>
+
+    <button class="node" data-node="matrix" data-nav="lcm" type="button" data-fx="subtle">
+      <span class="node__id mono">02</span>
+      <span class="node__tx"><b>能力矩阵</b><i>CAPABILITY MATRIX</i></span>
+      <span class="led" data-node-led="matrix" aria-hidden="true"></span>
+      <span class="node__kv mono" id="nodeMatrix">—</span>
+    </button>
+
+    <button class="node" data-node="engine" data-nav="flow" type="button" data-fx="subtle">
+      <span class="node__id mono">03</span>
+      <span class="node__tx"><b>响应引擎</b><i>RESPONSE ENGINE</i></span>
+      <span class="led" data-node-led="engine" aria-hidden="true"></span>
+      <span class="node__kv mono" id="nodeEngine">—</span>
+    </button>
+
+    <button class="node" data-node="tape" type="button" data-fx="subtle">
+      <span class="node__id mono">04</span>
+      <span class="node__tx"><b>审计带</b><i>AUDIT TAPE</i></span>
+      <span class="led" data-node-led="tape" aria-hidden="true"></span>
+      <span class="node__kv mono" id="nodeTape">—</span>
+    </button>
+  </aside>
+
+  <!-- 台面 -->
+  <main class="bench">
+    <nav class="drawers" id="drawers" role="tablist" aria-label="仪器抽屉">
+      <button class="drawer is-active" role="tab" data-nav="mock" type="button" data-fx="subtle">
+        <span class="drawer__no mono">I</span><b>接入</b><i>INGRESS</i>
+      </button>
+      <button class="drawer" role="tab" data-nav="flow" type="button" data-fx="subtle">
+        <span class="drawer__no mono">II</span><b>引擎</b><i>ENGINE</i>
+      </button>
+      <button class="drawer" role="tab" data-nav="ne" type="button" data-fx="subtle">
+        <span class="drawer__no mono">III</span><b>标本</b><i>SPECIMEN</i>
+      </button>
+      <button class="drawer" role="tab" data-nav="omp" type="button" data-fx="subtle">
+        <span class="drawer__no mono">IV</span><b>受管域</b><i>MANAGED</i>
+      </button>
+      <button class="drawer" role="tab" data-nav="lcm" type="button" data-fx="subtle">
+        <span class="drawer__no mono">V</span><b>库房</b><i>PACKAGE</i>
+      </button>
+      <button class="drawer" role="tab" data-nav="vlp" type="button" data-fx="subtle">
+        <span class="drawer__no mono">VI</span><b>虚层</b><i>STACK</i>
+      </button>
+      <span class="drawers__spine" id="drawerSpine" aria-hidden="true"></span>
+    </nav>
+
+    <!-- I · 接入 / Mock 管理 -->
+    <section class="inst is-active" data-screen="mock">
+      <header class="inst__hd">
+        <span class="inst__no mono">01</span>
+        <h2>接入层 · 端点与身份</h2>
+        <p>登记本机端点 · 签发检定证书 · 挂载平台能力 · 起停仿真服务</p>
+        <span class="inst__stat mono" id="mockStat">—</span>
+      </header>
+      <div class="inst__bd inst__bd--3">
+        <div class="cell">
+          <div class="cell__cap"><b>端点</b><i class="mono">ENDPOINTS</i><span class="cell__n mono" id="portCount">0</span></div>
+          <div class="cell__bd" id="portList"></div>
+          <form class="form" id="portForm" novalidate>
+            <div class="fgrid fgrid--2">
+              <label class="fld"><span>本机 IP <i class="mono">NIC / 可手填</i></span><input class="inp mono" id="pfIp" list="nicList" value="" aria-describedby="pfPortErr" /><datalist id="nicList"></datalist></label>
+              <label class="fld"><span>端口 <i class="mono">PORT</i></span><input class="inp mono" id="pfPort" inputmode="numeric" value="10443" aria-describedby="pfPortErr" /></label>
+              <label class="fld"><span>协议</span><select class="inp" id="pfProto"><option>HTTPS</option><option>HTTP</option><option>gRPC</option></select></label>
+              <label class="fld"><span>TLS</span><select class="inp" id="pfTls"><option>TLS1.3</option><option>TLS1.2</option><option>—</option></select></label>
+            </div>
+            <em class="err" id="pfPortErr" role="alert" hidden></em>
+            <button class="bar" id="pfSubmit" type="submit" data-fx="standard" data-ripple="never">
+              <span>＋ 登记端点</span><em class="mono">REGISTER</em>
+            </button>
+          </form>
+        </div>
+
+        <div class="cell">
+          <div class="cell__cap"><b>检定证书</b><i class="mono">CERTIFICATE</i><span class="cell__n mono" id="certDot">—</span></div>
+          <div class="cell__bd" id="certBox"></div>
+        </div>
+
+        <div class="cell">
+          <div class="cell__cap"><b>能力与伺服</b><i class="mono">MATRIX / SERVO</i></div>
+          <div class="cell__bd">
+            <div class="capgrid" id="capGrid"></div>
+            <div class="cell__rule"></div>
+            <div class="servo" id="servoBox"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- II · 引擎 / Mock 流程 -->
+    <section class="inst" data-screen="flow" hidden>
+      <header class="inst__hd">
+        <span class="inst__no mono">02</span>
+        <h2>响应引擎 · 预期响应配方</h2>
+        <p>HTTP 状态 · 延迟 · 面向对象的字段定制 · 字段级规则（自增 / 单次生效 / 条件）· 插入人机交互</p>
+        <span class="inst__stat mono" id="flowStat">—</span>
+      </header>
+      <div class="inst__bd inst__bd--eng">
+        <div class="cell">
+          <div class="cell__cap"><b>接口清单</b><i class="mono">ENDPOINTS</i></div>
+          <div class="cell__bd cell__bd--scroll" id="apiList"></div>
+        </div>
+        <div class="cell">
+          <div class="cell__cap"><b>配方</b><i class="mono">RECIPE</i><span class="cell__n mono" id="apiTag">—</span></div>
+          <div class="cell__bd cell__bd--scroll" id="recipeBox"></div>
+        </div>
+        <div class="cell cell--wide">
+          <div class="cell__cap"><b>审计日志</b><i class="mono">AUDIT LOG</i>
+            <span class="cell__tabs" id="auditFilter"></span>
+            <input class="inp mono" id="auditQuery" placeholder="搜索路径 / 网元 / 状态码" aria-label="搜索审计日志" style="max-width:200px;margin-left:8px" />
+          </div>
+          <div class="cell__bd cell__bd--scroll" id="auditBox" style="max-height:30vh"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- III · 标本 / 网元管理 -->
+    <section class="inst" data-screen="ne" hidden>
+      <header class="inst__hd">
+        <span class="inst__no mono">03</span>
+        <h2>标本台 · 网元属性与升级流程</h2>
+        <p>属性 / 架构 / 类型 · 版本与软件名 · 升级步骤与人工环节 · 成组 · 复制 · 参数校验</p>
+        <span class="inst__stat mono" id="neStat">—</span>
+      </header>
+      <div class="inst__bd inst__bd--2">
+        <div class="cell">
+          <div class="cell__cap"><b>标本清单</b><i class="mono">SPECIMENS</i><span class="cell__n mono" id="neCount">0</span></div>
+          <div class="cell__bd cell__bd--scroll" id="neList"></div>
+          <div class="cell__rule"></div>
+          <div class="cell__bd" id="groupBox"></div>
+        </div>
+        <div class="cell">
+          <div class="cell__cap"><b>检定与流程</b><i class="mono">VALIDATION / FLOW</i>
+            <span class="cell__tabs" id="neTabs" role="tablist">
+              <button class="ctab is-active" role="tab" data-netab="profile" type="button" data-fx="subtle">属性</button>
+              <button class="ctab" role="tab" data-netab="valid" type="button" data-fx="subtle">校验</button>
+              <button class="ctab" role="tab" data-netab="flow" type="button" data-fx="subtle">升级流程</button>
+            </span>
+          </div>
+          <div class="cell__bd cell__bd--scroll" id="neBox"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IV · 受管域 / 网元管理平台 -->
+    <section class="inst" data-screen="omp" hidden>
+      <header class="inst__hd">
+        <span class="inst__no mono">04</span>
+        <h2>受管域 · 账号与一体化任务</h2>
+        <p>平台受管的网元与网元组 · 账号授权范围 · 创建账号 · 一体化升级任务并关联站点</p>
+        <span class="inst__stat mono" id="ompStat">—</span>
+      </header>
+      <div class="inst__bd inst__bd--3">
+        <div class="cell">
+          <div class="cell__cap"><b>受管范围</b><i class="mono">SCOPE</i></div>
+          <div class="cell__bd cell__bd--scroll" id="scopeBox"></div>
+        </div>
+        <div class="cell">
+          <div class="cell__cap"><b>账号</b><i class="mono">ACCOUNTS</i><span class="cell__n mono" id="accCount">0</span></div>
+          <div class="cell__bd cell__bd--scroll" id="accList"></div>
+          <form class="form" id="accForm" novalidate>
+            <div class="fgrid fgrid--2">
+              <label class="fld"><span>账号</span><input class="inp" id="acName" placeholder="ops_hz_02" required /></label>
+              <label class="fld"><span>角色</span><select class="inp" id="acRole"><option>升级操作员</option><option>只读审计</option><option>平台管理员</option></select></label>
+            </div>
+            <div class="fld"><span>授权网元</span><div class="chips" id="acNes"></div></div>
+            <button class="bar" type="submit" data-fx="standard"><span>＋ 创建账号</span><em class="mono">CREATE</em></button>
+          </form>
+        </div>
+        <div class="cell">
+          <div class="cell__cap"><b>一体化任务</b><i class="mono">INTEGRATED TASK</i></div>
+          <div class="cell__bd cell__bd--scroll" id="taskList"></div>
+          <form class="form" id="taskForm" novalidate>
+            <label class="fld"><span>任务名称</span><input class="inp" id="tkName" placeholder="南京核心网组一体化升级" required /></label>
+            <div class="fgrid fgrid--2">
+              <label class="fld"><span>关联站点</span><select class="inp" id="tkSite"></select></label>
+              <label class="fld"><span>目标网元组</span><select class="inp" id="tkGroup"></select></label>
+            </div>
+            <button class="bar" type="submit" data-fx="standard"><span>＋ 创建任务</span><em class="mono">SCHEDULE</em></button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- V · 库房 / 生命周期平台 -->
+    <section class="inst" data-screen="lcm" hidden>
+      <header class="inst__hd">
+        <span class="inst__no mono">05</span>
+        <h2>库房 · 软件包与共部署</h2>
+        <p>软件包（类型 / 所属网元 / 厂商 / 版本）· 校验流程 · 与网元管理平台共部署</p>
+        <span class="inst__stat mono" id="lcmStat">—</span>
+      </header>
+      <div class="inst__bd inst__bd--2">
+        <div class="cell">
+          <div class="cell__cap"><b>软件包</b><i class="mono">PACKAGES</i><span class="cell__tabs" id="pkgFilter"></span></div>
+          <div class="cell__bd cell__bd--scroll" id="pkgList"></div>
+          <form class="form" id="pkgForm" novalidate>
+            <div class="fgrid fgrid--3">
+              <label class="fld"><span>名称</span><input class="inp" id="pkgName" placeholder="XXX_R1.0.0_full.pkg" required /></label>
+              <label class="fld"><span>类型</span><select class="inp" id="pkgType"></select></label>
+              <label class="fld"><span>所属网元</span><select class="inp" id="pkgNe"></select></label>
+              <label class="fld"><span>厂商</span><select class="inp" id="pkgVendor"></select></label>
+              <label class="fld"><span>版本</span><input class="inp" id="pkgVer" placeholder="1.0.0" required /></label>
+              <label class="fld"><span>大小 MB</span><input class="inp mono" id="pkgSize" inputmode="numeric" placeholder="420" /></label>
+            </div>
+            <button class="bar" type="submit" data-fx="standard"><span>＋ 登记软件包</span><em class="mono">REGISTER</em></button>
+          </form>
+        </div>
+        <div class="cell">
+          <div class="cell__cap"><b>受管网元与部署形态</b><i class="mono">SCOPE / DEPLOY</i></div>
+          <div class="cell__bd" id="lcmScope"></div>
+          <div class="cell__rule"></div>
+          <div class="cell__bd" id="deployBox"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VI · 虚层 / 虚层管理平台 -->
+    <section class="inst" data-screen="vlp" hidden>
+      <header class="inst__hd">
+        <span class="inst__no mono">06</span>
+        <h2>虚层 · CPU 配额与站点对</h2>
+        <p>CPU 数量 · 主副站点 · 升级流程详情 · 平台版本 · 软件包校验流程</p>
+        <span class="inst__stat mono" id="vlpStat">—</span>
+      </header>
+      <div class="inst__bd inst__bd--3">
+        <div class="cell">
+          <div class="cell__cap"><b>平台与配额</b><i class="mono">PLATFORM / CPU</i></div>
+          <div class="cell__bd" id="vlpCore"></div>
+        </div>
+        <div class="cell">
+          <div class="cell__cap"><b>主副站点</b><i class="mono">SITE PAIR</i></div>
+          <div class="cell__bd cell__bd--scroll" id="vlpSites"></div>
+        </div>
+        <div class="cell">
+          <div class="cell__cap"><b>流程与校验</b><i class="mono">FLOW / CHECK</i></div>
+          <div class="cell__bd cell__bd--scroll" id="vlpFlow"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 监视器 -->
+  <aside class="scope" aria-label="监视器">
+    <div class="scope__cap">
+      <b>监视器</b><i class="mono">SCOPE</i>
+      <span class="cell__tabs" id="scopeTabs">
+        <button class="ctab is-active" type="button" data-scope="wave" data-fx="subtle">波形</button>
+        <button class="ctab" type="button" data-scope="dist" data-fx="subtle">分布</button>
+      </span>
+    </div>
+    <div class="scope__screen">
+      <canvas id="scopeCanvas" aria-label="实时流量波形"></canvas>
+      <span class="scope__scan" aria-hidden="true"></span>
+    </div>
+    <div class="scope__kv mono" id="scopeKv"></div>
+    <div class="scope__cap scope__cap--2"><b>检查器</b><i class="mono">INSPECTOR</i></div>
+    <div class="scope__body" id="inspectBox"></div>
+  </aside>
+</div>
+
+<!-- ======================= 时间带（审计带） ======================= -->
+<footer class="tape" aria-label="审计带">
+  <div class="tape__ctl">
+    <button class="tbtn" id="tpJump" type="button" data-fx="subtle" title="回到实时">⟲ 实时</button>
+    <button class="tbtn" id="tpStep" type="button" data-fx="subtle" title="步进一条">◂ 步进</button>
+    <button class="tbtn tbtn--live" id="tpLive" type="button" data-fx="subtle" aria-pressed="true">● LIVE</button>
+    <span class="tape__rate">
+      <i class="mono">RATE</i>
+      <span id="rateWrap"></span>
+    </span>
+  </div>
+  <div class="tape__track" id="tapeTrack" role="slider" tabindex="0" aria-label="会话时间轴（拖动回看）" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+    <span class="tape__spine" aria-hidden="true"></span>
+    <span class="tape__marks" id="tapeMarks" aria-hidden="true"></span>
+    <span class="tape__play" id="tapePlay" aria-hidden="true"><i></i></span>
+    <span class="tape__hint mono" id="tapeHint">拖动回看 · 松手吸附实时</span>
+  </div>
+  <div class="tape__read mono" id="tapeRead">—</div>
+</footer>
+
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<!-- ======================= 人机交互闸门 ======================= -->
+<div class="drawerbox" id="gateBox" hidden>
+  <div class="drawerbox__scrim" data-close="1"></div>
+  <section class="drawerbox__panel" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+    <header class="drawerbox__hd">
+      <span class="mono">HUMAN-IN-THE-LOOP / GATE</span>
+      <button class="tbtn" type="button" data-close="1" data-fx="subtle">关闭 ESC</button>
+    </header>
+    <h3 class="drawerbox__t" id="gateTitle">人机交互闸门 <em>请求在这里等你放行</em></h3>
+    <div class="drawerbox__bd" id="gateList"></div>
+    <footer class="drawerbox__ft mono">放行的请求继续执行；拒绝的请求按 403 返回并在审计带上留一条红标</footer>
+  </section>
+</div>
+
+<script src="../_shared/domain.js"></script>
+<script src="../_shared/motion.js"></script>
+<script src="../_shared/micro.js"></script>
+<script src="../_shared/button-fx.js"></script>
+<script src="./app.js"></script>
+<script src="./instruments.js"></script>
+<script src="./instruments2.js"></script>
+</body>
+</html>

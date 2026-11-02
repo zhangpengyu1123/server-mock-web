@@ -1,0 +1,12 @@
+[package]
+name = "rhine-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "两端共用的领域模型、认证与存储"
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+argon2.workspace = true
+rand.workspace = true

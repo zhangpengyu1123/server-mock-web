@@ -1,0 +1,155 @@
+- generic [ref=e1]:
+  - generic [ref=e16]:
+    - generic [ref=e17]:
+      - group "模式" [ref=e18]:
+        - button "运行台 OPERATION" [active] [pressed] [ref=e19] [cursor=pointer]:
+          - generic [ref=e20]: 运行台
+          - generic [ref=e21]: OPERATION
+        - button "准备台 PREPARATION" [ref=e22] [cursor=pointer]:
+          - generic [ref=e23]: 准备台
+          - generic [ref=e24]: PREPARATION
+      - navigation "界面" [ref=e25]:
+        - button "运行台 OPERATION" [ref=e26] [cursor=pointer]:
+          - generic [ref=e30]: 运行台
+        - button "审计 AUDIT" [ref=e32] [cursor=pointer]:
+          - generic [ref=e36]: 审计
+        - button "闸门 GATE" [ref=e38] [cursor=pointer]:
+          - generic [ref=e42]: 闸门
+        - button "系统 SYSTEM" [ref=e44] [cursor=pointer]:
+          - generic [ref=e48]: 系统
+    - banner [ref=e51]:
+      - generic [ref=e52]:
+        - heading "运 行 台" [level=1] [ref=e669]
+        - paragraph [ref=e54]: "- 启动与运行中操作"
+      - generic [ref=e58]:
+        - generic [ref=e670]:
+          - generic [ref=e671]: STATE
+          - text: STOPPED
+        - generic [ref=e672]:
+          - generic [ref=e673]: REQ
+          - text: 12,589
+        - generic [ref=e674]:
+          - generic [ref=e675]: GATE
+          - text: "9"
+    - main [ref=e65]:
+      - region "列表" [ref=e66]:
+        - generic [ref=e67]:
+          - generic [ref=e69]: 服务单元
+          - generic [ref=e70]: UNITS
+        - list [ref=e72]:
+          - listitem [ref=e676]:
+            - button "10.18.32.104:8443 证书就绪 · 2 能力 · 12589 请求 停止" [ref=e677] [cursor=pointer]:
+              - generic [ref=e679]:
+                - generic [ref=e680]: 10.18.32.104:8443
+                - generic [ref=e681]: 证书就绪 · 2 能力 · 12589 请求
+              - generic [ref=e682]: 停止
+          - listitem [ref=e683]:
+            - button "10.18.32.104:9443 缺证书 · 1 能力 · 0 请求 停止" [ref=e684] [cursor=pointer]:
+              - generic [ref=e686]:
+                - generic [ref=e687]: 10.18.32.104:9443
+                - generic [ref=e688]: 缺证书 · 1 能力 · 0 请求
+              - generic [ref=e689]: 停止
+          - listitem [ref=e690]:
+            - button "10.18.32.77:8080 缺证书 · 1 能力 · 214 请求 停止" [ref=e691] [cursor=pointer]:
+              - generic [ref=e693]:
+                - generic [ref=e694]: 10.18.32.77:8080
+                - generic [ref=e695]: 缺证书 · 1 能力 · 214 请求
+              - generic [ref=e696]: 停止
+      - region "详情" [ref=e97]:
+        - generic [ref=e697]:
+          - generic [ref=e698]:
+            - generic [ref=e699]:
+              - generic [ref=e700]:
+                - generic [ref=e701]: 已 停 止
+                - generic [ref=e703]: 10.18.32.104:8443 · HTTPS/TLS1.3 · 2 项能力 · 本次请求 12,589 · 异常 386
+              - button "按住启动 mock 服务 HOLD" [ref=e705] [cursor=pointer]:
+                - generic [ref=e706]: 按住启动 mock 服务
+                - emphasis [ref=e707]: HOLD
+            - generic [ref=e708]: 前置条件已满足，按住 0.9 秒即启动。
+          - generic [ref=e709]:
+            - generic [ref=e710]:
+              - generic [ref=e711]: 就绪链
+              - generic [ref=e712]: READINESS
+              - generic [ref=e713]: 3 / 4
+            - generic [ref=e716]:
+              - button "01 端点已登记 10.18.32.104:8443" [ref=e717] [cursor=pointer]:
+                - generic [ref=e718]: "01"
+                - generic [ref=e719]: 端点已登记
+                - generic [ref=e721]: 10.18.32.104:8443
+              - button "02 证书已签发 CN mock-nemp.10.18.32.104" [ref=e722] [cursor=pointer]:
+                - generic [ref=e723]: "02"
+                - generic [ref=e724]: 证书已签发
+                - generic [ref=e726]: CN mock-nemp.10.18.32.104
+              - button "03 能力已挂载 2 项 · 就绪" [ref=e727] [cursor=pointer]:
+                - generic [ref=e728]: "03"
+                - generic [ref=e729]: 能力已挂载
+                - generic [ref=e731]: 2 项 · 就绪
+              - button "04 服务运行中 未启动" [ref=e732] [cursor=pointer]:
+                - generic [ref=e733]: "04"
+                - generic [ref=e734]: 服务运行中
+                - generic [ref=e736]: 未启动
+          - generic [ref=e737]:
+            - generic [ref=e738]:
+              - generic [ref=e739]: 触发台
+              - generic [ref=e740]: TRIGGER
+              - generic [ref=e741]: POST
+            - generic [ref=e743]: 服务停止中：启动后才能触发接口。
+          - generic [ref=e745]:
+            - generic [ref=e746]:
+              - generic [ref=e747]: 实时审计
+              - generic [ref=e748]: LIVE FEED
+              - button "全部记录" [ref=e750] [cursor=pointer]
+            - generic [ref=e751]: 服务停止中：没有实时流量。
+      - complementary "状态" [ref=e204]:
+        - generic [ref=e620]:
+          - generic [ref=e621]: 状 态
+          - generic [ref=e622]: STATUS
+        - generic [ref=e623]:
+          - generic [ref=e624]:
+            - generic [ref=e625]: MOCK-2B
+            - generic [ref=e626]: "Lv : 06"
+          - generic [ref=e627]:
+            - generic [ref=e628]: 在服端点：
+            - generic [ref=e629]: 0 / 3
+          - generic [ref=e630]:
+            - generic [ref=e631]: 审计记录：
+            - generic [ref=e632]: "118"
+          - generic [ref=e633]:
+            - generic [ref=e634]: 累计命中：
+            - generic [ref=e635]: 29,444
+          - generic [ref=e636]:
+            - generic [ref=e637]: 服务健康：
+            - generic [ref=e639]: 0%
+          - generic [ref=e640]:
+            - generic [ref=e641]: 弱接口：
+            - generic [ref=e642]: "2"
+          - generic [ref=e643]:
+            - generic [ref=e644]: 强接口：
+            - generic [ref=e645]: "4"
+          - generic [ref=e646]:
+            - generic [ref=e647]: 射击接口：
+            - generic [ref=e648]: "0"
+          - generic [ref=e649]:
+            - generic [ref=e650]: 异 常：
+            - generic [ref=e651]: "9"
+          - generic "已挂载能力" [ref=e652]
+          - generic [ref=e664]: 9 项待放行
+    - contentinfo [ref=e250]:
+      - paragraph [ref=e252]: 启动前还差一步：服务运行中。按 Enter 或按住下方按钮。
+      - generic [ref=e253]:
+        - generic [ref=e254]:
+          - generic [ref=e255]: W
+          - generic [ref=e256]: S
+          - emphasis [ref=e257]: 选择
+        - generic [ref=e258]:
+          - generic [ref=e259]: Enter
+          - emphasis [ref=e260]: 确认
+        - generic [ref=e261]:
+          - generic [ref=e262]: Esc
+          - emphasis [ref=e263]: 返回
+        - generic [ref=e264]:
+          - generic [ref=e265]: "1"
+          - generic [ref=e266]: "-"
+          - generic [ref=e267]: "7"
+          - emphasis [ref=e268]: 界面
+  - status

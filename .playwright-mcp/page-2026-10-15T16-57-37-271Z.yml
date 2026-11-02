@@ -1,0 +1,265 @@
+- generic [active] [ref=f27e1]:
+  - banner [ref=f27e2]:
+    - link "莱茵生命 临床档案终端 · 首页" [ref=f27e3] [cursor=pointer]:
+      - /url: ./index.html
+      - generic [ref=f27e8]:
+        - generic [ref=f27e9]: 莱茵生命 · 临床档案
+        - generic [ref=f27e10]: RHINE LAB · CLINICAL ARCHIVE TERMINAL
+    - group "检定机信息" [ref=f27e11]:
+      - generic [ref=f27e13]:
+        - generic [ref=f27e14]: 宿主
+        - generic [ref=f27e15]: MOCK-WIN-01
+      - generic [ref=f27e16]:
+        - generic [ref=f27e17]: 编号
+        - generic [ref=f27e18]: RL-101832104
+      - generic [ref=f27e19]:
+        - generic [ref=f27e20]: 网卡
+        - generic [ref=f27e21]: 10.18.32.104 / 10.18.32.77
+      - generic [ref=f27e22]:
+        - generic [ref=f27e23]: 检定代理
+        - generic [ref=f27e24]: MockAgent 4.2.1
+    - generic "实时遥测" [ref=f27e25]:
+      - generic [ref=f27e26]:
+        - generic [ref=f27e27]: REQ
+        - generic [ref=f27e28]: "0"
+      - generic [ref=f27e29]:
+        - generic [ref=f27e30]: OK
+        - generic [ref=f27e31]: "0"
+      - generic [ref=f27e32]:
+        - generic [ref=f27e33]: ERR
+        - generic [ref=f27e34]: "0"
+      - generic [ref=f27e35]:
+        - generic [ref=f27e36]: AVG
+        - generic [ref=f27e37]: "0"
+        - generic [ref=f27e38]: ms
+      - generic [ref=f27e39]:
+        - generic [ref=f27e40]: RUN
+        - generic [ref=f27e41]: "0"
+      - generic [ref=f27e42]:
+        - generic [ref=f27e43]: PEND
+        - generic [ref=f27e44]: "0"
+    - generic [ref=f27e45]:
+      - button "切换主题：档案 / 终端" [ref=f27e46] [cursor=pointer]:
+        - generic [ref=f27e53]:
+          - generic [ref=f27e54]: 档案
+          - generic [ref=f27e55]: ARCHIVE
+      - button "开关界面音效" [ref=f27e56] [cursor=pointer]:
+        - generic [ref=f27e60]: SFX
+      - generic [ref=f27e61]: 00:57:37
+  - navigation "主导航" [ref=f27e62]:
+    - button "01 Mock 管理 PORT / CERT 0" [ref=f27e64] [cursor=pointer]:
+      - generic [ref=f27e65]: "01"
+      - generic [ref=f27e70]:
+        - generic [ref=f27e71]: Mock 管理
+        - generic [ref=f27e72]: PORT / CERT
+      - generic [ref=f27e73]: "0"
+    - button "02 Mock 流程 AUDIT / RESPONSE 0" [ref=f27e74] [cursor=pointer]:
+      - generic [ref=f27e75]: "02"
+      - generic [ref=f27e80]:
+        - generic [ref=f27e81]: Mock 流程
+        - generic [ref=f27e82]: AUDIT / RESPONSE
+      - generic [ref=f27e83]: "0"
+    - button "03 网元管理 NE SPECIMEN 0" [ref=f27e84] [cursor=pointer]:
+      - generic [ref=f27e85]: "03"
+      - generic [ref=f27e89]:
+        - generic [ref=f27e90]: 网元管理
+        - generic [ref=f27e91]: NE SPECIMEN
+      - generic [ref=f27e92]: "0"
+    - button "04 网元管理平台 OMP / ACCOUNT 0" [ref=f27e93] [cursor=pointer]:
+      - generic [ref=f27e94]: "04"
+      - generic [ref=f27e100]:
+        - generic [ref=f27e101]: 网元管理平台
+        - generic [ref=f27e102]: OMP / ACCOUNT
+      - generic [ref=f27e103]: "0"
+    - button "05 生命周期平台 LCM / PACKAGE 0" [ref=f27e104] [cursor=pointer]:
+      - generic [ref=f27e105]: "05"
+      - generic [ref=f27e109]:
+        - generic [ref=f27e110]: 生命周期平台
+        - generic [ref=f27e111]: LCM / PACKAGE
+      - generic [ref=f27e112]: "0"
+    - button "06 虚层管理平台 VLP / STACK —" [ref=f27e113] [cursor=pointer]:
+      - generic [ref=f27e114]: "06"
+      - generic [ref=f27e118]:
+        - generic [ref=f27e119]: 虚层管理平台
+        - generic [ref=f27e120]: VLP / STACK
+      - generic [ref=f27e121]: —
+  - main [ref=f27e123]:
+    - generic [ref=f27e124]:
+      - generic [ref=f27e125]:
+        - generic [ref=f27e127]: "01"
+        - generic [ref=f27e128]:
+          - heading "Mock 管理" [level=1] [ref=f27e129]
+          - paragraph [ref=f27e130]: 登记本机端点 · 签发检定证书 · 挂载平台能力 · 起停仿真服务
+        - paragraph [aria-hidden] [ref=f27e131]: RL-CODE · PORT REGISTRY
+        - generic [ref=f27e132]:
+          - generic [ref=f27e133]:
+            - generic [ref=f27e134]: 端口
+            - generic [ref=f27e135]: 3个
+          - generic [ref=f27e136]:
+            - generic [ref=f27e137]: 运行中
+            - generic [ref=f27e138]: 1个
+          - generic [ref=f27e139]:
+            - generic [ref=f27e140]: 总请求
+            - generic [ref=f27e141]: "8"
+          - generic [ref=f27e142]:
+            - generic [ref=f27e143]: 平均时延
+            - generic [ref=f27e144]: 345ms
+      - generic [ref=f27e145]:
+        - generic [ref=f27e147]:
+          - generic [ref=f27e148]:
+            - heading "01 端点登记簿" [level=2] [ref=f27e149]:
+              - generic [ref=f27e150]: "01"
+              - text: 端点登记簿
+            - generic [ref=f27e151]: 0 条记录
+          - generic [ref=f27e152]:
+            - button "10.18.32.104:8443 HTTPS 证书已签发 RUNNING 12480 req · 3.2 rps TLS1.3 · 2 项能力（NEMP/LCMP） · 建于 10-14 09:12本机主端口 · 网元管理 + 生命周期" [pressed] [ref=f27e153] [cursor=pointer]:
+              - generic [aria-hidden]: RL-01
+              - generic [ref=f27e154]:
+                - generic [ref=f27e156]: 10.18.32.104:8443
+                - generic [ref=f27e157]: HTTPS
+                - generic [ref=f27e158]: 证书已签发
+                - generic [ref=f27e159]: RUNNING12480 req · 3.2 rps
+              - text: TLS1.3 · 2 项能力（NEMP/LCMP） · 建于 10-14 09:12本机主端口 · 网元管理 + 生命周期
+            - button "10.18.32.104:9443 HTTPS 未签发 STOPPED 0 req · 0 rps TLS1.2 · 1 项能力（VLMP） · 建于 10-15 14:40虚层专用 · 待签发证书" [ref=f27e160] [cursor=pointer]:
+              - generic [aria-hidden]: RL-02
+              - generic [ref=f27e161]:
+                - generic [ref=f27e163]: 10.18.32.104:9443
+                - generic [ref=f27e164]: HTTPS
+                - generic [ref=f27e165]: 未签发
+                - generic [ref=f27e166]: STOPPED0 req · 0 rps
+              - text: TLS1.2 · 1 项能力（VLMP） · 建于 10-15 14:40虚层专用 · 待签发证书
+            - button "10.18.32.77:8080 HTTP 未签发 STOPPED 214 req · 0 rps — · 1 项能力（ALMP） · 建于 10-15 16:02第二网卡 · 告警上报" [ref=f27e167] [cursor=pointer]:
+              - generic [aria-hidden]: RL-03
+              - generic [ref=f27e168]:
+                - generic [ref=f27e170]: 10.18.32.77:8080
+                - generic [ref=f27e171]: HTTP
+                - generic [ref=f27e172]: 未签发
+                - generic [ref=f27e173]: STOPPED214 req · 0 rps
+              - text: — · 1 项能力（ALMP） · 建于 10-15 16:02第二网卡 · 告警上报
+          - generic [ref=f27e175]:
+            - generic [ref=f27e176]:
+              - generic [ref=f27e177]:
+                - generic [ref=f27e178]:
+                  - text: 本机 IP
+                  - generic [ref=f27e179]: HOST NIC
+                - combobox "本机 IP HOST NIC 取自本机网卡，可选「手动输入」" [ref=f27e180] [cursor=pointer]:
+                  - option "10.18.32.104（本机网卡）" [selected]
+                  - option "10.18.32.77（本机网卡）"
+                  - option "手动输入…"
+                  - option "127.0.0.1（回环）"
+                - emphasis [ref=f27e181]: 取自本机网卡，可选「手动输入」
+              - generic [ref=f27e182]:
+                - generic [ref=f27e183]:
+                  - text: 端口
+                  - generic [ref=f27e184]: PORT
+                - textbox "端口 PORT" [ref=f27e185]: "10443"
+              - generic [ref=f27e186]:
+                - generic [ref=f27e187]: 协议
+                - combobox "协议" [ref=f27e188] [cursor=pointer]:
+                  - option "HTTPS" [selected]
+                  - option "HTTP"
+                  - option "gRPC"
+              - generic [ref=f27e189]:
+                - generic [ref=f27e190]: TLS 版本
+                - combobox "TLS 版本" [ref=f27e191] [cursor=pointer]:
+                  - option "TLS1.3" [selected]
+                  - option "TLS1.2"
+                  - option "—"
+              - generic [ref=f27e192]:
+                - generic [ref=f27e193]: 标本备注
+                - textbox "标本备注" [ref=f27e194]:
+                  - /placeholder: 例如：本机主端口 · 网元管理 + 生命周期
+            - generic [ref=f27e195]:
+              - button "登记端点" [ref=f27e196] [cursor=pointer]
+              - generic [ref=f27e200]: 登记后需签发证书、挂载能力，服务才可启动
+        - generic [ref=f27e202]:
+          - generic [ref=f27e203]:
+            - heading "02 端点档案" [level=2] [ref=f27e204]:
+              - generic [ref=f27e205]: "02"
+              - text: 端点档案
+            - generic [ref=f27e206]:
+              - generic [ref=f27e207]: HTTPS
+              - generic [ref=f27e208]: 10.18.32.104:8443
+          - generic [ref=f27e209]:
+            - generic [ref=f27e210]:
+              - generic [ref=f27e211]:
+                - generic [ref=f27e212]: 协议
+                - generic [ref=f27e213]: HTTPS
+              - generic [ref=f27e214]:
+                - generic [ref=f27e215]: TLS
+                - generic [ref=f27e216]: TLS1.3
+              - generic [ref=f27e217]:
+                - generic [ref=f27e218]: 请求 / 成功 / 异常
+                - generic [ref=f27e219]: 12480 / 12102 / 378
+              - generic [ref=f27e220]:
+                - generic [ref=f27e221]: 当前 RPS
+                - generic [ref=f27e222]: "3.2"
+            - generic [ref=f27e223]:
+              - generic [ref=f27e224]: "01"
+              - text: 检定证书文件
+            - generic [ref=f27e225]:
+              - generic [ref=f27e226]:
+                - generic [ref=f27e227]: 证书有效
+                - generic [ref=f27e233]: mock-nemp.10.18.32.104
+                - generic [ref=f27e234]: 已签发
+                - generic [ref=f27e235]: MockCA-Root
+              - generic [ref=f27e236]:
+                - generic [ref=f27e237]:
+                  - generic [ref=f27e238]: 有效期
+                  - generic [ref=f27e239]: 365 天
+                - generic [ref=f27e240]:
+                  - generic [ref=f27e241]: 签发时间
+                  - generic [ref=f27e242]: 10-16 00:57:37
+                - generic [ref=f27e243]:
+                  - generic [ref=f27e244]: 签发机构
+                  - generic [ref=f27e245]: MockCA-Root
+                - generic [ref=f27e246]:
+                  - generic [ref=f27e247]: 指纹 FINGERPRINT
+                  - generic [ref=f27e248]: 3A:9F:C2:11:7E:8B:D4:05
+              - generic [ref=f27e250]:
+                - button "导出证书文件" [ref=f27e251] [cursor=pointer]
+                - button "重新签发" [ref=f27e255] [cursor=pointer]
+                - generic [ref=f27e257]: 导出为 PEM（.crt），用于对端校验本 mock 端点的 TLS 身份
+            - generic [ref=f27e258]:
+              - generic [ref=f27e259]: "02"
+              - text: 挂载平台能力（6 选 N，可卸载）
+            - generic [ref=f27e260]:
+              - button [pressed] [ref=f27e261] [cursor=pointer]:
+                - text: 网元管理平台
+                - emphasis [ref=f27e263]: NEMP · R7.2 · 46 接口
+              - button [pressed] [ref=f27e264] [cursor=pointer]:
+                - text: 生命周期平台
+                - emphasis [ref=f27e266]: LCMP · R5.8 · 32 接口
+              - button [ref=f27e267] [cursor=pointer]:
+                - text: 虚层管理平台
+                - emphasis [ref=f27e269]: VLMP · R3.1 · 21 接口
+              - button [ref=f27e270] [cursor=pointer]:
+                - text: 网元模拟服务
+                - emphasis [ref=f27e272]: NEMS · R9.0 · 58 接口
+              - button [ref=f27e273] [cursor=pointer]:
+                - text: 告警上报平台
+                - emphasis [ref=f27e275]: ALMP · R2.4 · 12 接口
+              - button [ref=f27e276] [cursor=pointer]:
+                - text: 性能采集平台
+                - emphasis [ref=f27e278]: PMFP · R2.0 · 16 接口
+            - generic [ref=f27e279]:
+              - generic [ref=f27e280]: "03"
+              - text: MOCK 服务
+            - generic [ref=f27e281]:
+              - generic [ref=f27e282]: 服务运行中
+              - button "停止服务" [ref=f27e288] [cursor=pointer]
+              - button "删除端点" [ref=f27e291] [cursor=pointer]
+  - contentinfo [ref=f27e294]:
+    - generic [ref=f27e295]:
+      - text: SIM
+      - generic [ref=f27e297]: RUNNING
+    - generic [ref=f27e299]:
+      - text: LAST
+      - generic [ref=f27e300]: —
+    - generic [ref=f27e302]:
+      - text: 标本
+      - generic [ref=f27e303]: UP 5d0h · Windows 11
+    - generic [ref=f27e305]:
+      - text: V3 · RHINE LAB /
+      - generic [ref=f27e306]: ARCHIVE
+  - status

@@ -1,0 +1,7 @@
+﻿node_modules/
+console/target/
+console/data/
+console/desktop/*/target/
+console/desktop/*/gen/
+*.log
+console/assets/preview/*.png

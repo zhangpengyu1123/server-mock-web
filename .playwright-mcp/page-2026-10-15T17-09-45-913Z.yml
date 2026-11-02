@@ -1,0 +1,22 @@
+- generic [ref=f73e2]:
+  - heading "Mock 平台 · 三版设计前台" [level=1] [ref=f73e3]
+  - paragraph [ref=f73e4]:
+    - text: 同一个 mock 平台的同一批数据，三种视觉语言： 用
+    - code [ref=f73e5]: node serve.mjs
+    - text: 起服务后逐版打开（下面链接直接可用）。
+  - generic [ref=f73e6]:
+    - link "Variant 01 暗场运维控制台 HUD / FUI · 深靛 + 琥珀 · 密度 9 · 适合 7×24 值守大屏" [ref=f73e7] [cursor=pointer]:
+      - /url: ./v1-ops-console/
+      - generic [ref=f73e8]: Variant 01
+      - generic [ref=f73e9]: 暗场运维控制台
+      - generic [ref=f73e10]: HUD / FUI · 深靛 + 琥珀 · 密度 9 · 适合 7×24 值守大屏
+    - link "Variant 02 瑞士网格 · 编辑风 Swiss Modernism 2.0 · 浅色 12 栏 · 密度 4 · 适合评审与文档化交付" [ref=f73e15] [cursor=pointer]:
+      - /url: ./v2-swiss-editorial/
+      - generic [ref=f73e16]: Variant 02
+      - generic [ref=f73e17]: 瑞士网格 · 编辑风
+      - generic [ref=f73e18]: Swiss Modernism 2.0 · 浅色 12 栏 · 密度 4 · 适合评审与文档化交付
+    - link "Variant 03 莱茵生命 · 临床档案 / 终端 PRTS 正典 token · 档案（亮）/ 终端（暗）双主题 · 六边与细线刻度" [ref=f73e22] [cursor=pointer]:
+      - /url: ./v3-rhine-lab/
+      - generic [ref=f73e23]: Variant 03
+      - generic [ref=f73e24]: 莱茵生命 · 临床档案 / 终端
+      - generic [ref=f73e25]: PRTS 正典 token · 档案（亮）/ 终端（暗）双主题 · 六边与细线刻度

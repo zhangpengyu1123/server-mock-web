@@ -1,0 +1,96 @@
+- generic [ref=f17e3]:
+  - banner [ref=f17e4]:
+    - heading "Micro 微交互组件 · 本地运行验证" [level=1] [ref=f17e5]
+    - paragraph [ref=f17e6]:
+      - text: 组件源码来自
+      - code [ref=f17e7]: 02-Micro-ReactBits/src/content/Micro/
+      - text: （react-bits 官方仓库克隆，commit
+      - code [ref=f17e8]: 43591e8b
+      - text: ），本页未做任何改动，只负责把它们渲染出来。
+    - paragraph [ref=f17e9]: 下方 13 个组件全部可交互：按住、点击、拖拽、悬停试试。
+  - generic [ref=f17e10]:
+    - generic [ref=f17e11]:
+      - generic [ref=f17e12]: HoldButton
+      - button "Hold to delete Press and hold for 2 seconds to confirm" [ref=f17e14] [cursor=pointer]:
+        - generic [ref=f17e15]:
+          - generic [ref=f17e16]: Hold to delete
+          - generic [aria-hidden] [ref=f17e17]: Deleted
+        - generic [aria-hidden]:
+          - generic:
+            - generic:
+              - generic: Hold to delete
+              - generic [aria-hidden]: Deleted
+          - generic [aria-hidden]:
+            - generic:
+              - generic: Hold to delete
+              - generic [aria-hidden]: Deleted
+        - generic [ref=f17e18]: Press and hold for 2 seconds to confirm
+    - generic [ref=f17e19]:
+      - generic [ref=f17e20]: SpringCheck
+      - checkbox "Ship the build" [checked] [ref=f17e22] [cursor=pointer]
+    - generic [ref=f17e31]:
+      - generic [ref=f17e32]: SquishSwitch
+      - switch [checked] [ref=f17e35] [cursor=pointer]
+    - generic [ref=f17e38]:
+      - generic [ref=f17e39]: BellToggle
+      - button "Notify me" [ref=f17e42] [cursor=pointer]:
+        - generic [aria-hidden] [ref=f17e43]:
+          - generic: "0"
+        - generic [aria-hidden] [ref=f17e48]:
+          - generic [ref=f17e49]: Notify me
+          - generic [ref=f17e50]: You'll be notified
+    - generic [ref=f17e51]:
+      - generic [ref=f17e52]: FuseButton
+      - generic [ref=f17e54]:
+        - button "Archive" [ref=f17e55] [cursor=pointer]
+        - status [ref=f17e62]
+    - generic [ref=f17e63]:
+      - generic [ref=f17e64]: JellyRadio
+      - radiogroup "Options" [ref=f17e66]:
+        - radio "Low" [checked] [ref=f17e67]
+        - radio "Medium" [ref=f17e70] [cursor=pointer]
+        - radio "High" [ref=f17e73] [cursor=pointer]
+    - generic [ref=f17e76]:
+      - generic [ref=f17e77]: ScrubField
+      - generic [ref=f17e79]:
+        - generic [ref=f17e80]: Radius
+        - spinbutton "Radius" [ref=f17e81]: "24"
+        - generic [aria-hidden] [ref=f17e82]: px
+    - generic [ref=f17e83]:
+      - generic [ref=f17e84]: LatticeLoader
+      - status [ref=f17e86]:
+        - generic [aria-hidden] [ref=f17e108]:
+          - text: Thinking
+          - generic [ref=f17e109]: Done in
+          - generic [ref=f17e110]: Failed after
+        - generic [aria-hidden] [ref=f17e111]: 0.0s
+        - generic [ref=f17e112]: Thinking, in progress
+    - generic [ref=f17e113]:
+      - generic [ref=f17e114]: SloshGauge
+      - meter "Level" [ref=f17e116]:
+        - generic [aria-hidden]: 60%
+        - generic [aria-hidden] [ref=f17e117]:
+          - generic: 60%
+    - generic [ref=f17e118]:
+      - generic [ref=f17e119]: CometDial
+      - generic [ref=f17e121]:
+        - slider "Level" [ref=f17e122]
+        - generic [aria-hidden]:
+          - generic:
+            - generic: "62"
+            - generic: "%"
+    - generic [ref=f17e126]:
+      - generic [ref=f17e127]: WarmTooltip
+      - button "Hover me" [ref=f17e130] [cursor=pointer]
+    - generic [ref=f17e131]:
+      - generic [ref=f17e132]: FlipCard
+      - button "Flip card" [ref=f17e134]:
+        - generic [ref=f17e135]:
+          - generic [ref=f17e136]: 正面 · 点击翻转
+          - generic [ref=f17e139]: Back
+    - generic [ref=f17e140]:
+      - generic [ref=f17e141]: SwipeToast
+      - status [ref=f17e144]:
+        - generic [ref=f17e145]:
+          - generic [ref=f17e146]: File archived
+          - generic [ref=f17e147]: Swipe down to dismiss

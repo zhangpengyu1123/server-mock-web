@@ -1,0 +1,335 @@
+{
+  "exportedAt": "2026-10-27T15:10:48.982Z",
+  "platform": "BLACKBOX-8.0",
+  "theme": "nier",
+  "count": 9,
+  "logs": [
+    {
+      "id": "log-rz",
+      "ts": 1793113847850,
+      "clock": "23:10:47",
+      "portId": "port-1",
+      "method": "POST",
+      "path": "/nemp/v1/ne/GNB-HZ-0008/upgrade",
+      "status": 202,
+      "latencyMs": 805,
+      "ne": "GNB-HZ-0001",
+      "verdict": "匹配规则",
+      "interaction": null,
+      "req": {
+        "headers": {
+          "X-Mock-Platform": "sim",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "neId": "UPF-NJ-0004",
+          "op": "POST"
+        }
+      },
+      "res": {
+        "status": 202,
+        "body": {
+          "code": "202",
+          "message": "success",
+          "data": {
+            "neId": "GNB-HZ-0137",
+            "registerTime": "now",
+            "token": "EXPIRED",
+            "site": "杭州主站点"
+          }
+        },
+        "notes": [
+          {
+            "key": "code",
+            "value": "202",
+            "rule": "fixed",
+            "note": "固定值"
+          },
+          {
+            "key": "message",
+            "value": "success",
+            "rule": "fixed",
+            "note": "固定值"
+          },
+          {
+            "key": "data.neId",
+            "value": "GNB-HZ-0137",
+            "rule": "increment",
+            "note": "第 137 次命中"
+          },
+          {
+            "key": "data.registerTime",
+            "value": "now",
+            "rule": "fixed",
+            "note": "固定值"
+          },
+          {
+            "key": "data.token",
+            "value": "EXPIRED",
+            "rule": "once",
+            "note": "已失效，返回兜底值"
+          },
+          {
+            "key": "data.site",
+            "value": "杭州主站点",
+            "rule": "conditional",
+            "note": "条件命中（data.neId 包含）"
+          }
+        ],
+        "delayMs": 800,
+        "hit": 137
+      }
+    },
+    {
+      "id": "log-1",
+      "ts": 1793113469238,
+      "clock": "23:04:29",
+      "portId": "port-1",
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "status": 200,
+      "latencyMs": 118,
+      "ne": "GNB-HZ-0001",
+      "verdict": "匹配规则",
+      "interaction": null,
+      "req": {
+        "headers": {
+          "X-NE-Id": "GNB-HZ-0001",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "neId": "GNB-HZ-0001",
+          "op": "submit"
+        }
+      },
+      "res": {
+        "code": 0,
+        "message": "success",
+        "data": {
+          "neId": "GNB-HZ-0001",
+          "latency": "118ms"
+        }
+      }
+    },
+    {
+      "id": "log-2",
+      "ts": 1793113516238,
+      "clock": "23:05:16",
+      "portId": "port-1",
+      "method": "GET",
+      "path": "/nemp/v1/ne/GNB-HZ-0001/state",
+      "status": 200,
+      "latencyMs": 61,
+      "ne": "GNB-HZ-0001",
+      "verdict": "匹配规则",
+      "interaction": null,
+      "req": {
+        "headers": {
+          "X-NE-Id": "GNB-HZ-0001",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "neId": "GNB-HZ-0001",
+          "op": "query"
+        }
+      },
+      "res": {
+        "code": 0,
+        "message": "success",
+        "data": {
+          "neId": "GNB-HZ-0001",
+          "latency": "61ms"
+        }
+      }
+    },
+    {
+      "id": "log-3",
+      "ts": 1793113563238,
+      "clock": "23:06:03",
+      "portId": "port-3",
+      "method": "POST",
+      "path": "/alarm/v1/report",
+      "status": 200,
+      "latencyMs": 44,
+      "ne": "UPF-NJ-0003",
+      "verdict": "匹配规则",
+      "interaction": null,
+      "req": {
+        "headers": {
+          "X-NE-Id": "UPF-NJ-0003",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "neId": "UPF-NJ-0003",
+          "op": "submit"
+        }
+      },
+      "res": {
+        "code": 0,
+        "message": "success",
+        "data": {
+          "neId": "UPF-NJ-0003",
+          "latency": "44ms"
+        }
+      }
+    },
+    {
+      "id": "log-4",
+      "ts": 1793113610238,
+      "clock": "23:06:50",
+      "portId": "port-1",
+      "method": "POST",
+      "path": "/nemp/v1/ne/GNB-HZ-0002/upgrade",
+      "status": 202,
+      "latencyMs": 812,
+      "ne": "GNB-HZ-0002",
+      "verdict": "等待人机交互",
+      "interaction": {
+        "kind": "human-confirm",
+        "status": "pending"
+      },
+      "req": {
+        "headers": {
+          "X-NE-Id": "GNB-HZ-0002",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "neId": "GNB-HZ-0002",
+          "op": "submit"
+        }
+      },
+      "res": {
+        "code": 202,
+        "message": "task accepted",
+        "data": {
+          "neId": "GNB-HZ-0002",
+          "latency": "812ms"
+        }
+      }
+    },
+    {
+      "id": "log-5",
+      "ts": 1793113657238,
+      "clock": "23:07:37",
+      "portId": "port-1",
+      "method": "GET",
+      "path": "/lcmp/v1/package/list",
+      "status": 200,
+      "latencyMs": 88,
+      "ne": "—",
+      "verdict": "匹配规则",
+      "interaction": null,
+      "req": {
+        "headers": {
+          "X-NE-Id": "—",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "neId": "—",
+          "op": "query"
+        }
+      },
+      "res": {
+        "code": 0,
+        "message": "success",
+        "data": {
+          "neId": "—",
+          "latency": "88ms"
+        }
+      }
+    },
+    {
+      "id": "log-6",
+      "ts": 1793113704238,
+      "clock": "23:08:24",
+      "portId": "port-3",
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "status": 500,
+      "latencyMs": 121,
+      "ne": "AMF-XA-0009",
+      "verdict": "定制响应命中",
+      "interaction": null,
+      "req": {
+        "headers": {
+          "X-NE-Id": "AMF-XA-0009",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "neId": "AMF-XA-0009",
+          "op": "submit"
+        }
+      },
+      "res": {
+        "code": 500,
+        "message": "mock override",
+        "data": {
+          "neId": "AMF-XA-0009",
+          "latency": "121ms"
+        }
+      }
+    },
+    {
+      "id": "log-7",
+      "ts": 1793113751238,
+      "clock": "23:09:11",
+      "portId": "port-1",
+      "method": "POST",
+      "path": "/vlmp/v1/stack/create",
+      "status": 201,
+      "latencyMs": 1462,
+      "ne": "—",
+      "verdict": "匹配规则",
+      "interaction": null,
+      "req": {
+        "headers": {
+          "X-NE-Id": "—",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "neId": "—",
+          "op": "submit"
+        }
+      },
+      "res": {
+        "code": 201,
+        "message": "mock override",
+        "data": {
+          "neId": "—",
+          "latency": "1462ms"
+        }
+      }
+    },
+    {
+      "id": "log-8",
+      "ts": 1793113798238,
+      "clock": "23:09:58",
+      "portId": "port-1",
+      "method": "GET",
+      "path": "/nemp/v1/ne/GNB-HZ-0001/state",
+      "status": 404,
+      "latencyMs": 57,
+      "ne": "GNB-HZ-0001",
+      "verdict": "路径未匹配，走兜底",
+      "interaction": null,
+      "req": {
+        "headers": {
+          "X-NE-Id": "GNB-HZ-0001",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "neId": "GNB-HZ-0001",
+          "op": "query"
+        }
+      },
+      "res": {
+        "code": 404,
+        "message": "mock override",
+        "data": {
+          "neId": "GNB-HZ-0001",
+          "latency": "57ms"
+        }
+      }
+    }
+  ]
+}

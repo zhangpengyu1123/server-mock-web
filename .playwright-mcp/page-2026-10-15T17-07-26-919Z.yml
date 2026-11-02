@@ -1,0 +1,692 @@
+- generic [ref=f66e1]:
+  - link "跳到主内容" [ref=f66e2] [cursor=pointer]:
+    - /url: "#stage"
+  - banner [ref=f66e3]:
+    - generic [ref=f66e8]:
+      - generic [ref=f66e9]: MOCK PLATFORM
+      - generic [ref=f66e10]: 节点调测仿真台 · 第 2 版 设计稿
+    - navigation "主导航" [ref=f66e11]:
+      - button "01 MOCK 管理 3" [ref=f66e12] [cursor=pointer]:
+        - generic [ref=f66e13]: "01"
+        - generic [ref=f66e14]: MOCK 管理
+        - generic [ref=f66e15]: "3"
+      - button "02 MOCK 流程 1" [active] [ref=f66e16] [cursor=pointer]:
+        - generic [ref=f66e17]: "02"
+        - generic [ref=f66e18]: MOCK 流程
+        - generic [ref=f66e19]: "1"
+      - button "03 网元管理 5" [ref=f66e20] [cursor=pointer]:
+        - generic [ref=f66e21]: "03"
+        - generic [ref=f66e22]: 网元管理
+        - generic [ref=f66e23]: "5"
+      - button "04 网元管理平台 1" [ref=f66e24] [cursor=pointer]:
+        - generic [ref=f66e25]: "04"
+        - generic [ref=f66e26]: 网元管理平台
+        - generic [ref=f66e27]: "1"
+      - button "05 生命周期平台 4" [ref=f66e28] [cursor=pointer]:
+        - generic [ref=f66e29]: "05"
+        - generic [ref=f66e30]: 生命周期平台
+        - generic [ref=f66e31]: "4"
+      - button "06 虚层管理平台 1/4" [ref=f66e32] [cursor=pointer]:
+        - generic [ref=f66e33]: "06"
+        - generic [ref=f66e34]: 虚层管理平台
+        - generic [ref=f66e35]: 1/4
+    - generic [ref=f66e36]:
+      - button "开关界面音效" [ref=f66e37] [cursor=pointer]:
+        - generic [ref=f66e41]: SFX
+      - generic [ref=f66e42]: 01:07:26
+  - generic "实时遥测" [ref=f66e43]:
+    - generic [ref=f66e44]:
+      - generic [ref=f66e45]:
+        - text: 端点
+        - generic [ref=f66e46]: "3"
+      - generic [ref=f66e48]:
+        - text: 运行中
+        - generic [ref=f66e49]: "1"
+      - generic [ref=f66e51]:
+        - text: 请求
+        - generic [ref=f66e52]: "8"
+      - generic [ref=f66e54]:
+        - text: 成功
+        - generic [ref=f66e55]: "6"
+      - generic [ref=f66e57]:
+        - text: 异常
+        - generic [ref=f66e58]: "2"
+      - generic [ref=f66e60]:
+        - text: 平均时延
+        - generic [ref=f66e61]: "345"
+        - generic [ref=f66e62]: ms
+      - generic [ref=f66e64]:
+        - text: 待人工
+        - generic [ref=f66e65]: "1"
+      - generic [ref=f66e66]: 01:01:09 POST /nemp/v1/ne/register → 200
+  - main [ref=f66e67]:
+    - generic [ref=f66e250]:
+      - generic [ref=f66e251]:
+        - generic [ref=f66e252]:
+          - generic [ref=f66e253]:
+            - generic [ref=f66e254]: "02"
+            - generic [ref=f66e255]: FLOW / 审计与预期响应
+          - generic [ref=f66e256]:
+            - heading "MOCK 流程" [level=1] [ref=f66e257]
+            - paragraph [ref=f66e258]: 面向对象的响应定制：逐字段选择取值方式、配置自增 / 单次生效 / 条件规则，在自动链路里插入人机交互，并在审计日志中放行或拒绝。
+          - generic [ref=f66e259]:
+            - generic [ref=f66e260]: AUDIT TRAIL · EXPECTED RESPONSE STUDIO
+            - generic [ref=f66e261]: MOCK-WIN-01 · 10.18.32.104 / 10.18.32.77 · Windows 11 23H2 · MockAgent 4.2.1
+        - generic [ref=f66e262]:
+          - generic [ref=f66e263]:
+            - generic [ref=f66e264]: 请求
+            - generic [ref=f66e265]: "8"
+            - generic [ref=f66e266]: 审计到的全部调用
+          - generic [ref=f66e267]:
+            - generic [ref=f66e268]: 成功
+            - generic [ref=f66e269]: "6"
+            - generic [ref=f66e270]: HTTP < 400
+          - generic [ref=f66e271]:
+            - generic [ref=f66e272]: 异常
+            - generic [ref=f66e273]: "2"
+            - generic [ref=f66e274]: HTTP ≥ 400 与兜底分支
+          - generic [ref=f66e275]:
+            - generic [ref=f66e276]: 待人工
+            - generic [ref=f66e277]: 1条
+            - generic [ref=f66e278]: 卡在人机交互的请求
+      - generic [ref=f66e279]:
+        - generic [ref=f66e280]:
+          - generic [ref=f66e281]:
+            - heading "接口清单" [level=2] [ref=f66e282]
+            - generic [ref=f66e283]: 按平台能力分组
+          - generic "接口清单" [ref=f66e284]:
+            - generic [ref=f66e287]:
+              - generic [ref=f66e288]: 网元管理平台
+              - generic [ref=f66e290]: NEMP · R7.2 · 46 个端点
+            - button "POST /nemp/v1/ne/register 网元注册 120 ms 6 字段 4,821 次命中" [pressed] [ref=f66e292] [cursor=pointer]:
+              - generic [ref=f66e293]:
+                - generic [ref=f66e294]:
+                  - generic [ref=f66e295]: POST
+                  - generic [ref=f66e296]: /nemp/v1/ne/register
+                - generic [ref=f66e297]:
+                  - generic [ref=f66e298]: 网元注册
+                  - generic [ref=f66e299]: 120 ms
+                  - generic [ref=f66e300]: 6 字段
+                  - generic [ref=f66e301]: 4,821 次命中
+            - 'button "GET /nemp/v1/ne/{neId}/state 查询网元状态 60 ms 6 字段 20,140 次命中" [ref=f66e302] [cursor=pointer]':
+              - generic [ref=f66e303]:
+                - generic [ref=f66e304]:
+                  - generic [ref=f66e305]: GET
+                  - generic [ref=f66e306]: "/nemp/v1/ne/{neId}/state"
+                - generic [ref=f66e307]:
+                  - generic [ref=f66e308]: 查询网元状态
+                  - generic [ref=f66e309]: 60 ms
+                  - generic [ref=f66e310]: 6 字段
+                  - generic [ref=f66e311]: 20,140 次命中
+            - 'button "POST /nemp/v1/ne/{neId}/upgrade 触发升级 800 ms 6 字段 136 次命中 含人机交互" [ref=f66e312] [cursor=pointer]':
+              - generic [ref=f66e313]:
+                - generic [ref=f66e314]:
+                  - generic [ref=f66e315]: POST
+                  - generic [ref=f66e316]: "/nemp/v1/ne/{neId}/upgrade"
+                - generic [ref=f66e317]:
+                  - generic [ref=f66e318]: 触发升级
+                  - generic [ref=f66e319]: 800 ms
+                  - generic [ref=f66e320]: 6 字段
+                  - generic [ref=f66e321]: 136 次命中
+                  - generic [ref=f66e322]: 含人机交互
+            - generic [ref=f66e325]:
+              - generic [ref=f66e326]: 生命周期平台
+              - generic [ref=f66e328]: LCMP · R5.8 · 32 个端点
+            - button "GET /lcmp/v1/package/list 软件包列表 90 ms 6 字段 902 次命中" [ref=f66e330] [cursor=pointer]:
+              - generic [ref=f66e331]:
+                - generic [ref=f66e332]:
+                  - generic [ref=f66e333]: GET
+                  - generic [ref=f66e334]: /lcmp/v1/package/list
+                - generic [ref=f66e335]:
+                  - generic [ref=f66e336]: 软件包列表
+                  - generic [ref=f66e337]: 90 ms
+                  - generic [ref=f66e338]: 6 字段
+                  - generic [ref=f66e339]: 902 次命中
+            - generic [ref=f66e342]:
+              - generic [ref=f66e343]: 虚层管理平台
+              - generic [ref=f66e345]: VLMP · R3.1 · 21 个端点
+            - button "POST /vlmp/v1/stack/create 创建虚层 1500 ms 3 字段 24 次命中" [ref=f66e347] [cursor=pointer]:
+              - generic [ref=f66e348]:
+                - generic [ref=f66e349]:
+                  - generic [ref=f66e350]: POST
+                  - generic [ref=f66e351]: /vlmp/v1/stack/create
+                - generic [ref=f66e352]:
+                  - generic [ref=f66e353]: 创建虚层
+                  - generic [ref=f66e354]: 1500 ms
+                  - generic [ref=f66e355]: 3 字段
+                  - generic [ref=f66e356]: 24 次命中
+            - generic [ref=f66e359]:
+              - generic [ref=f66e360]: 告警上报平台
+              - generic [ref=f66e362]: ALMP · R2.4 · 12 个端点
+            - button "POST /alarm/v1/report 告警上报 40 ms 6 字段 3,312 次命中" [ref=f66e364] [cursor=pointer]:
+              - generic [ref=f66e365]:
+                - generic [ref=f66e366]:
+                  - generic [ref=f66e367]: POST
+                  - generic [ref=f66e368]: /alarm/v1/report
+                - generic [ref=f66e369]:
+                  - generic [ref=f66e370]: 告警上报
+                  - generic [ref=f66e371]: 40 ms
+                  - generic [ref=f66e372]: 6 字段
+                  - generic [ref=f66e373]: 3,312 次命中
+        - generic [ref=f66e374]:
+          - generic [ref=f66e375]:
+            - heading "预期响应定制" [level=2] [ref=f66e376]
+            - generic [ref=f66e377]:
+              - generic [ref=f66e378]: POST /nemp/v1/ne/register
+              - generic [ref=f66e379]: 命中 4,821 次
+          - generic [ref=f66e380]:
+            - generic [ref=f66e381]:
+              - generic [ref=f66e382]:
+                - generic [ref=f66e383]: 接口名称
+                - textbox "接口名称" [ref=f66e384]: 网元注册
+              - generic [ref=f66e385]:
+                - generic [ref=f66e386]: HTTP Status Code
+                - combobox "HTTP Status Code" [ref=f66e387]:
+                  - option "200 OK" [selected]
+                  - option "201 CREATED"
+                  - option "202 ACCEPTED"
+                  - option "400 BAD REQUEST"
+                  - option "403 FORBIDDEN"
+                  - option "404 NOT FOUND"
+                  - option "409 CONFLICT"
+                  - option "500 SERVER ERROR"
+                  - option "503 UNAVAILABLE"
+              - generic [ref=f66e388]:
+                - generic [ref=f66e389]: 响应延迟（拖拽 / ←→ 方向键）
+                - slider [ref=f66e390]:
+                  - generic [ref=f66e391]: 延迟
+                  - generic [ref=f66e392]: 120 ms
+              - generic [ref=f66e393]:
+                - generic [ref=f66e394]: 接口说明
+                - textbox "接口说明" [ref=f66e395]:
+                  - /placeholder: 对端网元上电后注册到平台
+                  - text: 对端网元上电后注册到平台
+            - generic [ref=f66e396]:
+              - generic [ref=f66e397]: 响应预览 · 定制后每次命中都会按规则求值
+              - generic [ref=f66e398]: "HTTP 200 OK · 延迟 120 ms · 第 4822 次命中 { \"code\": \"0\" // 固定 \"message\": \"success\" // 固定 \"data.neId\": \"GNB-HZ-0001\" // 自增 \"data.registerTime\": \"now\" // 固定 \"data.token\": \"tk_9f2c\" // 单次生效 \"data.site\": \"杭州主站点\" // 条件 }"
+            - generic [ref=f66e400]:
+              - heading "响应字段（面向对象定制）" [level=3] [ref=f66e401]
+              - generic [ref=f66e402]: 部分下拉选、部分手填；每个字段可单独设生效规则
+              - button "+ 新增字段" [ref=f66e403] [cursor=pointer]
+            - generic [ref=f66e404]:
+              - generic [ref=f66e405]:
+                - generic [ref=f66e406]:
+                  - generic [ref=f66e407]: 字段 01
+                  - generic [ref=f66e408]: 固定
+                  - button "删除字段 code" [ref=f66e409] [cursor=pointer]
+                - generic [ref=f66e412]:
+                  - generic [ref=f66e413]:
+                    - generic [ref=f66e414]:
+                      - generic [ref=f66e415]: 字段路径
+                      - textbox "字段路径" [ref=f66e416]:
+                        - /placeholder: data.neId
+                        - text: code
+                    - generic [ref=f66e417]:
+                      - generic [ref=f66e418]: 类型
+                      - combobox "类型" [ref=f66e419]:
+                        - option "字符串"
+                        - option "整数" [selected]
+                        - option "浮点"
+                        - option "布尔"
+                        - option "枚举"
+                        - option "对象"
+                        - option "数组"
+                        - option "时间戳"
+                        - option "证书指纹"
+                    - generic [ref=f66e420]:
+                      - generic [ref=f66e421]: 取值方式
+                      - combobox "取值方式" [ref=f66e422]:
+                        - option "手工填写"
+                        - option "下拉选择" [selected]
+                    - generic [ref=f66e423]:
+                      - generic [ref=f66e424]: 字段值
+                      - combobox "字段值" [ref=f66e425]:
+                        - option "0" [selected]
+                        - option "200"
+                        - option "404"
+                        - option "500"
+                  - generic [ref=f66e426]:
+                    - generic [ref=f66e427]:
+                      - generic [ref=f66e428]: 生效规则
+                      - combobox "生效规则" [ref=f66e429]:
+                        - option "固定 · 每次都返回同一个值" [selected]
+                        - option "自增 · 每次命中按步长累加"
+                        - option "单次生效 · 首次返回设定值，之后走兜底值"
+                        - option "条件 · 按上游字段取值分派"
+                        - option "随机 · 从候选值里随机取"
+                    - generic [ref=f66e430]: 固定值：每次都返回同一个值，无额外参数
+                  - generic [ref=f66e431]:
+                    - generic [ref=f66e432]:
+                      - checkbox "是否为必填字段" [checked] [ref=f66e433]
+                      - text: 必填
+                    - generic [ref=f66e434]: 说明：平台返回码
+                    - generic [ref=f66e435]: 已命中 4,821 次
+              - generic [ref=f66e436]:
+                - generic [ref=f66e437]:
+                  - generic [ref=f66e438]: 字段 02
+                  - generic [ref=f66e439]: 固定
+                  - button "删除字段 message" [ref=f66e440] [cursor=pointer]
+                - generic [ref=f66e443]:
+                  - generic [ref=f66e444]:
+                    - generic [ref=f66e445]:
+                      - generic [ref=f66e446]: 字段路径
+                      - textbox "字段路径" [ref=f66e447]:
+                        - /placeholder: data.neId
+                        - text: message
+                    - generic [ref=f66e448]:
+                      - generic [ref=f66e449]: 类型
+                      - combobox "类型" [ref=f66e450]:
+                        - option "字符串" [selected]
+                        - option "整数"
+                        - option "浮点"
+                        - option "布尔"
+                        - option "枚举"
+                        - option "对象"
+                        - option "数组"
+                        - option "时间戳"
+                        - option "证书指纹"
+                    - generic [ref=f66e451]:
+                      - generic [ref=f66e452]: 取值方式
+                      - combobox "取值方式" [ref=f66e453]:
+                        - option "手工填写" [selected]
+                        - option "下拉选择"
+                    - generic [ref=f66e454]:
+                      - generic [ref=f66e455]: 字段值
+                      - textbox "字段值" [ref=f66e456]: success
+                  - generic [ref=f66e457]:
+                    - generic [ref=f66e458]:
+                      - generic [ref=f66e459]: 生效规则
+                      - combobox "生效规则" [ref=f66e460]:
+                        - option "固定 · 每次都返回同一个值" [selected]
+                        - option "自增 · 每次命中按步长累加"
+                        - option "单次生效 · 首次返回设定值，之后走兜底值"
+                        - option "条件 · 按上游字段取值分派"
+                        - option "随机 · 从候选值里随机取"
+                    - generic [ref=f66e461]: 固定值：每次都返回同一个值，无额外参数
+                  - generic [ref=f66e462]:
+                    - generic [ref=f66e463]:
+                      - checkbox "是否为必填字段" [checked] [ref=f66e464]
+                      - text: 必填
+                    - generic [ref=f66e465]: 说明：描述
+                    - generic [ref=f66e466]: 已命中 4,821 次
+              - generic [ref=f66e467]:
+                - generic [ref=f66e468]:
+                  - generic [ref=f66e469]: 字段 03
+                  - generic [ref=f66e470]: 自增
+                  - button "删除字段 data.neId" [ref=f66e471] [cursor=pointer]
+                - generic [ref=f66e474]:
+                  - generic [ref=f66e475]:
+                    - generic [ref=f66e476]:
+                      - generic [ref=f66e477]: 字段路径
+                      - textbox "字段路径" [ref=f66e478]:
+                        - /placeholder: data.neId
+                        - text: data.neId
+                    - generic [ref=f66e479]:
+                      - generic [ref=f66e480]: 类型
+                      - combobox "类型" [ref=f66e481]:
+                        - option "字符串" [selected]
+                        - option "整数"
+                        - option "浮点"
+                        - option "布尔"
+                        - option "枚举"
+                        - option "对象"
+                        - option "数组"
+                        - option "时间戳"
+                        - option "证书指纹"
+                    - generic [ref=f66e482]:
+                      - generic [ref=f66e483]: 取值方式
+                      - combobox "取值方式" [ref=f66e484]:
+                        - option "手工填写" [selected]
+                        - option "下拉选择"
+                    - generic [ref=f66e485]:
+                      - generic [ref=f66e486]: 字段值
+                      - textbox "字段值" [ref=f66e487]: GNB-HZ-0001
+                  - generic [ref=f66e488]:
+                    - generic [ref=f66e489]:
+                      - generic [ref=f66e490]: 生效规则
+                      - combobox "生效规则" [ref=f66e491]:
+                        - option "固定 · 每次都返回同一个值"
+                        - option "自增 · 每次命中按步长累加" [selected]
+                        - option "单次生效 · 首次返回设定值，之后走兜底值"
+                        - option "条件 · 按上游字段取值分派"
+                        - option "随机 · 从候选值里随机取"
+                    - generic [ref=f66e492]:
+                      - generic [ref=f66e493]: 起始值
+                      - spinbutton "起始值" [ref=f66e494]: "1"
+                    - generic [ref=f66e495]:
+                      - generic [ref=f66e496]: 步长
+                      - spinbutton "步长" [ref=f66e497]: "1"
+                    - generic [ref=f66e498]:
+                      - generic [ref=f66e499]: 编号格式
+                      - textbox "编号格式" [ref=f66e500]:
+                        - /placeholder: "GNB-HZ-{n:04}"
+                        - text: "GNB-HZ-{n:04}"
+                  - generic [ref=f66e501]:
+                    - generic [ref=f66e502]:
+                      - checkbox "是否为必填字段" [checked] [ref=f66e503]
+                      - text: 必填
+                    - generic [ref=f66e504]: 说明：网元编号（自增）
+                    - generic [ref=f66e505]: 已命中 4,821 次
+              - generic [ref=f66e506]:
+                - generic [ref=f66e507]:
+                  - generic [ref=f66e508]: 字段 04
+                  - generic [ref=f66e509]: 固定
+                  - button "删除字段 data.registerTime" [ref=f66e510] [cursor=pointer]
+                - generic [ref=f66e513]:
+                  - generic [ref=f66e514]:
+                    - generic [ref=f66e515]:
+                      - generic [ref=f66e516]: 字段路径
+                      - textbox "字段路径" [ref=f66e517]:
+                        - /placeholder: data.neId
+                        - text: data.registerTime
+                    - generic [ref=f66e518]:
+                      - generic [ref=f66e519]: 类型
+                      - combobox "类型" [ref=f66e520]:
+                        - option "字符串"
+                        - option "整数"
+                        - option "浮点"
+                        - option "布尔"
+                        - option "枚举"
+                        - option "对象"
+                        - option "数组"
+                        - option "时间戳" [selected]
+                        - option "证书指纹"
+                    - generic [ref=f66e521]:
+                      - generic [ref=f66e522]: 取值方式
+                      - combobox "取值方式" [ref=f66e523]:
+                        - option "手工填写"
+                        - option "下拉选择" [selected]
+                    - generic [ref=f66e524]:
+                      - generic [ref=f66e525]: 字段值
+                      - combobox "字段值" [ref=f66e526]:
+                        - option "now" [selected]
+                        - option "fixed"
+                        - option "+1h"
+                  - generic [ref=f66e527]:
+                    - generic [ref=f66e528]:
+                      - generic [ref=f66e529]: 生效规则
+                      - combobox "生效规则" [ref=f66e530]:
+                        - option "固定 · 每次都返回同一个值" [selected]
+                        - option "自增 · 每次命中按步长累加"
+                        - option "单次生效 · 首次返回设定值，之后走兜底值"
+                        - option "条件 · 按上游字段取值分派"
+                        - option "随机 · 从候选值里随机取"
+                    - generic [ref=f66e531]: 固定值：每次都返回同一个值，无额外参数
+                  - generic [ref=f66e532]:
+                    - generic [ref=f66e533]:
+                      - checkbox "是否为必填字段" [ref=f66e534]
+                      - text: 必填
+                    - generic [ref=f66e535]: 说明：注册时间
+                    - generic [ref=f66e536]: 已命中 4,821 次
+              - generic [ref=f66e537]:
+                - generic [ref=f66e538]:
+                  - generic [ref=f66e539]: 字段 05
+                  - generic [ref=f66e540]: 单次生效
+                  - button "删除字段 data.token" [ref=f66e541] [cursor=pointer]
+                - generic [ref=f66e544]:
+                  - generic [ref=f66e545]:
+                    - generic [ref=f66e546]:
+                      - generic [ref=f66e547]: 字段路径
+                      - textbox "字段路径" [ref=f66e548]:
+                        - /placeholder: data.neId
+                        - text: data.token
+                    - generic [ref=f66e549]:
+                      - generic [ref=f66e550]: 类型
+                      - combobox "类型" [ref=f66e551]:
+                        - option "字符串" [selected]
+                        - option "整数"
+                        - option "浮点"
+                        - option "布尔"
+                        - option "枚举"
+                        - option "对象"
+                        - option "数组"
+                        - option "时间戳"
+                        - option "证书指纹"
+                    - generic [ref=f66e552]:
+                      - generic [ref=f66e553]: 取值方式
+                      - combobox "取值方式" [ref=f66e554]:
+                        - option "手工填写" [selected]
+                        - option "下拉选择"
+                    - generic [ref=f66e555]:
+                      - generic [ref=f66e556]: 字段值
+                      - textbox "字段值" [ref=f66e557]: tk_9f2c
+                  - generic [ref=f66e558]:
+                    - generic [ref=f66e559]:
+                      - generic [ref=f66e560]: 生效规则
+                      - combobox "生效规则" [ref=f66e561]:
+                        - option "固定 · 每次都返回同一个值"
+                        - option "自增 · 每次命中按步长累加"
+                        - option "单次生效 · 首次返回设定值，之后走兜底值" [selected]
+                        - option "条件 · 按上游字段取值分派"
+                        - option "随机 · 从候选值里随机取"
+                    - generic [ref=f66e562]:
+                      - generic [ref=f66e563]: 生效次数
+                      - spinbutton "生效次数" [ref=f66e564]: "1"
+                    - generic [ref=f66e565]:
+                      - generic [ref=f66e566]: 兜底值
+                      - textbox "兜底值" [ref=f66e567]:
+                        - /placeholder: EXPIRED
+                        - text: EXPIRED
+                  - generic [ref=f66e568]:
+                    - generic [ref=f66e569]:
+                      - checkbox "是否为必填字段" [ref=f66e570]
+                      - text: 必填
+                    - generic [ref=f66e571]: 说明：一次性令牌
+                    - generic [ref=f66e572]: 已命中 4,821 次
+              - generic [ref=f66e573]:
+                - generic [ref=f66e574]:
+                  - generic [ref=f66e575]: 字段 06
+                  - generic [ref=f66e576]: 条件
+                  - button "删除字段 data.site" [ref=f66e577] [cursor=pointer]
+                - generic [ref=f66e580]:
+                  - generic [ref=f66e581]:
+                    - generic [ref=f66e582]:
+                      - generic [ref=f66e583]: 字段路径
+                      - textbox "字段路径" [ref=f66e584]:
+                        - /placeholder: data.neId
+                        - text: data.site
+                    - generic [ref=f66e585]:
+                      - generic [ref=f66e586]: 类型
+                      - combobox "类型" [ref=f66e587]:
+                        - option "字符串"
+                        - option "整数"
+                        - option "浮点"
+                        - option "布尔"
+                        - option "枚举" [selected]
+                        - option "对象"
+                        - option "数组"
+                        - option "时间戳"
+                        - option "证书指纹"
+                    - generic [ref=f66e588]:
+                      - generic [ref=f66e589]: 取值方式
+                      - combobox "取值方式" [ref=f66e590]:
+                        - option "手工填写"
+                        - option "下拉选择" [selected]
+                    - generic [ref=f66e591]:
+                      - generic [ref=f66e592]: 字段值
+                      - combobox "字段值" [ref=f66e593]:
+                        - option "杭州主站点" [selected]
+                        - option "南京副站点"
+                        - option "西安灾备站点"
+                  - generic [ref=f66e594]:
+                    - generic [ref=f66e595]:
+                      - generic [ref=f66e596]: 生效规则
+                      - combobox "生效规则" [ref=f66e597]:
+                        - option "固定 · 每次都返回同一个值"
+                        - option "自增 · 每次命中按步长累加"
+                        - option "单次生效 · 首次返回设定值，之后走兜底值"
+                        - option "条件 · 按上游字段取值分派" [selected]
+                        - option "随机 · 从候选值里随机取"
+                    - generic [ref=f66e598]:
+                      - generic [ref=f66e599]: 条件字段
+                      - combobox "条件字段" [ref=f66e600]:
+                        - option "code"
+                        - option "message"
+                        - option "data.neId" [selected]
+                        - option "data.registerTime"
+                        - option "data.token"
+                    - generic [ref=f66e601]:
+                      - generic [ref=f66e602]: 操作符
+                      - combobox "操作符" [ref=f66e603]:
+                        - option "等于"
+                        - option "包含" [selected]
+                        - option "非空"
+                        - option "末尾为偶数"
+                    - generic [ref=f66e604]:
+                      - generic [ref=f66e605]: 命中时
+                      - textbox "命中时" [ref=f66e606]: 杭州主站点
+                    - generic [ref=f66e607]:
+                      - generic [ref=f66e608]: 否则
+                      - textbox "否则" [ref=f66e609]: 南京副站点
+                  - generic [ref=f66e610]:
+                    - generic [ref=f66e611]:
+                      - checkbox "是否为必填字段" [ref=f66e612]
+                      - text: 必填
+                    - generic [ref=f66e613]: 说明：按网元类型分派站点
+                    - generic [ref=f66e614]: 已命中 4,821 次
+            - generic [ref=f66e616]:
+              - heading "人机交互" [level=3] [ref=f66e617]
+              - generic [ref=f66e618]: 在自动链路中间插入需要人操作的环节，日志里可放行 / 拒绝
+            - generic [ref=f66e619]: 未插入人机交互：命中该接口时直接返回定制响应
+            - generic [ref=f66e621]:
+              - generic [ref=f66e622]: 插入类型
+              - generic [ref=f66e623]:
+                - button "人工确认" [ref=f66e625] [cursor=pointer]
+                - button "验证码" [ref=f66e626] [cursor=pointer]
+                - button "人工闸门" [ref=f66e627] [cursor=pointer]
+              - button "手动触发一次请求" [ref=f66e628] [cursor=pointer]
+      - generic [ref=f66e629]:
+        - generic [ref=f66e630]:
+          - heading "请求 / 响应审计" [level=2] [ref=f66e631]
+          - generic [ref=f66e632]:
+            - generic [ref=f66e633]:
+              - button "全部" [ref=f66e634] [cursor=pointer]
+              - button "成功" [ref=f66e635] [cursor=pointer]
+              - button "异常" [ref=f66e636] [cursor=pointer]
+              - button "待人工" [ref=f66e637] [cursor=pointer]
+            - textbox "搜索审计日志" [ref=f66e638]:
+              - /placeholder: 搜索路径 / 网元 / 判定
+            - generic [ref=f66e639]: LIVE
+        - table [ref=f66e642]:
+          - rowgroup [ref=f66e643]:
+            - row [ref=f66e644]:
+              - columnheader "时间" [ref=f66e645]
+              - columnheader "端口" [ref=f66e646]
+              - columnheader "方法" [ref=f66e647]
+              - columnheader "路径" [ref=f66e648]
+              - columnheader "状态" [ref=f66e649]
+              - columnheader "时延" [ref=f66e650]
+              - columnheader "网元" [ref=f66e651]
+              - columnheader "判定 / 人机" [ref=f66e652]
+              - columnheader "操作" [ref=f66e653]
+          - rowgroup [ref=f66e655]:
+            - row [ref=f66e656] [cursor=pointer]:
+              - cell "01:01:09" [ref=f66e657]
+              - cell "8443" [ref=f66e658]
+              - cell "POST" [ref=f66e659]
+              - cell "/nemp/v1/ne/register" [ref=f66e660]
+              - cell "200" [ref=f66e661]
+              - cell "118 ms" [ref=f66e662]
+              - cell "GNB-HZ-0001" [ref=f66e663]
+              - cell "匹配规则" [ref=f66e664]
+              - cell [ref=f66e666]:
+                - button "重放" [ref=f66e667]
+            - row [ref=f66e668] [cursor=pointer]:
+              - cell "01:01:56" [ref=f66e669]
+              - cell "8443" [ref=f66e670]
+              - cell "GET" [ref=f66e671]
+              - cell "/nemp/v1/ne/GNB-HZ-0001/state" [ref=f66e672]
+              - cell "200" [ref=f66e673]
+              - cell "61 ms" [ref=f66e674]
+              - cell "GNB-HZ-0001" [ref=f66e675]
+              - cell "匹配规则" [ref=f66e676]
+              - cell [ref=f66e678]:
+                - button "重放" [ref=f66e679]
+            - row [ref=f66e680] [cursor=pointer]:
+              - cell "01:02:43" [ref=f66e681]
+              - cell "8080" [ref=f66e682]
+              - cell "POST" [ref=f66e683]
+              - cell "/alarm/v1/report" [ref=f66e684]
+              - cell "200" [ref=f66e685]
+              - cell "44 ms" [ref=f66e686]
+              - cell "UPF-NJ-0003" [ref=f66e687]
+              - cell "匹配规则" [ref=f66e688]
+              - cell [ref=f66e690]:
+                - button "重放" [ref=f66e691]
+            - row [ref=f66e692] [cursor=pointer]:
+              - cell "01:03:30" [ref=f66e693]
+              - cell "8443" [ref=f66e694]
+              - cell "POST" [ref=f66e695]
+              - cell "/nemp/v1/ne/GNB-HZ-0002/upgrade" [ref=f66e696]
+              - cell "202" [ref=f66e697]
+              - cell "812 ms" [ref=f66e698]
+              - cell "GNB-HZ-0002" [ref=f66e699]
+              - cell "待人工 ·" [ref=f66e700]
+              - cell [ref=f66e702]:
+                - button "放行" [ref=f66e703]
+                - button "拒绝" [ref=f66e704]
+            - row [ref=f66e705] [cursor=pointer]:
+              - cell "01:04:17" [ref=f66e706]
+              - cell "8443" [ref=f66e707]
+              - cell "GET" [ref=f66e708]
+              - cell "/lcmp/v1/package/list" [ref=f66e709]
+              - cell "200" [ref=f66e710]
+              - cell "88 ms" [ref=f66e711]
+              - cell "—" [ref=f66e712]
+              - cell "匹配规则" [ref=f66e713]
+              - cell [ref=f66e715]:
+                - button "重放" [ref=f66e716]
+            - row [ref=f66e717] [cursor=pointer]:
+              - cell "01:05:04" [ref=f66e718]
+              - cell "8080" [ref=f66e719]
+              - cell "POST" [ref=f66e720]
+              - cell "/nemp/v1/ne/register" [ref=f66e721]
+              - cell "500" [ref=f66e722]
+              - cell "121 ms" [ref=f66e723]
+              - cell "AMF-XA-0009" [ref=f66e724]
+              - cell "定制响应命中" [ref=f66e725]
+              - cell [ref=f66e727]:
+                - button "重放" [ref=f66e728]
+            - row [ref=f66e729] [cursor=pointer]:
+              - cell "01:05:51" [ref=f66e730]
+              - cell "8443" [ref=f66e731]
+              - cell "POST" [ref=f66e732]
+              - cell "/vlmp/v1/stack/create" [ref=f66e733]
+              - cell "201" [ref=f66e734]
+              - cell "1462 ms" [ref=f66e735]
+              - cell "—" [ref=f66e736]
+              - cell "匹配规则" [ref=f66e737]
+              - cell [ref=f66e739]:
+                - button "重放" [ref=f66e740]
+            - row [ref=f66e741] [cursor=pointer]:
+              - cell "01:06:38" [ref=f66e742]
+              - cell "8443" [ref=f66e743]
+              - cell "GET" [ref=f66e744]
+              - cell "/nemp/v1/ne/GNB-HZ-0001/state" [ref=f66e745]
+              - cell "404" [ref=f66e746]
+              - cell "57 ms" [ref=f66e747]
+              - cell "GNB-HZ-0001" [ref=f66e748]
+              - cell "路径未匹配，走兜底" [ref=f66e749]
+              - cell [ref=f66e751]:
+                - button "重放" [ref=f66e752]
+  - contentinfo [ref=f66e237]:
+    - generic [ref=f66e238]:
+      - text: VARIANT
+      - generic [ref=f66e239]: V2 · SWISS EDITORIAL
+    - generic [ref=f66e240]:
+      - text: GRID
+      - generic [ref=f66e241]: 12 COL
+    - generic [ref=f66e242]:
+      - text: DENSITY
+      - generic [ref=f66e243]: 4 / 10
+    - generic [ref=f66e244]:
+      - text: MOTION
+      - generic [ref=f66e245]: 6 / 10
+    - generic [ref=f66e246]:
+      - text: SIM
+      - generic [ref=f66e247]: RUNNING
+    - generic [ref=f66e248]:
+      - text: 键盘
+      - generic [ref=f66e249]: 1–6
+      - text: 切换界面
+  - status

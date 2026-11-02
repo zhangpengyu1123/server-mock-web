@@ -1,0 +1,239 @@
+- generic [active] [ref=f49e1]:
+  - link "跳到主内容" [ref=f49e2] [cursor=pointer]:
+    - /url: "#stage"
+  - banner [ref=f49e3]:
+    - generic [ref=f49e8]:
+      - generic [ref=f49e9]: MOCK PLATFORM
+      - generic [ref=f49e10]: 节点调测仿真台 · 第 2 版 设计稿
+    - navigation "主导航" [ref=f49e11]:
+      - button "01 MOCK 管理 3" [ref=f49e12] [cursor=pointer]:
+        - generic [ref=f49e13]: "01"
+        - generic [ref=f49e14]: MOCK 管理
+        - generic [ref=f49e15]: "3"
+      - button "02 MOCK 流程 1" [ref=f49e16] [cursor=pointer]:
+        - generic [ref=f49e17]: "02"
+        - generic [ref=f49e18]: MOCK 流程
+        - generic [ref=f49e19]: "1"
+      - button "03 网元管理 5" [ref=f49e20] [cursor=pointer]:
+        - generic [ref=f49e21]: "03"
+        - generic [ref=f49e22]: 网元管理
+        - generic [ref=f49e23]: "5"
+      - button "04 网元管理平台 1" [ref=f49e24] [cursor=pointer]:
+        - generic [ref=f49e25]: "04"
+        - generic [ref=f49e26]: 网元管理平台
+        - generic [ref=f49e27]: "1"
+      - button "05 生命周期平台 4" [ref=f49e28] [cursor=pointer]:
+        - generic [ref=f49e29]: "05"
+        - generic [ref=f49e30]: 生命周期平台
+        - generic [ref=f49e31]: "4"
+      - button "06 虚层管理平台 1/4" [ref=f49e32] [cursor=pointer]:
+        - generic [ref=f49e33]: "06"
+        - generic [ref=f49e34]: 虚层管理平台
+        - generic [ref=f49e35]: 1/4
+    - generic [ref=f49e36]:
+      - button "开关界面音效" [ref=f49e37] [cursor=pointer]:
+        - generic [ref=f49e41]: SFX
+      - generic [ref=f49e42]: 01:00:54
+  - generic "实时遥测" [ref=f49e43]:
+    - generic [ref=f49e44]:
+      - generic [ref=f49e45]:
+        - text: 端点
+        - generic [ref=f49e46]: "0.174"
+      - generic [ref=f49e48]:
+        - text: 运行中
+        - generic [ref=f49e49]: "0.058"
+      - generic [ref=f49e51]:
+        - text: 请求
+        - generic [ref=f49e52]: "0.465"
+      - generic [ref=f49e54]:
+        - text: 成功
+        - generic [ref=f49e55]: "0.349"
+      - generic [ref=f49e57]:
+        - text: 异常
+        - generic [ref=f49e58]: "0.116"
+      - generic [ref=f49e60]:
+        - text: 平均时延
+        - generic [ref=f49e61]: "20.052"
+        - generic [ref=f49e62]: ms
+      - generic [ref=f49e64]:
+        - text: 待人工
+        - generic [ref=f49e65]: "0.058"
+      - generic [ref=f49e66]: 00:54:38 POST /nemp/v1/ne/register → 200
+  - main [ref=f49e67]:
+    - generic [ref=f49e68]:
+      - generic [ref=f49e69]:
+        - generic [ref=f49e70]:
+          - generic [ref=f49e71]:
+            - generic [ref=f49e72]: "01"
+            - generic [ref=f49e73]: MOCK / 端口与身份
+          - generic [ref=f49e74]:
+            - heading "MOCK 管理" [level=1] [ref=f49e75]
+            - paragraph [ref=f49e76]: 登记本机 IP 与端口作为仿真端点，为端点签发 TLS 证书文件，挂载一种或多种平台能力，然后开启 mock 服务。
+          - generic [ref=f49e77]:
+            - generic [ref=f49e78]: PORT REGISTRY · CERTIFICATE · CAPABILITY
+            - generic [ref=f49e79]: MOCK-WIN-01 · 10.18.32.104 / 10.18.32.77 · Windows 11 23H2 · MockAgent 4.2.1
+        - generic [ref=f49e80]:
+          - generic [ref=f49e81]:
+            - generic [ref=f49e82]: MOCK 端点
+            - generic [ref=f49e83]: 0.174个
+            - generic [ref=f49e84]: 已登记的本机仿真端口
+          - generic [ref=f49e85]:
+            - generic [ref=f49e86]: 运行中
+            - generic [ref=f49e87]: 0.058个
+            - generic [ref=f49e88]: 正在接收对端请求
+          - generic [ref=f49e89]:
+            - generic [ref=f49e90]: 总请求
+            - generic [ref=f49e91]: "0.465"
+            - generic [ref=f49e92]: 含重放与模拟流量
+          - generic [ref=f49e93]:
+            - generic [ref=f49e94]: 平均时延
+            - generic [ref=f49e95]: 20.052ms
+            - generic [ref=f49e96]: 按端口定制延迟加权
+      - generic [ref=f49e97]:
+        - generic [ref=f49e98]:
+          - generic [ref=f49e99]:
+            - heading "端点清单" [level=2] [ref=f49e100]
+            - generic [ref=f49e101]: 3 个
+          - list "MOCK 端点清单" [ref=f49e103]:
+            - listitem [ref=f49e104]:
+              - button "10.18.32.104:8443 HTTPS · TLS1.3 · 2 项能力 · 10-14 09:12 12,480 请求 · 3.2 rps RUNNING" [pressed] [ref=f49e105] [cursor=pointer]:
+                - generic [ref=f49e107]:
+                  - generic [ref=f49e108]: 10.18.32.104:8443
+                  - generic [ref=f49e109]: HTTPS · TLS1.3 · 2 项能力 · 10-14 09:12
+                  - generic [ref=f49e110]: 12,480 请求 · 3.2 rps
+                - generic [ref=f49e111]: RUNNING
+            - listitem [ref=f49e113]:
+              - button "10.18.32.104:9443 HTTPS · TLS1.2 · 1 项能力 · 10-15 14:40 0 请求 · 0 rps STOPPED" [ref=f49e114] [cursor=pointer]:
+                - generic [ref=f49e116]:
+                  - generic [ref=f49e117]: 10.18.32.104:9443
+                  - generic [ref=f49e118]: HTTPS · TLS1.2 · 1 项能力 · 10-15 14:40
+                  - generic [ref=f49e119]: 0 请求 · 0 rps
+                - generic [ref=f49e120]: STOPPED
+            - listitem [ref=f49e122]:
+              - button "10.18.32.77:8080 HTTP · — · 1 项能力 · 10-15 16:02 214 请求 · 0 rps STOPPED" [ref=f49e123] [cursor=pointer]:
+                - generic [ref=f49e125]:
+                  - generic [ref=f49e126]: 10.18.32.77:8080
+                  - generic [ref=f49e127]: HTTP · — · 1 项能力 · 10-15 16:02
+                  - generic [ref=f49e128]: 214 请求 · 0 rps
+                - generic [ref=f49e129]: STOPPED
+          - generic [ref=f49e132]:
+            - generic [ref=f49e133]:
+              - generic [ref=f49e134]:
+                - generic [ref=f49e135]: 本机 IP / 网卡
+                - combobox "选择本机网卡 IP" [ref=f49e137]:
+                  - option "10.18.32.104（本机网卡）" [selected]
+                  - option "10.18.32.77（本机网卡）"
+                  - option "手动输入…"
+              - generic [ref=f49e138]:
+                - generic [ref=f49e139]: 端口
+                - textbox "端口" [ref=f49e140]: "8443"
+            - generic [ref=f49e141]:
+              - generic [ref=f49e142]:
+                - generic [ref=f49e143]: 协议
+                - combobox "协议" [ref=f49e144]:
+                  - option "HTTPS" [selected]
+                  - option "HTTP"
+                  - option "gRPC"
+              - generic [ref=f49e145]:
+                - generic [ref=f49e146]: TLS
+                - combobox "TLS" [ref=f49e147]:
+                  - option "TLS1.3" [selected]
+                  - option "TLS1.2"
+                  - option "—"
+            - generic [ref=f49e148]:
+              - button "注册 MOCK 端口" [ref=f49e149] [cursor=pointer]
+              - generic [ref=f49e152]: 端口范围 1024–65535；IP 可选本机网卡或手填
+        - generic [ref=f49e153]:
+          - generic [ref=f49e154]:
+            - heading "端点详情" [level=2] [ref=f49e155]
+            - generic [ref=f49e156]:
+              - generic [ref=f49e157]: HTTPS
+              - generic [ref=f49e158]: 10.18.32.104:8443
+          - generic [ref=f49e159]:
+            - generic [ref=f49e160]:
+              - generic [ref=f49e161]:
+                - generic [ref=f49e162]: 协议 / TLS
+                - generic [ref=f49e163]: HTTPS · TLS1.3
+              - generic [ref=f49e164]:
+                - generic [ref=f49e165]: 请求 / 成功 / 异常
+                - generic [ref=f49e166]: 12,480 / 12,102 / 378
+              - generic [ref=f49e167]:
+                - generic [ref=f49e168]: 当前 RPS
+                - generic [ref=f49e169]: "3.2"
+              - generic [ref=f49e170]:
+                - generic [ref=f49e171]: 备注
+                - generic [ref=f49e172]: 本机主端口 · 网元管理 + 生命周期
+            - heading "① 证书文件" [level=3] [ref=f49e174]
+            - generic [ref=f49e175]:
+              - generic [ref=f49e176]: 证书有效 365 天
+              - generic [ref=f49e182]: mock-nemp.10.18.32.104
+              - generic [ref=f49e183]: 已签发
+            - generic [ref=f49e184]:
+              - generic [ref=f49e185]:
+                - generic [ref=f49e186]: 有效期
+                - generic [ref=f49e187]: 365 天
+              - generic [ref=f49e188]:
+                - generic [ref=f49e189]: 签发时间
+                - generic [ref=f49e190]: 10-16 01:00:54
+              - generic [ref=f49e191]:
+                - generic [ref=f49e192]: 签发机构
+                - generic [ref=f49e193]: MockCA-Root
+              - generic [ref=f49e194]:
+                - generic [ref=f49e195]: 指纹
+                - generic [ref=f49e196]: 3A:9F:C2:11:7E:8B:D4:05
+            - generic [ref=f49e197]:
+              - button "导出证书文件（PEM）" [ref=f49e198] [cursor=pointer]
+              - button "重新签发" [ref=f49e199] [cursor=pointer]
+              - generic [ref=f49e200]: 对端用该证书校验本 mock 端点的 TLS 身份
+            - heading "② 挂载平台能力（6 选 N · 可卸载）" [level=3] [ref=f49e202]
+            - generic [ref=f49e203]:
+              - button [pressed] [ref=f49e204] [cursor=pointer]:
+                - text: 网元管理平台
+                - emphasis [ref=f49e205]: NEMP R7.2
+                - emphasis [ref=f49e206]: 46 EP
+              - button [pressed] [ref=f49e207] [cursor=pointer]:
+                - text: 生命周期平台
+                - emphasis [ref=f49e208]: LCMP R5.8
+                - emphasis [ref=f49e209]: 32 EP
+              - button [ref=f49e210] [cursor=pointer]:
+                - text: 虚层管理平台
+                - emphasis [ref=f49e211]: VLMP R3.1
+                - emphasis [ref=f49e212]: 21 EP
+              - button [ref=f49e213] [cursor=pointer]:
+                - text: 网元模拟服务
+                - emphasis [ref=f49e214]: NEMS R9.0
+                - emphasis [ref=f49e215]: 58 EP
+              - button [ref=f49e216] [cursor=pointer]:
+                - text: 告警上报平台
+                - emphasis [ref=f49e217]: ALMP R2.4
+                - emphasis [ref=f49e218]: 12 EP
+              - button [ref=f49e219] [cursor=pointer]:
+                - text: 性能采集平台
+                - emphasis [ref=f49e220]: PMFP R2.0
+                - emphasis [ref=f49e221]: 16 EP
+            - heading "③ MOCK 服务" [level=3] [ref=f49e223]
+            - generic [ref=f49e224]:
+              - generic [ref=f49e225]: 服务运行中
+              - button "停止服务" [ref=f49e231] [cursor=pointer]
+              - button "删除端口" [ref=f49e234] [cursor=pointer]
+  - contentinfo [ref=f49e237]:
+    - generic [ref=f49e238]:
+      - text: VARIANT
+      - generic [ref=f49e239]: V2 · SWISS EDITORIAL
+    - generic [ref=f49e240]:
+      - text: GRID
+      - generic [ref=f49e241]: 12 COL
+    - generic [ref=f49e242]:
+      - text: DENSITY
+      - generic [ref=f49e243]: 4 / 10
+    - generic [ref=f49e244]:
+      - text: MOTION
+      - generic [ref=f49e245]: 6 / 10
+    - generic [ref=f49e246]:
+      - text: SIM
+      - generic [ref=f49e247]: RUNNING
+    - generic [ref=f49e248]:
+      - text: 键盘
+      - generic [ref=f49e249]: 1–6
+      - text: 切换界面
+  - status

@@ -1,0 +1,28 @@
+# ============================================================================
+# 替代方案：Caddy 2（配置比 nginx 短，自动 gzip/zstd + 自动 HTTPS）
+#   /etc/caddy/Caddyfile  →  systemctl reload caddy
+#   内网/本机用 http 即可；有域名就把 :8088 换成 blackbox.example.com（自动签证书）
+# ============================================================================
+{
+    auto_https off
+    admin off
+}
+
+:8088 {
+    root * /srv/blackbox/current
+    encode zstd gzip
+
+    header {
+        X-Content-Type-Options nosniff
+        Referrer-Policy no-referrer
+        X-Frame-Options SAMEORIGIN
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        Content-Security-Policy "default-src 'self' blob:; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'"
+        -Server
+    }
+
+    # 目录式 URL 自动落到 index.html；文件不存在时回站点首页
+    try_files {path} {path}/ /index.html
+
+    file_server
+}

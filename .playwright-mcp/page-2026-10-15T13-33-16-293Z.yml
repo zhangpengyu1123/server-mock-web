@@ -1,0 +1,397 @@
+- generic [active] [ref=f9e1]:
+  - link "Skip to content" [ref=f9e2] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=f9e3]:
+    - link "onetake — back to top" [ref=f9e4] [cursor=pointer]:
+      - /url: "#top"
+    - navigation "Main" [ref=f9e9]:
+      - link "onetake on GitHub" [ref=f9e10] [cursor=pointer]:
+        - /url: https://github.com/feitangyuan/onetake
+      - link "onetake Pro — price" [ref=f9e13] [cursor=pointer]:
+        - /url: "#pricing"
+        - text: Pro
+  - main [ref=f9e14]:
+    - region "onetake Pro — launch films in one take" [ref=f9e15]:
+      - generic [ref=f9e16]: Starters
+      - generic [ref=f9e17]:
+        - generic:
+          - generic:
+            - heading "onetake Pro — launch films in one take" [level=1]
+            - paragraph [aria-hidden]:
+              - generic:
+                - generic: Launch
+                - generic: films
+                - generic: in
+                - generic: one
+                - generic: take.
+            - paragraph
+        - figure [ref=f9e18]:
+          - generic [ref=f9e19]:
+            - generic "onetake launch film"
+            - generic [aria-hidden]: → Launch film
+            - generic:
+              - generic: /onetake A launch film for Dayline, our Mac cal
+              - button "Send — open the film" [ref=f9e21] [cursor=pointer]
+        - paragraph [aria-hidden]: scroll to send ↓
+        - slider "Playhead across all films" [ref=f9e24]:
+          - generic [ref=f9e25]:
+            - generic: 00:05
+            - generic: 00:10
+            - generic: 00:15
+            - generic: 00:20
+            - generic: 00:25
+            - generic: launch film
+            - generic: 00:05
+            - generic: 00:10
+            - generic: 00:15
+            - generic: 00:20
+            - generic: 00:25
+            - generic: concept ad · domino
+            - generic: 00:05
+            - generic: 00:10
+            - generic: overlap
+            - generic: 00:05
+            - generic: 00:10
+            - generic: 00:15
+            - generic: 00:20
+            - generic: 00:25
+            - generic: infra
+            - generic: 00:05
+            - generic: 00:10
+            - generic: launch film · one-dot
+            - generic: 00:05
+            - generic: 00:10
+            - generic: 00:15
+            - generic: 00:20
+            - generic: pith
+            - generic: 00:05
+            - generic: 00:10
+            - generic: app promo · knockon
+            - generic: 00:05
+            - generic: 00:10
+            - generic: clearing
+            - generic: 00:05
+            - generic: 00:10
+            - generic: ebb
+            - generic: 00:05
+            - generic: 00:10
+            - generic: feature demo · skill-demo
+            - generic: 00:05
+            - generic: 00:10
+            - generic: motion-web
+            - button "Go to /onetake in the onetake launch film" [ref=f9e400] [cursor=pointer]:
+              - generic [ref=f9e401]: /onetake
+            - button "Go to Dayline in the onetake launch film" [ref=f9e402] [cursor=pointer]:
+              - generic [ref=f9e403]: Dayline
+            - button "Go to prompt 2 → Hush in the onetake launch film" [ref=f9e404] [cursor=pointer]:
+              - generic [ref=f9e405]: prompt 2 → Hush
+            - button "Go to event → FRAME/26 in the onetake launch film" [ref=f9e406] [cursor=pointer]:
+              - generic [ref=f9e407]: event → FRAME/26
+            - button "Go to gather in the onetake launch film" [ref=f9e408] [cursor=pointer]:
+              - generic [ref=f9e409]: gather
+            - button "Go to onetake. in the onetake launch film" [ref=f9e410] [cursor=pointer]:
+              - generic [ref=f9e411]: onetake.
+            - button "Go to tip in the domino film" [ref=f9e412] [cursor=pointer]:
+              - generic [ref=f9e413]: tip
+            - button "Go to 3×3 in the domino film" [ref=f9e414] [cursor=pointer]:
+              - generic [ref=f9e415]: 3×3
+            - button "Go to 10×10 in the domino film" [ref=f9e416] [cursor=pointer]:
+              - generic [ref=f9e417]: 10×10
+            - button "Go to split → 32 in the domino film" [ref=f9e418] [cursor=pointer]:
+              - generic [ref=f9e419]: split → 32
+            - button "Go to drop in the domino film" [ref=f9e420] [cursor=pointer]:
+              - generic [ref=f9e421]: drop
+            - button "Go to 10,000 in the domino film" [ref=f9e422] [cursor=pointer]:
+              - generic [ref=f9e423]: 10,000
+            - button "Go to survivor in the domino film" [ref=f9e424] [cursor=pointer]:
+              - generic [ref=f9e425]: survivor
+            - button "Go to the sheet in the overlap film" [ref=f9e426] [cursor=pointer]:
+              - generic [ref=f9e427]: the sheet
+            - button "Go to you, them in the overlap film" [ref=f9e428] [cursor=pointer]:
+              - generic [ref=f9e429]: you, them
+            - button "Go to rest in the overlap film" [ref=f9e430] [cursor=pointer]:
+              - generic [ref=f9e431]: rest
+            - button "Go to loupe in the overlap film" [ref=f9e432] [cursor=pointer]:
+              - generic [ref=f9e433]: loupe
+            - button "Go to register → & in the overlap film" [ref=f9e434] [cursor=pointer]:
+              - generic [ref=f9e435]: register → &
+            - button "Go to print run in the overlap film" [ref=f9e436] [cursor=pointer]:
+              - generic [ref=f9e437]: print run
+            - button "Go to name in the overlap film" [ref=f9e438] [cursor=pointer]:
+              - generic [ref=f9e439]: name
+            - button "Go to his line in the infra film" [ref=f9e440] [cursor=pointer]:
+              - generic [ref=f9e441]: his line
+            - button "Go to the prompt in the infra film" [ref=f9e442] [cursor=pointer]:
+              - generic [ref=f9e443]: the prompt
+            - button "Go to heat in the infra film" [ref=f9e444] [cursor=pointer]:
+              - generic [ref=f9e445]: heat
+            - button "Go to blocks in the infra film" [ref=f9e446] [cursor=pointer]:
+              - generic [ref=f9e447]: blocks
+            - button "Go to cooling in the infra film" [ref=f9e448] [cursor=pointer]:
+              - generic [ref=f9e449]: cooling
+            - 'button "Go to { In▢fra } in the infra film" [ref=f9e450] [cursor=pointer]':
+              - generic [ref=f9e451]: "{ In▢fra }"
+            - button "Go to variants in the infra film" [ref=f9e452] [cursor=pointer]:
+              - generic [ref=f9e453]: variants
+            - button "Go to the fan in the infra film" [ref=f9e454] [cursor=pointer]:
+              - generic [ref=f9e455]: the fan
+            - button "Go to back to heat in the infra film" [ref=f9e456] [cursor=pointer]:
+              - generic [ref=f9e457]: back to heat
+            - button "Go to name in the infra film" [ref=f9e458] [cursor=pointer]:
+              - generic [ref=f9e459]: name
+            - button "Go to a dot in the one-dot film" [ref=f9e460] [cursor=pointer]:
+              - generic [ref=f9e461]: a dot
+            - button "Go to “/” → skills in the one-dot film" [ref=f9e462] [cursor=pointer]:
+              - generic [ref=f9e463]: “/” → skills
+            - button "Go to the prompt in the one-dot film" [ref=f9e464] [cursor=pointer]:
+              - generic [ref=f9e465]: the prompt
+            - button "Go to ring in the one-dot film" [ref=f9e466] [cursor=pointer]:
+              - generic [ref=f9e467]: ring
+            - button "Go to spring curve in the one-dot film" [ref=f9e468] [cursor=pointer]:
+              - generic [ref=f9e469]: spring curve
+            - button "Go to ball in the one-dot film" [ref=f9e470] [cursor=pointer]:
+              - generic [ref=f9e471]: ball
+            - button "Go to the film in the one-dot film" [ref=f9e472] [cursor=pointer]:
+              - generic [ref=f9e473]: the film
+            - button "Go to name in the one-dot film" [ref=f9e474] [cursor=pointer]:
+              - generic [ref=f9e475]: name
+            - button "Go to one pixel in the pith film" [ref=f9e476] [cursor=pointer]:
+              - generic [ref=f9e477]: one pixel
+            - button "Go to caret in the pith film" [ref=f9e478] [cursor=pointer]:
+              - generic [ref=f9e479]: caret
+            - button "Go to the wall in the pith film" [ref=f9e480] [cursor=pointer]:
+              - generic [ref=f9e481]: the wall
+            - button "Go to the frame in the pith film" [ref=f9e482] [cursor=pointer]:
+              - generic [ref=f9e483]: the frame
+            - button "Go to flip in the pith film" [ref=f9e484] [cursor=pointer]:
+              - generic [ref=f9e485]: flip
+            - button "Go to the eyes in the pith film" [ref=f9e486] [cursor=pointer]:
+              - generic [ref=f9e487]: the eyes
+            - button "Go to use in the pith film" [ref=f9e488] [cursor=pointer]:
+              - generic [ref=f9e489]: use
+            - button "Go to seven tools in the pith film" [ref=f9e490] [cursor=pointer]:
+              - generic [ref=f9e491]: seven tools
+            - button "Go to press in the knockon film" [ref=f9e492] [cursor=pointer]:
+              - generic [ref=f9e493]: press
+            - button "Go to slider in the knockon film" [ref=f9e494] [cursor=pointer]:
+              - generic [ref=f9e495]: slider
+            - button "Go to the bump in the knockon film" [ref=f9e496] [cursor=pointer]:
+              - generic [ref=f9e497]: the bump
+            - button "Go to ten tasks in the knockon film" [ref=f9e498] [cursor=pointer]:
+              - generic [ref=f9e499]: ten tasks
+            - button "Go to send in the knockon film" [ref=f9e500] [cursor=pointer]:
+              - generic [ref=f9e501]: send
+            - button "Go to lands in the knockon film" [ref=f9e502] [cursor=pointer]:
+              - generic [ref=f9e503]: lands
+            - button "Go to name in the knockon film" [ref=f9e504] [cursor=pointer]:
+              - generic [ref=f9e505]: name
+            - button "Go to the year in the clearing film" [ref=f9e506] [cursor=pointer]:
+              - generic [ref=f9e507]: the year
+            - button "Go to dive in the clearing film" [ref=f9e508] [cursor=pointer]:
+              - generic [ref=f9e509]: dive
+            - button "Go to scan in the clearing film" [ref=f9e510] [cursor=pointer]:
+              - generic [ref=f9e511]: scan
+            - button "Go to 50× → 300× in the clearing film" [ref=f9e512] [cursor=pointer]:
+              - generic [ref=f9e513]: 50× → 300×
+            - button "Go to kept in the clearing film" [ref=f9e514] [cursor=pointer]:
+              - generic [ref=f9e515]: kept
+            - button "Go to back out in the clearing film" [ref=f9e516] [cursor=pointer]:
+              - generic [ref=f9e517]: back out
+            - button "Go to name in the clearing film" [ref=f9e518] [cursor=pointer]:
+              - generic [ref=f9e519]: name
+            - button "Go to 25:00 in the ebb film" [ref=f9e520] [cursor=pointer]:
+              - generic [ref=f9e521]: 25:00
+            - button "Go to window in the ebb film" [ref=f9e522] [cursor=pointer]:
+              - generic [ref=f9e523]: window
+            - button "Go to start in the ebb film" [ref=f9e524] [cursor=pointer]:
+              - generic [ref=f9e525]: start
+            - button "Go to 00:00 in the ebb film" [ref=f9e526] [cursor=pointer]:
+              - generic [ref=f9e527]: 00:00
+            - button "Go to drain → phone in the ebb film" [ref=f9e528] [cursor=pointer]:
+              - generic [ref=f9e529]: drain → phone
+            - button "Go to whip in the ebb film" [ref=f9e530] [cursor=pointer]:
+              - generic [ref=f9e531]: whip
+            - button "Go to the week in the ebb film" [ref=f9e532] [cursor=pointer]:
+              - generic [ref=f9e533]: the week
+            - button "Go to name in the ebb film" [ref=f9e534] [cursor=pointer]:
+              - generic [ref=f9e535]: name
+            - button "Go to one prompt in the skill-demo film" [ref=f9e536] [cursor=pointer]:
+              - generic [ref=f9e537]: one prompt
+            - button "Go to /om in the skill-demo film" [ref=f9e538] [cursor=pointer]:
+              - generic [ref=f9e539]: /om
+            - button "Go to sent in the skill-demo film" [ref=f9e540] [cursor=pointer]:
+              - generic [ref=f9e541]: sent
+            - button "Go to agent works in the skill-demo film" [ref=f9e542] [cursor=pointer]:
+              - generic [ref=f9e543]: agent works
+            - button "Go to play in the skill-demo film" [ref=f9e544] [cursor=pointer]:
+              - generic [ref=f9e545]: play
+            - button "Go to cuts in the skill-demo film" [ref=f9e546] [cursor=pointer]:
+              - generic [ref=f9e547]: cuts
+            - button "Go to name in the skill-demo film" [ref=f9e548] [cursor=pointer]:
+              - generic [ref=f9e549]: name
+            - button "Go to “decoration” in the motion-web film" [ref=f9e550] [cursor=pointer]:
+              - generic [ref=f9e551]: “decoration”
+            - button "Go to wordmark in the motion-web film" [ref=f9e552] [cursor=pointer]:
+              - generic [ref=f9e553]: wordmark
+            - button "Go to prompt in the motion-web film" [ref=f9e554] [cursor=pointer]:
+              - generic [ref=f9e555]: prompt
+            - button "Go to build in the motion-web film" [ref=f9e556] [cursor=pointer]:
+              - generic [ref=f9e557]: build
+            - button "Go to pages in the motion-web film" [ref=f9e558] [cursor=pointer]:
+              - generic [ref=f9e559]: pages
+            - button "Go to micro cards in the motion-web film" [ref=f9e560] [cursor=pointer]:
+              - generic [ref=f9e561]: micro cards
+            - button "Go to cuts in the motion-web film" [ref=f9e562] [cursor=pointer]:
+              - generic [ref=f9e563]: cuts
+          - generic [aria-hidden]: 00:05.50
+    - region [ref=f9e564]:
+      - generic [ref=f9e565]:
+        - heading "The free edition works. Pro is all of it." [level=2] [ref=f9e566]:
+          - text: The free edition works.
+          - generic [ref=f9e567]: Pro is all of it.
+        - generic [ref=f9e568]:
+          - generic [aria-hidden] [ref=f9e569]:
+            - generic [ref=f9e570]: Free
+            - generic [ref=f9e571]: Pro
+          - list [ref=f9e572]:
+            - listitem [ref=f9e573]:
+              - generic [ref=f9e574]: Camera
+              - generic [ref=f9e575]:
+                - generic [ref=f9e576]: "Free:"
+                - text: Keyed by hand
+              - generic [ref=f9e578]:
+                - generic [ref=f9e579]: "Pro:"
+                - text: An operator that chases each beat
+            - listitem [ref=f9e580]:
+              - generic [ref=f9e581]: Source
+              - generic [ref=f9e582]:
+                - generic [ref=f9e583]: "Free:"
+                - text: Finished films
+              - generic [ref=f9e585]:
+                - generic [ref=f9e586]: "Pro:"
+                - text: Every film’s source, every cut
+            - listitem [ref=f9e587]:
+              - generic [ref=f9e588]: Starters
+              - generic [ref=f9e589]:
+                - generic [ref=f9e590]: "Free:"
+                - text: —
+              - generic [ref=f9e592]:
+                - generic [ref=f9e593]: "Pro:"
+                - text: Five, with their beat sheets
+            - listitem [ref=f9e594]:
+              - generic [ref=f9e595]: Judgement notes
+              - generic [ref=f9e596]:
+                - generic [ref=f9e597]: "Free:"
+                - text: —
+              - generic [ref=f9e599]:
+                - generic [ref=f9e600]: "Pro:"
+                - text: Why each rejected cut failed
+            - listitem [ref=f9e601]:
+              - generic [ref=f9e602]: Licence
+              - generic [ref=f9e603]:
+                - generic [ref=f9e604]: "Free:"
+                - text: Noncommercial
+              - generic [ref=f9e606]:
+                - generic [ref=f9e607]: "Pro:"
+                - text: Commercial, client work included
+    - region [ref=f9e608]:
+      - generic [ref=f9e609]:
+        - heading "Same prompt. With and without onetake." [level=2] [ref=f9e610]:
+          - text: Same prompt.
+          - generic [ref=f9e611]: With and without onetake.
+        - paragraph [ref=f9e612]: “Make a 15-second launch video for clearing — a calendar app that keeps time free.”
+      - generic [ref=f9e613]:
+        - figure "Without onetake the same coding agent, on its own" [ref=f9e614]:
+          - generic "The launch video the coding agent made without onetake" [ref=f9e616]
+          - generic [ref=f9e617]:
+            - generic [ref=f9e618]: Without onetake
+            - generic [ref=f9e619]: the same coding agent, on its own
+        - figure "With onetake first draft, accepted" [ref=f9e620]:
+          - generic "The launch video the coding agent made with onetake" [ref=f9e622]
+          - generic [ref=f9e623]:
+            - generic [ref=f9e624]: With onetake
+            - generic [ref=f9e625]: first draft, accepted
+    - region [ref=f9e626]:
+      - generic [ref=f9e627]:
+        - 'heading "Price: 79 US dollars, one time" [level=2] [ref=f9e628]'
+        - generic [aria-hidden] [ref=f9e629]:
+          - generic [ref=f9e630]: Later
+          - generic [ref=f9e631]: Launch price
+        - paragraph [aria-hidden] [ref=f9e632]:
+          - generic [ref=f9e633]: $
+          - generic [ref=f9e634]: "1"
+          - generic [ref=f9e638]:
+            - generic [ref=f9e639]: "0"
+            - generic [ref=f9e640]: "1"
+            - generic [ref=f9e641]: "2"
+            - generic [ref=f9e642]: "3"
+            - generic [ref=f9e643]: "4"
+            - generic [ref=f9e644]: "5"
+            - generic [ref=f9e645]: "6"
+            - generic [ref=f9e646]: "7"
+            - generic [ref=f9e647]: "8"
+            - generic [ref=f9e648]: "9"
+          - generic [ref=f9e649]: "9"
+        - generic [ref=f9e652]:
+          - paragraph [ref=f9e653]: One time. Every 1.x release. A commercial licence.
+          - link "Buy onetake Pro — $79" [ref=f9e654] [cursor=pointer]:
+            - /url: /buy
+          - paragraph [ref=f9e656]:
+            - text: A download link arrives after payment.
+            - link "Read the licence" [ref=f9e657] [cursor=pointer]:
+              - /url: license.html
+            - text: .
+    - region [ref=f9e658]:
+      - generic [ref=f9e659]:
+        - heading "Questions." [level=2] [ref=f9e660]
+        - generic [ref=f9e661]:
+          - button "Can I sell what I make with it?" [ref=f9e662] [cursor=pointer]
+          - paragraph [ref=f9e663]: Yes. Films you make with Pro are yours — ads, launches, paid client work, no attribution. The free edition is noncommercial.
+        - generic [ref=f9e664]:
+          - button "Can I make films for clients or my employer?" [ref=f9e665] [cursor=pointer]
+          - paragraph [ref=f9e666]: Yes. A personal licence covers work you do for anyone. If a company buys it, put its name on the purchase and its people can use it for the company’s work.
+        - generic [ref=f9e667]:
+          - button "What do I need to run it?" [ref=f9e668] [cursor=pointer]
+          - paragraph [ref=f9e669]:
+            - text: Claude Code (or another agent that runs skills), Python 3, Node and ffmpeg. Copy the folder into
+            - code [ref=f9e670]: ~/.claude/skills/onetake/
+            - text: and ask for a film.
+        - generic [ref=f9e671]:
+          - button "Can I get a refund?" [ref=f9e672] [cursor=pointer]
+          - paragraph [ref=f9e673]:
+            - text: Yes — a full refund within 7 days, for any reason. Reply to your receipt or write to
+            - link "rosseneric89@gmail.com" [ref=f9e674] [cursor=pointer]:
+              - /url: mailto:rosseneric89@gmail.com
+            - text: .
+            - link "Refund policy" [ref=f9e675] [cursor=pointer]:
+              - /url: refunds.html
+            - text: .
+        - generic [ref=f9e676]:
+          - button "Do I get updates?" [ref=f9e677] [cursor=pointer]
+          - paragraph [ref=f9e678]: Every 1.x release is included and your licence doesn’t expire. A future 2.0 will be discounted for existing buyers.
+  - contentinfo [ref=f9e679]:
+    - img "onetake" [ref=f9e680]
+    - generic [ref=f9e682]:
+      - list [ref=f9e683]:
+        - listitem [ref=f9e684]:
+          - link "Free edition on GitHub" [ref=f9e685] [cursor=pointer]:
+            - /url: https://github.com/feitangyuan/onetake
+        - listitem [ref=f9e686]:
+          - link "Pro licence" [ref=f9e687] [cursor=pointer]:
+            - /url: license.html
+        - listitem [ref=f9e688]:
+          - link "Buy Pro" [ref=f9e689] [cursor=pointer]:
+            - /url: "#pricing"
+        - listitem [ref=f9e690]:
+          - link "Terms" [ref=f9e691] [cursor=pointer]:
+            - /url: terms.html
+        - listitem [ref=f9e692]:
+          - link "Refunds" [ref=f9e693] [cursor=pointer]:
+            - /url: refunds.html
+        - listitem [ref=f9e694]:
+          - link "Privacy" [ref=f9e695] [cursor=pointer]:
+            - /url: privacy.html
+        - listitem [ref=f9e696]:
+          - link "rosseneric89@gmail.com" [ref=f9e697] [cursor=pointer]:
+            - /url: mailto:rosseneric89@gmail.com
+      - generic [ref=f9e698]: © 2026 Yang Tian (Patrick Tian) · free edition PolyForm Noncommercial 1.0.0 · Pro under its own commercial licence

@@ -1,0 +1,487 @@
+﻿<!doctype html>
+<html lang="zh-CN" data-variant="v2">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mock 平台 · V2 瑞士网格 · 编辑风</title>
+<link rel="stylesheet" href="./app.css" />
+</head>
+<body class="v2">
+
+<a class="skiplink" href="#stage">跳到主内容</a>
+
+<!-- ============================== 顶部横向导航 ============================== -->
+<header class="top">
+  <div class="top__brand">
+    <svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
+      <rect x="1" y="1" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M7 24V8h3.2l5.8 8.6L21.8 8H25v16h-2.6V12.4L16.4 21h-2.8L7.6 12.4V24H7z" fill="currentColor"/>
+    </svg>
+    <span class="top__wm">
+      <b>MOCK PLATFORM</b>
+      <i>节点调测仿真台 · 第 2 版 设计稿</i>
+    </span>
+  </div>
+
+  <nav class="top__nav" aria-label="主导航">
+    <button class="nav__item is-active" data-nav="mock" type="button" aria-current="page">
+      <b class="nav__idx">01</b><span class="nav__t">MOCK 管理</span><i class="nav__b" data-badge="ports">0</i>
+    </button>
+    <button class="nav__item" data-nav="flow" type="button">
+      <b class="nav__idx">02</b><span class="nav__t">MOCK 流程</span><i class="nav__b" data-badge="human">0</i>
+    </button>
+    <button class="nav__item" data-nav="ne" type="button">
+      <b class="nav__idx">03</b><span class="nav__t">网元管理</span><i class="nav__b" data-badge="ne">0</i>
+    </button>
+    <button class="nav__item" data-nav="omp" type="button">
+      <b class="nav__idx">04</b><span class="nav__t">网元管理平台</span><i class="nav__b" data-badge="tasks">0</i>
+    </button>
+    <button class="nav__item" data-nav="lcm" type="button">
+      <b class="nav__idx">05</b><span class="nav__t">生命周期平台</span><i class="nav__b" data-badge="packages">0</i>
+    </button>
+    <button class="nav__item" data-nav="vlp" type="button">
+      <b class="nav__idx">06</b><span class="nav__t">虚层管理平台</span><i class="nav__b" data-badge="vlp">—</i>
+    </button>
+  </nav>
+
+  <div class="top__aside">
+    <button class="sfx" id="sfxBtn" type="button" aria-pressed="false" aria-label="开关界面音效" title="界面音效（合成音 · 默认关闭）">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h3.2l4.3 3.6V5.4L7.2 9H4z"/><path class="sfx__wave" d="M15.4 8.6a5 5 0 0 1 0 6.8M18 6.4a8.4 8.4 0 0 1 0 11.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>SFX</span>
+    </button>
+    <span class="clock mono" id="clock">--:--:--</span>
+  </div>
+</header>
+
+<!-- 遥测带：编辑式细线数据条 -->
+<div class="rulebar" aria-label="实时遥测">
+  <div class="rulebar__in">
+    <span class="rulebar__item">端点 <b id="tkPorts">0</b></span>
+    <span class="rulebar__sep"></span>
+    <span class="rulebar__item">运行中 <b id="tkRun">0</b></span>
+    <span class="rulebar__sep"></span>
+    <span class="rulebar__item">请求 <b id="tkReq">0</b></span>
+    <span class="rulebar__sep"></span>
+    <span class="rulebar__item">成功 <b id="tkOk">0</b></span>
+    <span class="rulebar__sep"></span>
+    <span class="rulebar__item">异常 <b id="tkErr">0</b></span>
+    <span class="rulebar__sep"></span>
+    <span class="rulebar__item">平均时延 <b id="tkLat">0</b><i>ms</i></span>
+    <span class="rulebar__sep"></span>
+    <span class="rulebar__item">待人工 <b id="tkHuman">0</b></span>
+    <span class="rulebar__grow"></span>
+    <span class="rulebar__item mono" id="stLast">—</span>
+  </div>
+</div>
+
+<main class="stage" id="stage">
+
+  <!-- ======================= S1 · MOCK 管理 ======================= -->
+  <section class="screen is-active" data-screen="mock">
+    <div class="hero">
+      <div class="hero__grid">
+        <div class="hero__idx"><b>01</b><i>MOCK / 端口与身份</i></div>
+        <div class="hero__main">
+          <h1 class="hero__title">MOCK 管理</h1>
+          <p class="hero__sub">登记本机 IP 与端口作为仿真端点，为端点签发 TLS 证书文件，挂载一种或多种平台能力，然后开启 mock 服务。</p>
+        </div>
+        <div class="hero__meta">
+          <span class="hero__en">PORT REGISTRY · CERTIFICATE · CAPABILITY</span>
+          <span class="hero__host" id="hostLine">—</span>
+        </div>
+      </div>
+      <div class="kpis" data-reveal>
+        <div class="kpi"><b class="kpi__k">MOCK 端点</b><span class="kpi__v num" data-kpi="ports" data-unit="个">0</span><i class="kpi__n">已登记的本机仿真端口</i></div>
+        <div class="kpi"><b class="kpi__k">运行中</b><span class="kpi__v num kpi__v--ok" data-kpi="running" data-unit="个">0</span><i class="kpi__n">正在接收对端请求</i></div>
+        <div class="kpi"><b class="kpi__k">总请求</b><span class="kpi__v num" data-kpi="req" data-unit="">0</span><i class="kpi__n">含重放与模拟流量</i></div>
+        <div class="kpi"><b class="kpi__k">平均时延</b><span class="kpi__v num" data-kpi="avgLat" data-unit="ms">0</span><i class="kpi__n">按端口定制延迟加权</i></div>
+      </div>
+    </div>
+
+    <div class="grid12">
+      <section class="cell cell--4 panel" data-reveal>
+        <header class="panel__h">
+          <h2>端点清单</h2>
+          <span class="panel__meta"><b id="portCount">0</b> 个</span>
+        </header>
+        <div class="panel__b">
+          <ul class="plist" id="portList" aria-label="MOCK 端点清单"></ul>
+        </div>
+        <footer class="panel__f">
+          <form class="form" id="portForm" novalidate>
+            <div class="f2">
+              <label class="field">
+                <span class="flabel">本机 IP / 网卡</span>
+                <span class="fcombo">
+                  <select class="input" id="pfIp" aria-label="选择本机网卡 IP"></select>
+                  <input class="input" id="pfIpCustom" placeholder="10.18.32.100" hidden aria-label="手动输入 IP" />
+                </span>
+              </label>
+              <label class="field">
+                <span class="flabel">端口</span>
+                <input class="input" id="pfPort" inputmode="numeric" value="8443" aria-describedby="pfPortErr" />
+              </label>
+            </div>
+            <em class="ferr" id="pfPortErr" hidden></em>
+            <div class="f2">
+              <label class="field">
+                <span class="flabel">协议</span>
+                <select class="input" id="pfProto"><option>HTTPS</option><option>HTTP</option><option>gRPC</option></select>
+              </label>
+              <label class="field">
+                <span class="flabel">TLS</span>
+                <select class="input" id="pfTls"><option>TLS1.3</option><option>TLS1.2</option><option>—</option></select>
+              </label>
+            </div>
+            <div class="facts">
+              <button class="btn btn--primary" type="submit" id="pfSubmit">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+                注册 MOCK 端口
+              </button>
+              <span class="note">端口范围 1024–65535；IP 可选本机网卡或手填</span>
+            </div>
+          </form>
+        </footer>
+      </section>
+
+      <section class="cell cell--8 panel" data-reveal>
+        <header class="panel__h">
+          <h2>端点详情</h2>
+          <div class="panel__tools">
+            <span class="tag" id="pdProto">—</span>
+            <span class="tag tag--line" id="pdPort">—</span>
+          </div>
+        </header>
+        <div class="panel__b" id="portDetailBody"></div>
+      </section>
+    </div>
+  </section>
+
+  <!-- ======================= S2 · MOCK 流程 ======================= -->
+  <section class="screen" data-screen="flow" hidden>
+    <div class="hero">
+      <div class="hero__grid">
+        <div class="hero__idx"><b>02</b><i>FLOW / 审计与预期响应</i></div>
+        <div class="hero__main">
+          <h1 class="hero__title">MOCK 流程</h1>
+          <p class="hero__sub">面向对象的响应定制：逐字段选择取值方式、配置自增 / 单次生效 / 条件规则，在自动链路里插入人机交互，并在审计日志中放行或拒绝。</p>
+        </div>
+        <div class="hero__meta">
+          <span class="hero__en">AUDIT TRAIL · EXPECTED RESPONSE STUDIO</span>
+          <span class="hero__host" id="flowHost">—</span>
+        </div>
+      </div>
+      <div class="kpis" data-reveal>
+        <div class="kpi"><b class="kpi__k">请求</b><span class="kpi__v num" data-kpi="req" data-unit="">0</span><i class="kpi__n">审计到的全部调用</i></div>
+        <div class="kpi"><b class="kpi__k">成功</b><span class="kpi__v num kpi__v--ok" data-kpi="ok" data-unit="">0</span><i class="kpi__n">HTTP &lt; 400</i></div>
+        <div class="kpi"><b class="kpi__k">异常</b><span class="kpi__v num kpi__v--err" data-kpi="err" data-unit="">0</span><i class="kpi__n">HTTP ≥ 400 与兜底分支</i></div>
+        <div class="kpi"><b class="kpi__k">待人工</b><span class="kpi__v num" data-kpi="pendingHuman" data-unit="条">0</span><i class="kpi__n">卡在人机交互的请求</i></div>
+      </div>
+    </div>
+
+    <div class="grid12">
+      <section class="cell cell--4 panel" data-reveal>
+        <header class="panel__h"><h2>接口清单</h2><span class="panel__meta">按平台能力分组</span></header>
+        <div class="panel__b panel__b--scroll" id="apiList" aria-label="接口清单"></div>
+      </section>
+
+      <section class="cell cell--8 panel" data-reveal>
+        <header class="panel__h">
+          <h2>预期响应定制</h2>
+          <div class="panel__tools" id="apiTools"></div>
+        </header>
+        <div class="panel__b" id="respStudio"></div>
+      </section>
+    </div>
+
+    <section class="panel panel--logs" data-reveal>
+      <header class="panel__h">
+        <h2>请求 / 响应审计</h2>
+        <div class="panel__tools">
+          <div id="logFilter"></div>
+          <input class="input input--sm" id="logQuery" placeholder="搜索路径 / 网元 / 判定" aria-label="搜索审计日志" />
+          <span class="live"><i></i>LIVE</span>
+        </div>
+      </header>
+      <div class="panel__b panel__b--scroll" id="logWrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th scope="col">时间</th><th scope="col">端口</th><th scope="col">方法</th><th scope="col">路径</th>
+              <th scope="col">状态</th><th scope="col">时延</th><th scope="col">网元</th><th scope="col">判定 / 人机</th><th scope="col"><span class="sr">操作</span></th>
+            </tr>
+          </thead>
+          <tbody id="logBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+
+  <!-- ======================= S3 · 网元管理 ======================= -->
+  <section class="screen" data-screen="ne" hidden>
+    <div class="hero">
+      <div class="hero__grid">
+        <div class="hero__idx"><b>03</b><i>NE / 属性与升级流程</i></div>
+        <div class="hero__main">
+          <h1 class="hero__title">网元管理</h1>
+          <p class="hero__sub">定制网元的属性、架构与类型，维护版本 / 软件名 / 旧版本；编排升级流程步骤（自动 / 手动 / 人工），把人机交互放进流程，并做参数校验与网元成组、复制。</p>
+        </div>
+        <div class="hero__meta">
+          <span class="hero__en">NE PROFILE · VALIDATION · UPGRADE FLOW</span>
+          <span class="hero__host" id="neHost">—</span>
+        </div>
+      </div>
+      <div class="kpis" data-reveal>
+        <div class="kpi"><b class="kpi__k">受管网元</b><span class="kpi__v num" data-kpi="ne" data-unit="个">0</span><i class="kpi__n">可被升级任务引用</i></div>
+        <div class="kpi"><b class="kpi__k">网元组</b><span class="kpi__v num" data-kpi="groups" data-unit="个">0</span><i class="kpi__n">同组可批量下发</i></div>
+        <div class="kpi"><b class="kpi__k">校验规则</b><span class="kpi__v num" data-kpi="validations" data-unit="条">0</span><i class="kpi__n">正则 / 语义规则</i></div>
+        <div class="kpi"><b class="kpi__k">升级中</b><span class="kpi__v num" data-kpi="upgrading" data-unit="个">0</span><i class="kpi__n">状态为升级中的网元</i></div>
+      </div>
+    </div>
+
+    <div class="grid12">
+      <div class="cell cell--4 colstack">
+        <section class="panel" data-reveal>
+          <header class="panel__h">
+            <h2>网元清单</h2>
+            <button class="btn btn--ghost btn--sm" id="neNew" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>新建
+            </button>
+          </header>
+          <div class="panel__b panel__b--scroll" id="neList" aria-label="网元清单"></div>
+        </section>
+        <section class="panel" data-reveal>
+          <header class="panel__h"><h2>网元组</h2><span class="panel__meta">同组网元</span></header>
+          <div class="panel__b" id="groupList"></div>
+        </section>
+      </div>
+
+      <section class="cell cell--8 panel" data-reveal>
+        <header class="panel__h">
+          <h2 id="neDetailTitle">网元详情</h2>
+          <div class="panel__tools" id="neTools"></div>
+        </header>
+        <nav class="tabs" id="neTabs" role="tablist" aria-label="网元详情分页">
+          <button class="tab is-active" data-netab="profile" role="tab" aria-selected="true" type="button">属性 / 版本</button>
+          <button class="tab" data-netab="valid" role="tab" aria-selected="false" type="button">参数校验</button>
+          <button class="tab" data-netab="flow" role="tab" aria-selected="false" type="button">升级流程</button>
+          <button class="tab" data-netab="group" role="tab" aria-selected="false" type="button">成组 / 复制</button>
+        </nav>
+        <div class="panel__b panel__b--scroll" id="neBody"></div>
+      </section>
+    </div>
+  </section>
+
+  <!-- ======================= S4 · 网元管理平台 ======================= -->
+  <section class="screen" data-screen="omp" hidden>
+    <div class="hero">
+      <div class="hero__grid">
+        <div class="hero__idx"><b>04</b><i>OMP / 平台侧视图</i></div>
+        <div class="hero__main">
+          <h1 class="hero__title">网元管理平台</h1>
+          <p class="hero__sub">平台所管理的网元与网元组、账号管理及其网元范围、创建账号，以及关联站点的一体化升级任务下发与推进。</p>
+        </div>
+        <div class="hero__meta">
+          <span class="hero__en">MANAGED SCOPE · ACCOUNTS · INTEGRATED TASK</span>
+          <span class="hero__host" id="ompHost">—</span>
+        </div>
+      </div>
+      <div class="kpis" data-reveal>
+        <div class="kpi"><b class="kpi__k">受管网元</b><span class="kpi__v num" data-kpi="ne" data-unit="个">0</span><i class="kpi__n">纳入平台的网元</i></div>
+        <div class="kpi"><b class="kpi__k">账号</b><span class="kpi__v num" data-kpi="accounts" data-unit="个">0</span><i class="kpi__n">含停用账号</i></div>
+        <div class="kpi"><b class="kpi__k">进行中任务</b><span class="kpi__v num" data-kpi="tasks" data-unit="个">0</span><i class="kpi__n">未完成的一体化任务</i></div>
+        <div class="kpi"><b class="kpi__k">共部署</b><span class="kpi__v" id="ompCoDeploy">—</span><i class="kpi__n">与生命周期平台复用端点</i></div>
+      </div>
+    </div>
+
+    <div class="grid12">
+      <section class="cell cell--4 panel" data-reveal>
+        <header class="panel__h"><h2>受管网元与组</h2><span class="panel__meta" id="ompScopeMeta">—</span></header>
+        <div class="panel__b panel__b--scroll" id="ompScope"></div>
+      </section>
+
+      <section class="cell cell--4 panel" data-reveal>
+        <header class="panel__h"><h2>账号管理</h2><span class="panel__meta" id="accCount">0</span></header>
+        <div class="panel__b panel__b--scroll" id="accList"></div>
+        <footer class="panel__f">
+          <form class="form" id="accForm" novalidate>
+            <div class="f2">
+              <label class="field">
+                <span class="flabel">账号</span>
+                <input class="input" id="acName" placeholder="ops_hz_02" required aria-describedby="acNameErr" />
+              </label>
+              <label class="field">
+                <span class="flabel">角色</span>
+                <select class="input" id="acRole"><option>升级操作员</option><option>只读审计</option><option>平台管理员</option></select>
+              </label>
+            </div>
+            <em class="ferr" id="acNameErr" hidden>账号名不能为空，且不允许重复</em>
+            <label class="field">
+              <span class="flabel">授权网元范围（可多选）</span>
+              <div class="checks" id="acNes"></div>
+            </label>
+            <div class="facts">
+              <button class="btn btn--primary" type="submit">创建账号</button>
+              <span class="note">账号只能操作授权范围内的网元</span>
+            </div>
+          </form>
+        </footer>
+      </section>
+
+      <section class="cell cell--4 panel" data-reveal>
+        <header class="panel__h"><h2>一体化升级任务</h2><span class="panel__meta">关联站点</span></header>
+        <div class="panel__b panel__b--scroll" id="taskWrap"></div>
+        <footer class="panel__f">
+          <form class="form" id="taskForm" novalidate>
+            <label class="field">
+              <span class="flabel">任务名称</span>
+              <input class="input" id="tkName" placeholder="南京核心网组一体化升级" required aria-describedby="tkNameErr" />
+            </label>
+            <em class="ferr" id="tkNameErr" hidden>任务名称不能为空</em>
+            <div class="f2">
+              <label class="field"><span class="flabel">关联站点</span><select class="input" id="tkSite"></select></label>
+              <label class="field"><span class="flabel">目标网元组</span><select class="input" id="tkGroup"></select></label>
+            </div>
+            <span class="flabel">关联网元（可多选）</span>
+            <div class="checks" id="tkNes"></div>
+            <div class="facts">
+              <button class="btn btn--primary" type="submit">创建任务</button>
+              <span class="note">任务会按组内策略串行 / 并行下发</span>
+            </div>
+          </form>
+        </footer>
+      </section>
+    </div>
+  </section>
+
+  <!-- ======================= S5 · 生命周期平台 ======================= -->
+  <section class="screen" data-screen="lcm" hidden>
+    <div class="hero">
+      <div class="hero__grid">
+        <div class="hero__idx"><b>05</b><i>LCM / 软件包与部署</i></div>
+        <div class="hero__main">
+          <h1 class="hero__title">生命周期平台</h1>
+          <p class="hero__sub">定制平台管理的网元与软件包（类型 / 所属网元 / 厂商 / 版本），软件包需通过校验流程才能用于升级；可与网元管理平台共部署并复用同一 mock 端点与证书。</p>
+        </div>
+        <div class="hero__meta">
+          <span class="hero__en">PACKAGE LIFE CYCLE · CO-DEPLOY</span>
+          <span class="hero__host" id="lcmHost">—</span>
+        </div>
+      </div>
+      <div class="kpis" data-reveal>
+        <div class="kpi"><b class="kpi__k">软件包</b><span class="kpi__v num" data-kpi="packages" data-unit="个">0</span><i class="kpi__n">已登记进平台的包</i></div>
+        <div class="kpi"><b class="kpi__k">已校验</b><span class="kpi__v num kpi__v--ok" data-kpi="validated" data-unit="个">0</span><i class="kpi__n">可投入升级使用</i></div>
+        <div class="kpi"><b class="kpi__k">受管网元</b><span class="kpi__v num" data-kpi="ne" data-unit="个">0</span><i class="kpi__n">生命周期覆盖范围</i></div>
+        <div class="kpi"><b class="kpi__k">共部署</b><span class="kpi__v" id="lcmCoDeploy">—</span><i class="kpi__n">与 NEMP 复用端口</i></div>
+      </div>
+    </div>
+
+    <div class="grid12">
+      <section class="cell cell--8 panel" data-reveal>
+        <header class="panel__h">
+          <h2>软件包</h2>
+          <div class="panel__tools"><div id="pkgFilter"></div><span class="panel__meta" id="pkgCount">0</span></div>
+        </header>
+        <div class="panel__b panel__b--scroll" id="pkgList"></div>
+        <footer class="panel__f">
+          <form class="form" id="pkgForm" novalidate>
+            <div class="f3">
+              <label class="field"><span class="flabel">名称</span><input class="input" id="pkgName" placeholder="XXX_R1.0.0_full.pkg" required /></label>
+              <label class="field"><span class="flabel">类型</span><select class="input" id="pkgType"></select></label>
+              <label class="field"><span class="flabel">所属网元</span><select class="input" id="pkgNe"></select></label>
+              <label class="field"><span class="flabel">厂商</span><select class="input" id="pkgVendor"></select></label>
+              <label class="field"><span class="flabel">版本</span><input class="input" id="pkgVer" placeholder="1.0.0" required /></label>
+              <label class="field"><span class="flabel">大小 (MB)</span><input class="input" id="pkgSize" inputmode="numeric" placeholder="420" /></label>
+            </div>
+            <em class="ferr" id="pkgErr" hidden>名称与版本为必填</em>
+            <div class="facts">
+              <button class="btn btn--primary" type="submit">登记软件包</button>
+              <span class="note">登记后需在虚层平台走「软件包校验流程」</span>
+            </div>
+          </form>
+        </footer>
+      </section>
+
+      <div class="cell cell--4 colstack">
+        <section class="panel" data-reveal>
+          <header class="panel__h"><h2>受管网元</h2><span class="panel__meta" id="lcmScopeMeta">—</span></header>
+          <div class="panel__b" id="lcmScope"></div>
+        </section>
+        <section class="panel" data-reveal>
+          <header class="panel__h"><h2>部署形态</h2><span class="panel__meta">共部署开关</span></header>
+          <div class="panel__b" id="deployBox"></div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= S6 · 虚层管理平台 ======================= -->
+  <section class="screen" data-screen="vlp" hidden>
+    <div class="hero">
+      <div class="hero__grid">
+        <div class="hero__idx"><b>06</b><i>VLP / 虚层与站点</i></div>
+        <div class="hero__main">
+          <h1 class="hero__title">虚层管理平台</h1>
+          <p class="hero__sub">定制平台版本与 CPU 数量、指定主副站点，查看并推进升级流程详情，逐项执行软件包校验流程。</p>
+        </div>
+        <div class="hero__meta">
+          <span class="hero__en">VIRTUAL LAYER · SITE PAIR · VALIDATION CHAIN</span>
+          <span class="hero__host" id="vlpHost">—</span>
+        </div>
+      </div>
+      <div class="kpis" data-reveal>
+        <div class="kpi"><b class="kpi__k">平台版本</b><span class="kpi__v" id="vlpVerKpi">—</span><i class="kpi__n">可回滚到上一版本</i></div>
+        <div class="kpi"><b class="kpi__k">CPU 配额</b><span class="kpi__v num" data-kpi="cpu" data-unit="核">0</span><i class="kpi__n">主站承载业务核数</i></div>
+        <div class="kpi"><b class="kpi__k">校验通过</b><span class="kpi__v" id="vlpCheckKpi">—</span><i class="kpi__n">软件包校验流程结果</i></div>
+        <div class="kpi"><b class="kpi__k">升级流程</b><span class="kpi__v" id="vlpFlowKpi">—</span><i class="kpi__n">已完成步骤 / 总步骤</i></div>
+      </div>
+    </div>
+
+    <div class="grid12">
+      <section class="cell cell--6 panel" data-reveal>
+        <header class="panel__h"><h2>平台版本 · CPU 配额</h2><span class="panel__meta">独立简单流程</span></header>
+        <div class="panel__b" id="vlpCore"></div>
+      </section>
+      <section class="cell cell--6 panel" data-reveal>
+        <header class="panel__h"><h2>主副站点</h2><span class="panel__meta">主站承载 · 副站容灾</span></header>
+        <div class="panel__b" id="vlpSites"></div>
+      </section>
+      <section class="cell cell--6 panel" data-reveal>
+        <header class="panel__h">
+          <h2>升级流程详情</h2>
+          <div class="panel__tools">
+            <button class="btn btn--ghost btn--sm" id="vlpReset" type="button">重置</button>
+            <span id="vlpAdvance"></span>
+          </div>
+        </header>
+        <div class="panel__b" id="vlpFlow"></div>
+      </section>
+      <section class="cell cell--6 panel" data-reveal>
+        <header class="panel__h"><h2>软件包校验流程</h2><span class="panel__meta" id="vlpCheckMeta">—</span></header>
+        <div class="panel__b" id="vlpChecks"></div>
+      </section>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <span class="foot__i">VARIANT <b>V2 · SWISS EDITORIAL</b></span>
+  <span class="foot__i">GRID <b>12 COL</b></span>
+  <span class="foot__i">DENSITY <b>4 / 10</b></span>
+  <span class="foot__i">MOTION <b>6 / 10</b></span>
+  <span class="foot__i">SIM <b id="stSim">RUNNING</b></span>
+  <span class="foot__grow"></span>
+  <span class="foot__i">键盘 <b>1–6</b> 切换界面</span>
+</footer>
+
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<script src="../_shared/domain.js"></script>
+<script src="../_shared/motion.js"></script>
+<script src="../_shared/micro.js"></script>
+<script src="../_shared/button-fx.js"></script>
+<script src="../_shared/fx.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>

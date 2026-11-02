@@ -1,0 +1,20 @@
+﻿{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Rhine Business",
+  "version": "0.1.0",
+  "identifier": "cc.rhine.mock.business",
+  "build": { "frontendDist": "../../ui" },
+  "app": {
+    "windows": [{
+      "label": "main",
+      "title": "RHINE MOCK · 业务面",
+      "width": 1480, "height": 920, "minWidth": 1080, "minHeight": 700,
+      "center": true,
+      "url": "business/index.html"
+    }],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:9601 ipc: http://ipc.localhost"
+    }
+  },
+  "bundle": { "active": true, "targets": "all", "icon": [] }
+}

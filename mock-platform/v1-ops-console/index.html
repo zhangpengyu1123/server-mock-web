@@ -1,0 +1,417 @@
+﻿<!doctype html>
+<html lang="zh-CN" data-variant="v1">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mock 平台 · V1 暗场运维控制台</title>
+<link rel="stylesheet" href="./app.css" />
+</head>
+<body class="v1">
+
+<!-- 背景：程序化扫描线 + 网格（fx.js 挂载；知识来源 Shaders 的 scanlines/grid 词汇） -->
+<div class="bg" aria-hidden="true">
+  <div class="bg__grid"></div>
+  <canvas data-fx="scanlines" data-fx-alpha="0.06" data-fx-static></canvas>
+  <div class="bg__glow bg__glow--a"></div>
+  <div class="bg__glow bg__glow--b"></div>
+</div>
+
+<!-- ============================== 顶栏 ============================== -->
+<header class="top">
+  <div class="top__brand">
+    <svg class="logo" viewBox="0 0 28 28" aria-hidden="true">
+      <path d="M4 22V6h4l6 9 6-9h4v16h-3.4V11.4L14.2 20h-2.4L5.4 11.4V22H4z"/>
+      <path class="logo__ping" d="M2 24h24" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    <div class="top__title">
+      <b>MOCK PLATFORM</b>
+      <span>节点调测仿真台 · OPS CONSOLE</span>
+    </div>
+  </div>
+
+  <div class="host" role="group" aria-label="本机信息">
+    <span class="host__dot" data-live></span>
+    <b id="hostName">—</b>
+    <span class="host__sep">/</span>
+    <span id="hostIp">—</span>
+    <span class="host__sep">/</span>
+    <span id="hostOs">—</span>
+    <span class="host__sep">/</span>
+    <span id="hostAgent">—</span>
+  </div>
+
+  <div class="top__spacer"></div>
+
+  <!-- 实时遥测跑马灯 -->
+  <div class="ticker" aria-label="实时遥测">
+    <div class="ticker__label">TELEMETRY</div>
+    <div class="ticker__track" id="tickerTrack">
+      <span>REQ <b id="tkReq">0</b></span><i></i>
+      <span>OK <b id="tkOk">0</b></span><i></i>
+      <span>ERR <b id="tkErr">0</b></span><i></i>
+      <span>AVG <b id="tkLat">0</b>ms</span><i></i>
+      <span>RUN <b id="tkRun">0</b>/<b id="tkPorts">0</b></span><i></i>
+      <span>HUMAN <b id="tkHuman">0</b></span><i></i>
+    </div>
+  </div>
+
+  <div class="top__actions">
+    <button class="icobtn" id="sfxBtn" type="button" aria-pressed="false" aria-label="开关界面音效" title="界面音效（合成音，默认关闭）">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h3l4 4V5L7 9H4z"/><path class="sfx-wave" d="M15 8.5a5 5 0 0 1 0 7"/></svg>
+      <span>SFX</span>
+    </button>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+</header>
+
+<!-- ============================== 主体 ============================== -->
+<div class="shell">
+
+  <!-- 左侧导轨 -->
+  <nav class="rail" aria-label="主导航">
+    <button class="rail__item is-active" data-nav="mock" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="8" height="6" rx="1"/><rect x="13" y="14" width="8" height="6" rx="1"/></svg>
+      <b>MOCK 管理</b><span>端口 · 证书 · 能力</span><i class="rail__badge" data-badge="ports">0</i>
+    </button>
+    <button class="rail__item" data-nav="flow" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h11M3 12h18M3 18h8"/><circle cx="18" cy="6" r="2.4"/><circle cx="14" cy="18" r="2.4"/></svg>
+      <b>MOCK 流程</b><span>审计 · 预期响应</span><i class="rail__badge" data-badge="human">0</i>
+    </button>
+    <button class="rail__item" data-nav="ne" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
+      <b>网元管理</b><span>属性 · 升级流程</span><i class="rail__badge" data-badge="ne">0</i>
+    </button>
+    <button class="rail__item" data-nav="omp" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="4.6" rx="1"/><rect x="3" y="11" width="18" height="4.6" rx="1"/><rect x="3" y="18" width="9" height="2.6" rx="1"/><circle cx="18" cy="19.2" r="1.6"/></svg>
+      <b>网元管理平台</b><span>账号 · 一体化任务</span><i class="rail__badge" data-badge="tasks">0</i>
+    </button>
+    <button class="rail__item" data-nav="lcm" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8-4 8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4M4 17l8 4 8-4"/></svg>
+      <b>生命周期平台</b><span>软件包 · 共部署</span><i class="rail__badge" data-badge="packages">0</i>
+    </button>
+    <button class="rail__item" data-nav="vlp" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16M4 10h16"/></svg>
+      <b>虚层管理平台</b><span>CPU · 主副站点</span><i class="rail__badge" data-badge="vlp">—</i>
+    </button>
+    <div class="rail__foot">
+      <span class="rail__sig">SIG <b id="sigId">—</b></span>
+      <span class="rail__uptime">UP <b id="uptime">—</b></span>
+    </div>
+  </nav>
+
+  <main class="stage" id="stage">
+
+    <!-- ======================= S1 · MOCK 管理 ======================= -->
+    <section class="screen is-active" data-screen="mock">
+      <div class="screen__head">
+        <h1><span class="h1__cn">MOCK 管理</span><span class="h1__en">PORT REGISTRY / CERTIFICATE / CAPABILITY</span></h1>
+        <div class="screen__kpis" id="mockKpis"></div>
+      </div>
+
+      <div class="cols cols--1-2">
+        <!-- 端口列表 + 注册 -->
+        <div class="col">
+          <section class="panel">
+            <header class="panel__head">
+              <h2>MOCK 端口</h2>
+              <span class="panel__meta"><b id="portCount">0</b> 个端点</span>
+            </header>
+            <div class="panel__body">
+              <ul class="portlist" id="portList"></ul>
+            </div>
+            <footer class="panel__foot">
+              <form class="form form--row" id="portForm" novalidate>
+                <div class="form__grid">
+                  <label class="field">
+                    <span class="field__label">本机 IP</span>
+                    <select id="pfIp" class="input" aria-label="本机 IP"></select>
+                    <em class="field__hint">来自本机网卡，可下拉或手填</em>
+                  </label>
+                  <label class="field">
+                    <span class="field__label">端口</span>
+                    <input id="pfPort" class="input" inputmode="numeric" value="8443" aria-describedby="pfPortErr" />
+                    <em class="field__err" id="pfPortErr" hidden></em>
+                  </label>
+                  <label class="field">
+                    <span class="field__label">协议</span>
+                    <select id="pfProto" class="input"><option>HTTPS</option><option>HTTP</option><option>gRPC</option></select>
+                  </label>
+                  <label class="field">
+                    <span class="field__label">TLS</span>
+                    <select id="pfTls" class="input"><option>TLS1.3</option><option>TLS1.2</option><option>—</option></select>
+                  </label>
+                </div>
+                <div class="form__actions">
+                  <button class="btn btn--primary" type="submit" id="pfSubmit">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                    注册 MOCK 端口
+                  </button>
+                  <span class="form__note">注册后需签发证书、挂载平台能力，才能启动服务</span>
+                </div>
+              </form>
+            </footer>
+          </section>
+        </div>
+
+        <!-- 选中端口详情 -->
+        <div class="col">
+          <section class="panel panel--tall" id="portDetail">
+            <header class="panel__head">
+              <h2>端点详情</h2>
+              <div class="panel__tools">
+                <span class="tag" id="pdProto">—</span>
+                <span class="tag tag--ghost" id="pdPort">—</span>
+              </div>
+            </header>
+            <div class="panel__body" id="portDetailBody"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= S2 · MOCK 流程 ======================= -->
+    <section class="screen" data-screen="flow" hidden>
+      <div class="screen__head">
+        <h1><span class="h1__cn">MOCK 流程</span><span class="h1__en">AUDIT TRAIL / EXPECTED RESPONSE STUDIO</span></h1>
+        <div class="screen__kpis" id="flowKpis"></div>
+      </div>
+
+      <div class="cols cols--320">
+        <!-- 接口列表 -->
+        <div class="col">
+          <section class="panel panel--tall">
+            <header class="panel__head">
+              <h2>接口清单</h2>
+              <span class="panel__meta" id="apiCapLabel">按能力分组</span>
+            </header>
+            <div class="panel__body panel__body--scroll" id="apiList"></div>
+          </section>
+        </div>
+
+        <!-- 预期响应编辑器 -->
+        <div class="col">
+          <section class="panel panel--tall">
+            <header class="panel__head">
+              <h2>预期响应定制</h2>
+              <div class="panel__tools" id="apiTools"></div>
+            </header>
+            <div class="panel__body" id="respStudio"></div>
+          </section>
+        </div>
+      </div>
+
+      <!-- 审计日志 -->
+      <section class="panel panel--logs">
+        <header class="panel__head">
+          <h2>请求 / 响应审计</h2>
+          <div class="panel__tools">
+            <div id="logFilter"></div>
+            <input class="input input--sm" id="logQuery" placeholder="搜索路径 / 网元 / 判定" aria-label="搜索日志" />
+            <span class="live"><i data-live></i>LIVE</span>
+          </div>
+        </header>
+        <div class="panel__body panel__body--scroll" id="logWrap">
+          <table class="table table--logs">
+            <thead>
+              <tr><th>时间</th><th>端口</th><th>方法</th><th>路径</th><th>状态</th><th>时延</th><th>网元</th><th>判定</th><th></th></tr>
+            </thead>
+            <tbody id="logBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <!-- ======================= S3 · 网元管理 ======================= -->
+    <section class="screen" data-screen="ne" hidden>
+      <div class="screen__head">
+        <h1><span class="h1__cn">网元管理</span><span class="h1__en">NE PROFILE / VALIDATION / UPGRADE FLOW</span></h1>
+        <div class="screen__kpis" id="neKpis"></div>
+      </div>
+      <div class="cols cols--1-2">
+        <div class="col">
+          <section class="panel">
+            <header class="panel__head">
+              <h2>网元清单</h2>
+              <button class="btn btn--ghost btn--sm" id="neNew" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>新建
+              </button>
+            </header>
+            <div class="panel__body panel__body--scroll" id="neList"></div>
+          </section>
+          <section class="panel">
+            <header class="panel__head">
+              <h2>网元组</h2>
+              <span class="panel__meta">同组网元批量操作</span>
+            </header>
+            <div class="panel__body" id="groupList"></div>
+          </section>
+        </div>
+        <div class="col">
+          <section class="panel panel--tall">
+            <header class="panel__head">
+              <h2 id="neDetailTitle">网元详情</h2>
+              <div class="panel__tools" id="neTools"></div>
+            </header>
+            <nav class="tabs" id="neTabs" role="tablist">
+              <button class="tabs__t is-active" data-netab="profile" role="tab" type="button">属性 / 版本</button>
+              <button class="tabs__t" data-netab="valid" role="tab" type="button">参数校验</button>
+              <button class="tabs__t" data-netab="flow" role="tab" type="button">升级流程</button>
+              <button class="tabs__t" data-netab="group" role="tab" type="button">成组 / 复制</button>
+            </nav>
+            <div class="panel__body panel__body--scroll" id="neBody"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= S4 · 网元管理平台 ======================= -->
+    <section class="screen" data-screen="omp" hidden>
+      <div class="screen__head">
+        <h1><span class="h1__cn">网元管理平台</span><span class="h1__en">MANAGED SCOPE / ACCOUNTS / INTEGRATED TASK</span></h1>
+        <div class="screen__kpis" id="ompKpis"></div>
+      </div>
+      <div class="cols cols--3">
+        <div class="col">
+          <section class="panel panel--tall">
+            <header class="panel__head"><h2>受管网元</h2><span class="panel__meta" id="ompScopeMeta">—</span></header>
+            <div class="panel__body panel__body--scroll" id="ompScope"></div>
+          </section>
+        </div>
+        <div class="col">
+          <section class="panel panel--tall">
+            <header class="panel__head"><h2>账号管理</h2><span class="panel__meta" id="accCount">0</span></header>
+            <div class="panel__body panel__body--scroll" id="accList"></div>
+            <footer class="panel__foot">
+              <form class="form" id="accForm" novalidate>
+                <div class="form__grid form__grid--2">
+                  <label class="field"><span class="field__label">账号</span><input class="input" id="acName" placeholder="例如 ops_hz_02" required /></label>
+                  <label class="field"><span class="field__label">角色</span>
+                    <select class="input" id="acRole"><option>升级操作员</option><option>只读审计</option><option>平台管理员</option></select>
+                  </label>
+                </div>
+                <label class="field"><span class="field__label">授权网元（可多选）</span><div class="checks" id="acNes"></div></label>
+                <div class="form__actions"><button class="btn btn--primary" type="submit">创建账号</button><span class="form__note">账号只能操作被授权的网元</span></div>
+              </form>
+            </footer>
+          </section>
+        </div>
+        <div class="col">
+          <section class="panel panel--tall">
+            <header class="panel__head"><h2>一体化升级任务</h2><span class="panel__meta">关联站点</span></header>
+            <div class="panel__body panel__body--scroll" id="taskWrap"></div>
+            <footer class="panel__foot">
+              <form class="form" id="taskForm" novalidate>
+                <label class="field"><span class="field__label">任务名称</span><input class="input" id="tkName" placeholder="例如：南京核心网组一体化升级" required /></label>
+                <div class="form__grid form__grid--2">
+                  <label class="field"><span class="field__label">关联站点</span><select class="input" id="tkSite"></select></label>
+                  <label class="field"><span class="field__label">目标网元组</span><select class="input" id="tkGroup"></select></label>
+                </div>
+                <div class="form__actions"><button class="btn btn--primary" type="submit">创建任务</button></div>
+              </form>
+            </footer>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= S5 · 生命周期平台 ======================= -->
+    <section class="screen" data-screen="lcm" hidden>
+      <div class="screen__head">
+        <h1><span class="h1__cn">生命周期平台</span><span class="h1__en">PACKAGE LIFE CYCLE / CO-DEPLOY</span></h1>
+        <div class="screen__kpis" id="lcmKpis"></div>
+      </div>
+      <div class="cols cols--2-1">
+        <div class="col">
+          <section class="panel panel--tall">
+            <header class="panel__head">
+              <h2>软件包</h2>
+              <div class="panel__tools"><div id="pkgFilter"></div><span class="panel__meta" id="pkgCount">0</span></div>
+            </header>
+            <div class="panel__body panel__body--scroll" id="pkgList"></div>
+            <footer class="panel__foot">
+              <form class="form" id="pkgForm" novalidate>
+                <div class="form__grid form__grid--3">
+                  <label class="field"><span class="field__label">名称</span><input class="input" id="pkgName" placeholder="XXX_R1.0.0_full.pkg" required /></label>
+                  <label class="field"><span class="field__label">类型</span><select class="input" id="pkgType"></select></label>
+                  <label class="field"><span class="field__label">所属网元</span><select class="input" id="pkgNe"></select></label>
+                  <label class="field"><span class="field__label">厂商</span><select class="input" id="pkgVendor"></select></label>
+                  <label class="field"><span class="field__label">版本</span><input class="input" id="pkgVer" placeholder="1.0.0" required /></label>
+                  <label class="field"><span class="field__label">大小 (MB)</span><input class="input" id="pkgSize" inputmode="numeric" placeholder="420" /></label>
+                </div>
+                <div class="form__actions"><button class="btn btn--primary" type="submit">登记软件包</button><span class="form__note">登记后需走校验流程才能用于升级</span></div>
+              </form>
+            </footer>
+          </section>
+        </div>
+        <div class="col">
+          <section class="panel">
+            <header class="panel__head"><h2>受管网元</h2><span class="panel__meta" id="lcmScopeMeta">—</span></header>
+            <div class="panel__body" id="lcmScope"></div>
+          </section>
+          <section class="panel">
+            <header class="panel__head"><h2>部署形态</h2></header>
+            <div class="panel__body" id="deployBox"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= S6 · 虚层管理平台 ======================= -->
+    <section class="screen" data-screen="vlp" hidden>
+      <div class="screen__head">
+        <h1><span class="h1__cn">虚层管理平台</span><span class="h1__en">VIRTUAL LAYER / SITE PAIR / VALIDATION CHAIN</span></h1>
+        <div class="screen__kpis" id="vlpKpis"></div>
+      </div>
+      <div class="cols cols--2">
+        <div class="col">
+          <section class="panel">
+            <header class="panel__head"><h2>平台版本 · CPU 配额</h2><span class="panel__meta">独立简单流程</span></header>
+            <div class="panel__body" id="vlpCore"></div>
+          </section>
+          <section class="panel">
+            <header class="panel__head"><h2>主副站点</h2><span class="panel__meta">主站承载 · 副站容灾</span></header>
+            <div class="panel__body" id="vlpSites"></div>
+          </section>
+        </div>
+        <div class="col">
+          <section class="panel">
+            <header class="panel__head">
+              <h2>升级流程详情</h2>
+              <div class="panel__tools">
+                <button class="btn btn--ghost btn--sm" id="vlpAdvance" type="button">推进下一步</button>
+                <button class="btn btn--ghost btn--sm" id="vlpReset" type="button">重置</button>
+              </div>
+            </header>
+            <div class="panel__body" id="vlpFlow"></div>
+          </section>
+          <section class="panel">
+            <header class="panel__head"><h2>软件包校验流程</h2><span class="panel__meta" id="vlpCheckMeta">—</span></header>
+            <div class="panel__body" id="vlpChecks"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============================== 底栏 ============================== -->
+<footer class="status">
+  <span class="status__item"><i data-live></i>SIM <b id="stSim">RUNNING</b></span>
+  <span class="status__sep"></span>
+  <span class="status__item">LAST <b id="stLast">—</b></span>
+  <span class="status__item status__item--grow" id="stTicker">—</span>
+  <span class="status__sep"></span>
+  <span class="status__item">VARIANT <b>V1 · OPS CONSOLE</b></span>
+</footer>
+
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<script src="../_shared/domain.js"></script>
+<script src="../_shared/motion.js"></script>
+<script src="../_shared/micro.js"></script>
+<script src="../_shared/button-fx.js"></script>
+<script src="../_shared/fx.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>

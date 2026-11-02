@@ -1,0 +1,285 @@
+- generic [active] [ref=f88e1]:
+  - link "跳到档案区" [ref=f88e2] [cursor=pointer]:
+    - /url: "#stage"
+  - banner [ref=f88e3]:
+    - generic [ref=f88e9]:
+      - generic [ref=f88e10]: 莱茵生命 · 档案终端
+      - generic [ref=f88e11]: RHINE LAB / ARCHIVE TERMINAL
+    - group "检定机信息" [ref=f88e12]:
+      - generic [ref=f88e13]:
+        - generic [ref=f88e14]: 宿主
+        - generic [ref=f88e15]: MOCK-WIN-01
+      - generic [ref=f88e16]:
+        - generic [ref=f88e17]: 档案号
+        - generic [ref=f88e18]: RL-101832104
+      - generic [ref=f88e19]:
+        - generic [ref=f88e20]: 网卡
+        - generic [ref=f88e21]: 10.18.32.104 / 10.18.32.77
+      - generic [ref=f88e22]:
+        - generic [ref=f88e23]: 检定代理
+        - generic [ref=f88e24]: MockAgent 4.2.1
+    - group "实时遥测" [ref=f88e25]:
+      - generic [ref=f88e26]:
+        - generic [ref=f88e27]: REQ
+        - generic [ref=f88e28]: "0"
+      - generic [ref=f88e29]:
+        - generic [ref=f88e30]: OK
+        - generic [ref=f88e31]: "0"
+      - generic [ref=f88e32]:
+        - generic [ref=f88e33]: ERR
+        - generic [ref=f88e34]: "0"
+      - generic [ref=f88e35]:
+        - generic [ref=f88e36]: AVG
+        - generic [ref=f88e37]: "0"
+        - generic [ref=f88e38]: ms
+      - generic [ref=f88e39]:
+        - generic [ref=f88e40]: RUN
+        - generic [ref=f88e41]: "0"
+      - generic [ref=f88e42]:
+        - generic [ref=f88e43]: PEND
+        - generic [ref=f88e44]: "0"
+    - generic [ref=f88e45]:
+      - button "切换主题：晨雾 / 深夜" [ref=f88e46] [cursor=pointer]:
+        - generic [ref=f88e50]:
+          - generic [ref=f88e51]: 晨雾
+          - generic [ref=f88e52]: DAWN
+      - button "开关界面音效" [ref=f88e53] [cursor=pointer]:
+        - generic [ref=f88e57]:
+          - generic [ref=f88e58]: 音效
+          - generic [ref=f88e59]: SFX
+      - generic [ref=f88e60]: 02:34:01
+  - navigation "档案区导航" [ref=f88e61]:
+    - generic [ref=f88e62]: INDEX
+    - button "01 Mock 管理 PORT / CERT 0" [ref=f88e65] [cursor=pointer]:
+      - generic [ref=f88e67]:
+        - generic [ref=f88e68]:
+          - generic [aria-hidden] [ref=f88e69]: "01"
+          - generic [ref=f88e70]: "01"
+        - generic [ref=f88e71]: Mock 管理
+        - generic [ref=f88e72]: PORT / CERT
+      - generic [ref=f88e73]: "0"
+    - button "02 Mock 流程 AUDIT / RESPONSE 0" [ref=f88e74] [cursor=pointer]:
+      - generic [ref=f88e76]:
+        - generic [ref=f88e77]: "02"
+        - generic [ref=f88e78]: Mock 流程
+        - generic [ref=f88e79]: AUDIT / RESPONSE
+      - generic [ref=f88e80]: "0"
+    - button "03 网元管理 NE SPECIMEN 0" [ref=f88e81] [cursor=pointer]:
+      - generic [ref=f88e83]:
+        - generic [ref=f88e84]: "03"
+        - generic [ref=f88e85]: 网元管理
+        - generic [ref=f88e86]: NE SPECIMEN
+      - generic [ref=f88e87]: "0"
+    - button "04 网元管理平台 OMP / ACCOUNT 0" [ref=f88e88] [cursor=pointer]:
+      - generic [ref=f88e90]:
+        - generic [ref=f88e91]: "04"
+        - generic [ref=f88e92]: 网元管理平台
+        - generic [ref=f88e93]: OMP / ACCOUNT
+      - generic [ref=f88e94]: "0"
+    - button "05 生命周期平台 LCMP / PACKAGE 0" [ref=f88e95] [cursor=pointer]:
+      - generic [ref=f88e97]:
+        - generic [ref=f88e98]: "05"
+        - generic [ref=f88e99]: 生命周期平台
+        - generic [ref=f88e100]: LCMP / PACKAGE
+      - generic [ref=f88e101]: "0"
+    - button "06 虚层管理平台 VLMP / STACK —" [ref=f88e102] [cursor=pointer]:
+      - generic [ref=f88e104]:
+        - generic [ref=f88e105]: "06"
+        - generic [ref=f88e106]: 虚层管理平台
+        - generic [ref=f88e107]: VLMP / STACK
+      - generic [ref=f88e108]: —
+    - generic [ref=f88e109]: RL-SEC / 01–06
+  - main [ref=f88e110]:
+    - generic [ref=f88e111]:
+      - generic [ref=f88e112]:
+        - generic [aria-hidden] [ref=f88e113]: "01"
+        - generic [ref=f88e114]:
+          - heading "Mock 管理" [level=1] [ref=f88e115]
+          - paragraph [ref=f88e116]: 登记本机端点 · 签发证书文件 · 挂载平台能力 · 起停 mock 服务
+        - paragraph [ref=f88e117]: PORT REGISTRY
+        - generic [ref=f88e118]: PUBLIC · 端点登记
+        - generic [ref=f88e119]:
+          - generic [ref=f88e120]:
+            - generic [ref=f88e121]: 端口
+            - generic [ref=f88e122]: 3个
+          - generic [ref=f88e123]:
+            - generic [ref=f88e124]: 运行中
+            - generic [ref=f88e125]: 1个
+          - generic [ref=f88e126]:
+            - generic [ref=f88e127]: 总请求
+            - generic [ref=f88e128]: "8"
+          - generic [ref=f88e129]:
+            - generic [ref=f88e130]: 平均时延
+            - generic [ref=f88e131]: 345ms
+      - generic [ref=f88e132]:
+        - generic [ref=f88e134]:
+          - generic [ref=f88e135]:
+            - generic [ref=f88e136]: X-001
+            - heading "端点登记簿" [level=2] [ref=f88e137]
+            - generic [ref=f88e138]: 0 条记录
+          - generic [ref=f88e140]:
+            - button "X-001 10.18.32.104:8443 HTTPS 证书已签发 TLS1.3 · 2 项能力（NEMP/LCMP） · 建于 10-14 09:12 RUNNING · 12480 req · 3.2 rps · 本机主端口 · 网元管理 + 生命周期" [pressed] [ref=f88e141] [cursor=pointer]:
+              - generic [ref=f88e142]: X-001
+              - generic [ref=f88e143]:
+                - generic [ref=f88e144]:
+                  - generic [ref=f88e146]: 10.18.32.104:8443
+                  - generic [ref=f88e147]: HTTPS
+                  - generic [ref=f88e148]: 证书已签发
+                - generic [ref=f88e149]: TLS1.3 · 2 项能力（NEMP/LCMP） · 建于 10-14 09:12
+                - generic [ref=f88e150]: RUNNING · 12480 req · 3.2 rps · 本机主端口 · 网元管理 + 生命周期
+            - button "X-002 10.18.32.104:9443 HTTPS 未签发 TLS1.2 · 1 项能力（VLMP） · 建于 10-15 14:40 STOPPED · 0 req · 0 rps · 虚层专用 · 待签发证书" [ref=f88e151] [cursor=pointer]:
+              - generic [ref=f88e152]: X-002
+              - generic [ref=f88e153]:
+                - generic [ref=f88e154]:
+                  - generic [ref=f88e156]: 10.18.32.104:9443
+                  - generic [ref=f88e157]: HTTPS
+                  - generic [ref=f88e158]: 未签发
+                - generic [ref=f88e159]: TLS1.2 · 1 项能力（VLMP） · 建于 10-15 14:40
+                - generic [ref=f88e160]: STOPPED · 0 req · 0 rps · 虚层专用 · 待签发证书
+            - button "X-003 10.18.32.77:8080 HTTP 未签发 — · 1 项能力（ALMP） · 建于 10-15 16:02 STOPPED · 214 req · 0 rps · 第二网卡 · 告警上报" [ref=f88e161] [cursor=pointer]:
+              - generic [ref=f88e162]: X-003
+              - generic [ref=f88e163]:
+                - generic [ref=f88e164]:
+                  - generic [ref=f88e166]: 10.18.32.77:8080
+                  - generic [ref=f88e167]: HTTP
+                  - generic [ref=f88e168]: 未签发
+                - generic [ref=f88e169]: — · 1 项能力（ALMP） · 建于 10-15 16:02
+                - generic [ref=f88e170]: STOPPED · 214 req · 0 rps · 第二网卡 · 告警上报
+          - generic [ref=f88e172]:
+            - generic [ref=f88e173]:
+              - generic [ref=f88e174]:
+                - generic [ref=f88e175]:
+                  - text: 本机 IP
+                  - generic [ref=f88e176]: HOST NIC
+                - combobox "本机 IP HOST NIC 取自本机网卡，可选「手动输入」" [ref=f88e177]:
+                  - option "10.18.32.104（本机网卡）" [selected]
+                  - option "10.18.32.77（本机网卡）"
+                  - option "手动输入…"
+                  - option "127.0.0.1（回环）"
+                - emphasis [ref=f88e178]: 取自本机网卡，可选「手动输入」
+              - generic [ref=f88e179]:
+                - generic [ref=f88e180]:
+                  - text: 端口
+                  - generic [ref=f88e181]: PORT
+                - textbox "端口 PORT" [ref=f88e182]: "10443"
+              - generic [ref=f88e183]:
+                - generic [ref=f88e184]: 协议
+                - combobox "协议" [ref=f88e185]:
+                  - option "HTTPS" [selected]
+                  - option "HTTP"
+                  - option "gRPC"
+              - generic [ref=f88e186]:
+                - generic [ref=f88e187]: TLS 版本
+                - combobox "TLS 版本" [ref=f88e188]:
+                  - option "TLS1.3" [selected]
+                  - option "TLS1.2"
+                  - option "—"
+              - generic [ref=f88e189]:
+                - generic [ref=f88e190]: 备注
+                - textbox "备注" [ref=f88e191]:
+                  - /placeholder: 例如：本机主端口 · 网元管理 + 生命周期
+            - generic [ref=f88e192]:
+              - button "登记端点" [ref=f88e193] [cursor=pointer]
+              - generic [ref=f88e197]: 登记后需签发证书、挂载能力，服务才可启动
+        - generic [ref=f88e199]:
+          - generic [ref=f88e200]:
+            - generic [ref=f88e201]: X-002
+            - heading "端点档案" [level=2] [ref=f88e202]
+            - generic [ref=f88e203]:
+              - generic [ref=f88e204]: HTTPS
+              - generic [ref=f88e205]: 10.18.32.104:8443
+              - button "访问该端点的档案文件（磁吸主行动）" [ref=f88e206] [cursor=pointer]:
+                - generic [ref=f88e209]: ACCESS FILE
+          - generic [ref=f88e211]:
+            - generic [ref=f88e212]:
+              - generic [ref=f88e213]:
+                - generic [ref=f88e214]: 协议
+                - generic [ref=f88e215]: HTTPS
+              - generic [ref=f88e216]:
+                - generic [ref=f88e217]: TLS
+                - generic [ref=f88e218]: TLS1.3
+              - generic [ref=f88e219]:
+                - generic [ref=f88e220]: 请求 / 成功 / 异常
+                - generic [ref=f88e221]: 12480 / 12102 / 378
+              - generic [ref=f88e222]:
+                - generic [ref=f88e223]: 当前 RPS
+                - generic [ref=f88e224]: "3.2"
+            - generic [ref=f88e225]:
+              - generic [ref=f88e226]: "01"
+              - text: 证书文件
+              - generic [ref=f88e227]: CERTIFICATE
+            - generic [ref=f88e228]:
+              - generic [ref=f88e229]:
+                - generic [ref=f88e230]: 证书有效
+                - generic [ref=f88e236]: mock-nemp.10.18.32.104
+                - generic [ref=f88e237]: 已签发
+                - generic [ref=f88e238]: MockCA-Root
+              - generic [ref=f88e239]:
+                - generic [ref=f88e240]:
+                  - generic [ref=f88e241]: 有效期
+                  - generic [ref=f88e242]: 365 天
+                - generic [ref=f88e243]:
+                  - generic [ref=f88e244]: 签发时间
+                  - generic [ref=f88e245]: 10-16 02:34:01
+                - generic [ref=f88e246]:
+                  - generic [ref=f88e247]: 签发机构
+                  - generic [ref=f88e248]: MockCA-Root
+                - generic [ref=f88e249]:
+                  - generic [ref=f88e250]: 指纹 FINGERPRINT
+                  - generic [ref=f88e251]: 3A:9F:C2:11:7E:8B:D4:05
+              - generic [ref=f88e253]:
+                - button "导出证书文件" [ref=f88e254] [cursor=pointer]
+                - button "重新签发" [ref=f88e258] [cursor=pointer]
+                - generic [ref=f88e260]: 导出为 PEM（.crt），用于对端校验本 mock 端点的 TLS 身份
+            - generic [ref=f88e262]:
+              - generic [ref=f88e263]: "02"
+              - text: 挂载平台能力
+              - generic [ref=f88e264]: 6 选 N · 可卸载
+            - generic [ref=f88e265]:
+              - button [pressed] [ref=f88e266] [cursor=pointer]:
+                - text: 网元管理平台
+                - emphasis [ref=f88e268]: NEMP · R7.2 · 46 接口
+              - button [pressed] [ref=f88e269] [cursor=pointer]:
+                - text: 生命周期平台
+                - emphasis [ref=f88e271]: LCMP · R5.8 · 32 接口
+              - button [ref=f88e272] [cursor=pointer]:
+                - text: 虚层管理平台
+                - emphasis [ref=f88e274]: VLMP · R3.1 · 21 接口
+              - button [ref=f88e275] [cursor=pointer]:
+                - text: 网元模拟服务
+                - emphasis [ref=f88e277]: NEMS · R9.0 · 58 接口
+              - button [ref=f88e278] [cursor=pointer]:
+                - text: 告警上报平台
+                - emphasis [ref=f88e280]: ALMP · R2.4 · 12 接口
+              - button [ref=f88e281] [cursor=pointer]:
+                - text: 性能采集平台
+                - emphasis [ref=f88e283]: PMFP · R2.0 · 16 接口
+            - generic [ref=f88e285]:
+              - generic [ref=f88e286]: "03"
+              - text: MOCK 服务
+              - generic [ref=f88e287]: SERVICE
+            - generic [ref=f88e288]:
+              - generic [ref=f88e289]: 服务运行中
+              - button "停止服务" [ref=f88e295] [cursor=pointer]
+              - button "删除端点" [ref=f88e298] [cursor=pointer]
+          - generic [ref=f88e301]: 磨砂盖板在进入时自上而下解密 · 内容由模糊转清晰
+  - contentinfo [ref=f88e302]:
+    - generic [ref=f88e303]:
+      - generic [ref=f88e304]: 当前分类
+      - generic [ref=f88e305]: 01 · MOCK 管理 / PORT REGISTRY
+    - generic [ref=f88e306]:
+      - generic [ref=f88e307]: 索引 / 总计
+      - generic [ref=f88e308]: 01 / 06
+    - generic [ref=f88e309]:
+      - generic [ref=f88e310]: 分类标签
+      - generic [ref=f88e311]: PUBLIC
+    - generic [ref=f88e312]:
+      - generic [ref=f88e313]: 模拟器
+      - generic [ref=f88e314]: RUNNING
+    - generic [ref=f88e315]:
+      - generic [ref=f88e316]: 最近一次
+      - generic [ref=f88e317]: —
+    - generic [ref=f88e318]:
+      - generic [ref=f88e319]: 版本
+      - generic [ref=f88e320]: V4 / ARCHIVE TERMINAL
+  - status

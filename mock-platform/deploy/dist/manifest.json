@@ -1,0 +1,208 @@
+{
+  "generatedAt": "2026-10-27T15:47:40.606Z",
+  "files": 40,
+  "bytes": 1580535,
+  "build": "8.0",
+  "entries": [
+    {
+      "path": "index.html",
+      "bytes": 6782,
+      "sha256": "347e1d0dcb383447"
+    },
+    {
+      "path": "v1-ops-console/app.css",
+      "bytes": 36443,
+      "sha256": "0f98ff0214f766a3"
+    },
+    {
+      "path": "v1-ops-console/app.js",
+      "bytes": 73489,
+      "sha256": "4c9b77ffa9075824"
+    },
+    {
+      "path": "v1-ops-console/index.html",
+      "bytes": 20574,
+      "sha256": "dbc0d995bdb8c905"
+    },
+    {
+      "path": "v2-swiss-editorial/app.css",
+      "bytes": 37142,
+      "sha256": "a388d1c313df8167"
+    },
+    {
+      "path": "v2-swiss-editorial/app.js",
+      "bytes": 92656,
+      "sha256": "62dc313ba30c9675"
+    },
+    {
+      "path": "v2-swiss-editorial/index.html",
+      "bytes": 26032,
+      "sha256": "9e1eded71066019c"
+    },
+    {
+      "path": "v2-swiss-editorial/_selfcheck.mjs",
+      "bytes": 8401,
+      "sha256": "63f3859084f730ba"
+    },
+    {
+      "path": "v3-rhine-lab/app.css",
+      "bytes": 47766,
+      "sha256": "60871921f2f65bb5"
+    },
+    {
+      "path": "v3-rhine-lab/app.js",
+      "bytes": 105223,
+      "sha256": "512b3e0144f0a6d5"
+    },
+    {
+      "path": "v3-rhine-lab/index.html",
+      "bytes": 25535,
+      "sha256": "1f9b4a8344b69a2c"
+    },
+    {
+      "path": "v4-archive-terminal/app.css",
+      "bytes": 56172,
+      "sha256": "d38420c370aaa513"
+    },
+    {
+      "path": "v4-archive-terminal/app.js",
+      "bytes": 119324,
+      "sha256": "4e845799404a18cc"
+    },
+    {
+      "path": "v4-archive-terminal/index.html",
+      "bytes": 31299,
+      "sha256": "217f61818e4be2ef"
+    },
+    {
+      "path": "v4-archive-terminal/_selfcheck.mjs",
+      "bytes": 12378,
+      "sha256": "34b8b4746d000983"
+    },
+    {
+      "path": "v5-music-console/app.css",
+      "bytes": 54626,
+      "sha256": "734795eb81e4963a"
+    },
+    {
+      "path": "v5-music-console/app.js",
+      "bytes": 154221,
+      "sha256": "9d7c087702ebdd70"
+    },
+    {
+      "path": "v5-music-console/index.html",
+      "bytes": 12285,
+      "sha256": "f6d99124122301f8"
+    },
+    {
+      "path": "v5-music-console/_check.mjs",
+      "bytes": 33944,
+      "sha256": "9b70e40e875b5600"
+    },
+    {
+      "path": "v5-music-console/_selfcheck.mjs",
+      "bytes": 10007,
+      "sha256": "ea2ac22ab3362f93"
+    },
+    {
+      "path": "v6-mock-lab/app.css",
+      "bytes": 43123,
+      "sha256": "7047a046415c33ea"
+    },
+    {
+      "path": "v6-mock-lab/app.js",
+      "bytes": 37128,
+      "sha256": "1bbd6b3213e5359a"
+    },
+    {
+      "path": "v6-mock-lab/index.html",
+      "bytes": 20530,
+      "sha256": "3e126015f4480137"
+    },
+    {
+      "path": "v6-mock-lab/instruments.js",
+      "bytes": 21818,
+      "sha256": "67acce08877c4bb8"
+    },
+    {
+      "path": "v6-mock-lab/instruments2.js",
+      "bytes": 41719,
+      "sha256": "ce9a097af85b5938"
+    },
+    {
+      "path": "v7-swiss-bench/app.css",
+      "bytes": 37205,
+      "sha256": "e9ac553b26dc0d0f"
+    },
+    {
+      "path": "v7-swiss-bench/app.js",
+      "bytes": 37128,
+      "sha256": "11975a78a25ae151"
+    },
+    {
+      "path": "v7-swiss-bench/index.html",
+      "bytes": 20568,
+      "sha256": "62273542557d5a25"
+    },
+    {
+      "path": "v7-swiss-bench/instruments.js",
+      "bytes": 21821,
+      "sha256": "c7b546b7640374d4"
+    },
+    {
+      "path": "v7-swiss-bench/instruments2.js",
+      "bytes": 41722,
+      "sha256": "797461117355cd90"
+    },
+    {
+      "path": "v8-blackbox-terminal/app.css",
+      "bytes": 61237,
+      "sha256": "724e0fd6a712cfec"
+    },
+    {
+      "path": "v8-blackbox-terminal/app.js",
+      "bytes": 29840,
+      "sha256": "c8bb3c3b996d9265"
+    },
+    {
+      "path": "v8-blackbox-terminal/index.html",
+      "bytes": 11052,
+      "sha256": "0a154dab57e073b5"
+    },
+    {
+      "path": "v8-blackbox-terminal/screens.js",
+      "bytes": 91464,
+      "sha256": "ef24520a0343d7b4"
+    },
+    {
+      "path": "version.txt",
+      "bytes": 53,
+      "sha256": "b4f5db634bb2d60c"
+    },
+    {
+      "path": "_shared/button-fx.js",
+      "bytes": 13774,
+      "sha256": "6ff6c0f01eb57314"
+    },
+    {
+      "path": "_shared/domain.js",
+      "bytes": 42080,
+      "sha256": "529d31491d6986e0"
+    },
+    {
+      "path": "_shared/fx.js",
+      "bytes": 11613,
+      "sha256": "39658167f538df1f"
+    },
+    {
+      "path": "_shared/micro.js",
+      "bytes": 19376,
+      "sha256": "a522d2f1f5b9e217"
+    },
+    {
+      "path": "_shared/motion.js",
+      "bytes": 12985,
+      "sha256": "fecfd2cac87fdfba"
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1b365d">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://time.jamecling.com/assets/uploads/favicon-32.png?v=1789721930">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://time.jamecling.com/assets/uploads/apple-touch-icon.png?v=1789721930">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://time.jamecling.com/assets/uploads/icon-192.png?v=1789721930">
+    <link rel="icon" type="image/png" sizes="512x512" href="https://time.jamecling.com/assets/uploads/icon-512.png?v=1789721931">
+    <link rel="manifest" href="https://time.jamecling.com/site.webmanifest">
+            <title>Shaders 开源 WebGPU 组件库：200 多个特效免费导出任意框架代码 - X科技时光轴</title>
+        <meta name="description" content="Shaders 是一个开源的 WebGPU 组件库，提供 200 多个可直接使用的网页特效组件，支持免费导出任意框架代码，可用于客户网站、模板、产品与库等作品。此前 Shaders 采用 199 美元一年的付费订阅模式，如今团队宣布全部开源，开发者可以在 GitHub 获取源码并自由集成。对于想提升网页视觉表现又不想深入着色器编程的前端开发者来说，Shaders 降低了 WebGPU 特效的使用门槛，也让个人项目有机会用上专业级动效。本文整理 Shaders 的定位、主要功能特点与适用场景，帮助你判断它是否值得加入工作流。">
+                    <meta name="keywords" content="shaders">
+                <link rel="canonical" href="https://time.jamecling.com/bookmark-shaders">
+        <meta property="og:title" content="Shaders 开源 WebGPU 组件库：200 多个特效免费导出任意框架代码">
+        <meta property="og:description" content="Shaders 是一个开源的 WebGPU 组件库，提供 200 多个可直接使用的网页特效组件，支持免费导出任意框架代码，可用于客户网站、模板、产品与库等作品。此前 Shaders 采用 199 美元一年的付费订阅模式，如今团队宣布全部开源，开发者可以在 GitHub 获取源码并自由集成。对于想提升网页视觉表现又不想深入着色器编程的前端开发者来说，Shaders 降低了 WebGPU 特效的使用门槛，也让个人项目有机会用上专业级动效。本文整理 Shaders 的定位、主要功能特点与适用场景，帮助你判断它是否值得加入工作流。">
+        <meta property="og:type" content="article">
+        <meta property="og:url" content="https://time.jamecling.com/bookmark-shaders">
+        <meta property="og:site_name" content="X科技时光轴">
+                            <meta property="og:image" content="assets/uploads/bili_cover_BV1XjHX6ZEeh.jpg">
+                <meta property="article:published_time" content="2026-10-08 23:09:50">
+                    <meta property="article:section" content="Github">
+                <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Shaders 开源 WebGPU 组件库：200 多个特效免费导出任意框架代码">
+        <meta name="twitter:description" content="Shaders 是一个开源的 WebGPU 组件库，提供 200 多个可直接使用的网页特效组件，支持免费导出任意框架代码，可用于客户网站、模板、产品与库等作品。此前 Shaders 采用 199 美元一年的付费订阅模式，如今团队宣布全部开源，开发者可以在 GitHub 获取源码并自由集成。对于想提升网页视觉表现又不想深入着色器编程的前端开发者来说，Shaders 降低了 WebGPU 特效的使用门槛，也让个人项目有机会用上专业级动效。本文整理 Shaders 的定位、主要功能特点与适用场景，帮助你判断它是否值得加入工作流。">
+                    <meta name="twitter:image" content="assets/uploads/bili_cover_BV1XjHX6ZEeh.jpg">
+                        <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Shaders 开源 WebGPU 组件库：200 多个特效免费导出任意框架代码","description":"Shaders 是一个开源的 WebGPU 组件库，提供 200 多个可直接使用的网页特效组件，支持免费导出任意框架代码，可用于客户网站、模板、产品与库等作品。此前 Shaders 采用 199 美元一年的付费订阅模式，如今团队宣布全部开源，开发者可以在 GitHub 获取源码并自由集成。对于想提升网页视觉表现又不想深入着色器编程的前端开发者来说，Shaders 降低了 WebGPU 特效的使用门槛，也让个人项目有机会用上专业级动效。本文整理 Shaders 的定位、主要功能特点与适用场景，帮助你判断它是否值得加入工作流。","datePublished":"2026-10-08T23:09:50+08:00","dateModified":"2026-10-08T23:10:47+08:00","author":{"@type":"Person","name":"Ding (@dingyi)"},"publisher":{"@type":"Organization","name":"X科技时光轴"},"image":"https://time.jamecling.com/assets/uploads/bili_cover_BV1XjHX6ZEeh.jpg","articleSection":"Github"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://time.jamecling.com/"},{"@type":"ListItem","position":2,"name":"Github","item":"https://time.jamecling.com/category/github"},{"@type":"ListItem","position":3,"name":"Shaders 开源 WebGPU 组件库：200 多个特效免费导出任意框架代码","item":"https://time.jamecling.com/bookmark-shaders"}]}</script>        <link rel="stylesheet" href="/assets/css/style.css?v=1791555529">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?20f8c84519594e74a5e67beda0ee0307";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+<body data-admin="false">
+
+<!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Header -->
+<header class="site-header">
+    <div class="site-header-inner">
+        <a href="https://time.jamecling.com/" class="site-logo">
+                                        <span class="logo-icon logo-icon-img"><img src="https://time.jamecling.com/assets/uploads/20260918_6aacfd4b02b55.webp" alt="X科技时光轴"></span>
+                        <span>X科技时光轴</span>
+        </a>
+        <nav class="main-menu-wrap" aria-label="主导航"><ul class="main-menu"><li class="mm-item"><a href="/p/Contact" class="mm-link"><span class="mm-link-text">联系我们</span></a></li><li class="mm-item"><a href="/p/Disclaimer" class="mm-link"><span class="mm-link-text">免责声明</span></a></li><li class="mm-item"><a href="/p/Privacy%20Policy" class="mm-link"><span class="mm-link-text">隐私政策</span></a></li><li class="mm-item"><a href="/p/About%20Me" class="mm-link"><span class="mm-link-text">关于我</span></a></li><li class="mm-item"><a href="/p/Recommended%20submissions" class="mm-link"><span class="mm-link-text">投稿推荐</span></a></li></ul></nav>        <nav class="site-nav">
+            <a href="https://time.jamecling.com/">← 返回时间轴</a>
+        </nav>
+    </div>
+</header>
+
+    <article class="article-page">
+        
+        <!-- Breadcrumb -->
+        <nav class="article-breadcrumb" aria-label="面包屑导航">
+            <a href="https://time.jamecling.com/">首页</a>
+                            <span class="breadcrumb-sep">/</span>
+                <a href="/category/github">Github</a>
+                    </nav>
+
+        <!-- Article Header -->
+        <header class="article-header">
+            
+            <h1>Shaders 开源 WebGPU 组件库：200 多个特效免费导出任意框架代码</h1>
+
+            <div class="article-meta">
+                <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    2026年10月08日 23:09                </span>
+                <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    52 次阅读
+                </span>
+                <span class="meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    约 2 分钟
+                </span>
+                                    <span class="meta-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                        更新于 2026年10月08日                    </span>
+                            </div>
+        </header>
+
+                <!-- 封面图与摘要已按要求移除: 媒体由下方画廊展示 -->
+
+        <!-- ========== 文章页增补内容 (上半部分; AI 生成 + 官方链接; 仅此页展示) ========== -->
+                            <div class="article-supplement">
+                                    <p>Shaders 是一个面向 Web 开发者的开源 WebGPU 组件库，由 shader-effects-inc 团队维护。它提供了 200 多个可直接调用的 WebGPU 组件，覆盖网页特效、视觉动效等场景，开发者可以将这些组件用于客户网站、模板、产品、库等各类作品中，轻松实现原本需要大量着色器代码才能完成的魔法效果。更关键的是，Shaders 支持免费导出任意框架的代码，意味着无论你使用 React、Vue 还是原生 JavaScript，都能把效果直接搬进自己的项目。此前该库采用付费订阅模式，年费高达 199 美元，如今团队宣布全部开源，用户可以在 GitHub 上获取源码并为其点星支持。</p>
+<h2>痛点是什么</h2>
+<p>对于前端开发者和创意工作者来说，网页特效一直是个高门槛领域。想做出炫酷的着色器效果，往往需要掌握 GLSL、WebGPU 等着色器语言，学习曲线陡峭，调试成本极高。即便找到现成的效果库，要么价格昂贵，比如 Shaders 此前 199 美元一年的订阅费让不少个人开发者望而却步；要么框架绑定严重，换个技术栈就得重写。很多人只能退而求其次，用 CSS 动画或第三方插件凑合，效果和性能都打折扣，最终项目视觉表现平平。</p>
+<h2>主要功能特点</h2>
+<p>Shaders 把复杂的 WebGPU 着色器能力封装成开箱即用的组件，让开发者不必深入底层图形编程，也能快速为网页注入高质量视觉效果。</p>
+<h3>200 多个 WebGPU 组件</h3>
+<p>覆盖多种视觉特效场景，拿来即用，省去从零编写着色器的时间。</p>
+<h3>免费导出任意框架代码</h3>
+<p>支持导出适配不同前端框架的代码，方便直接集成进现有项目。</p>
+<h3>全面开源可自由使用</h3>
+<p>源码开放，可用于客户网站、模板、产品与库，商用限制大幅降低。</p>
+<h2>为什么值得关注</h2>
+<p>Shaders 从付费订阅转向全面开源，不只是价格变化，更代表高质量 WebGPU 特效资源开始向普通开发者开放，对前端视觉体验的提升有实际意义。</p>
+<h3>零成本获得专业级特效</h3>
+<p>原本 199 美元一年的能力现在免费可用，个人项目也能用上。</p>
+<h3>开源生态带来更多可能</h3>
+<p>可被 PPT、视频生成等创意工具引入，扩展出更丰富的应用场景。</p>                                            </div>
+
+            <div class="article-supplement-divider">
+                <span class="asd-line"></span>
+                <span class="asd-dot">推荐信息</span>
+                <span class="asd-line"></span>
+            </div>
+        
+        <!-- 推文作者栏 (分隔符下方, 原推文详情开头): 作者+发布时间 左, 媒体下载 右 -->
+                <div class="tweet-author-bar">
+            <span class="tab-avatar">
+                                                    <img src="/assets/uploads/20261008_6ac7788586e8f.webp" alt="Ding" onerror="this.style.display='none'">
+                            </span>
+            <div class="tab-user">
+                <span class="tab-name">Ding</span>
+                <span class="tab-sub">
+                    <span class="tab-handle">@dingyi</span>                    <span class="tab-date">2026年10月08日 23:09</span>
+                </span>
+            </div>
+        </div>
+        
+        <!-- ========== 原推文详情 (下半部分) ========== -->
+        <!-- Article Content (推文正文已处理: 去来源行 + URL 自动链接) -->
+        <div class="article-content" id="article-content">
+            <p>卧槽我之前还想付费呢，一看 199美金/年吓跑了，结果现在全部开源了。</p>
+<p>这个思路是对的，开源会带来海量用户 ，付费继续做增值服务转化率肯定更高。开源还可以吸引很多创意工具来植入，等于免费一起帮他们推广了 ，。比如你做一个 PPT技能、视频生成技能 都可以引入这个库，效果绝对比你自己挫强太多了。</p>
+<p>https://github.com/shader-effects-inc/shaders</p>
+<blockquote class="tweet-quote"><div class="tweet-quote-user"><img class="tweet-quote-avatar" src="assets/uploads/d2e7dea16308.webp" alt="" loading="lazy"><div class="tweet-quote-user-info"><span class="tweet-quote-name">shaders<span class="tweet-quote-badge" title="已认证">✓</span></span></div><span class="tweet-quote-date">2026-10-06 21:47</span></div><div class="tweet-quote-text">重磅消息。<br>
+Shaders 现已开源 🔥<br>
+你可以在自己的作品中使用我们 200 多个 WebGPU 组件。无论是客户网站、模板、产品、库，还是任何东西，都能轻松实现魔法效果。此外，你还可以免费导出任何框架的代码。<br>
+给它点个星：https://github.com/shader-effects-inc/shaders https://t.co/EXsXKTX02L</div><div class="tweet-quote-meta"><span class="tweet-quote-stat">❤ 5617</span><span class="tweet-quote-stat">🔁 465</span><span class="tweet-quote-stat">⭐ 7769</span><span class="tweet-quote-stat">👁 415371</span></div></blockquote>        </div>
+
+        <!-- Article Images -->
+        
+        <!-- 管理员添加的 B 站视频 (全部展示在原推文图片下方) -->
+                    <div class="article-bili-videos">
+                                                        <div class="card-video article-video"
+                         data-vtype="bilibili"
+                         data-src="https://player.bilibili.com/player.html?isOutside=true&amp;aid=117405900734975&amp;bvid=BV1XjHX6ZEeh&amp;cid=42573563239&amp;p=1"
+                         data-poster="/assets/uploads/bili_cover_BV1XjHX6ZEeh.jpg">
+                        <div class="card-video-stage">
+                                                            <img class="card-video-poster" src="/assets/uploads/thumbs/bili_cover_BV1XjHX6ZEeh_w800.webp" alt="Shaders 开源 WebGPU 组件库：200 多个特效免费导出任意框架代码 哔哩哔哩视频封面">
+                                                        <button class="card-video-play" type="button" title="播放" aria-label="播放">
+                                <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                            </div>
+        
+        <!-- Share -->
+        <div class="article-share">
+            <span class="share-label">分享：</span>
+            <button class="share-link copy-link" data-url="https://time.jamecling.com/bookmark-shaders" title="复制链接">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </button>
+            <!-- 生成分享卡片: Canvas 绘制文章海报 (2026-09) -->
+            <button type="button" class="share-link" id="share-card-btn" title="生成分享卡片">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </button>
+        </div>
+
+        <!-- Tags (关键词标签: 全文收尾, 位于分享栏之后、上下篇导航之前) -->
+                    <div class="article-tags">
+                                                            <a href="/tag/%E5%BC%80%E6%BA%90" class="article-tag">#开源</a>
+                                                                                <a href="/tag/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE" class="article-tag">#开源项目</a>
+                                                                                <a href="/tag/GitHub%E7%B2%BE%E9%80%89" class="article-tag">#GitHub精选</a>
+                                                                                <a href="/tag/%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7" class="article-tag">#开发者工具</a>
+                                                                                <a href="/tag/%E8%AE%BE%E8%AE%A1%E8%B5%84%E6%BA%90" class="article-tag">#设计资源</a>
+                                                                                <a href="/tag/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91" class="article-tag">#前端开发</a>
+                                                                                <a href="/tag/%E8%B5%84%E6%BA%90%E5%8F%91%E7%8E%B0" class="article-tag">#资源发现</a>
+                                                                                <a href="/tag/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90" class="article-tag">#工具推荐</a>
+                                                                                <a href="/tag/%E5%BC%80%E6%BA%90%E5%BA%93" class="article-tag">#开源库</a>
+                                                                                <a href="/tag/GitHub" class="article-tag">#GitHub</a>
+                                                                                <a href="/tag/%E8%AE%BE%E8%AE%A1%E7%B3%BB%E7%BB%9F" class="article-tag">#设计系统</a>
+                                                                                <a href="/tag/%E5%8A%A8%E7%94%BB%E5%88%B6%E4%BD%9C" class="article-tag">#动画制作</a>
+                                                </div>
+        
+        <!-- Related Articles (相关文章内链: 服务端渲染真实 <a>, 供蜘蛛抓取长尾互链 2026-09-24) -->
+                    <section class="related-posts">
+                <h2 class="related-title">相关文章</h2>
+                <div class="related-list">
+                                            <a class="related-item" href="/bookmark-robot-heads">
+                            <span class="related-item-title">robot-heads 机器人头像库怎么用？React 动画组件，AI Agent 状态可视化教程</span>
+                            <span class="related-item-date">2026年10月13日</span>
+                        </a>
+                                            <a class="related-item" href="/bookmark-plane">
+                            <span class="related-item-title">Plane 是什么？56 亿 token 生成 A380 动画，开源 SVG 项目入门指南</span>
+                            <span class="related-item-date">2026年10月14日</span>
+                        </a>
+                                            <a class="related-item" href="/bookmark-decant">
+                            <span class="related-item-title">decant 开源工具：把 Apple 编译图标还原成可编辑源文件，下载使用指南</span>
+                            <span class="related-item-date">2026年10月13日</span>
+                        </a>
+                                            <a class="related-item" href="/bookmark-manual-gridcraft">
+                            <span class="related-item-title">GridCraft 表格软件怎么用？纯 Rust 跨平台运行，Excel 用户迁移教程</span>
+                            <span class="related-item-date">2026年10月13日</span>
+                        </a>
+                                            <a class="related-item" href="/bookmark-manual-soundcraft">
+                            <span class="related-item-title">SoundCraft 数字音频工作站免费吗？开源可自建，Pro Tools 替代方案解析</span>
+                            <span class="related-item-date">2026年10月13日</span>
+                        </a>
+                                            <a class="related-item" href="/bookmark-manual-cadcraft">
+                            <span class="related-item-title">CADCraft 怎么用？开源免费可商用，AutoCAD 替代方案安装与命令行入门教程</span>
+                            <span class="related-item-date">2026年10月13日</span>
+                        </a>
+                                    </div>
+            </section>
+        
+        <!-- Article Navigation -->
+        <nav class="article-nav">
+                            <a href="/bookmark-hextauicom" class="article-nav-link">
+                    <span class="nav-label">← 上一篇</span>
+                    <span class="nav-title">hextaui 状态块是什么？引用展示加微交互，AI 产品界面组件下载</span>
+                </a>
+            
+                            <a href="/bookmark-tendedero" class="article-nav-link nav-next">
+                    <span class="nav-label">下一篇 →</span>
+                    <span class="nav-title">Tendedero 怎么用？Mac 截图挂晾衣绳，菜单栏悬停唤出使用指南</span>
+                </a>
+                    </nav>
+    </article>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="back-to-top" aria-label="回到顶部">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
+
+<!-- Footer -->
+<footer class="site-footer">
+    <p>© 2026 X科技时光轴. All rights reserved. 用时间轴记录世界科技前沿与开发实践。 本站由「格律诗的软件世界」创建与维护 www.jamecling.com Powered by JameCling</p>
+</footer>
+
+<script src="/assets/js/timeline.js?v=1790214799"></script>
+<script src="/assets/js/vendor/qrcode.js?v=1789867791"></script>
+<script src="/assets/js/card-video.js?v=1790091579"></script>
+<script>
+// 详情页数据块 (2026-09-22): 业务 JS 已提取为 /assets/js/article-media.js 与 /assets/js/article-share.js;
+// `</` 转义防止 JSON 内容含闭合标签字面量导致 script 块被浏览器提前终止
+window.ARTICLE_MEDIA = [];
+window.SP_BRAND = { name: "X\u79d1\u6280\u65f6\u5149\u8f74", domain: "time.jamecling.com" };
+window.CARD = {"id":379,"kind":"tweet","slug":"bookmark-shaders","link":"/bookmark-shaders","name":"Ding","handle":"dingyi","avatar":"/assets/uploads/20261008_6ac7788586e8f.webp","date":"2026年10月08日 21:10","viewDate":"2026年10月08日 21:10","title":"Shaders 开源 WebGPU 组件库：200 多个特效免费导出任意框架代码","dateshort":"10-08 21:10","url":"https://x.com/dingyi/status/2108045722306404638","text":"卧槽我之前还想付费呢，一看 199美金/年吓跑了，结果现在全部开源了。\n\n\r\n这个思路是对的，开源会带来海量用户 ，付费继续做增值服务转化率肯定更高。开源还可以吸引很多创意工具来植入，等于免费一起帮他们推广了 ，。比如你做一个 PPT技能、视频生成技能 都可以引入这个库，效果绝对比你自己挫强太多了。\n\n\r\nhttps://github.com/shader-effects-inc/shaders\n\n\r\n\nshaders 2026-10-06 21:47\n重磅消息。\n\r\nShaders 现已开源 🔥\n\r\n你可以在自己的作品中使用我们 200 多个 WebGPU 组件。无论是客户网站、模板、产品、库，还是任何东西，都能轻松实现魔法效果。此外，你还可以免费导出任何框架的代码。\n\r\n给它点个星：https://github.com/shader-effects-inc/shaders https://t.co/EXsXKTX02L","fulltext":"卧槽我之前还想付费呢，一看 199美金/年吓跑了，结果现在全部开源了。\n\n\r\n这个思路是对的，开源会带来海量用户 ，付费继续做增值服务转化率肯定更高。开源还可以吸引很多创意工具来植入，等于免费一起帮他们推广了 ，。比如你做一个 PPT技能、视频生成技能 都可以引入这个库，效果绝对比你自己挫强太多了。\n\n\r\nhttps://github.com/shader-effects-inc/shaders\n\n\r\n\nshaders 2026-10-06 21:47\n重磅消息。\n\r\nShaders 现已开源 🔥\n\r\n你可以在自己的作品中使用我们 200 多个 WebGPU 组件。无论是客户网站、模板、产品、库，还是任何东西，都能轻松实现魔法效果。此外，你还可以免费导出任何框架的代码。\n\r\n给它点个星：https://github.com/shader-effects-inc/shaders https://t.co/EXsXKTX02L","media":[],"media_ars":[1.7778],"thumbs":{"/assets/uploads/bili_cover_BV1XjHX6ZEeh.jpg":"/assets/uploads/thumbs/bili_cover_BV1XjHX6ZEeh_w480.webp"},"videos":[{"type":"bilibili","src":"https://player.bilibili.com/player.html?isOutside=true&aid=117405900734975&bvid=BV1XjHX6ZEeh&cid=42573563239&p=1","poster":"assets/uploads/bili_cover_BV1XjHX6ZEeh.jpg","phBrand":"","w":1920,"h":1080}],"stats":{"likes":231,"retweets":19,"replies":7,"bookmarks":316,"views":32260},"color":"#14bd74"};
+</script>
+<script src="/assets/js/article-media.js?v=1790091580"></script>
+<script src="/assets/js/article-share.js?v=1790681038"></script>
+
+    <script defer data-particle-count="40" data-orbit-base="70" data-scale-min="1" data-scale-max="1.5" data-color-mode="original" src="/assets/js/mouse-fx.js?v=1791599908"></script>    </body>
+</html>

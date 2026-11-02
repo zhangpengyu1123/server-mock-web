@@ -1,0 +1,210 @@
+- generic [active] [ref=f22e1]:
+  - banner [ref=f22e2]:
+    - generic [ref=f22e6]:
+      - generic [ref=f22e7]: MOCK PLATFORM
+      - generic [ref=f22e8]: 节点调测仿真台 · OPS CONSOLE
+    - group "本机信息" [ref=f22e9]:
+      - generic [ref=f22e10]: MOCK-WIN-01
+      - generic [ref=f22e11]: /
+      - generic [ref=f22e12]: 10.18.32.104
+      - generic [ref=f22e13]: /
+      - generic [ref=f22e14]: Windows 11 23H2 · 22631
+      - generic [ref=f22e15]: /
+      - generic [ref=f22e16]: MockAgent 4.2.1
+    - generic "实时遥测" [ref=f22e17]:
+      - generic [ref=f22e18]: TELEMETRY
+      - generic [ref=f22e19]:
+        - generic [ref=f22e20]: REQ 8
+        - generic [ref=f22e22]: OK 6
+        - generic [ref=f22e24]: ERR 2
+        - generic [ref=f22e26]: AVG 345ms
+        - generic [ref=f22e28]: RUN 1/3
+        - generic [ref=f22e30]: HUMAN 1
+    - generic [ref=f22e32]:
+      - button "开关界面音效" [ref=f22e33] [cursor=pointer]:
+        - generic [ref=f22e37]: SFX
+      - generic [ref=f22e38]: 00:50:22
+  - generic [ref=f22e39]:
+    - navigation "主导航" [ref=f22e40]:
+      - button "MOCK 管理 端口 · 证书 · 能力 3" [ref=f22e41] [cursor=pointer]:
+        - generic [ref=f22e46]: MOCK 管理
+        - generic [ref=f22e47]: 端口 · 证书 · 能力
+        - generic [ref=f22e48]: "3"
+      - button "MOCK 流程 审计 · 预期响应 1" [ref=f22e49] [cursor=pointer]:
+        - generic [ref=f22e54]: MOCK 流程
+        - generic [ref=f22e55]: 审计 · 预期响应
+        - generic [ref=f22e56]: "1"
+      - button "网元管理 属性 · 升级流程 5" [ref=f22e57] [cursor=pointer]:
+        - generic [ref=f22e61]: 网元管理
+        - generic [ref=f22e62]: 属性 · 升级流程
+        - generic [ref=f22e63]: "5"
+      - button "网元管理平台 账号 · 一体化任务 1" [ref=f22e64] [cursor=pointer]:
+        - generic [ref=f22e70]: 网元管理平台
+        - generic [ref=f22e71]: 账号 · 一体化任务
+        - generic [ref=f22e72]: "1"
+      - button "生命周期平台 软件包 · 共部署 4" [ref=f22e73] [cursor=pointer]:
+        - generic [ref=f22e77]: 生命周期平台
+        - generic [ref=f22e78]: 软件包 · 共部署
+        - generic [ref=f22e79]: "4"
+      - button "虚层管理平台 CPU · 主副站点 —" [ref=f22e80] [cursor=pointer]:
+        - generic [ref=f22e84]: 虚层管理平台
+        - generic [ref=f22e85]: CPU · 主副站点
+        - generic [ref=f22e86]: —
+      - generic [ref=f22e87]:
+        - generic [ref=f22e88]: SIG 0x17B4
+        - generic [ref=f22e89]: UP 5d 0h
+    - main [ref=f22e90]:
+      - generic [ref=f22e91]:
+        - generic [ref=f22e92]:
+          - heading "MOCK 管理 PORT REGISTRY / CERTIFICATE / CAPABILITY" [level=1] [ref=f22e93]:
+            - generic [ref=f22e94]: MOCK 管理
+            - generic [ref=f22e95]: PORT REGISTRY / CERTIFICATE / CAPABILITY
+          - generic [ref=f22e96]:
+            - generic [ref=f22e97]:
+              - generic [ref=f22e98]: 端点
+              - generic [ref=f22e99]: 3个
+            - generic [ref=f22e100]:
+              - generic [ref=f22e101]: 运行中
+              - generic [ref=f22e102]: 1个
+            - generic [ref=f22e103]:
+              - generic [ref=f22e104]: 总请求
+              - generic [ref=f22e105]: "8"
+            - generic [ref=f22e106]:
+              - generic [ref=f22e107]: 平均时延
+              - generic [ref=f22e108]: 345ms
+        - generic [ref=f22e109]:
+          - generic [ref=f22e111]:
+            - generic [ref=f22e112]:
+              - heading "MOCK 端口" [level=2] [ref=f22e113]
+              - generic [ref=f22e114]: 3 个端点
+            - list [ref=f22e116]:
+              - listitem [ref=f22e117]:
+                - button "10.18.32.104:8443 HTTPS · TLS1.3 · 2 项能力 · 10-14 09:12 RUNNING 12480 req · 3.2 rps" [ref=f22e118] [cursor=pointer]:
+                  - generic [ref=f22e120]:
+                    - generic [ref=f22e121]: 10.18.32.104:8443
+                    - generic [ref=f22e122]: HTTPS · TLS1.3 · 2 项能力 · 10-14 09:12
+                  - generic [ref=f22e123]:
+                    - generic [ref=f22e124]: RUNNING
+                    - generic [ref=f22e125]: 12480 req · 3.2 rps
+              - listitem [ref=f22e126]:
+                - button "10.18.32.104:9443 HTTPS · TLS1.2 · 1 项能力 · 10-15 14:40 STOPPED 0 req · 0 rps" [ref=f22e127] [cursor=pointer]:
+                  - generic [ref=f22e129]:
+                    - generic [ref=f22e130]: 10.18.32.104:9443
+                    - generic [ref=f22e131]: HTTPS · TLS1.2 · 1 项能力 · 10-15 14:40
+                  - generic [ref=f22e132]:
+                    - generic [ref=f22e133]: STOPPED
+                    - generic [ref=f22e134]: 0 req · 0 rps
+              - listitem [ref=f22e135]:
+                - button "10.18.32.77:8080 HTTP · — · 1 项能力 · 10-15 16:02 STOPPED 214 req · 0 rps" [ref=f22e136] [cursor=pointer]:
+                  - generic [ref=f22e138]:
+                    - generic [ref=f22e139]: 10.18.32.77:8080
+                    - generic [ref=f22e140]: HTTP · — · 1 项能力 · 10-15 16:02
+                  - generic [ref=f22e141]:
+                    - generic [ref=f22e142]: STOPPED
+                    - generic [ref=f22e143]: 214 req · 0 rps
+            - generic [ref=f22e145]:
+              - generic [ref=f22e146]:
+                - generic [ref=f22e147]:
+                  - generic [ref=f22e148]: 本机 IP
+                  - combobox "本机 IP" [ref=f22e149]:
+                    - option "10.18.32.104" [selected]
+                    - option "10.18.32.77"
+                    - option "手动输入…"
+                  - emphasis [ref=f22e150]: 来自本机网卡，可下拉或手填
+                - generic [ref=f22e151]:
+                  - generic [ref=f22e152]: 端口
+                  - textbox "端口" [ref=f22e153]: "8443"
+                - generic [ref=f22e154]:
+                  - generic [ref=f22e155]: 协议
+                  - combobox "协议" [ref=f22e156]:
+                    - option "HTTPS" [selected]
+                    - option "HTTP"
+                    - option "gRPC"
+                - generic [ref=f22e157]:
+                  - generic [ref=f22e158]: TLS
+                  - combobox "TLS" [ref=f22e159]:
+                    - option "TLS1.3" [selected]
+                    - option "TLS1.2"
+                    - option "—"
+              - generic [ref=f22e160]:
+                - button "注册 MOCK 端口" [ref=f22e161] [cursor=pointer]
+                - generic [ref=f22e164]: 注册后需签发证书、挂载平台能力，才能启动服务
+          - generic [ref=f22e166]:
+            - generic [ref=f22e167]:
+              - heading "端点详情" [level=2] [ref=f22e168]
+              - generic [ref=f22e169]:
+                - generic [ref=f22e170]: HTTPS
+                - generic [ref=f22e171]: 10.18.32.104:8443
+            - generic [ref=f22e172]:
+              - generic [ref=f22e173]:
+                - generic [ref=f22e174]:
+                  - generic [ref=f22e175]: 协议
+                  - generic [ref=f22e176]: HTTPS
+                - generic [ref=f22e177]:
+                  - generic [ref=f22e178]: TLS
+                  - generic [ref=f22e179]: TLS1.3
+                - generic [ref=f22e180]:
+                  - generic [ref=f22e181]: 请求 / 成功 / 异常
+                  - generic [ref=f22e182]: 12480 / 12102 / 378
+                - generic [ref=f22e183]:
+                  - generic [ref=f22e184]: 当前 RPS
+                  - generic [ref=f22e185]: "3.2"
+              - heading "① 证书文件" [level=3] [ref=f22e187]
+              - generic [ref=f22e188]:
+                - generic [ref=f22e189]:
+                  - generic [ref=f22e194]: mock-nemp.10.18.32.104
+                  - generic [ref=f22e195]: 已签发
+                - generic [ref=f22e196]:
+                  - generic [ref=f22e197]:
+                    - generic [ref=f22e198]: 有效期
+                    - generic [ref=f22e199]: 365 天
+                  - generic [ref=f22e200]:
+                    - generic [ref=f22e201]: 签发时间
+                    - generic [ref=f22e202]: 10-16 00:50:22
+                  - generic [ref=f22e203]:
+                    - generic [ref=f22e204]: 签发机构
+                    - generic [ref=f22e205]: MockCA-Root
+                  - generic [ref=f22e206]:
+                    - generic [ref=f22e207]: 指纹
+                    - generic [ref=f22e208]: 3A:9F:C2:11:7E:8B:D4:05
+                - generic [ref=f22e209]:
+                  - button "下载证书文件" [ref=f22e210] [cursor=pointer]
+                  - button "重新签发" [ref=f22e211] [cursor=pointer]
+                  - generic [ref=f22e212]: 证书用于对端校验本 mock 端点的 TLS 身份
+              - heading "② 挂载平台能力（可多选）" [level=3] [ref=f22e214]
+              - generic [ref=f22e215]:
+                - button [pressed] [ref=f22e216] [cursor=pointer]:
+                  - text: 网元管理平台
+                  - emphasis [ref=f22e218]: NEMP
+                - button [pressed] [ref=f22e219] [cursor=pointer]:
+                  - text: 生命周期平台
+                  - emphasis [ref=f22e221]: LCMP
+                - button [ref=f22e222] [cursor=pointer]:
+                  - text: 虚层管理平台
+                  - emphasis [ref=f22e224]: VLMP
+                - button [ref=f22e225] [cursor=pointer]:
+                  - text: 网元模拟服务
+                  - emphasis [ref=f22e227]: NEMS
+                - button [ref=f22e228] [cursor=pointer]:
+                  - text: 告警上报平台
+                  - emphasis [ref=f22e230]: ALMP
+                - button [ref=f22e231] [cursor=pointer]:
+                  - text: 性能采集平台
+                  - emphasis [ref=f22e233]: PMFP
+              - heading "③ MOCK 服务" [level=3] [ref=f22e235]
+              - generic [ref=f22e236]:
+                - generic [ref=f22e237]: 服务运行中
+                - button "停止服务" [ref=f22e243] [cursor=pointer]
+                - button "删除端口" [ref=f22e246] [cursor=pointer]
+  - contentinfo [ref=f22e249]:
+    - generic [ref=f22e250]:
+      - text: SIM
+      - generic [ref=f22e252]: RUNNING
+    - generic [ref=f22e254]:
+      - text: LAST
+      - generic [ref=f22e255]: 00:44:06 POST /nemp/v1/ne/register → 200
+    - generic [ref=f22e256]: GET /nemp/v1/ne/GNB-HZ-0001/state 200 · POST /alarm/v1/report 200 · POST /nemp/v1/ne/GNB-HZ-0002/upgrade 202
+    - generic [ref=f22e258]:
+      - text: VARIANT
+      - generic [ref=f22e259]: V1 · OPS CONSOLE
+  - status

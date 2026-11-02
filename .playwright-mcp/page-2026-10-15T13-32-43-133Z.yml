@@ -1,0 +1,611 @@
+- generic [ref=f2e2]:
+  - status "Loading React Bits" [ref=f2e3]
+  - generic [ref=f2e6]:
+    - generic [ref=f2e7]:
+      - generic [ref=f2e8]:
+        - link [ref=f2e9] [cursor=pointer]:
+          - /url: /
+        - generic [ref=f2e21]: /
+        - navigation [ref=f2e22]:
+          - link "Docs" [ref=f2e23] [cursor=pointer]:
+            - /url: /get-started/introduction
+          - link "Tools" [ref=f2e24] [cursor=pointer]:
+            - /url: /tools
+          - link "Pro" [ref=f2e25] [cursor=pointer]:
+            - /url: /pro
+          - link "Sponsors" [ref=f2e26] [cursor=pointer]:
+            - /url: /sponsors
+      - generic [ref=f2e27]:
+        - button "Switch to light mode" [ref=f2e28] [cursor=pointer]
+        - link "49.3K" [ref=f2e35] [cursor=pointer]:
+          - /url: https://github.com/DavidHDev/react-bits
+        - link "Get React Bits Pro" [ref=f2e39] [cursor=pointer]:
+          - /url: https://pro.reactbits.dev/?utm_source=reactbits.dev&utm_medium=navbar&utm_campaign=free-to-pro&utm_content=navbar
+    - generic [ref=f2e42]:
+      - generic [ref=f2e43]:
+        - heading "Animated React components for websites people remember." [level=1] [ref=f2e44]
+        - paragraph [ref=f2e45]:
+          - generic [ref=f2e46]: 216 animated components and backgrounds for React.
+          - generic [ref=f2e47]: Tune them yourself, or hand them to your agent.
+        - generic [ref=f2e48]:
+          - link "Browse components" [ref=f2e49] [cursor=pointer]:
+            - /url: /get-started/index
+          - link "Star on GitHub" [ref=f2e52] [cursor=pointer]:
+            - /url: https://github.com/DavidHDev/react-bits
+      - generic [ref=f2e53]:
+        - generic [ref=f2e58]:
+          - generic [ref=f2e59]:
+            - text: Terminal
+            - button "Copy install command" [ref=f2e60] [cursor=pointer]
+          - generic [ref=f2e65]:
+            - generic [ref=f2e66]: $ npx shadcn@latest add @react-bits/GradientWaves-TS-TW
+            - generic [ref=f2e67]: ✔ Checking registry.
+            - generic [ref=f2e68]: ✔ Created 2 files.
+        - generic [ref=f2e69]:
+          - generic [ref=f2e70]: Hero.jsx
+          - code [ref=f2e73]:
+            - generic [ref=f2e74]: import GradientWaves from './GradientWaves';
+            - generic [ref=f2e76]: "export default function Hero() {"
+            - generic [ref=f2e77]: return (
+            - generic [ref=f2e78]: <GradientWaves
+            - generic [ref=f2e79]:
+              - text: waveColor=
+              - button "Wave color" [ref=f2e81] [cursor=pointer]: "\"#FF9FFC\""
+            - generic [ref=f2e83]:
+              - text: "amplitude={"
+              - slider "Amplitude" [ref=f2e84]: "2.5"
+              - text: "}"
+            - generic [ref=f2e85]:
+              - text: "swell={"
+              - slider "Swell" [ref=f2e86]: "35"
+              - text: "}"
+            - generic [ref=f2e87]:
+              - text: "lightAngle={"
+              - slider "Light angle" [ref=f2e88]: "120"
+              - text: "}"
+            - generic [ref=f2e89]:
+              - text: "speed={"
+              - slider "Speed" [ref=f2e90]: "0.4"
+              - text: "}"
+            - generic [ref=f2e91]: />
+            - generic [ref=f2e92]: );
+            - generic [ref=f2e93]: "}"
+        - generic [ref=f2e94]:
+          - generic [ref=f2e95]: Presets
+          - radiogroup "Presets" [ref=f2e97]:
+            - radio "Ocean amplitude 1.8 · swell 25" [ref=f2e98] [cursor=pointer]:
+              - generic [ref=f2e103]: Ocean
+              - generic [ref=f2e104]: amplitude 1.8 · swell 25
+            - radio "Dune amplitude 3.2 · swell 40" [ref=f2e105] [cursor=pointer]:
+              - generic [ref=f2e110]: Dune
+              - generic [ref=f2e111]: amplitude 3.2 · swell 40
+            - radio "Dusk amplitude 2.5 · swell 35" [checked] [ref=f2e112] [cursor=pointer]:
+              - generic [ref=f2e117]: Dusk
+              - generic [ref=f2e118]: amplitude 2.5 · swell 35
+            - radio "Silk amplitude 2.2 · swell 30" [ref=f2e119] [cursor=pointer]:
+              - generic [ref=f2e124]: Silk
+              - generic [ref=f2e125]: amplitude 2.2 · swell 30
+            - radio "Aurora amplitude 2.6 · swell 38" [ref=f2e126] [cursor=pointer]:
+              - generic [ref=f2e131]: Aurora
+              - generic [ref=f2e132]: amplitude 2.6 · swell 38
+          - link "Open in Background Studio" [ref=f2e134] [cursor=pointer]:
+            - /url: /tools/background-studio?bg=gradient-waves&tilt=40
+    - generic [ref=f2e138]:
+      - heading "What's inside" [level=2] [ref=f2e139]
+      - generic [ref=f2e140]:
+        - generic [ref=f2e141]:
+          - generic [ref=f2e143]:
+            - generic [ref=f2e145]:
+              - link "Dot Field" [ref=f2e146] [cursor=pointer]:
+                - /url: /backgrounds/dot-field
+              - link "Line Waves" [ref=f2e147] [cursor=pointer]:
+                - /url: /backgrounds/line-waves
+              - link "Blob Cursor" [ref=f2e148] [cursor=pointer]:
+                - /url: /animations/blob-cursor
+              - link "Soft Aurora" [ref=f2e149] [cursor=pointer]:
+                - /url: /backgrounds/soft-aurora
+              - link "Magnet Lines" [ref=f2e150] [cursor=pointer]:
+                - /url: /backgrounds/magnet-lines
+              - link "Antigravity" [ref=f2e151] [cursor=pointer]:
+                - /url: /animations/antigravity
+              - link "Ballpit" [ref=f2e152] [cursor=pointer]:
+                - /url: /backgrounds/ballpit
+              - link "Pixel Trail" [ref=f2e153] [cursor=pointer]:
+                - /url: /animations/pixel-trail
+              - link "Magic Rings" [ref=f2e154] [cursor=pointer]:
+                - /url: /backgrounds/magic-rings
+              - link "Dot Field" [ref=f2e155] [cursor=pointer]:
+                - /url: /backgrounds/dot-field
+              - link "Line Waves" [ref=f2e156] [cursor=pointer]:
+                - /url: /backgrounds/line-waves
+              - link "Blob Cursor" [ref=f2e157] [cursor=pointer]:
+                - /url: /animations/blob-cursor
+              - link "Soft Aurora" [ref=f2e158] [cursor=pointer]:
+                - /url: /backgrounds/soft-aurora
+              - link "Magnet Lines" [ref=f2e159] [cursor=pointer]:
+                - /url: /backgrounds/magnet-lines
+              - link "Antigravity" [ref=f2e160] [cursor=pointer]:
+                - /url: /animations/antigravity
+              - link "Ballpit" [ref=f2e161] [cursor=pointer]:
+                - /url: /backgrounds/ballpit
+              - link "Pixel Trail" [ref=f2e162] [cursor=pointer]:
+                - /url: /animations/pixel-trail
+              - link "Magic Rings" [ref=f2e163] [cursor=pointer]:
+                - /url: /backgrounds/magic-rings
+            - generic [ref=f2e165]:
+              - link "Radar" [ref=f2e166] [cursor=pointer]:
+                - /url: /backgrounds/radar
+              - link "Shape Grid" [ref=f2e167] [cursor=pointer]:
+                - /url: /backgrounds/shape-grid
+              - link "Ribbons" [ref=f2e168] [cursor=pointer]:
+                - /url: /animations/ribbons
+              - link "Grainient" [ref=f2e169] [cursor=pointer]:
+                - /url: /backgrounds/grainient
+              - link "Orbit Images" [ref=f2e170] [cursor=pointer]:
+                - /url: /animations/orbit-images
+              - link "Metallic Paint" [ref=f2e171] [cursor=pointer]:
+                - /url: /animations/metallic-paint
+              - link "Balatro" [ref=f2e172] [cursor=pointer]:
+                - /url: /backgrounds/balatro
+              - link "Aurora" [ref=f2e173] [cursor=pointer]:
+                - /url: /backgrounds/aurora
+              - link "Splash Cursor" [ref=f2e174] [cursor=pointer]:
+                - /url: /animations/splash-cursor
+              - link "Beams" [ref=f2e175] [cursor=pointer]:
+                - /url: /backgrounds/beams
+              - link "Radar" [ref=f2e176] [cursor=pointer]:
+                - /url: /backgrounds/radar
+              - link "Shape Grid" [ref=f2e177] [cursor=pointer]:
+                - /url: /backgrounds/shape-grid
+              - link "Ribbons" [ref=f2e178] [cursor=pointer]:
+                - /url: /animations/ribbons
+              - link "Grainient" [ref=f2e179] [cursor=pointer]:
+                - /url: /backgrounds/grainient
+              - link "Orbit Images" [ref=f2e180] [cursor=pointer]:
+                - /url: /animations/orbit-images
+              - link "Metallic Paint" [ref=f2e181] [cursor=pointer]:
+                - /url: /animations/metallic-paint
+              - link "Balatro" [ref=f2e182] [cursor=pointer]:
+                - /url: /backgrounds/balatro
+              - link "Aurora" [ref=f2e183] [cursor=pointer]:
+                - /url: /backgrounds/aurora
+              - link "Splash Cursor" [ref=f2e184] [cursor=pointer]:
+                - /url: /animations/splash-cursor
+              - link "Beams" [ref=f2e185] [cursor=pointer]:
+                - /url: /backgrounds/beams
+          - generic [ref=f2e186]:
+            - heading "215+ Components" [level=3] [ref=f2e187]
+            - paragraph [ref=f2e188]: Backgrounds, text effects, animations, creative UI components. The stuff you'd build from scratch, already done and battle-tested.
+        - generic [ref=f2e209]:
+          - heading "Visual Editors" [level=3] [ref=f2e210]
+          - paragraph [ref=f2e211]: Three free tools to play with components & create stunning assets for your work.
+        - generic [ref=f2e266]:
+          - heading "Well Organized" [level=3] [ref=f2e267]
+          - paragraph [ref=f2e268]: Five clear categories so you're not scrolling through a wall of unrelated stuff.
+        - generic [ref=f2e269]:
+          - generic [ref=f2e271]:
+            - generic [ref=f2e272]: JS + CSS
+            - generic [ref=f2e279]: TS + CSS
+            - generic [ref=f2e286]: JS + Tailwind
+            - generic [ref=f2e293]: TS + Tailwind
+          - generic [ref=f2e300]:
+            - heading "Pick Your Stack" [level=3] [ref=f2e301]
+            - paragraph [ref=f2e302]: JavaScript or TypeScript, CSS or Tailwind. Every component comes in all four flavors for full flexibility.
+        - generic [ref=f2e303]:
+          - generic [ref=f2e306]:
+            - generic [ref=f2e307]: Editor
+            - generic [ref=f2e313]: $
+          - generic [ref=f2e316]:
+            - heading "AI-Ready" [level=3] [ref=f2e317]
+            - paragraph [ref=f2e318]: The docs give you ready-to-use prompts. Works great with Cursor, Copilot, and v0. Describe what you need, drop it in, ship.
+        - generic [ref=f2e319]:
+          - generic [ref=f2e321]:
+            - generic [ref=f2e322]: GitHub Stars
+            - generic [ref=f2e323]: 49.3K
+          - generic [ref=f2e328]:
+            - heading "Growing Fast" [level=3] [ref=f2e329]
+            - paragraph [ref=f2e330]: React's fastest-growing component library on GitHub. Not even close.
+    - generic [ref=f2e332]:
+      - heading "See them in action" [level=2] [ref=f2e333]
+      - generic [ref=f2e334]:
+        - article [ref=f2e335]:
+          - link "Micro Slats Backgrounds" [ref=f2e337] [cursor=pointer]:
+            - /url: /backgrounds/micro-slats
+            - generic [ref=f2e338]: Micro Slats
+            - generic [ref=f2e339]: Backgrounds
+        - article [ref=f2e343]:
+          - link "Electric Logo Animations" [ref=f2e345] [cursor=pointer]:
+            - /url: /animations/electric-logo
+            - generic [ref=f2e346]: Electric Logo
+            - generic [ref=f2e347]: Animations
+        - article [ref=f2e351]:
+          - link "Tech Text Text Animations" [ref=f2e353] [cursor=pointer]:
+            - /url: /text-animations/tech-text
+            - generic [ref=f2e354]: Tech Text
+            - generic [ref=f2e355]: Text Animations
+        - article [ref=f2e359]:
+          - link "Circular Carousel Components" [ref=f2e361] [cursor=pointer]:
+            - /url: /components/circular-carousel
+            - generic [ref=f2e362]: Circular Carousel
+            - generic [ref=f2e363]: Components
+        - article [ref=f2e367]:
+          - link "Hold Button Micro" [ref=f2e369] [cursor=pointer]:
+            - /url: /micro/hold-button
+            - generic [ref=f2e370]: Hold Button
+            - generic [ref=f2e371]: Micro
+    - generic [ref=f2e376]:
+      - generic [ref=f2e377]:
+        - heading "One command, and the code is yours." [level=2] [ref=f2e378]
+        - paragraph [ref=f2e379]: The CLI copies the component's source into your Vite, Next.js, Astro or Remix project. No wrapper library, no runtime dependency, nothing to lock you in.
+        - link "Installation guide" [ref=f2e380] [cursor=pointer]:
+          - /url: /get-started/installation
+      - generic [ref=f2e383]:
+        - generic [ref=f2e384]:
+          - generic [ref=f2e385]:
+            - text: Terminal
+            - button "Copy install command" [ref=f2e386] [cursor=pointer]
+          - generic [ref=f2e390]:
+            - generic [ref=f2e391]: $ npx shadcn@latest add @react-bits/Aurora-TS-TW
+            - generic [ref=f2e392]: ✔ Checking registry.
+            - generic [ref=f2e393]: "✔ Created 1 file:"
+            - generic [ref=f2e394]: "- components/Aurora.tsx"
+        - img "Aurora.tsx open in your editor as plain source" [ref=f2e395]:
+          - generic [ref=f2e396]: Aurora.tsx
+          - code [ref=f2e398]:
+            - generic [ref=f2e399]: "'use client';"
+            - generic [ref=f2e401]: "import { useEffect, useRef } from 'react';"
+            - generic [ref=f2e403]: "const Aurora = ({"
+            - generic [ref=f2e404]: colorStops = ['#5227FF', '#7cff67', '#5227FF'],
+            - generic [ref=f2e405]: amplitude = 1,
+            - generic [ref=f2e406]: blend = 0.5,
+            - generic [ref=f2e407]: speed = 0.6,
+            - generic [ref=f2e408]: "}: AuroraProps) => {"
+            - generic [ref=f2e409]: const containerRef = useRef<HTMLDivElement>(null);
+    - generic [ref=f2e411]:
+      - generic [ref=f2e412]:
+        - generic [ref=f2e413]:
+          - heading "Build the whole product, not just the hero." [level=2] [ref=f2e414]
+          - paragraph [ref=f2e415]: Page sections, app UI, full Next.js templates and agent skills, all as source you own.
+        - link "Get React Bits Pro" [ref=f2e416] [cursor=pointer]:
+          - /url: https://pro.reactbits.dev/?utm_source=reactbits.dev&utm_medium=landing-pro-spotlight&utm_campaign=free-to-pro&utm_content=landing-pro-spotlight#pricing
+      - generic [ref=f2e419]:
+        - link "230 animated components Shaders, 3D, cursor effects and text, in Tailwind or plain CSS." [ref=f2e420] [cursor=pointer]:
+          - /url: https://pro.reactbits.dev/docs/components?utm_source=reactbits.dev&utm_medium=landing-pro-components&utm_campaign=free-to-pro&utm_content=landing-pro-components
+          - generic [ref=f2e422]:
+            - generic [ref=f2e423]: 230 animated components
+            - generic [ref=f2e427]: Shaders, 3D, cursor effects and text, in Tailwind or plain CSS.
+        - link "300 page sections Heroes, pricing, FAQs and footers that stack into a full landing page." [ref=f2e428] [cursor=pointer]:
+          - /url: https://pro.reactbits.dev/docs/blocks?utm_source=reactbits.dev&utm_medium=landing-pro-blocks&utm_campaign=free-to-pro&utm_content=landing-pro-blocks
+          - generic [ref=f2e430]:
+            - generic [ref=f2e431]: 300 page sections
+            - generic [ref=f2e435]: Heroes, pricing, FAQs and footers that stack into a full landing page.
+        - link "300 app UI blocks Dashboards, tables, AI chat and auth, restyled from one theme panel." [ref=f2e436] [cursor=pointer]:
+          - /url: https://pro.reactbits.dev/docs/app-ui?utm_source=reactbits.dev&utm_medium=landing-pro-app-ui&utm_campaign=free-to-pro&utm_content=landing-pro-app-ui
+          - generic [ref=f2e438]:
+            - generic [ref=f2e439]: 300 app UI blocks
+            - generic [ref=f2e443]: Dashboards, tables, AI chat and auth, restyled from one theme panel.
+        - link "15 full templates Multi-page Next.js sites. Swap the copy and deploy." [ref=f2e444] [cursor=pointer]:
+          - /url: https://pro.reactbits.dev/docs/templates?utm_source=reactbits.dev&utm_medium=landing-pro-templates&utm_campaign=free-to-pro&utm_content=landing-pro-templates
+          - generic [ref=f2e446]:
+            - generic [ref=f2e447]: 15 full templates
+            - generic [ref=f2e451]: Multi-page Next.js sites. Swap the copy and deploy.
+        - link "20 agent skills Give Claude Code, Cursor and Copilot real design taste." [ref=f2e452] [cursor=pointer]:
+          - /url: https://pro.reactbits.dev/docs/agent-kit?utm_source=reactbits.dev&utm_medium=landing-pro-agent-kit&utm_campaign=free-to-pro&utm_content=landing-pro-agent-kit
+          - generic [ref=f2e454]:
+            - generic [ref=f2e455]: 20 agent skills
+            - generic [ref=f2e459]: Give Claude Code, Cursor and Copilot real design taste.
+    - generic [ref=f2e461]:
+      - heading "Three free tools, in your browser." [level=2] [ref=f2e463]
+      - generic [ref=f2e464]:
+        - link [ref=f2e465] [cursor=pointer]:
+          - /url: /tools/background-studio
+          - generic [ref=f2e467]:
+            - heading "Background Studio" [level=3] [ref=f2e469]
+            - paragraph [ref=f2e472]: Pick an animated background, start from a preset, tune it live, then export the code, a 4K image or a looping video.
+        - link [ref=f2e473] [cursor=pointer]:
+          - /url: /tools/shape-magic
+          - generic [ref=f2e475]:
+            - heading "Shape Magic" [level=3] [ref=f2e477]
+            - paragraph [ref=f2e480]: Design a logo mark or style your own logo with 3D materials. Export SVG, PNG, favicons, video or React.
+        - link [ref=f2e481] [cursor=pointer]:
+          - /url: /tools/texture-lab
+          - generic [ref=f2e483]:
+            - heading "Texture Lab" [level=3] [ref=f2e485]
+            - paragraph [ref=f2e488]: Stack animated effects on a photo, video or your camera, then export an image, a video, a GIF or a shareable style.
+    - generic [ref=f2e490]:
+      - generic [ref=f2e491]:
+        - generic [ref=f2e492]:
+          - heading "Sponsors" [level=2] [ref=f2e493]
+          - paragraph [ref=f2e494]: React Bits stays free thanks to these teams.
+        - link "Become a sponsor" [ref=f2e495] [cursor=pointer]:
+          - /url: /sponsors#sponsor-plans
+      - generic [ref=f2e498]:
+        - link "shadcnblocks.com Diamond" [ref=f2e499] [cursor=pointer]:
+          - /url: https://www.shadcnblocks.com/?utm_source=reactbits&utm_medium=sponsor&utm_campaign=diamond&ref=reactbits
+          - generic [ref=f2e500]:
+            - img "shadcnblocks.com"
+          - generic [ref=f2e501]: Diamond
+        - link "shaders.com Diamond" [ref=f2e506] [cursor=pointer]:
+          - /url: https://shaders.com/?utm_source=reactbits&utm_medium=sponsor&utm_campaign=diamond&ref=reactbits
+          - generic [ref=f2e507]:
+            - img "shaders.com"
+          - generic [ref=f2e508]: Diamond
+        - link "Shadcncraft Silver" [ref=f2e513] [cursor=pointer]:
+          - /url: https://shadcncraft.com/?utm_source=reactbits&utm_medium=sponsor&utm_campaign=silver&ref=reactbits
+          - generic [ref=f2e514]:
+            - img "Shadcncraft"
+          - generic [ref=f2e515]: Silver
+        - link "shadcnuikit.com Silver" [ref=f2e520] [cursor=pointer]:
+          - /url: https://shadcnuikit.com/?utm_source=reactbits&utm_medium=sponsor&utm_campaign=silver&ref=reactbits
+          - generic [ref=f2e521]:
+            - img "shadcnuikit.com"
+          - generic [ref=f2e522]: Silver
+        - link "Shadcn Studio Silver" [ref=f2e527] [cursor=pointer]:
+          - /url: https://shadcnstudio.com/?utm_source=reactbits&utm_medium=sponsor&utm_campaign=silver&ref=reactbits
+          - generic [ref=f2e528]:
+            - img "Shadcn Studio"
+          - generic [ref=f2e529]: Silver
+    - generic [ref=f2e535]:
+      - heading "Loved by developers" [level=2] [ref=f2e536]
+      - generic [ref=f2e537]:
+        - generic [ref=f2e539]:
+          - generic [ref=f2e540]:
+            - 'link "Everything about this is next level: the components, the registry, dynamic items. @shadcn" [ref=f2e541] [cursor=pointer]':
+              - /url: https://x.com/shadcn/status/1962854085587275932
+              - generic [ref=f2e542]:
+                - paragraph [ref=f2e543]: "Everything about this is next level: the components, the registry, dynamic items."
+                - generic [ref=f2e544]: "@shadcn"
+            - link "React Bits has become the ultimate visual animation library for React. This level of flexibility doesn't exist anywhere else. @orcdev" [ref=f2e549] [cursor=pointer]:
+              - /url: https://x.com/orcdev/status/2005627805938422123
+              - generic [ref=f2e550]:
+                - paragraph [ref=f2e551]: React Bits has become the ultimate visual animation library for React. This level of flexibility doesn't exist anywhere else.
+                - generic [ref=f2e552]: "@orcdev"
+            - link "Have you heard of react bits? David Haz has lovingly put together a collection of animated and fully customizable React components. @DIYDevs" [ref=f2e557] [cursor=pointer]:
+              - /url: https://x.com/DIYDevs/status/1892964440900763761
+              - generic [ref=f2e558]:
+                - paragraph [ref=f2e559]: Have you heard of react bits? David Haz has lovingly put together a collection of animated and fully customizable React components.
+                - generic [ref=f2e560]: "@DIYDevs"
+          - generic [ref=f2e565]:
+            - 'link "Everything about this is next level: the components, the registry, dynamic items. @shadcn" [ref=f2e566] [cursor=pointer]':
+              - /url: https://x.com/shadcn/status/1962854085587275932
+              - generic [ref=f2e567]:
+                - paragraph [ref=f2e568]: "Everything about this is next level: the components, the registry, dynamic items."
+                - generic [ref=f2e569]: "@shadcn"
+            - link "React Bits has become the ultimate visual animation library for React. This level of flexibility doesn't exist anywhere else. @orcdev" [ref=f2e574] [cursor=pointer]:
+              - /url: https://x.com/orcdev/status/2005627805938422123
+              - generic [ref=f2e575]:
+                - paragraph [ref=f2e576]: React Bits has become the ultimate visual animation library for React. This level of flexibility doesn't exist anywhere else.
+                - generic [ref=f2e577]: "@orcdev"
+            - link "Have you heard of react bits? David Haz has lovingly put together a collection of animated and fully customizable React components. @DIYDevs" [ref=f2e582] [cursor=pointer]:
+              - /url: https://x.com/DIYDevs/status/1892964440900763761
+              - generic [ref=f2e583]:
+                - paragraph [ref=f2e584]: Have you heard of react bits? David Haz has lovingly put together a collection of animated and fully customizable React components.
+                - generic [ref=f2e585]: "@DIYDevs"
+          - generic [ref=f2e590]:
+            - 'link "Everything about this is next level: the components, the registry, dynamic items. @shadcn" [ref=f2e591] [cursor=pointer]':
+              - /url: https://x.com/shadcn/status/1962854085587275932
+              - generic [ref=f2e592]:
+                - paragraph [ref=f2e593]: "Everything about this is next level: the components, the registry, dynamic items."
+                - generic [ref=f2e594]: "@shadcn"
+            - link "React Bits has become the ultimate visual animation library for React. This level of flexibility doesn't exist anywhere else. @orcdev" [ref=f2e599] [cursor=pointer]:
+              - /url: https://x.com/orcdev/status/2005627805938422123
+              - generic [ref=f2e600]:
+                - paragraph [ref=f2e601]: React Bits has become the ultimate visual animation library for React. This level of flexibility doesn't exist anywhere else.
+                - generic [ref=f2e602]: "@orcdev"
+            - link "Have you heard of react bits? David Haz has lovingly put together a collection of animated and fully customizable React components. @DIYDevs" [ref=f2e607] [cursor=pointer]:
+              - /url: https://x.com/DIYDevs/status/1892964440900763761
+              - generic [ref=f2e608]:
+                - paragraph [ref=f2e609]: Have you heard of react bits? David Haz has lovingly put together a collection of animated and fully customizable React components.
+                - generic [ref=f2e610]: "@DIYDevs"
+        - generic [ref=f2e616]:
+          - generic [ref=f2e617]:
+            - 'link "React Bits: A stellar collection of React components to make your landing pages shine ✨ @gregberge_" [ref=f2e618] [cursor=pointer]':
+              - /url: https://x.com/gregberge_/status/1896425347866059041
+              - generic [ref=f2e619]:
+                - paragraph [ref=f2e620]: "React Bits: A stellar collection of React components to make your landing pages shine ✨"
+                - generic [ref=f2e621]: "@gregberge_"
+            - link "Literally the coolest react library in react — @Logreg_n_coffee" [ref=f2e626] [cursor=pointer]:
+              - /url: https://x.com/Logreg_n_coffee/status/1889573533425991992
+              - generic [ref=f2e627]:
+                - paragraph [ref=f2e628]: Literally the coolest react library in react —
+                - generic [ref=f2e629]: "@Logreg_n_coffee"
+            - link "Got to know about React Bits and its just wow, the components are incredibly well designed! Really loved the overall feel and quality. @irohandev" [ref=f2e634] [cursor=pointer]:
+              - /url: https://x.com/irohandev/status/1934877463064268822
+              - generic [ref=f2e635]:
+                - paragraph [ref=f2e636]: Got to know about React Bits and its just wow, the components are incredibly well designed! Really loved the overall feel and quality.
+                - generic [ref=f2e638]:
+                  - generic [aria-hidden] [ref=f2e639]: IR
+                  - generic [ref=f2e640]: "@irohandev"
+          - generic [ref=f2e643]:
+            - 'link "React Bits: A stellar collection of React components to make your landing pages shine ✨ @gregberge_" [ref=f2e644] [cursor=pointer]':
+              - /url: https://x.com/gregberge_/status/1896425347866059041
+              - generic [ref=f2e645]:
+                - paragraph [ref=f2e646]: "React Bits: A stellar collection of React components to make your landing pages shine ✨"
+                - generic [ref=f2e647]: "@gregberge_"
+            - link "Literally the coolest react library in react — @Logreg_n_coffee" [ref=f2e652] [cursor=pointer]:
+              - /url: https://x.com/Logreg_n_coffee/status/1889573533425991992
+              - generic [ref=f2e653]:
+                - paragraph [ref=f2e654]: Literally the coolest react library in react —
+                - generic [ref=f2e655]: "@Logreg_n_coffee"
+            - link "Got to know about React Bits and its just wow, the components are incredibly well designed! Really loved the overall feel and quality. @irohandev" [ref=f2e660] [cursor=pointer]:
+              - /url: https://x.com/irohandev/status/1934877463064268822
+              - generic [ref=f2e661]:
+                - paragraph [ref=f2e662]: Got to know about React Bits and its just wow, the components are incredibly well designed! Really loved the overall feel and quality.
+                - generic [ref=f2e664]:
+                  - generic [aria-hidden] [ref=f2e665]: IR
+                  - generic [ref=f2e666]: "@irohandev"
+          - generic [ref=f2e669]:
+            - 'link "React Bits: A stellar collection of React components to make your landing pages shine ✨ @gregberge_" [ref=f2e670] [cursor=pointer]':
+              - /url: https://x.com/gregberge_/status/1896425347866059041
+              - generic [ref=f2e671]:
+                - paragraph [ref=f2e672]: "React Bits: A stellar collection of React components to make your landing pages shine ✨"
+                - generic [ref=f2e673]: "@gregberge_"
+            - link "Literally the coolest react library in react — @Logreg_n_coffee" [ref=f2e678] [cursor=pointer]:
+              - /url: https://x.com/Logreg_n_coffee/status/1889573533425991992
+              - generic [ref=f2e679]:
+                - paragraph [ref=f2e680]: Literally the coolest react library in react —
+                - generic [ref=f2e681]: "@Logreg_n_coffee"
+            - link "Got to know about React Bits and its just wow, the components are incredibly well designed! Really loved the overall feel and quality. @irohandev" [ref=f2e686] [cursor=pointer]:
+              - /url: https://x.com/irohandev/status/1934877463064268822
+              - generic [ref=f2e687]:
+                - paragraph [ref=f2e688]: Got to know about React Bits and its just wow, the components are incredibly well designed! Really loved the overall feel and quality.
+                - generic [ref=f2e690]:
+                  - generic [aria-hidden] [ref=f2e691]: IR
+                  - generic [ref=f2e692]: "@irohandev"
+        - generic [ref=f2e696]:
+          - generic [ref=f2e697]:
+            - link "React Bits has got to be the most artistic ui component lib I have seen in a while 🤌 @GibsonSMurray" [ref=f2e698] [cursor=pointer]:
+              - /url: https://x.com/GibsonSMurray/status/1889909058838339626
+              - generic [ref=f2e699]:
+                - paragraph [ref=f2e700]: React Bits has got to be the most artistic ui component lib I have seen in a while 🤌
+                - generic [ref=f2e702]:
+                  - generic [aria-hidden] [ref=f2e703]: GI
+                  - generic [ref=f2e704]: "@GibsonSMurray"
+            - link "Just discovered reactbits.dev — a sleek, minimal, and super dev-friendly React component library. Clean UI, easy to use, and perfect for modern projects. @syskey_dmg" [ref=f2e707] [cursor=pointer]:
+              - /url: https://x.com/syskey_dmg/status/1929762648922398754
+              - generic [ref=f2e708]:
+                - paragraph [ref=f2e709]: Just discovered reactbits.dev — a sleek, minimal, and super dev-friendly React component library. Clean UI, easy to use, and perfect for modern projects.
+                - generic [ref=f2e710]: "@syskey_dmg"
+            - link "Really impressed by reactbits.dev. Check it out. The Splash Cursor effect is amazing. @makwanadeepam" [ref=f2e715] [cursor=pointer]:
+              - /url: https://x.com/makwanadeepam/status/1879416558461890864
+              - generic [ref=f2e716]:
+                - paragraph [ref=f2e717]: Really impressed by reactbits.dev. Check it out. The Splash Cursor effect is amazing.
+                - generic [ref=f2e718]: "@makwanadeepam"
+          - generic [ref=f2e723]:
+            - link "React Bits has got to be the most artistic ui component lib I have seen in a while 🤌 @GibsonSMurray" [ref=f2e724] [cursor=pointer]:
+              - /url: https://x.com/GibsonSMurray/status/1889909058838339626
+              - generic [ref=f2e725]:
+                - paragraph [ref=f2e726]: React Bits has got to be the most artistic ui component lib I have seen in a while 🤌
+                - generic [ref=f2e728]:
+                  - generic [aria-hidden] [ref=f2e729]: GI
+                  - generic [ref=f2e730]: "@GibsonSMurray"
+            - link "Just discovered reactbits.dev — a sleek, minimal, and super dev-friendly React component library. Clean UI, easy to use, and perfect for modern projects. @syskey_dmg" [ref=f2e733] [cursor=pointer]:
+              - /url: https://x.com/syskey_dmg/status/1929762648922398754
+              - generic [ref=f2e734]:
+                - paragraph [ref=f2e735]: Just discovered reactbits.dev — a sleek, minimal, and super dev-friendly React component library. Clean UI, easy to use, and perfect for modern projects.
+                - generic [ref=f2e736]: "@syskey_dmg"
+            - link "Really impressed by reactbits.dev. Check it out. The Splash Cursor effect is amazing. @makwanadeepam" [ref=f2e741] [cursor=pointer]:
+              - /url: https://x.com/makwanadeepam/status/1879416558461890864
+              - generic [ref=f2e742]:
+                - paragraph [ref=f2e743]: Really impressed by reactbits.dev. Check it out. The Splash Cursor effect is amazing.
+                - generic [ref=f2e744]: "@makwanadeepam"
+          - generic [ref=f2e749]:
+            - link "React Bits has got to be the most artistic ui component lib I have seen in a while 🤌 @GibsonSMurray" [ref=f2e750] [cursor=pointer]:
+              - /url: https://x.com/GibsonSMurray/status/1889909058838339626
+              - generic [ref=f2e751]:
+                - paragraph [ref=f2e752]: React Bits has got to be the most artistic ui component lib I have seen in a while 🤌
+                - generic [ref=f2e754]:
+                  - generic [aria-hidden] [ref=f2e755]: GI
+                  - generic [ref=f2e756]: "@GibsonSMurray"
+            - link "Just discovered reactbits.dev — a sleek, minimal, and super dev-friendly React component library. Clean UI, easy to use, and perfect for modern projects. @syskey_dmg" [ref=f2e759] [cursor=pointer]:
+              - /url: https://x.com/syskey_dmg/status/1929762648922398754
+              - generic [ref=f2e760]:
+                - paragraph [ref=f2e761]: Just discovered reactbits.dev — a sleek, minimal, and super dev-friendly React component library. Clean UI, easy to use, and perfect for modern projects.
+                - generic [ref=f2e762]: "@syskey_dmg"
+            - link "Really impressed by reactbits.dev. Check it out. The Splash Cursor effect is amazing. @makwanadeepam" [ref=f2e767] [cursor=pointer]:
+              - /url: https://x.com/makwanadeepam/status/1879416558461890864
+              - generic [ref=f2e768]:
+                - paragraph [ref=f2e769]: Really impressed by reactbits.dev. Check it out. The Splash Cursor effect is amazing.
+                - generic [ref=f2e770]: "@makwanadeepam"
+    - generic [ref=f2e776]:
+      - generic [ref=f2e777]:
+        - heading "Questions, answered" [level=2] [ref=f2e778]
+        - paragraph [ref=f2e779]: What's free, what's in Pro and how the pieces fit together.
+      - generic [ref=f2e780]:
+        - generic [ref=f2e781]:
+          - button "What is included in the free library?" [ref=f2e782] [cursor=pointer]
+          - paragraph [ref=f2e785]: "All 216 components and backgrounds on this site, across five categories: Text Animations, Animations, Components, Micro and Backgrounds. The three creative tools are free too. You can use all of it in personal and commercial projects, and it stays free."
+        - generic [ref=f2e786]:
+          - button "What does React Bits Pro add?" [ref=f2e787] [cursor=pointer]
+          - paragraph [ref=f2e790]: 230 more animated components, 300 page sections, 300 app UI blocks, 15 complete Next.js templates and 20 agent skills for AI coding tools. Like the free library, everything installs as source you own.
+        - generic [ref=f2e791]:
+          - button "What are the four flavours?" [ref=f2e792] [cursor=pointer]
+          - paragraph [ref=f2e795]: "Every component comes in JavaScript or TypeScript, styled with plain CSS or Tailwind. Pick yours in the Preferences menu in the header and every code tab and install command follows it. With the CLI, the ending of the name picks the flavour: JS-CSS, JS-TW, TS-CSS or TS-TW."
+        - generic [ref=f2e796]:
+          - button "Is React Bits only for React?" [ref=f2e797] [cursor=pointer]
+          - paragraph [ref=f2e800]:
+            - text: "The components on this site are built for React, so they work in Next.js, Vite, Astro or Remix. Working in another framework? There are official ports for Vue and Svelte:"
+            - link [ref=f2e801] [cursor=pointer]:
+              - /url: https://vue-bits.dev/
+              - text: Vue Bits
+            - text: and
+            - link [ref=f2e802] [cursor=pointer]:
+              - /url: https://sveltebits.xyz/
+              - text: Svelte Bits
+            - text: .
+        - generic [ref=f2e803]:
+          - button "What are the tools for?" [ref=f2e804] [cursor=pointer]
+          - paragraph [ref=f2e807]:
+            - text: Background Studio, Shape Magic and Texture Lab are free apps that run in your browser. Tune any animated background, design a logo mark with 3D materials or restyle photos and videos, then export code, images or video.
+            - link [ref=f2e808] [cursor=pointer]:
+              - /url: /tools
+              - text: Open the tools
+        - generic [ref=f2e809]:
+          - button "Where do I get Pro, and what does it cost?" [ref=f2e810] [cursor=pointer]
+          - paragraph [ref=f2e813]:
+            - text: "On"
+            - link [ref=f2e814] [cursor=pointer]:
+              - /url: https://pro.reactbits.dev/?utm_source=reactbits.dev&utm_medium=landing-faq&utm_campaign=free-to-pro&utm_content=landing-faq
+              - text: pro.reactbits.dev
+            - text: . Plans start at $79 a year, or $129 once for lifetime access with every future update. You can browse the whole catalogue before you buy, and one template and one agent skill are free.
+        - generic [ref=f2e815]:
+          - button "Can I use React Bits in commercial projects?" [ref=f2e816] [cursor=pointer]
+          - paragraph [ref=f2e819]: "Yes. The free library is licensed MIT + Commons Clause: use the components in any app, website or product, client work included, but don't sell, sublicense or redistribute the components themselves. A Pro license covers one developer for unlimited commercial projects."
+        - generic [ref=f2e820]:
+          - button "Do I need to install a package?" [ref=f2e821] [cursor=pointer]
+          - paragraph [ref=f2e824]: No. The shadcn or jsrepo CLI copies the source into your project, or you can paste it in by hand. There is no react-bits dependency to keep updated, and it works in any React setup, including Vite, Next.js, Astro and Remix.
+        - generic [ref=f2e825]:
+          - button "Does it work with AI coding tools?" [ref=f2e826] [cursor=pointer]
+          - paragraph [ref=f2e829]: Yes. Every component has a Copy for AI menu, docs pages export to Markdown, llms.txt maps the whole library and the shadcn MCP server lets your agent install components for you. Pro adds agent skills that teach Claude Code, Cursor and Copilot to build pages that look designed.
+    - generic [ref=f2e832]:
+      - generic [ref=f2e833]:
+        - heading "Build something people remember." [level=2] [ref=f2e834]
+        - paragraph [ref=f2e835]: Start with the free library. When you need the complete page, product UI and tools to ship it, React Bits Pro is ready.
+        - generic [ref=f2e836]:
+          - link "Get React Bits Pro" [ref=f2e837] [cursor=pointer]:
+            - /url: https://pro.reactbits.dev/?utm_source=reactbits.dev&utm_medium=landing-final-cta&utm_campaign=free-to-pro&utm_content=landing-final-cta#pricing
+          - link "Browse free components" [ref=f2e840] [cursor=pointer]:
+            - /url: /get-started/index
+      - generic [ref=f2e841]:
+        - generic [ref=f2e842]:
+          - link "React Bits home" [ref=f2e843] [cursor=pointer]:
+            - /url: /
+            - img "React Bits" [ref=f2e844]
+          - paragraph [ref=f2e845]: Animated React components.Open source. Fully customizable.
+        - navigation "Footer" [ref=f2e846]:
+          - generic [ref=f2e847]:
+            - generic [ref=f2e848]: Community
+            - link "GitHub" [ref=f2e849] [cursor=pointer]:
+              - /url: https://github.com/DavidHDev/react-bits
+            - link "Vue Bits" [ref=f2e850] [cursor=pointer]:
+              - /url: https://vue-bits.dev/
+            - link "Svelte Bits" [ref=f2e851] [cursor=pointer]:
+              - /url: https://sveltebits.xyz/
+          - generic [ref=f2e852]:
+            - generic [ref=f2e853]: Product
+            - link "Docs" [ref=f2e854] [cursor=pointer]:
+              - /url: /get-started/introduction
+            - link "Tools" [ref=f2e855] [cursor=pointer]:
+              - /url: /tools
+            - link "Showcase" [ref=f2e856] [cursor=pointer]:
+              - /url: /showcase
+            - link "Sponsors" [ref=f2e857] [cursor=pointer]:
+              - /url: /sponsors
+          - generic [ref=f2e858]:
+            - generic [ref=f2e859]: Pro
+            - link "What's in Pro" [ref=f2e860] [cursor=pointer]:
+              - /url: /pro
+            - link "Components" [ref=f2e861] [cursor=pointer]:
+              - /url: https://pro.reactbits.dev/docs/components?utm_source=reactbits.dev&utm_medium=footer&utm_campaign=free-to-pro&utm_content=footer
+            - link "Blocks" [ref=f2e862] [cursor=pointer]:
+              - /url: https://pro.reactbits.dev/docs/blocks?utm_source=reactbits.dev&utm_medium=footer&utm_campaign=free-to-pro&utm_content=footer
+            - link "Templates" [ref=f2e863] [cursor=pointer]:
+              - /url: https://pro.reactbits.dev/docs/templates?utm_source=reactbits.dev&utm_medium=footer&utm_campaign=free-to-pro&utm_content=footer
+        - generic [ref=f2e864]:
+          - generic [ref=f2e865]: © 2026 React Bits
+          - generic [ref=f2e866]:
+            - text: · Built with love by
+            - link "@davidhaz" [ref=f2e867] [cursor=pointer]:
+              - /url: https://x.com/davidhaz
+          - link "· License" [ref=f2e868] [cursor=pointer]:
+            - /url: https://github.com/DavidHDev/react-bits/blob/main/LICENSE.md

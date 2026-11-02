@@ -1,0 +1,203 @@
+- generic [ref=f21e1]:
+  - banner [ref=f21e2]:
+    - generic [ref=f21e6]:
+      - generic [ref=f21e7]: MOCK PLATFORM
+      - generic [ref=f21e8]: 节点调测仿真台 · OPS CONSOLE
+    - group "本机信息" [ref=f21e9]:
+      - generic [ref=f21e10]: MOCK-WIN-01
+      - generic [ref=f21e11]: /
+      - generic [ref=f21e12]: 10.18.32.104
+      - generic [ref=f21e13]: /
+      - generic [ref=f21e14]: Windows 11 23H2 · 22631
+      - generic [ref=f21e15]: /
+      - generic [ref=f21e16]: MockAgent 4.2.1
+    - generic "实时遥测" [ref=f21e17]:
+      - generic [ref=f21e18]: TELEMETRY
+      - generic [ref=f21e19]:
+        - generic [ref=f21e20]: REQ 9
+        - generic [ref=f21e22]: OK 7
+        - generic [ref=f21e24]: ERR 2
+        - generic [ref=f21e26]: AVG 324ms
+        - generic [ref=f21e28]: RUN 1/3
+        - generic [ref=f21e30]: HUMAN 1
+    - generic [ref=f21e32]:
+      - button "开关界面音效" [ref=f21e33] [cursor=pointer]:
+        - generic [ref=f21e37]: SFX
+      - generic [ref=f21e38]: 00:42:39
+  - generic [ref=f21e39]:
+    - navigation "主导航" [ref=f21e40]:
+      - button "MOCK 管理 端口 · 证书 · 能力 3" [ref=f21e41] [cursor=pointer]:
+        - generic [ref=f21e46]: MOCK 管理
+        - generic [ref=f21e47]: 端口 · 证书 · 能力
+        - generic [ref=f21e48]: "3"
+      - button "MOCK 流程 审计 · 预期响应 1" [ref=f21e49] [cursor=pointer]:
+        - generic [ref=f21e54]: MOCK 流程
+        - generic [ref=f21e55]: 审计 · 预期响应
+        - generic [ref=f21e56]: "1"
+      - button "网元管理 属性 · 升级流程 5" [active] [ref=f21e57] [cursor=pointer]:
+        - generic [ref=f21e61]: 网元管理
+        - generic [ref=f21e62]: 属性 · 升级流程
+        - generic [ref=f21e63]: "5"
+      - button "网元管理平台 账号 · 一体化任务 1" [ref=f21e64] [cursor=pointer]:
+        - generic [ref=f21e70]: 网元管理平台
+        - generic [ref=f21e71]: 账号 · 一体化任务
+        - generic [ref=f21e72]: "1"
+      - button "生命周期平台 软件包 · 共部署 4" [ref=f21e73] [cursor=pointer]:
+        - generic [ref=f21e77]: 生命周期平台
+        - generic [ref=f21e78]: 软件包 · 共部署
+        - generic [ref=f21e79]: "4"
+      - button "虚层管理平台 CPU · 主副站点 —" [ref=f21e80] [cursor=pointer]:
+        - generic [ref=f21e84]: 虚层管理平台
+        - generic [ref=f21e85]: CPU · 主副站点
+        - generic [ref=f21e86]: —
+      - generic [ref=f21e87]:
+        - generic [ref=f21e88]: SIG 0x17B4
+        - generic [ref=f21e89]: UP 5d 0h
+    - main [ref=f21e90]:
+      - generic [ref=f21e260]:
+        - generic [ref=f21e261]:
+          - heading "网元管理 NE PROFILE / VALIDATION / UPGRADE FLOW" [level=1] [ref=f21e262]:
+            - generic [ref=f21e263]: 网元管理
+            - generic [ref=f21e264]: NE PROFILE / VALIDATION / UPGRADE FLOW
+          - generic [ref=f21e265]:
+            - generic [ref=f21e266]:
+              - generic [ref=f21e267]: 网元
+              - generic [ref=f21e268]: 5个
+            - generic [ref=f21e269]:
+              - generic [ref=f21e270]: 网元组
+              - generic [ref=f21e271]: 2个
+            - generic [ref=f21e272]:
+              - generic [ref=f21e273]: 升级中
+              - generic [ref=f21e274]: 1个
+            - generic [ref=f21e275]:
+              - generic [ref=f21e276]: 校验规则
+              - generic [ref=f21e277]: 10条
+        - generic [ref=f21e278]:
+          - generic [ref=f21e279]:
+            - generic [ref=f21e280]:
+              - generic [ref=f21e281]:
+                - heading "网元清单" [level=2] [ref=f21e282]
+                - button "新建" [ref=f21e283] [cursor=pointer]
+              - generic [ref=f21e286]:
+                - button "杭州·基站 01 gNB（基站） · ARM64 裸机 · V7.2.0 · 华为 · 杭州基站组" [ref=f21e287]:
+                  - generic [ref=f21e288]: 杭州·基站 01
+                  - generic [ref=f21e289]: gNB（基站） · ARM64 裸机 · V7.2.0 · 华为 · 杭州基站组
+                - button "杭州·基站 02 gNB（基站） · ARM64 裸机 · V7.1.3 · 华为 · 杭州基站组" [ref=f21e290]:
+                  - generic [ref=f21e291]: 杭州·基站 02
+                  - generic [ref=f21e292]: gNB（基站） · ARM64 裸机 · V7.1.3 · 华为 · 杭州基站组
+                - button "南京·核心网 AMF AMF（接入与移动性管理） · x86_64 虚拟机 · V9.0.2 · 中兴 · 南京核心网组" [ref=f21e293]:
+                  - generic [ref=f21e294]: 南京·核心网 AMF
+                  - generic [ref=f21e295]: AMF（接入与移动性管理） · x86_64 虚拟机 · V9.0.2 · 中兴 · 南京核心网组
+                - button "南京·用户面 UPF UPF（用户面功能） · 容器化（K8s） · V5.4.1 · 烽火 · 南京核心网组" [ref=f21e296]:
+                  - generic [ref=f21e297]: 南京·用户面 UPF
+                  - generic [ref=f21e298]: UPF（用户面功能） · 容器化（K8s） · V5.4.1 · 烽火 · 南京核心网组
+                - button "西安·灾备 OMC OMC（操作维护中心） · 异构刀片 · V3.3.0 · 自研 · 未成组" [ref=f21e299]:
+                  - generic [ref=f21e300]: 西安·灾备 OMC
+                  - generic [ref=f21e301]: OMC（操作维护中心） · 异构刀片 · V3.3.0 · 自研 · 未成组
+            - generic [ref=f21e302]:
+              - generic [ref=f21e303]:
+                - heading "网元组" [level=2] [ref=f21e304]
+                - generic [ref=f21e305]: 同组网元批量操作
+              - generic [ref=f21e306]:
+                - generic [ref=f21e307]:
+                  - generic [ref=f21e308]:
+                    - generic [ref=f21e309]: 杭州基站组
+                    - generic [ref=f21e310]: 串行 · 每台间隔 60s · 2 个成员
+                  - generic [ref=f21e311]:
+                    - generic [ref=f21e312]: GNB
+                    - generic [ref=f21e313]: GNB
+                - generic [ref=f21e314]:
+                  - generic [ref=f21e315]:
+                    - generic [ref=f21e316]: 南京核心网组
+                    - generic [ref=f21e317]: 并行 · 保留备用 · 2 个成员
+                  - generic [ref=f21e318]:
+                    - generic [ref=f21e319]: AMF
+                    - generic [ref=f21e320]: UPF
+          - generic [ref=f21e322]:
+            - generic [ref=f21e323]:
+              - heading "杭州·基站 01" [level=2] [ref=f21e324]
+              - generic [ref=f21e325]:
+                - generic [ref=f21e326]: GNB
+                - generic [ref=f21e327]: 在线
+            - tablist [ref=f21e328]:
+              - tab "属性 / 版本" [ref=f21e329] [cursor=pointer]
+              - tab "参数校验" [ref=f21e330] [cursor=pointer]
+              - tab "升级流程" [ref=f21e331] [cursor=pointer]
+              - tab "成组 / 复制" [ref=f21e332] [cursor=pointer]
+            - generic [ref=f21e333]:
+              - generic [ref=f21e334]:
+                - generic [ref=f21e335]:
+                  - generic [ref=f21e336]: 网元名称
+                  - textbox "网元名称" [ref=f21e337]: 杭州·基站 01
+                - generic [ref=f21e338]:
+                  - generic [ref=f21e339]: 网元编号
+                  - textbox "网元编号 用于参数校验，格式 GNB-区号-四位序号" [ref=f21e340]: GNB
+                  - emphasis [ref=f21e341]: 用于参数校验，格式 GNB-区号-四位序号
+                - generic [ref=f21e342]:
+                  - generic [ref=f21e343]: 类型
+                  - combobox "类型" [ref=f21e344]:
+                    - option "gNB（基站）" [selected]
+                    - option "AMF（接入与移动性管理）"
+                    - option "UPF（用户面功能）"
+                    - option "SMF（会话管理）"
+                    - option "MME（移动性管理）"
+                    - option "OMC（操作维护中心）"
+                    - option "UPF-Edge（边缘用户面）"
+                - generic [ref=f21e345]:
+                  - generic [ref=f21e346]: 架构
+                  - combobox "架构" [ref=f21e347]:
+                    - option "x86_64 虚拟机"
+                    - option "ARM64 裸机" [selected]
+                    - option "容器化（K8s）"
+                    - option "ARM64 虚拟机"
+                    - option "异构刀片"
+                - generic [ref=f21e348]:
+                  - generic [ref=f21e349]: 厂商
+                  - combobox "厂商" [ref=f21e350]:
+                    - option "华为" [selected]
+                    - option "中兴"
+                    - option "烽火"
+                    - option "自研"
+                - generic [ref=f21e351]:
+                  - generic [ref=f21e352]: 版本
+                  - textbox "版本" [ref=f21e353]: 7.2.0
+                - generic [ref=f21e354]:
+                  - generic [ref=f21e355]: 使用软件名称
+                  - textbox "使用软件名称" [ref=f21e356]: GNB_V720
+                - generic [ref=f21e357]:
+                  - generic [ref=f21e358]: 型号
+                  - textbox "型号" [ref=f21e359]: MOCK-GNB
+              - generic [ref=f21e360]:
+                - generic [ref=f21e361]: 旧版本（可回滚）
+                - generic [ref=f21e362]: V7.2.0
+                - generic [ref=f21e363]: V6.8.1
+                - generic [ref=f21e364]: V6.7.4
+              - generic [ref=f21e365]:
+                - generic [ref=f21e366]: 网元属性
+                - generic [ref=f21e367]:
+                  - text: 心跳周期
+                  - emphasis [ref=f21e368]: 30s
+                - generic [ref=f21e369]:
+                  - text: 最大承载用户
+                  - emphasis [ref=f21e370]: "12000"
+                - generic [ref=f21e371]:
+                  - text: 传输加密
+                  - emphasis [ref=f21e372]: TLS1.3
+                - generic [ref=f21e373]:
+                  - text: 日志级别
+                  - emphasis [ref=f21e374]: INFO
+              - generic [ref=f21e375]:
+                - generic [ref=f21e376]: 属性改动即时生效，用于对端接口的字段级定制
+                - button "保存属性" [ref=f21e377] [cursor=pointer]
+  - contentinfo [ref=f21e249]:
+    - generic [ref=f21e250]:
+      - text: SIM
+      - generic [ref=f21e252]: RUNNING
+    - generic [ref=f21e254]:
+      - text: LAST
+      - generic [ref=f21e255]: 00:42:38 POST /nemp/v1/ne/register → 200
+    - generic [ref=f21e256]: POST /nemp/v1/ne/register 200 · GET /nemp/v1/ne/GNB-HZ-0001/state 200 · POST /alarm/v1/report 200
+    - generic [ref=f21e258]:
+      - text: VARIANT
+      - generic [ref=f21e259]: V1 · OPS CONSOLE
+  - status
