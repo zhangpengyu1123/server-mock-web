@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>业务面 · RHINE LAB PLANE</title>
 <link rel="stylesheet" href="../shared/base.css" />
-<link rel="stylesheet" href="./plane.css?v=20261103014131" />
+<link rel="stylesheet" href="./plane.css?v=20261103205459" />
 </head>
 <body class="pl">
 
@@ -33,21 +33,17 @@
     </div>
   </div>
 
-  <!-- 两层语义：运行态 / 准备态 -->
-  <div class="pl-layers">
-    <button class="pl-layer is-on" data-layer="runtime">
-      <span class="pl-layer__k">LAYER 1</span>
-      <span class="pl-layer__t">运行态</span>
-      <span class="pl-layer__d">端口在跑 · 请求在流动</span>
+  <!-- 两个工作区：运行态 / 准备态（不是页签，是两套导航 + 两套状态条） -->
+  <div class="pl-mode" role="tablist" aria-label="工作区">
+    <button class="pl-mode__b is-on" data-layer="runtime" role="tab">
+      <span class="pl-mode__t">运行态</span>
+      <span class="pl-mode__k">RUN</span>
     </button>
-    <div class="pl-layer__link" aria-hidden="true">
-      <span>定义 ↓ 执行</span>
-    </div>
-    <button class="pl-layer" data-layer="prep">
-      <span class="pl-layer__k">LAYER 2</span>
-      <span class="pl-layer__t">准备态</span>
-      <span class="pl-layer__d">网元与拓扑 · 平台能力</span>
+    <button class="pl-mode__b" data-layer="prep" role="tab">
+      <span class="pl-mode__t">准备态</span>
+      <span class="pl-mode__k">PREP</span>
     </button>
+    <span class="pl-mode__hint" id="plModeHint">端口在跑 · 请求在流动</span>
   </div>
 
   <div class="pl-meta">
@@ -94,7 +90,7 @@
   "three/addons/": "../vendor/"
 } }
 </script>
-<script src="./plane.js?v=20261103014131"></script>
+<script src="./plane.js?v=20261103205626"></script>
 <script type="module" src="./plane-topo3d.js?v=20261103014016"></script>
 </body>
 </html>

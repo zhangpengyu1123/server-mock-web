@@ -223,7 +223,8 @@
       onSelect: (type, payload) => {
         S.rigSel = payload;
         S.rigFocus = type === 'node' ? payload.id : (payload.data && payload.data.node_id) || null;
-        renderRigPanel(type, payload);
+        // 操作面板统一由 rig-ui.js 提供（右侧停靠）；这里清掉内联面板，避免双面板
+        renderRigPanel(type, null);
         $$('.rig-hud__item').forEach((b) => b.classList.toggle('is-on', b.dataset.focus === S.rigFocus));
       }
     });

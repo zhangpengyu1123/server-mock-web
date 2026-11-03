@@ -149,6 +149,45 @@
         }
       ],
       "created_at": 1793641707945
+    },
+    {
+      "id": "ne-0004",
+      "name": "MME-HZ-01-copy",
+      "arch": "EPC",
+      "kind": "MME",
+      "version": "4.8.4",
+      "software": "EPC-CORE",
+      "prev_versions": [],
+      "group": "g-hz-02",
+      "components": [
+        "主控板",
+        "信令板",
+        "电源"
+      ],
+      "checks": [],
+      "flow": [
+        {
+          "step": "上传软件包",
+          "human": false
+        },
+        {
+          "step": "预检查（参数校验）",
+          "human": false
+        },
+        {
+          "step": "激活",
+          "human": true
+        },
+        {
+          "step": "主备倒换",
+          "human": true
+        },
+        {
+          "step": "完成与回执",
+          "human": false
+        }
+      ],
+      "created_at": 1793699724287
     }
   ],
   "groups": [
@@ -305,7 +344,92 @@
       }
     ]
   },
-  "hits": [],
+  "hits": [
+    {
+      "status": 200,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793710460083,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 120,
+      "human": false
+    },
+    {
+      "status": 200,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793710459958,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 120,
+      "human": false
+    },
+    {
+      "status": 200,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793710459834,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 120,
+      "human": false
+    },
+    {
+      "status": 200,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793710459693,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 120,
+      "human": false
+    },
+    {
+      "status": 200,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793710459555,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 120,
+      "human": false
+    },
+    {
+      "status": 200,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793710459414,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 120,
+      "human": false
+    },
+    {
+      "status": 200,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793710459273,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 120,
+      "human": false
+    }
+  ],
   "tasks": [],
   "users": [
     {
@@ -341,8 +465,8 @@
       "variants": [],
       "human": null,
       "version": "0.1.1",
-      "hits": 0,
-      "last_hit_at": null,
+      "hits": 7,
+      "last_hit_at": 1793710459961,
       "created_at": 1793641708383
     },
     {

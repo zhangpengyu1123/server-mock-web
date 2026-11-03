@@ -10,15 +10,27 @@
   'use strict';
 
   // CSRF：管理面 app.js 会把 token 存在它自己的 api 客户端里；这里做多路兼容
+  let csrfCache = '';
   function csrf() {
     try {
       if (window.RHINE_CSRF) return window.RHINE_CSRF;
       if (window.RHINE_API && window.RHINE_API.csrf) return window.RHINE_API.csrf;
       if (window.S && window.S.api && window.S.api.csrf) return window.S.api.csrf;
+      if (csrfCache) return csrfCache;
       const m = document.cookie.match(/(?:^|;\s*)rhine_csrf=([^;]+)/);
       if (m) return decodeURIComponent(m[1]);
     } catch (e) { /* ignore */ }
     return '';
+  }
+
+  /** 403 时用 /api/auth/me 里的 csrf 重试一次（同一浏览器里被别的页面重新登录过时会用到） */
+  async function withCsrfRetry(run) {
+    let r = await run(csrf());
+    if (r.status === 403) {
+      const me = await fetch('/api/auth/me', { credentials: 'include' }).then((x) => x.json()).catch(() => null);
+      if (me && me.csrf) { csrfCache = me.csrf; r = await run(me.csrf); }
+    }
+    return r;
   }
 
   const API = {
@@ -41,6 +53,26 @@
       });
       if (!r.ok) throw new Error('DEPLOY ' + r.status);
       return r.json();
+    },
+    /** 删除服务（主板）：DELETE /api/business/mappings/:id */
+    async removeMapping(id) {
+      const r = await withCsrfRetry((token) => fetch('/api/business/mappings/' + encodeURIComponent(id), {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: { 'X-CSRF': token },
+      }));
+      if (!r.ok) throw new Error('DELETE ' + r.status);
+      return r.json().catch(() => ({}));
+    },
+    /** 删除虚机（服务器）：DELETE /api/admin/nodes/:id */
+    async removeNode(id) {
+      const r = await withCsrfRetry((token) => fetch('/api/admin/nodes/' + encodeURIComponent(id), {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: { 'X-CSRF': token },
+      }));
+      if (!r.ok) throw new Error('DELETE ' + r.status);
+      return r.json().catch(() => ({}));
     },
   };
 
@@ -115,11 +147,13 @@
       <div class="rig-modal__x">✕</div>
     </div>
     <div class="rig-modal__bd"><div class="rig-modal__meta"></div></div>
+    <div class="rig-modal__act">Actions · 操作</div>
     <div class="rig-actions">
       <button class="rig-btn" data-act="start">启用</button>
       <button class="rig-btn" data-act="stop">停用</button>
       <button class="rig-btn" data-act="update">更新版本</button>
       <button class="rig-btn" data-act="share">共享</button>
+      <button class="rig-btn rig-btn--danger rig-btn--wide" data-act="delete">删除</button>
     </div>
     <div class="rig-modal__ft"><span><i class="dot"></i><em>Confidentiality</em></span><span>Rhine Lab · Fleet Control</span></div>`;
   document.body.appendChild(modal);
@@ -149,9 +183,15 @@
   }
   function hideTip() { tip.classList.remove('on'); }
   function placeTip() {
-    const w = tip.offsetWidth || 280, h = tip.offsetHeight || 120;
+    const w = tip.offsetWidth || 286, h = tip.offsetHeight || 120;
+    // 操作面板打开时，悬停卡一律放到它的左侧，绝不重叠
+    let panelLeft = innerWidth;
+    if (modal.classList.contains('on')) {
+      const r = modal.getBoundingClientRect();
+      panelLeft = r.left;
+    }
     let x = pointer.x + 18, y = pointer.y + 16;
-    if (x + w > innerWidth - 12) x = pointer.x - w - 18;
+    if (x + w + 14 > panelLeft) x = Math.min(pointer.x - w - 18, panelLeft - w - 14);
     if (y + h > innerHeight - 12) y = pointer.y - h - 16;
     tip.style.left = Math.max(8, x) + 'px';
     tip.style.top = Math.max(8, y) + 'px';
@@ -197,7 +237,7 @@
   /* ------------------------------------------------------------ 弹窗 */
   let current = null;   // { type: 'module'|'board', ref }
 
-  function openModal(type, ref, clientX, clientY) {
+  function openModal(type, ref) {
     current = { type, ref };
     const m = modal.querySelector('.rig-modal__ttl');
     const meta = modal.querySelector('.rig-modal__meta');
@@ -220,6 +260,9 @@
       btns[0].disabled = mp.enabled !== false;
       btns[1].disabled = mp.enabled === false;
       btns[3].disabled = false;
+      btns[4].textContent = '删除服务';
+      btns[4].disabled = false;
+      btns[4].classList.remove('is-armed');
     } else {
       const n = ref.node || {};
       m.textContent = n.name || n.id;
@@ -232,16 +275,15 @@
         <div class="row"><span>State</span><b>${String(n.status || '').toUpperCase()}</b></div>
         <div class="row"><span>Services</span><b>${(window.RhineScene.instance.modules || []).filter((x) => x.board === ref).length}</b></div>`;
       btns.forEach((b) => { b.style.display = 'none'; });
-      btns[2].style.display = '';   // 虚机只允许"更新版本"
+      btns[2].style.display = '';   // 更新版本
+      btns[4].textContent = '删除虚机';
+      btns[4].style.display = '';
+      btns[4].disabled = false;
+      btns[4].classList.remove('is-armed');
     }
 
     modal.classList.add('on');
-    const w = 380, h = modal.offsetHeight || 220;
-    let x = Math.min(clientX, innerWidth - w - 16);
-    let y = Math.min(clientY + 12, innerHeight - h - 16);
-    modal.style.left = Math.max(16, x) + 'px';
-    modal.style.top = Math.max(16, y) + 'px';
-    hideTip();
+    // 面板固定停靠在右侧（不跟随点击位置）：点击 = 操作，不与悬停卡抢空间
   }
 
   function closeModal() { modal.classList.remove('on'); current = null; }
@@ -253,9 +295,53 @@
     const btn = e.target.closest('.rig-btn');
     if (!btn || !current) return;
     const act = btn.dataset.act;
+
+    /* ---------------- 删除：两段确认（第一次点击变成「确认删除？」） ---------------- */
+    if (act === 'delete') {
+      if (!btn.classList.contains('is-armed')) {
+        btn.dataset.label = btn.textContent;
+        btn.textContent = '确认删除？';
+        btn.classList.add('is-armed');
+        clearTimeout(btn._armTimer);
+        btn._armTimer = setTimeout(() => {
+          btn.classList.remove('is-armed');
+          btn.textContent = btn.dataset.label || '删除';
+        }, 4000);
+        return;
+      }
+      clearTimeout(btn._armTimer);
+      btn.classList.add('is-busy');
+      try {
+        if (current.type === 'board') {
+          const n = current.ref.node || {};
+          await API.removeNode(n.id);
+          say('已删除虚机 ' + (n.name || n.id));
+        } else {
+          const mp = current.ref.mapping || {};
+          await API.removeMapping(mp.id);
+          say('已删除服务 ' + (mp.name || mp.path || mp.id));
+        }
+        closeModal();
+        // 删除后立即重拉数据并刷新 3D（不用手动刷新页面）
+        try {
+          const [nodes, mappings] = await Promise.all([
+            fetch('/api/admin/nodes', { credentials: 'include' }).then((r) => r.json()),
+            fetch('/api/business/mappings', { credentials: 'include' }).then((r) => r.json()),
+          ]);
+          if (window.RhineScene && window.RhineScene.setData) window.RhineScene.setData({ nodes, mappings });
+          if (window.S) { window.S.nodes = nodes; window.S.mappings = mappings; }
+        } catch (err) { /* 忽略刷新失败 */ }
+      } catch (err) {
+        say('删除失败：' + err.message);
+      } finally {
+        btn.classList.remove('is-busy');
+      }
+      return;
+    }
+
     btn.classList.add('is-busy');
     try {
-      if (current.type === 'board') {
+      if (current.type === 'board' && act === 'update') {
         const n = current.ref.node;
         const next = bumpVersion(n.version || '0.1.0');
         await API.deploy(n.id, next);
@@ -314,6 +400,7 @@
     if (!host || host.__rigBound) return;
     host.__rigBound = true;
     host.addEventListener('rig:select', (e) => {
+      if (!e.detail || !e.detail.type) { closeModal(); return; }
       window.__rigSel = e.detail;
       const d = e.detail || {};
       const s2 = window.RhineScene.instance;
@@ -333,36 +420,32 @@
 
   window.addEventListener('pointerdown', (e) => { downAt = { x: e.clientX, y: e.clientY, t: Date.now() }; }, { passive: true });
 
+  // 点空白（没悬停任何对象）关闭操作面板；拖拽旋转不误关
   window.addEventListener('pointerup', (e) => {
-    if (!downAt) return;
+    if (!modal.classList.contains('on') || !downAt) return;
     const moved = Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y);
-    const dt = Date.now() - downAt.t;
     downAt = null;
-    if (moved > 6 || dt > 550) return;   // 拖拽/长按不当作点击
+    if (moved > 6) return;
+    if (e.target && e.target.closest && e.target.closest('.rig-modal')) return;
     const s = window.RhineScene && window.RhineScene.instance;
     if (!s || !s.renderer) return;
-    // 用场景的射线检测（它已经知道点了谁）
-    const el = s.renderer.domElement;
-    const rect = el.getBoundingClientRect();
-    if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) return;
-
-    // 由场景的 rig:select 事件决定打开谁（场景先做射线检测）
-    const sel = window.__rigSel;
-    if (!sel) return;
-    if (sel.type === 'mapping') {
-      const mod = s.modules.find((m) => m.id === sel.id);
-      if (mod) openModal('module', mod, e.clientX, e.clientY);
-    } else {
-      const board = s.boards.find((b) => b.id === sel.id);
-      if (board) openModal('board', board, e.clientX, e.clientY);
-    }
+    const rect = s.renderer.domElement.getBoundingClientRect();
+    if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) { closeModal(); return; }
+    if (!s.hovered) closeModal();
   }, { passive: true });
+
 
   function loop() {
     requestAnimationFrame(loop);
     const s = window.RhineScene && window.RhineScene.instance;
     if (!s) return;
     const id = s.hovered;
+    // 操作面板已打开、且悬停的正是面板里的那个对象 → 不再弹详情卡（面板已经写着同样信息）
+    if (id && current && modal.classList.contains('on')) {
+      const ref = current.ref || {};
+      const curId = (ref.mapping && ref.mapping.id) || ref.id;
+      if (curId === id) { if (tip.classList.contains('on')) hideTip(); lastHover = id; return; }
+    }
     if (id === lastHover) { if (id) placeTip(); return; }
     lastHover = id;
     if (!id) { hideTip(); return; }

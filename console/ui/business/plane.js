@@ -1862,19 +1862,6 @@
       go(LAYER_HOME[b.dataset.layer], b.dataset.layer);
     }));
 
-    // 地址栏 hash：前进/后退 = 切换工作区与视图
-    window.addEventListener('hashchange', () => {
-      if (readHash()) render();
-    });
-
-    // Ctrl/Cmd+B 折叠侧边栏
-    window.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
-        e.preventDefault();
-        toggleRail();
-      }
-    });
-
     // 接口规则编辑器
     $$('[data-iface]').forEach((b) => b.addEventListener('click', () => {
       S.ifaceSel = b.dataset.iface; S.view = 'iface'; render();
@@ -2583,6 +2570,17 @@ b.addEventListener('click', async (ev) => {
 
   $('#plExit') && $('#plExit').addEventListener('click', () => { location.href = '/'; });
   // 深链：#/runtime/audit、#/prep/topo —— 直接落到对应工作区与视图
+    // 一次性注册：hash 路由 + 折叠快捷键（不要放进 bindView，否则每次渲染都会重复注册）
+    window.addEventListener('hashchange', () => {
+      if (readHash()) render();
+    });
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
+        e.preventDefault();
+        toggleRail();
+      }
+    });
+
   readHash();
   (async () => {
     try {

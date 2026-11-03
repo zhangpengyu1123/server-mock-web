@@ -8,7 +8,7 @@
         "NEMP"
       ],
       "cert": null,
-      "enabled": false,
+      "enabled": true,
       "created_at": 1793641707173
     }
   ],
@@ -262,25 +262,25 @@
         {
           "step": "校验 checksum（sha256）",
           "status": "pass",
-          "at": 1793641843905,
+          "at": 1793710612364,
           "note": "sha256 匹配"
         },
         {
           "step": "校验签名（GPG）",
           "status": "pass",
-          "at": 1793641843905,
+          "at": 1793710612364,
           "note": "GPG 签名有效"
         },
         {
           "step": "校验包与平台版本兼容性",
           "status": "pass",
-          "at": 1793641843905,
+          "at": 1793710612364,
           "note": "3 个软件包与平台版本兼容"
         },
         {
           "step": "校验主备站点一致性",
           "status": "pass",
-          "at": 1793641843905,
+          "at": 1793710612364,
           "note": "主备站点一致"
         }
       ]
@@ -348,6 +348,14 @@
       "role": "operator",
       "hash": "$argon2id$v=19$m=19456,t=2,p=1$+Sd5WMzCyrBoQVZOv95Fkg$QdmTWu8Xq02LwFx4rA1xQjZU7S8ZPzN3ZmldZz8rPZg",
       "created_at": 1793641707173
+    },
+    {
+      "id": "user-0011",
+      "username": "admin2",
+      "display": "管理员 2",
+      "role": "admin",
+      "hash": "$argon2id$v=19$m=19456,t=2,p=1$jxmzrMNpe/qJC6+xqnRHfg$Yp0ugBP7RI1S3rAcyxWDatWSfns6a7A2X3R1Sycg9u4",
+      "created_at": 1793699807673
     }
   ],
   "mappings": [
@@ -371,7 +379,7 @@
           "step": 1,
           "max": 0,
           "condition": "",
-          "count": 13,
+          "count": 33,
           "used": false
         },
         {
@@ -429,8 +437,8 @@
       ],
       "human": null,
       "version": "0.1.1",
-      "hits": 13,
-      "last_hit_at": 1793641843516,
+      "hits": 33,
+      "last_hit_at": 1793710611974,
       "created_at": 1793641707173
     },
     {
@@ -486,7 +494,7 @@
       },
       "version": "0.2.0",
       "hits": 15,
-      "last_hit_at": 1793641843625,
+      "last_hit_at": 1793710612083,
       "created_at": 1793641587173
     },
     {
@@ -514,19 +522,10 @@
       "id": "node-0001",
       "name": "RHINE-L-01",
       "addr": "10.0.0.21:9443",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "status": "online",
-      "last_seen": 1793641707173,
+      "last_seen": 1793700200085,
       "mappings": 4
-    },
-    {
-      "id": "node-0002",
-      "name": "RHINE-L-02",
-      "addr": "10.0.0.22:9443",
-      "version": "0.1.0",
-      "status": "online",
-      "last_seen": 1793641665173,
-      "mappings": 2
     },
     {
       "id": "node-0003",
@@ -538,5 +537,5 @@
       "mappings": 0
     }
   ],
-  "seq": 10
+  "seq": 14
 }
