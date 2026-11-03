@@ -276,6 +276,9 @@
         <div class="row"><span>Services</span><b>${(window.RhineScene.instance.modules || []).filter((x) => x.board === ref).length}</b></div>`;
       btns.forEach((b) => { b.style.display = 'none'; });
       btns[2].style.display = '';   // 更新版本
+      btns[3].textContent = '＋ 在此新建服务';
+      btns[3].style.display = '';
+      btns[3].disabled = false;
       btns[4].textContent = '删除虚机';
       btns[4].style.display = '';
       btns[4].disabled = false;
@@ -286,7 +289,12 @@
     // 面板固定停靠在右侧（不跟随点击位置）：点击 = 操作，不与悬停卡抢空间
   }
 
-  function closeModal() { modal.classList.remove('on'); current = null; }
+  function closeModal() {
+    const was = current;
+    modal.classList.remove('on');
+    current = null;
+    if (was) window.dispatchEvent(new CustomEvent('rig:selected', { detail: { type: null } }));
+  }
 
   modal.querySelector('.rig-modal__x').addEventListener('click', closeModal);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
@@ -341,6 +349,12 @@
 
     btn.classList.add('is-busy');
     try {
+      if (current.type === 'board' && act === 'share' && window.RigCreate) {
+        const n = (current.ref && current.ref.node) || {};
+        window.RigCreate.openForm('svc', n);
+        btn.classList.remove('is-busy');
+        return;
+      }
       if (current.type === 'board' && act === 'update') {
         const n = current.ref.node;
         const next = bumpVersion(n.version || '0.1.0');
@@ -407,9 +421,11 @@
       if (d.type === 'mapping') {
         const m = s2.modules.find((x) => x.id === d.id);
         if (m) openModal('module', m, pointer.x, pointer.y);
+        window.dispatchEvent(new CustomEvent('rig:selected', { detail: { type: 'mapping', id: d.id, module: m } }));
       } else if (d.type === 'node') {
         const b = s2.boards.find((x) => x.id === d.id);
         if (b) openModal('board', b, pointer.x, pointer.y);
+        window.dispatchEvent(new CustomEvent('rig:selected', { detail: { type: 'node', id: d.id, node: b && b.node, board: b } }));
       }
     });
   }

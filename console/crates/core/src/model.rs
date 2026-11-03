@@ -120,6 +120,9 @@ pub struct Mapping {
     /// 所属平台：LCM | OMC | FS（管理面按此分配卡匣与配色）
     #[serde(default = "default_kind")]
     pub kind: String,
+    /// 归属的虚机（主板）id；空字符串表示未绑定，由管理面按机型分配
+    #[serde(default)]
+    pub node_id: String,
     pub method: Method,
     /// 例如 `/nemp/v1/ne/register`
     pub path: String,
@@ -244,6 +247,9 @@ pub struct NewMapping {
     /// 所属平台（可选，默认 LCM）
     #[serde(default)]
     pub kind: Option<String>,
+    /// 挂在哪台虚机上（可选）
+    #[serde(default)]
+    pub node_id: Option<String>,
     pub method: String,
     pub path: String,
     #[serde(default)]
@@ -260,6 +266,9 @@ pub struct PatchMapping {
     /// 可改平台类型
     #[serde(default)]
     pub kind: Option<String>,
+    /// 可改归属虚机
+    #[serde(default)]
+    pub node_id: Option<String>,
     pub status: Option<u16>,
     pub delay_ms: Option<u32>,
     pub body: Option<String>,

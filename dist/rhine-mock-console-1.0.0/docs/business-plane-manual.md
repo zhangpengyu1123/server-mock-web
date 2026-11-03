@@ -446,3 +446,51 @@ sceneKinds：OMC:/omc/v1/manage, LCM:/nemp/v1/ne/register, OMC:/nemp/v1/ne/list,
 ![新建服务器卡：平台类型三选](img/29-admin-new-service-kinds.png)
 
 ![三种平台在机架上的配色与铭牌](img/30-admin-kinds-in-rig.png)
+
+---
+
+## 0.10 主板与服务器是上下级（不是两个并列按钮）
+
+原来的顶栏是并排两个按钮 `+ New VM` / `+ New Service`，看起来像两种独立的新建动作。实际语义是：**服务器卡是插在虚机主板上的模块**，必须先有主板、先选中它，才能往上挂服务。现在改成了从属关系。
+
+### 数据层
+`Mapping.node_id`（默认空串）——服务器卡归属哪台虚机：
+
+```rust
+pub struct Mapping {
+    pub kind: String,      // LCM | OMC | FS
+    #[serde(default)]
+    pub node_id: String,   // 归属虚机；空 = 未绑定（旧数据由机架按机型分配）
+    ...
+}
+```
+
+`NewMapping.node_id` 可写、`PatchMapping.node_id` 可改；机架落位优先用 `node_id`（`scene.js` 早就有这条分支，只是后端以前没给数据）。
+
+### 交互层
+
+| 场景 | 表现 |
+|---|---|
+| 没选中主板 | `+ New Service` **禁用**，title 提示「先点选一台虚机主板」 |
+| 选中某台主板 | 按钮变成 `+ New Service · RHINE-L-03`，可点 |
+| 虚机操作面板 | 多一个 `＋ 在此新建服务`，直接绑当前主板 |
+| 新建服务表单 | 顶部多一行只读 **HOST VM · 所属主板**：`RHINE-L-03  node-0003` |
+| 未选中却硬要提交 | 表单报错「请先点选一台虚机主板，再新建服务器卡」 |
+
+选中状态通过 `rig:selected` 自定义事件广播（rig-ui → rig-create），关闭面板时事件带空 detail 清空选中。
+
+### 实测
+
+```
+初始             → +New Service disabled=true，text="+New Service"
+选中 node-0003   → text="+New Service · RHINE-L-03"，disabled=false
+                  面板按钮：更新版本 / ＋ 在此新建服务 / 删除虚机
+点面板按钮        → 表单 HOST VM = "RHINE-L-03 node-0003"
+选 FS 提交        → POST 200，map-0017 kind=FS node_id=node-0003
+                  3D 落位：board = node-0003（不是随机板）
+toast：已部署 FS 服务「FS 校验结果」v0.1.0
+```
+
+![未选中主板时 New Service 禁用](img/31-admin-service-needs-vm.png)
+
+![新建服务卡：HOST VM 固定为所选主板](img/32-admin-service-host-vm.png)

@@ -1060,6 +1060,7 @@ impl Store {
             owner: user.id.clone(),
             name: req.name.unwrap_or_else(|| req.path.clone()),
             kind: req.kind.unwrap_or_else(|| "LCM".into()),
+            node_id: req.node_id.unwrap_or_default(),
             method: Method::parse(&req.method).unwrap(),
             path: req.path.clone(),
             status: req.status.unwrap_or(200),
@@ -1104,6 +1105,9 @@ impl Store {
         if let Some(v) = patch.delay_ms {
             i.mappings[idx].delay_ms = v;
         }
+          if let Some(v) = patch.node_id.clone() {
+              i.mappings[idx].node_id = v;
+          }
           if let Some(v) = patch.kind.clone() {
               i.mappings[idx].kind = v;
           }
@@ -1404,6 +1408,7 @@ fn seed(inner: &mut Inner) {
             owner: "user-0002".into(),
             name: name.into(),
             kind: ["LCM", "LCM", "OMC", "FS"][i % 4].to_string(),
+            node_id: format!("node-{:04}", (i % 3) + 1),
             method,
             path: path.into(),
             status,

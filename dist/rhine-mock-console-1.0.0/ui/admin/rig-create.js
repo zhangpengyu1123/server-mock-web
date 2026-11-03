@@ -48,6 +48,13 @@
   }
   .rig-field input:focus, .rig-field select:focus { border-color: #17140f; background: #fff; }
   .rig-field--row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .rig-host { padding: 8px 9px; background: rgba(23,20,15,.05); border: 1px dashed rgba(23,20,15,.3);
+    font-size: 10.5px; letter-spacing: .04em; }
+  .rig-host b { font-weight: 600; }
+  .rig-host em { font-style: normal; color: rgba(23,20,15,.45); font-size: 9px; margin-left: 6px; }
+  .rig-host i { color: #7d2f22; font-style: normal; }
+  #btnNewSvc[disabled] { opacity: .48; cursor: not-allowed; }
+  #btnNewSvc[disabled]:hover { background: transparent; color: #17140f; border-color: rgba(23,20,15,.28); }
   .rig-form__err { font-size: 10px; color: #7d2f22; min-height: 14px; padding: 0 0 6px; }
   .rig-form__ft { display: grid; grid-template-columns: 1fr 1fr; padding: 6px 15px 14px; }
   .rig-form__ft button { appearance: none; cursor: pointer; font: inherit; font-size: 10px;
@@ -81,7 +88,8 @@
   /* ------------------------------------------------------------ 入口按钮 */
   const bar = document.createElement('div');
   bar.className = 'rig-new';
-  bar.innerHTML = '<button data-new="vm"><i>+</i>New VM</button><button data-new="svc"><i>+</i>New Service</button>';
+  bar.innerHTML = '<button data-new="vm" id="btnNewVm"><i>+</i>New VM</button>' +
+    '<button data-new="svc" id="btnNewSvc" disabled title="先点选一台虚机主板"><i>+</i>New Service</button>';
   // 挂载优先级：页面顶栏动作槽（与统计同行、留分隔线）→ HUD 动作区 → 绝对定位兜底
   function mountBar() {
     const slot = document.getElementById('topActs') || document.getElementById('rigActs');
@@ -109,6 +117,29 @@
 
   let mode = 'svc';
 
+  // 当前选中的虚机（主板）：服务器卡必须挂在它上面，两个按钮不是并列关系
+  let vmTarget = null;
+
+  function setVmTarget(node) {
+    vmTarget = node || null;
+    const svc = document.getElementById('btnNewSvc');
+    if (!svc) return;
+    if (vmTarget) {
+      svc.disabled = false;
+      svc.title = '在 ' + (vmTarget.name || vmTarget.id) + ' 上新建服务器卡';
+      svc.innerHTML = '<i>+</i>New Service · ' + (vmTarget.name || vmTarget.id);
+    } else {
+      svc.disabled = true;
+      svc.title = '先点选一台虚机主板';
+      svc.innerHTML = '<i>+</i>New Service';
+    }
+  }
+
+  window.addEventListener('rig:selected', (e) => {
+    const d = e.detail || {};
+    setVmTarget(d.type === 'node' ? d.node : null);
+  });
+
   function htmlFor(m) {
     if (m === 'vm') {
       return `<div class="rig-form__hd"><div>
@@ -128,6 +159,10 @@
         <div class="rig-form__sub">New Service · Mock Mapping</div></div>
         <div class="rig-form__x">✕</div></div>
       <div class="rig-form__bd">
+        <div class="rig-field">
+          <label>Host VM · 所属主板</label>
+          <div class="rig-host" id="rigHost">${vmTarget ? '<b>' + (vmTarget.name || vmTarget.id) + '</b> <em>' + vmTarget.id + '</em>' : '<i>未选择虚机 — 请先在机架上点选一台主板</i>'}</div>
+        </div>
         <div class="rig-field">
           <label>Platform · 平台类型</label>
           <div class="rig-kind" id="rigKind">
@@ -160,8 +195,12 @@
       <div class="rig-form__ft"><button type="button" data-cancel>取消</button><button type="submit">部署服务</button></div>`;
   }
 
-  function openForm(m, x, y) {
+  function openForm(m, a, b) {
     mode = m;
+    // 兼容两种调用：openForm('svc', node) 与 openForm('svc', x, y)
+    let nodeArg = null, x, y;
+    if (a && typeof a === 'object') { nodeArg = a; } else { x = a; y = b; }
+    if (m === 'svc') setVmTarget(nodeArg || vmTarget);
     form.innerHTML = htmlFor(m);
     form.style.display = '';
     form.classList.add('on');
@@ -234,11 +273,13 @@
         closeForm();
         if (window.RigUI && window.RigUI.say) window.RigUI.say('已登记虚机 ' + n.name + ' (' + n.id + ')');
       } else {
+        if (!vmTarget) throw new Error('请先点选一台虚机主板，再新建服务器卡');
         const kind = val('kind') || 'LCM';
         const body = {
           name: val('name') || val('path'), method: val('method') || 'GET',
           path: val('path') || '/mock/new', version: val('version') || '0.1.0',
           kind,
+          node_id: vmTarget.id,
           status: 200, body: '{}',
         };
         const r = await fetch('/api/business/mappings', {
@@ -259,5 +300,5 @@
     }
   });
 
-  window.RigCreate = { openForm, closeForm, refreshScene, mountBar };
+  window.RigCreate = { openForm, closeForm, refreshScene, mountBar, setVmTarget, getVmTarget: () => vmTarget };
 })();
