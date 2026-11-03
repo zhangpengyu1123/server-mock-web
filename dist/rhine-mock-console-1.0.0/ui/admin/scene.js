@@ -184,6 +184,8 @@ class Rig {
     this.pointer = new THREE.Vector2(-2, -2);
     this.raycaster = new THREE.Raycaster();
     this.intro = 0;
+    this.dragState = null;   // 拖拽中的卡 { mod, home }
+    this.dropTarget = null;
     this.flowTex = flowTexture();
     this.glowTex = glowTexture();
     this.labelTexCache = new Map();
@@ -598,10 +600,20 @@ class Rig {
     el.addEventListener('click', this.onClick);
   }
 
+  /** 某个对象是否属于某张卡（用于拖拽时把它自己排除出命中） */
+  isInModule(obj, mod) {
+    let o = obj;
+    while (o) { if (o === mod.root) return true; o = o.parent; }
+    return false;
+  }
+
   intersect() {
     const targets = this.boards.map((b) => b.root);
     this.raycaster.setFromCamera(this.pointer, this.camera);
-    return this.raycaster.intersectObjects(targets, true);
+    const hits = this.raycaster.intersectObjects(targets, true);
+    // 拖拽中的卡正压在光标下，必须排除，否则目标插仓永远判不出来
+    if (!this.dragState) return hits;
+    return hits.filter((h) => !this.isInModule(h.object, this.dragState.mod));
   }
 
   hover() {
@@ -650,6 +662,84 @@ class Rig {
   }
 
   /** 拖拽时高亮可落位的插仓 */
+  /** 拾起一张卡：抬高、微亮、其余卡变暗，方便看清落点 */
+  beginDrag(mappingId) {
+    const mod = this.modules.find((m) => m.mapping && m.mapping.id === mappingId);
+    if (!mod || !mod.root) return false;
+    const home = { x: mod.root.position.x, y: mod.root.position.y, z: mod.root.position.z };
+    this.dragState = { mod, home };
+    mod.root.position.y = home.y + 0.16;
+    mod.root.scale.setScalar(0.92);   // 抬起时略缩小，避免贴脸时过大
+    this.cssDragOpacity(mod.root, 0.94, true);
+    // 其余卡压暗，突出拖拽对象
+    this.modules.forEach((m) => {
+      if (m === mod) return;
+      this.cssDragOpacity(m.root, 0.55, true);
+    });
+    // 空插仓一起提亮，形成"可放这里"的暗示
+    this.boards.forEach((b) => (b.bayMeshes || []).forEach((m) => {
+      if (m.visible) { m.material.opacity = 0.16; }
+    }));
+    return true;
+  }
+
+  /** 拖拽跟随：把卡挪到光标对应的世界位置（在一个水平面上求交） */
+  moveDragTo(clientX, clientY) {
+    if (!this.dragState) return;
+    const el = this.renderer.domElement;
+    const r = el.getBoundingClientRect();
+    this.pointer.x = ((clientX - r.left) / r.width) * 2 - 1;
+    this.pointer.y = -((clientY - r.top) / r.height) * 2 + 1;
+    this.raycaster.setFromCamera(this.pointer, this.camera);
+    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -(G.cardSeatY + 0.16));
+    const hit = new THREE.Vector3();
+    if (!this.raycaster.ray.intersectPlane(plane, hit)) return;
+    // 限制在机架范围内，别让卡飘到镜头前
+    const cx = Math.max(-1.35, Math.min(1.35, hit.x));
+    const cz = Math.max(-0.85, Math.min(0.55, hit.z));
+    const root = this.dragState.mod.root;
+    root.position.x = cx;
+    root.position.z = cz;
+    // 轻轻朝相机倾斜，像被捏起来
+    root.rotation.y = Math.atan2(
+      this.camera.position.x - hit.x,
+      this.camera.position.z - hit.z
+    ) * 0.25;
+  }
+
+  /** 结束拖拽：commit=false 回到原位 */
+  endDrag(commit) {
+    const st = this.dragState;
+    this.dragState = null;
+    this.modules.forEach((m) => this.cssDragOpacity(m.root, 1, false));
+    this.boards.forEach((b) => (b.bayMeshes || []).forEach((m) => {
+      if (m.visible) m.material.opacity = 0.07;
+    }));
+    if (!st) return;
+    st.mod.root.scale.setScalar(1);
+    st.mod.root.rotation.y = 0;
+    if (commit) return;
+    // 取消：回弹到原插仓
+    st.mod.root.position.set(st.home.x, st.home.y, st.home.z);
+  }
+
+  /** 递归改材质透明度（记录原值以便还原） */
+  cssDragOpacity(root, opacity, mark) {
+    root.traverse((o) => {
+      if (!o.isMesh || !o.material) return;
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      mats.forEach((mat) => {
+        if (mark) {
+          if (mat.userData.__op === undefined) mat.userData.__op = mat.opacity;
+          mat.transparent = true;
+          mat.opacity = Math.min(mat.userData.__op, opacity);
+        } else {
+          if (mat.userData.__op !== undefined) mat.opacity = mat.userData.__op;
+        }
+      });
+    });
+  }
+
   setDropTarget(nodeId, slot) {
     this.boards.forEach((b) => {
       (b.bayMeshes || []).forEach((m) => {
@@ -744,6 +834,7 @@ class Rig {
         m.map.offset.x -= dt * (offline ? 0 : updating ? 0.95 : 0.24);
         m.map.repeat.x = offline ? 2.2 : updating ? 3.8 : 2.2;
       }
+
       // 空槽灯：未占用时呼吸
       b.glows.forEach((g, i) => {
         const occ = this.modules.some((m) => m.board === b && m.slot === i);
@@ -751,12 +842,34 @@ class Rig {
       });
     });
 
+    // 拖动中的卡：轻微浮沉；落点插仓：脉冲高亮
+    if (this.dragState) {
+        const root = this.dragState.mod.root;
+        root.position.y = G.cardSeatY + 0.16 + Math.sin(t * 5.5) * 0.012;
+    }
+    const dtTarget = this.dropTarget;
+    this.boards.forEach((b) => (b.bayMeshes || []).forEach((m) => {
+        if (!m.visible) return;
+        const isTarget = dtTarget && dtTarget.nodeId === b.id && dtTarget.slot === m.userData.bay.slot;
+        if (isTarget) {
+            const pulse = 0.42 + 0.28 * (0.5 + 0.5 * Math.sin(t * 7));
+            m.material.opacity = pulse;
+            m.material.color.setHex(0x3f8f93);
+        } else if (this.dragState) {
+            m.material.opacity = 0.16;
+        } else {
+            // 悬停某块板时，把它的空位提亮一点（提示"这里能插"）
+            const boardHovered = this.hovered === b.id;
+            m.material.opacity = boardHovered ? 0.16 : 0.07;
+        }
+    }));
+
     this.modules.forEach((m, i) => {
       // 从上往下插入：错峰落位
       const delay = 0.08 + i * 0.05;
       const k = Math.max(0, Math.min(1, (this.intro - delay) * 1.45));
       const ease = 1 - Math.pow(1 - k, 3);
-      if (this.intro < 1) m.root.position.y = m.seatY + G.insertLift * (1 - ease);   // 入场结束后把 y 交给特效层   // 竖直插入
+      if (this.intro < 1 && !(this.dragState && this.dragState.mod === m)) m.root.position.y = m.seatY + G.insertLift * (1 - ease);   // 入场结束后把 y 交给特效层   // 竖直插入
       const settle = Math.sin(Math.min(1, Math.max(0, (k - 0.85) / 0.15)) * Math.PI) * 0.005;
       m.root.position.y -= settle;
 
@@ -844,6 +957,9 @@ window.RhineScene = {
       return hits.length ? current.hitInfo(hits[0].object) : null;
     },
     setOrbitEnabled: (on) => { if (current && current.controls) current.controls.enabled = !!on; },
+    beginDrag: (id) => (current ? current.beginDrag(id) : false),
+    moveDragTo: (x, y) => { if (current) current.moveDragTo(x, y); },
+    endDrag: (commit) => { if (current) current.endDrag(commit); },
   setJob(job) { if (current) current.setJob(job); },
   pulse(id) { if (current) current.pulse(id); },
   focus(id) { if (current) current.focus(id); },

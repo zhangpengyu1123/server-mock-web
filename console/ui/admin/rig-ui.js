@@ -460,8 +460,12 @@
         if (window.RhineScene.setOrbitEnabled) window.RhineScene.setOrbitEnabled(false);
         closeModal();
         document.body.classList.add('rig-dragging');
+        // 拾起：抬高 + 其余卡压暗
+        if (window.RhineScene.beginDrag) window.RhineScene.beginDrag(drag.id);
       }
       if (!drag.active) return;
+      // 卡跟着手走（在一个水平面上求交，避免飘出画面）
+      if (window.RhineScene.moveDragTo) window.RhineScene.moveDragTo(e.clientX, e.clientY);
       const info = window.RhineScene.hitAt ? window.RhineScene.hitAt(e.clientX, e.clientY) : null;
       if (info && info.type === 'bay') window.RhineScene.setDropTarget(info.nodeId, info.slot);
       else window.RhineScene.setDropTarget(null, -1);
@@ -480,6 +484,8 @@
       if (window.RhineScene.setOrbitEnabled) window.RhineScene.setOrbitEnabled(true);
       const info = window.RhineScene.hitAt ? window.RhineScene.hitAt(e.clientX, e.clientY) : null;
       window.RhineScene.setDropTarget(null, -1);
+      const land = !!(info && info.type === 'bay');
+      if (window.RhineScene.endDrag) window.RhineScene.endDrag(land);
       if (!info) { say('拖放取消：没落在任何插仓上'); return; }
       if (info.type === 'mapping') { say('该插仓已被占用，换个空位'); return; }
       if (info.type !== 'bay') { say('拖放取消：请拖到空插仓上'); return; }
@@ -523,7 +529,7 @@
     requestAnimationFrame(loop);
     const s = window.RhineScene && window.RhineScene.instance;
     if (!s) return;
-    const id = s.hovered;
+    const id = document.body.classList.contains('rig-dragging') ? null : s.hovered;   // 拖拽时不弹详情卡
     // 操作面板已打开、且悬停的正是面板里的那个对象 → 不再弹详情卡（面板已经写着同样信息）
     if (id && current && modal.classList.contains('on')) {
       const ref = current.ref || {};

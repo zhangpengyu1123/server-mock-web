@@ -10,6 +10,28 @@
       "cert": null,
       "enabled": true,
       "created_at": 1793641707173
+    },
+    {
+      "id": "ep-0002",
+      "host": "127.0.0.1",
+      "port": 18443,
+      "capabilities": [
+        "NEMP",
+        "NEF"
+      ],
+      "cert": {
+        "cn": "mock.rhine.local",
+        "san": [
+          "mock.rhine.local",
+          "127.0.0.1"
+        ],
+        "serial": "ABF3B825DBDFFB1BA77A0FD7795B505C",
+        "issued_at": 1793714965627,
+        "expires_at": 1825250965627,
+        "pem": "-----BEGIN CERTIFICATE-----\n# RHINE LAB · DEMO CERT（演示用，不可用于真实 TLS）\n# CN=mock.rhine.local\n# SAN=mock.rhine.local,127.0.0.1\n# SERIAL=ABF3B825DBDFFB1BA77A0FD7795B505C\nC1EA935E24868B0D3CA7FB03FFACC68A\nCDDD7831D47577EEABC97A7E654EAD15\n65A3CDB9037F706D25A4AE69E970AFE4\nB95BEA0952895855E949EC8EEB550D75\nBCBFBE32D4513B8433BEA02D587D7627\n29E53878EE78635E0164986E5E1296A3\n\n-----END CERTIFICATE-----"
+      },
+      "enabled": false,
+      "created_at": 1793714965613
     }
   ],
   "elements": [
@@ -149,6 +171,82 @@
         }
       ],
       "created_at": 1793641706732
+    },
+    {
+      "id": "ne-0004",
+      "name": "gNB-HZ-0999",
+      "arch": "SA",
+      "kind": "gNB",
+      "version": "5.2.3",
+      "software": "NR-RAN",
+      "prev_versions": [],
+      "group": "g-hz-01",
+      "components": [
+        "主控板",
+        "业务板"
+      ],
+      "checks": [],
+      "flow": [
+        {
+          "step": "上传软件包",
+          "human": false
+        },
+        {
+          "step": "预检查（参数校验）",
+          "human": false
+        },
+        {
+          "step": "激活",
+          "human": true
+        },
+        {
+          "step": "主备倒换",
+          "human": true
+        },
+        {
+          "step": "完成与回执",
+          "human": false
+        }
+      ],
+      "created_at": 1793714965827
+    },
+    {
+      "id": "ne-0005",
+      "name": "gNB-HZ-0999-copy",
+      "arch": "SA",
+      "kind": "gNB",
+      "version": "5.2.3",
+      "software": "NR-RAN",
+      "prev_versions": [],
+      "group": "g-hz-01",
+      "components": [
+        "主控板",
+        "业务板"
+      ],
+      "checks": [],
+      "flow": [
+        {
+          "step": "上传软件包",
+          "human": false
+        },
+        {
+          "step": "预检查（参数校验）",
+          "human": false
+        },
+        {
+          "step": "激活",
+          "human": true
+        },
+        {
+          "step": "主备倒换",
+          "human": true
+        },
+        {
+          "step": "完成与回执",
+          "human": false
+        }
+      ],
+      "created_at": 1793714965829
     }
   ],
   "groups": [
@@ -262,25 +360,25 @@
         {
           "step": "校验 checksum（sha256）",
           "status": "pass",
-          "at": 1793714427829,
+          "at": 1793714966045,
           "note": "sha256 匹配"
         },
         {
           "step": "校验签名（GPG）",
           "status": "pass",
-          "at": 1793714427829,
+          "at": 1793714966045,
           "note": "GPG 签名有效"
         },
         {
           "step": "校验包与平台版本兼容性",
           "status": "pass",
-          "at": 1793714427829,
+          "at": 1793714966045,
           "note": "3 个软件包与平台版本兼容"
         },
         {
           "step": "校验主备站点一致性",
           "status": "pass",
-          "at": 1793714427829,
+          "at": 1793714966045,
           "note": "主备站点一致"
         }
       ]
@@ -330,8 +428,228 @@
       }
     ]
   },
-  "hits": [],
-  "tasks": [],
+  "hits": [
+    {
+      "status": 202,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 0,
+      "mapping_id": "map-0003",
+      "at": 1793714965797,
+      "method": "POST",
+      "path": "/alarm/v1/report",
+      "delay_ms": 240,
+      "human": true
+    },
+    {
+      "status": 200,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793714965766,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 45,
+      "human": false
+    },
+    {
+      "status": 500,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793714965704,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 12,
+      "human": false
+    },
+    {
+      "status": 201,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793714965674,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 5,
+      "human": false
+    }
+  ],
+  "tasks": [
+    {
+      "id": "UPG-0091",
+      "site": "site-hz",
+      "element_ids": [
+        "ne-0001"
+      ],
+      "from_version": "5.2.1",
+      "to_version": "5.2.2",
+      "stage": 0,
+      "progress": 20,
+      "stages": [
+        {
+          "key": "upload",
+          "label": "上传软件包",
+          "state": "running",
+          "human": null
+        },
+        {
+          "key": "verify",
+          "label": "预检查与参数校验",
+          "state": "pending",
+          "human": null
+        },
+        {
+          "key": "activate",
+          "label": "激活",
+          "state": "pending",
+          "human": {
+            "prompt": "升级包已就绪，确认开始激活？",
+            "options": [
+              {
+                "label": "确认继续",
+                "effect": "continue"
+              },
+              {
+                "label": "稍后处理",
+                "effect": "hold"
+              },
+              {
+                "label": "终止升级",
+                "effect": "abort"
+              }
+            ],
+            "state": "pending",
+            "chosen": null,
+            "timeout_s": 60,
+            "since": 1793714965921
+          }
+        },
+        {
+          "key": "switch",
+          "label": "主备倒换",
+          "state": "pending",
+          "human": {
+            "prompt": "即将主备倒换，请确认现场可以操作",
+            "options": [
+              {
+                "label": "确认继续",
+                "effect": "continue"
+              },
+              {
+                "label": "稍后处理",
+                "effect": "hold"
+              },
+              {
+                "label": "终止升级",
+                "effect": "abort"
+              }
+            ],
+            "state": "pending",
+            "chosen": null,
+            "timeout_s": 45,
+            "since": 1793714965921
+          }
+        },
+        {
+          "key": "done",
+          "label": "完成与回执",
+          "state": "pending",
+          "human": null
+        }
+      ],
+      "created_at": 1793714965921,
+      "updated_at": 1793714965921
+    },
+    {
+      "id": "UPG-0182",
+      "site": "site-hz",
+      "element_ids": [
+        "ne-0001"
+      ],
+      "from_version": "5.2.1",
+      "to_version": "5.2.1",
+      "stage": 0,
+      "progress": 20,
+      "stages": [
+        {
+          "key": "upload",
+          "label": "上传软件包",
+          "state": "running",
+          "human": null
+        },
+        {
+          "key": "verify",
+          "label": "预检查与参数校验",
+          "state": "pending",
+          "human": null
+        },
+        {
+          "key": "activate",
+          "label": "激活",
+          "state": "pending",
+          "human": {
+            "prompt": "升级包已就绪，确认开始激活？",
+            "options": [
+              {
+                "label": "确认继续",
+                "effect": "continue"
+              },
+              {
+                "label": "稍后处理",
+                "effect": "hold"
+              },
+              {
+                "label": "终止升级",
+                "effect": "abort"
+              }
+            ],
+            "state": "pending",
+            "chosen": null,
+            "timeout_s": 60,
+            "since": 1793714965968
+          }
+        },
+        {
+          "key": "switch",
+          "label": "主备倒换",
+          "state": "pending",
+          "human": {
+            "prompt": "即将主备倒换，请确认现场可以操作",
+            "options": [
+              {
+                "label": "确认继续",
+                "effect": "continue"
+              },
+              {
+                "label": "稍后处理",
+                "effect": "hold"
+              },
+              {
+                "label": "终止升级",
+                "effect": "abort"
+              }
+            ],
+            "state": "pending",
+            "chosen": null,
+            "timeout_s": 45,
+            "since": 1793714965968
+          }
+        },
+        {
+          "key": "done",
+          "label": "完成与回执",
+          "state": "pending",
+          "human": null
+        }
+      ],
+      "created_at": 1793714965968,
+      "updated_at": 1793714965968
+    }
+  ],
   "users": [
     {
       "id": "user-0001",
@@ -382,7 +700,7 @@
           "step": 1,
           "max": 0,
           "condition": "",
-          "count": 42,
+          "count": 45,
           "used": false
         },
         {
@@ -440,8 +758,8 @@
       ],
       "human": null,
       "version": "0.1.1",
-      "hits": 42,
-      "last_hit_at": 1793714427484,
+      "hits": 45,
+      "last_hit_at": 1793714965719,
       "created_at": 1793641707173
     },
     {
@@ -502,8 +820,8 @@
         "chosen": null
       },
       "version": "0.2.0",
-      "hits": 18,
-      "last_hit_at": 1793714427577,
+      "hits": 19,
+      "last_hit_at": 1793714965796,
       "created_at": 1793641587173
     },
     {
