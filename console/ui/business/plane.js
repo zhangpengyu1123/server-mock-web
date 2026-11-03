@@ -27,6 +27,8 @@
     human: null,       // 人机交互模板（状态机）
     layer: 'runtime',
     view: 'mock-admin',
+    bandTimer: 0,      // 状态条 5s 刷新定时器
+    railCollapsed: (function () { try { return localStorage.getItem('rhine.plane.rail') === '1'; } catch (e) { return false; } })(),
     endpoint: { host: '127.0.0.1', port: '9443', enabled: false, cert: null, caps: [] },
     caps: ['NEMP', 'NEF', 'ALARM', 'PERF', 'FM'],
     ifaces: [
@@ -310,33 +312,153 @@
   /* ---------------------------------------------------------------- 导航 */
   const NAV = [
     {
-      layer: 'runtime', title: 'LAYER 1 · 运行态', items: [
-        { id: 'mock-admin', t: 'MOCK 管理', s: 'PORT' },
-        { id: 'mock-flow', t: 'MOCK 流程', s: 'FLOW' },
-        { id: 'audit', t: '运行审计', s: 'LOG' },
+      layer: 'runtime', title: '运行态 · 现在在跑什么', items: [
+        { id: 'mock-admin', t: 'MOCK 管理', s: 'PORT', g: '端口' },
+        { id: 'mock-flow', t: 'MOCK 流程', s: 'FLOW', g: '流程' },
+        { id: 'audit', t: '运行审计', s: 'LOG', g: '审计' },
       ],
     },
     {
-      layer: 'prep', title: 'LAYER 2 · 准备态（下层）', items: [
-        { id: 'elements', t: '网元自定义', s: 'NE' },
-        { id: 'topo', t: '拓扑连接', s: 'TOPO' },
-        { id: 'human', t: '人机交互', s: 'HUMAN-SM' },
-        { id: 'omc', t: 'OMC 平台', s: '纳管·账号·升级' },
-        { id: 'lcm', t: 'LCM 平台', s: '版本·软件包' },
-        { id: 'fs', t: 'FS 虚层', s: '站点·CPU·校验' },
+      layer: 'prep', title: '准备态 · 定义什么', items: [
+        { id: 'elements', t: '网元自定义', s: 'NE', g: '网元' },
+        { id: 'topo', t: '拓扑连接', s: 'TOPO', g: '拓扑' },
+        { id: 'human', t: '人机交互', s: 'HUMAN-SM', g: '人机' },
+        { id: 'omc', t: 'OMC 平台', s: '纳管·账号·升级', g: 'OMC' },
+        { id: 'lcm', t: 'LCM 平台', s: '版本·软件包', g: 'LCM' },
+        { id: 'fs', t: 'FS 虚层', s: '站点·CPU·校验', g: 'FS' },
       ],
     },
   ];
 
+  const LAYER_HINT = {
+    runtime: '端口在跑 · 请求在流动',
+    prep: '网元与拓扑 · 平台能力（改完即生效）',
+  };
+  const LAYER_HOME = { runtime: 'mock-admin', prep: 'elements' };
+
   function renderRail() {
-    $('#plRail').innerHTML = NAV.map((g) => `
-      <div class="pl-rail__grp">
-        <div class="pl-rail__hd">${esc(g.title)}</div>
-        ${g.items.map((it) => `
-          <button class="pl-rail__item${S.view === it.id ? ' is-on' : ''}" data-view="${it.id}">
-            <span>${esc(it.t)}</span><small>${esc(it.s)}</small>
-          </button>`).join('')}
-      </div>`).join('');
+    // 只渲染当前工作区的导航：切层 = 换一套导航，而不是同一列表换个高亮
+    const grp = NAV.find((g) => g.layer === S.layer) || NAV[0];
+    const other = S.layer === 'runtime' ? 'prep' : 'runtime';
+    $('#plRail').innerHTML = `
+      <div class="pl-rail__scroll">
+        <div class="pl-rail__grp">
+          <div class="pl-rail__hd">${esc(grp.title)}</div>
+          ${grp.items.map((it) => `
+            <button class="pl-rail__item${S.view === it.id ? ' is-on' : ''}" data-view="${it.id}" title="${esc(it.t)}">
+              <span>${esc(it.t)}</span><small>${esc(it.s)}</small>
+              <span class="pl-rail__g">${esc(it.g)}</span>
+            </button>`).join('')}
+        </div>
+      </div>
+      <button class="pl-rail__jump" id="plJump" title="切换到${other === 'runtime' ? '运行态' : '准备态'}">${other === 'runtime' ? '→ 运行态' : '← 准备态'}</button>
+      <button class="pl-rail__toggle" id="plRailToggle" title="折叠/展开侧边栏（Ctrl+B）">
+        <i id="plRailIco">‹</i><span>收起</span>
+      </button>`;
+    // 折叠状态
+    const collapsed = S.railCollapsed;
+    $('.pl-body').classList.toggle('is-collapsed', !!collapsed);
+    const ico = $('#plRailIco');
+    if (ico) ico.textContent = collapsed ? '›' : '‹';
+    const sp = $('#plRailToggle span');
+    if (sp) sp.textContent = collapsed ? '展开' : '收起';
+
+    $$('[data-view]').forEach((b) => b.addEventListener('click', () => go(b.dataset.view)));
+    const jump = $('#plJump');
+    if (jump) jump.addEventListener('click', () => go(LAYER_HOME[other], other));
+    const tg = $('#plRailToggle');
+    if (tg) tg.addEventListener('click', toggleRail);
+  }
+
+  /** 折叠/展开侧边栏（记忆到 localStorage） */
+  function toggleRail() {
+    S.railCollapsed = !S.railCollapsed;
+    try { localStorage.setItem('rhine.plane.rail', S.railCollapsed ? '1' : '0'); } catch (e) { /* ignore */ }
+    $('.pl-body').classList.toggle('is-collapsed', !!S.railCollapsed);
+    const ico = $('#plRailIco');
+    if (ico) ico.textContent = S.railCollapsed ? '›' : '‹';
+    const sp = $('#plRailToggle span');
+    if (sp) sp.textContent = S.railCollapsed ? '展开' : '收起';
+  }
+
+  /** 只刷新状态条（运行态每 5s 拉一次审计，不打断正在编辑的表单） */
+  function updateBand() {
+    const el = document.querySelector('.pl-band');
+    if (!el) return;
+    const tmp = document.createElement('div');
+    tmp.innerHTML = band();
+    if (tmp.firstElementChild) el.replaceWith(tmp.firstElementChild);
+  }
+
+  function startBandTimer() {
+    if (S.bandTimer) { clearInterval(S.bandTimer); S.bandTimer = 0; }
+    if (S.layer !== 'runtime') return;
+    S.bandTimer = setInterval(async () => {
+      if (S.layer !== 'runtime') return;
+      try { await loadAudit(); updateBand(); } catch (e) { /* 忽略 */ }
+    }, 5000);
+  }
+
+  /** 视图跳转：同步工作区 + 视图 + hash */
+  function go(view, layer) {
+    const v = VIEWS[view] ? view : 'mock-admin';
+    S.view = v;
+    S.layer = layer || (['mock-admin', 'mock-flow', 'audit'].includes(v) ? 'runtime' : 'prep');
+    syncHash();
+    render();
+    // 进入运行态：立刻补一次审计，状态条才不会停在旧数字
+    if (S.layer === 'runtime') loadAudit().then(() => updateBand()).catch(() => {});
+  }
+
+  /** URL hash = #/<layer>/<view>：可分享、可后退 */
+  function syncHash() {
+    const h = '#/' + S.layer + '/' + S.view;
+    if (location.hash !== h) {
+      try { history.replaceState(null, '', h); } catch (e) { location.hash = h; }
+    }
+  }
+
+  function readHash() {
+    const m = /^#\/(runtime|prep)\/([a-z-]+)$/.exec(location.hash || '');
+    if (!m) return false;
+    if (!VIEWS[m[2]]) return false;
+    S.layer = m[1];
+    S.view = m[2];
+    return true;
+  }
+
+  /** 工作区状态条：运行态看"现在在跑什么"，准备态看"定义了什么" */
+  function band() {
+    const running = !!(S.ep && S.ep.enabled);
+    const ep = S.ep || {};
+    const hits = (S.audit || []).length;
+    const humanPend = (S.audit || []).filter((a) => a.human === 'pending').length;
+    const errRate = (S.audit || []).length
+      ? Math.round(((S.audit || []).filter((a) => Number(a.status) >= 400).length / (S.audit || []).length) * 100)
+      : 0;
+    if (S.layer === 'runtime') {
+      return `<div class="pl-band">
+        <span class="pl-band__k"><i></i>LIVE</span>
+        <span class="pl-band__i">端口 <b>${esc((ep.host || '—') + ':' + (ep.port || '—'))}</b></span>
+        <span class="pl-band__i ${running ? '' : 'is-warn'}">服务 <b>${running ? '运行中' : '未启动'}</b></span>
+        <span class="pl-band__i">近 ${hits} 次请求 · 错误率 <b>${errRate}%</b></span>
+        ${humanPend ? `<span class="pl-band__i is-warn">待人工 <b>${humanPend}</b></span>` : ''}
+        <span class="pl-band__sp"></span>
+        <span>LIVE FEED · 每 5s 刷新</span>
+      </div>`;
+    }
+    const p = S.platform || {};
+    const ne = (S.elements || []).length;
+    const pkg = (S.packages || []).length;
+    return `<div class="pl-band pl-band--draft">
+      <span class="pl-band__k"><i></i>DRAFT</span>
+      <span class="pl-band__i">站点 <b>${esc(p.site_name || '—')}</b></span>
+      <span class="pl-band__i">纳管网元 <b>${ne}</b></span>
+      <span class="pl-band__i">软件包 <b>${pkg}</b></span>
+      <span class="pl-band__i">共部署 <b>${p.co_deploy ? '开' : '关'}</b></span>
+      <span class="pl-band__sp"></span>
+      <span>编辑即生效 · 无需重启</span>
+    </div>`;
   }
 
   /* ---------------------------------------------------------------- 通用块 */
@@ -1511,8 +1633,23 @@
   function render() {
     renderRail();
     const fn = VIEWS[S.view] || viewMockAdmin;
-    $('#plMain').innerHTML = fn();
-    $$('.pl-layer').forEach((b) => b.classList.toggle('is-on', b.dataset.layer === S.layer));
+    const main = $('#plMain');
+    main.classList.remove('is-swap');
+    main.innerHTML = band() + fn();
+    // 强制重排后再加动画类，保证每次切换都能看到过渡
+    void main.offsetWidth;
+    main.classList.add('is-swap');
+    // 工作区视觉：body 上标记当前模式，顶栏按钮与提示同步
+    document.body.classList.toggle('is-runtime', S.layer === 'runtime');
+    document.body.classList.toggle('is-prep', S.layer === 'prep');
+    $$('.pl-mode__b').forEach((b) => {
+      const on = b.dataset.layer === S.layer;
+      b.classList.toggle('is-on', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    const hint = $('#plModeHint');
+    startBandTimer();
+    if (hint) hint.textContent = LAYER_HINT[S.layer] || '';
     bindView();
     if (S.view === 'topo') { renderTopo(); renderTopoDetail(); }
       // 维度记忆：当前是 3D 时，重渲染后自动恢复
@@ -1719,12 +1856,24 @@
       S.layer = ['mock-admin', 'mock-flow', 'audit'].includes(S.view) ? 'runtime' : 'prep';
       render();
     }));
-    // 两层切换：切到该层第一个视图
-    $$('.pl-layer').forEach((b) => b.addEventListener('click', () => {
-      S.layer = b.dataset.layer;
-      S.view = S.layer === 'runtime' ? 'mock-admin' : 'elements';
-      render();
+    // 工作区切换：运行态 ⇄ 准备态（各自一套导航 + 状态条）
+    $$('.pl-mode__b').forEach((b) => b.addEventListener('click', () => {
+      if (b.dataset.layer === S.layer) return;
+      go(LAYER_HOME[b.dataset.layer], b.dataset.layer);
     }));
+
+    // 地址栏 hash：前进/后退 = 切换工作区与视图
+    window.addEventListener('hashchange', () => {
+      if (readHash()) render();
+    });
+
+    // Ctrl/Cmd+B 折叠侧边栏
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
+        e.preventDefault();
+        toggleRail();
+      }
+    });
 
     // 接口规则编辑器
     $$('[data-iface]').forEach((b) => b.addEventListener('click', () => {
@@ -2433,6 +2582,8 @@ b.addEventListener('click', async (ev) => {
   })();
 
   $('#plExit') && $('#plExit').addEventListener('click', () => { location.href = '/'; });
+  // 深链：#/runtime/audit、#/prep/topo —— 直接落到对应工作区与视图
+  readHash();
   (async () => {
     try {
       const ok = await ensureAuth();
@@ -2443,6 +2594,6 @@ b.addEventListener('click', async (ev) => {
     } catch (e) { /* 后端不可达时退化为本地演示数据 */ }
     render();
   })();
-  window.Plane = { S, render, openHuman };
+  window.Plane = { S, render, openHuman, go };
 })();
 
