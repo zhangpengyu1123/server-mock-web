@@ -1061,6 +1061,7 @@ impl Store {
             name: req.name.unwrap_or_else(|| req.path.clone()),
             kind: req.kind.unwrap_or_else(|| "LCM".into()),
             node_id: req.node_id.unwrap_or_default(),
+            slot: req.slot.unwrap_or(-1),
             method: Method::parse(&req.method).unwrap(),
             path: req.path.clone(),
             status: req.status.unwrap_or(200),
@@ -1105,6 +1106,9 @@ impl Store {
         if let Some(v) = patch.delay_ms {
             i.mappings[idx].delay_ms = v;
         }
+          if let Some(v) = patch.slot {
+              i.mappings[idx].slot = v;
+          }
           if let Some(v) = patch.node_id.clone() {
               i.mappings[idx].node_id = v;
           }
@@ -1130,10 +1134,24 @@ impl Store {
         let mut i = self.inner.lock().unwrap();
         let idx = i.nodes.iter().position(|n| n.id == id).ok_or(Error::NotFound)?;
         let node = i.nodes.remove(idx);
+        // 该虚机上的卡不级联删除，只解绑（node_id 清空、slot 归 -1），交由机架重新分配
+        let mut detached = 0usize;
+        for m in i.mappings.iter_mut() {
+            if m.node_id == id {
+                m.node_id.clear();
+                m.slot = -1;
+                detached += 1;
+            }
+        }
         self.persist_locked(&i)?;
         drop(i);
-        self.push_log("admin", "node.delete", &format!("删除虚机 {}", node.id), "warn");
-        Ok(0)
+        self.push_log(
+            "admin",
+            "node.delete",
+            &format!("删除虚机 {}（解绑服务 {} 张）", node.id, detached),
+            "warn",
+        );
+        Ok(detached)
     }
 
     pub fn delete_mapping(&self, user: &AuthUser, id: &str) -> Result<()> {
@@ -1409,6 +1427,7 @@ fn seed(inner: &mut Inner) {
             name: name.into(),
             kind: ["LCM", "LCM", "OMC", "FS"][i % 4].to_string(),
             node_id: format!("node-{:04}", (i % 3) + 1),
+            slot: (i % 2) as i32,
             method,
             path: path.into(),
             status,

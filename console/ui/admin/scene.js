@@ -419,7 +419,31 @@ class Rig {
         });
       }
 
-      const board = { id: node.id, node, root, glows, rail, ribbon, bays: this.bayCenters(), index: bi };
+      const bays = this.bayCenters();
+      // 空插仓：每个插仓一块浅色凹槽，既是"还能插"的提示，也是点击/拖放目标
+      const bayMeshes = [];
+      bays.forEach((bay, si) => {
+        // 竖立标记面：放在"卡会站的位置"，从 45° 视角看得见，也不会被板面遮挡
+        const geo = new THREE.PlaneGeometry(G.bayW * 0.78, 0.22);
+        const mat = new THREE.MeshBasicMaterial({
+          color: 0xd79a44, transparent: true, opacity: 0.07,
+          side: THREE.DoubleSide, depthWrite: false, toneMapped: false,
+        });
+        const m = new THREE.Mesh(geo, mat);
+        m.position.set(bay.x, G.cardSeatY + 0.16, bay.z);
+        m.userData.bay = { nodeId: node.id, slot: si };
+        // 边框：让"空插仓"看起来是一个待插的槽，而不是一块脏污
+        const edges = new THREE.LineSegments(
+          new THREE.EdgesGeometry(geo),
+          new THREE.LineBasicMaterial({ color: 0xd79a44, transparent: true, opacity: 0.40 })
+        );
+        edges.raycast = () => {};   // 线段的拾取阈值极大，会吃掉整块画布，必须关掉
+        m.add(edges);
+        root.add(m);
+        bayMeshes.push(m);
+      });
+
+      const board = { id: node.id, node, root, glows, rail, ribbon, bays, bayMeshes, index: bi };
       this.boards.push(board);
       this.byNode.set(node.id, board);
     });
@@ -435,9 +459,16 @@ class Rig {
       }
       const board = this.boards[bi];
       if (!board) return;
-      const slot = used.get(bi) || 0;
-      if (slot >= board.bays.length) return;
-      used.set(bi, slot + 1);
+        const taken = used.get(bi) || new Set();
+        const want = typeof mp.slot === 'number' ? mp.slot : -1;
+        let slot = -1;
+        if (want >= 0 && want < board.bays.length && !taken.has(want)) slot = want;
+        if (slot < 0) {
+          for (let s = 0; s < board.bays.length; s++) { if (!taken.has(s)) { slot = s; break; } }
+        }
+        if (slot < 0) return;      // 板满：不落位（容量提示在 UI）
+        taken.add(slot);
+        used.set(bi, taken);
 
       const root = this.clonePrefab(this.prefabs[kind] || this.prefabs.LCM);
       // 卡片材质压暗一档：白卡正对主光时容易过曝
@@ -451,6 +482,8 @@ class Rig {
       });
     });
     const bay = board.bays[slot];
+        const bayMesh = board.bayMeshes && board.bayMeshes[slot];
+        if (bayMesh) bayMesh.visible = false;   // 该插仓已占用
       root.position.set(bay.x, G.cardSeatY + G.insertLift, bay.z);
       root.scale.setScalar(1.06);
       board.root.add(root);
@@ -577,12 +610,62 @@ class Rig {
   }
 
   setHover(hit) {
+    const info = hit ? this.hitInfo(hit.object) : null;
+    if (info && info.type === 'bay') {
+      this.hovered = 'bay:' + info.nodeId + ':' + info.slot;
+      this.renderer.domElement.style.cursor = 'copy';
+      this.emit('hover', { type: 'bay', nodeId: info.nodeId, slot: info.slot, id: this.hovered });
+      return;
+    }
     const id = hit ? this.ownerOf(hit.object) : null;
     if (id === this.hovered) return;
     this.hovered = id;
     const el = this.renderer.domElement;
     el.style.cursor = id ? 'pointer' : 'grab';
     this.emit('hover', id ? { id, type: id.indexOf('map') === 0 || this.byMapping.has(id) ? 'mapping' : 'node' } : { id: null });
+  }
+
+  /** 命中对象的完整信息：模块 / 主板 / 空插仓 */
+  hitInfo(obj) {
+    let o = obj;
+    while (o) {
+      if (o.userData && o.userData.bay) return Object.assign({ type: 'bay' }, o.userData.bay);
+      const m = this.modules.find((x) => x.root === o);
+      if (m) return { type: 'mapping', id: m.id, module: m };
+      const b = this.boards.find((x) => x.root === o);
+      if (b) return { type: 'node', id: b.id, board: b };
+      o = o.parent;
+    }
+    return null;
+  }
+
+  /** 某块板的插仓占用（给 UI 做容量提示） */
+  bayStats(nodeId) {
+    const b = this.byNode.get(nodeId);
+    if (!b) return { total: 0, used: 0, free: [] };
+    const taken = new Set((this.modules || []).filter((m) => m.board === b).map((m) => m.slot));
+    const free = [];
+    for (let s = 0; s < b.bays.length; s++) { if (!taken.has(s)) free.push(s); }
+    return { total: b.bays.length, used: taken.size, free };
+  }
+
+  /** 拖拽时高亮可落位的插仓 */
+  setDropTarget(nodeId, slot) {
+    this.boards.forEach((b) => {
+      (b.bayMeshes || []).forEach((m) => {
+        const hit = b.id === nodeId && m.userData.bay.slot === slot;
+        const mat = m.material;
+        if (mat.emissive) {
+          mat.emissive.setHex(hit ? 0x3f8f93 : 0xd79a44);
+          mat.emissiveIntensity = hit ? 1.8 : 0.12;
+        } else {
+          // MeshBasicMaterial：用透明度 + 颜色做高亮
+          mat.color.setHex(hit ? 0x3f8f93 : 0xd79a44);
+          mat.opacity = hit ? 0.55 : 0.07;
+        }
+      });
+    });
+    this.dropTarget = nodeId ? { nodeId, slot } : null;
   }
 
   ownerOf(obj) {
@@ -600,24 +683,21 @@ class Rig {
   pick() {
     const hits = this.intersect();
     if (!hits.length) return;
-    const mod = this.modules.find((m) => {
-      let o = hits[0].object;
-      while (o) { if (o === m.root) return true; o = o.parent; }
-      return false;
-    });
-    if (mod) {
-      this.selectedId = mod.id;
-      this.emit('select', { type: 'mapping', id: mod.id, data: mod.mapping });
+    const info = this.hitInfo(hits[0].object);
+    if (!info) return;
+    // 空插仓：点一下就能就地新建服务卡
+    if (info.type === 'bay') {
+      this.emit('select', { type: 'bay', nodeId: info.nodeId, slot: info.slot });
       return;
     }
-    const bd = this.boards.find((b) => {
-      let o = hits[0].object;
-      while (o) { if (o === b.root) return true; o = o.parent; }
-      return false;
-    });
-    if (bd) {
-      this.selectedId = bd.id;
-      this.emit('select', { type: 'node', id: bd.id, data: bd.node });
+    if (info.type === 'mapping') {
+      this.selectedId = info.id;
+      this.emit('select', { type: 'mapping', id: info.id, data: info.module.mapping });
+      return;
+    }
+    if (info.type === 'node') {
+      this.selectedId = info.id;
+      this.emit('select', { type: 'node', id: info.id, data: info.board.node });
     }
   }
 
@@ -752,6 +832,18 @@ window.RhineScene = {
     return current;
   },
   setData(data) { if (current) current.setData(data); },
+    bayStats: (nodeId) => (current ? current.bayStats(nodeId) : { total: 0, used: 0, free: [] }),
+    setDropTarget: (nodeId, slot) => { if (current) current.setDropTarget(nodeId, slot); },
+    hitAt(clientX, clientY) {
+      if (!current) return null;
+      const el = current.renderer.domElement;
+      const r = el.getBoundingClientRect();
+      current.pointer.x = ((clientX - r.left) / r.width) * 2 - 1;
+      current.pointer.y = -((clientY - r.top) / r.height) * 2 + 1;
+      const hits = current.intersect();
+      return hits.length ? current.hitInfo(hits[0].object) : null;
+    },
+    setOrbitEnabled: (on) => { if (current && current.controls) current.controls.enabled = !!on; },
   setJob(job) { if (current) current.setJob(job); },
   pulse(id) { if (current) current.pulse(id); },
   focus(id) { if (current) current.focus(id); },

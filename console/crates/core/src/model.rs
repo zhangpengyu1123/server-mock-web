@@ -110,6 +110,11 @@ pub fn default_kind() -> String {
     "LCM".to_string()
 }
 
+/// 插仓默认值：-1 表示自动找空位
+pub fn default_slot() -> i32 {
+    -1
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 /// 一条「本地映射」：把某个路径映射成指定的 mock 响应。
 /// 业务面用户可以自己创建（限自己的 owner），管理面可以看见全部。
@@ -123,6 +128,9 @@ pub struct Mapping {
     /// 归属的虚机（主板）id；空字符串表示未绑定，由管理面按机型分配
     #[serde(default)]
     pub node_id: String,
+    /// 插仓序号（0..bayRows-1）；-1 = 由机架自动找空位
+    #[serde(default = "default_slot")]
+    pub slot: i32,
     pub method: Method,
     /// 例如 `/nemp/v1/ne/register`
     pub path: String,
@@ -250,6 +258,9 @@ pub struct NewMapping {
     /// 挂在哪台虚机上（可选）
     #[serde(default)]
     pub node_id: Option<String>,
+    /// 指定插仓（可选）
+    #[serde(default)]
+    pub slot: Option<i32>,
     pub method: String,
     pub path: String,
     #[serde(default)]
@@ -269,6 +280,9 @@ pub struct PatchMapping {
     /// 可改归属虚机
     #[serde(default)]
     pub node_id: Option<String>,
+    /// 可改插仓（拖拽换板时用）
+    #[serde(default)]
+    pub slot: Option<i32>,
     pub status: Option<u16>,
     pub delay_ms: Option<u32>,
     pub body: Option<String>,

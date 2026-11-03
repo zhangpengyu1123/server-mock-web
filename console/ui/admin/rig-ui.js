@@ -415,6 +415,11 @@
     host.__rigBound = true;
     host.addEventListener('rig:select', (e) => {
       if (!e.detail || !e.detail.type) { closeModal(); return; }
+      if (e.detail.type === 'bay') {
+        closeModal();
+        window.dispatchEvent(new CustomEvent('rig:bay', { detail: e.detail }));
+        return;
+      }
       window.__rigSel = e.detail;
       const d = e.detail || {};
       const s2 = window.RhineScene.instance;
@@ -430,6 +435,69 @@
     });
   }
   bindSelect();
+
+  /* ------------------------------------------------------------ 拖拽换板 */
+  function bindDrag() {
+    if (window.__rigDragBound) return;
+    window.__rigDragBound = true;
+    let drag = null;
+
+    window.addEventListener('pointerdown', (e) => {
+      const s = window.RhineScene && window.RhineScene.instance;
+      if (!s || !s.hovered) return;
+      const mod = (s.modules || []).find((m) => m.id === s.hovered);
+      if (!mod) { drag = null; return; }
+      drag = { id: mod.id, module: mod, x: e.clientX, y: e.clientY, active: false };
+      // 立刻冻结相机：否则 OrbitControls 会先转一点，后续落点全偏
+      if (window.RhineScene.setOrbitEnabled) window.RhineScene.setOrbitEnabled(false);
+    }, { passive: true });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      const moved = Math.hypot(e.clientX - drag.x, e.clientY - drag.y);
+      if (!drag.active && moved > 8) {
+        drag.active = true;
+        if (window.RhineScene.setOrbitEnabled) window.RhineScene.setOrbitEnabled(false);
+        closeModal();
+        document.body.classList.add('rig-dragging');
+      }
+      if (!drag.active) return;
+      const info = window.RhineScene.hitAt ? window.RhineScene.hitAt(e.clientX, e.clientY) : null;
+      if (info && info.type === 'bay') window.RhineScene.setDropTarget(info.nodeId, info.slot);
+      else window.RhineScene.setDropTarget(null, -1);
+    }, { passive: true });
+
+    window.addEventListener('pointerup', async (e) => {
+      if (!drag) return;
+      const wasActive = drag.active;
+      const mod = drag.module;
+      drag = null;
+      document.body.classList.remove('rig-dragging');
+      if (!wasActive) {
+        if (window.RhineScene.setOrbitEnabled) window.RhineScene.setOrbitEnabled(true);
+        return;
+      }
+      if (window.RhineScene.setOrbitEnabled) window.RhineScene.setOrbitEnabled(true);
+      const info = window.RhineScene.hitAt ? window.RhineScene.hitAt(e.clientX, e.clientY) : null;
+      window.RhineScene.setDropTarget(null, -1);
+      if (!info) { say('拖放取消：没落在任何插仓上'); return; }
+      if (info.type === 'mapping') { say('该插仓已被占用，换个空位'); return; }
+      if (info.type !== 'bay') { say('拖放取消：请拖到空插仓上'); return; }
+      const mp = mod.mapping || {};
+      const sameBoard = (mp.node_id || '') === info.nodeId && Number(mp.slot) === info.slot;
+      if (sameBoard) return;
+      try {
+        await API.patch(mp.id, { node_id: info.nodeId, slot: info.slot });
+        const s = window.RhineScene.instance;
+        const target = s && s.byNode.get(info.nodeId);
+        say('已移动「' + (mp.name || mp.path) + '」→ ' + (target && target.node ? target.node.name : info.nodeId) + ' · 插仓 ' + (info.slot + 1));
+        if (window.RigCreate && window.RigCreate.refreshScene) await window.RigCreate.refreshScene();
+      } catch (err) {
+        say('移动失败：' + err.message);
+      }
+    }, { passive: true });
+  }
+  bindDrag();
 
   let lastHover = null;
   let downAt = null;

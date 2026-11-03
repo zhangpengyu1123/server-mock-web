@@ -120,14 +120,27 @@
   // 当前选中的虚机（主板）：服务器卡必须挂在它上面，两个按钮不是并列关系
   let vmTarget = null;
 
+  let formSlot = -1;   // 从空插仓点进来时锁定的插仓号
+  let vmStats = { total: 0, used: 0, free: [] };
+
   function setVmTarget(node) {
     vmTarget = node || null;
     const svc = document.getElementById('btnNewSvc');
     if (!svc) return;
     if (vmTarget) {
-      svc.disabled = false;
-      svc.title = '在 ' + (vmTarget.name || vmTarget.id) + ' 上新建服务器卡';
-      svc.innerHTML = '<i>+</i>New Service · ' + (vmTarget.name || vmTarget.id);
+      // 容量：主板插仓满了就别让人白填表
+      vmStats = (window.RhineScene && window.RhineScene.bayStats)
+        ? window.RhineScene.bayStats(vmTarget.id) : { total: 0, used: 0, free: [] };
+      const full = vmStats.total > 0 && vmStats.used >= vmStats.total;
+      const name = vmTarget.name || vmTarget.id;
+      svc.disabled = full;
+      if (full) {
+        svc.title = '该板已满 ' + vmStats.used + '/' + vmStats.total + ' — 换一块空板，或先删一张卡';
+        svc.innerHTML = '<i>+</i>New Service · 已满 ' + vmStats.used + '/' + vmStats.total;
+      } else {
+        svc.title = '在 ' + name + ' 上新建服务器卡（已占 ' + vmStats.used + '/' + (vmStats.total || '?') + '）';
+        svc.innerHTML = '<i>+</i>New Service · ' + name + (vmStats.total ? ' (' + vmStats.used + '/' + vmStats.total + ')' : '');
+      }
     } else {
       svc.disabled = true;
       svc.title = '先点选一台虚机主板';
@@ -137,7 +150,18 @@
 
   window.addEventListener('rig:selected', (e) => {
     const d = e.detail || {};
-    setVmTarget(d.type === 'node' ? d.node : null);
+    if (d.type === 'node') setVmTarget(d.node);
+    else if (!d.type) setVmTarget(null);
+  });
+
+  // 点空插仓：直接就地弹表单，并把插仓号带进去
+  window.addEventListener('rig:bay', (e) => {
+    const d = e.detail || {};
+    const s = window.RhineScene && window.RhineScene.instance;
+    const b = s && s.byNode.get(d.nodeId);
+    if (!b || !b.node) return;
+    setVmTarget(b.node);
+    openForm('svc', b.node, null, d.slot);
   });
 
   function htmlFor(m) {
@@ -162,6 +186,11 @@
         <div class="rig-field">
           <label>Host VM · 所属主板</label>
           <div class="rig-host" id="rigHost">${vmTarget ? '<b>' + (vmTarget.name || vmTarget.id) + '</b> <em>' + vmTarget.id + '</em>' : '<i>未选择虚机 — 请先在机架上点选一台主板</i>'}</div>
+        </div>
+        <div class="rig-field">
+          <label>Bay · 插仓</label>
+          <div class="rig-host" id="rigBay">${formSlot >= 0 ? 'BAY ' + (formSlot + 1) + ' · 指定插仓' : '自动选择空插仓'}</div>
+          <input type="hidden" name="slot" value="${formSlot}" />
         </div>
         <div class="rig-field">
           <label>Platform · 平台类型</label>
@@ -200,6 +229,8 @@
     // 兼容两种调用：openForm('svc', node) 与 openForm('svc', x, y)
     let nodeArg = null, x, y;
     if (a && typeof a === 'object') { nodeArg = a; } else { x = a; y = b; }
+    // 只有第 4 个参数（arguments[3]）才是插仓号，避免与 x/y 坐标混淆
+    formSlot = (m === 'svc' && typeof arguments[3] === 'number') ? arguments[3] : -1;
     if (m === 'svc') setVmTarget(nodeArg || vmTarget);
     form.innerHTML = htmlFor(m);
     form.style.display = '';
@@ -249,6 +280,8 @@
         window.RhineScene.setData({ nodes, mappings });
       }
       window.dispatchEvent(new CustomEvent('rig:data', { detail: { nodes, mappings } }));
+      // 刷新后重算当前主板的插仓容量（刚插满就应立刻禁用按钮）
+      setVmTarget(vmTarget);
       return { nodes: nodes.length, mappings: mappings.length };
     } catch (e) { return null; }
   }
@@ -280,6 +313,7 @@
           path: val('path') || '/mock/new', version: val('version') || '0.1.0',
           kind,
           node_id: vmTarget.id,
+          slot: Number(val('slot')) >= 0 ? Number(val('slot')) : -1,
           status: 200, body: '{}',
         };
         const r = await fetch('/api/business/mappings', {

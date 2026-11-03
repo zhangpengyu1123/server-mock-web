@@ -162,3 +162,8 @@
 .rig-hud__legend .lg-omc i { background: #3f8f93; }
 .rig-hud__legend .lg-fs  i { background: #4a6b47; }
 .rig-hud__legend .lg-sep { width: 1px; height: 9px; background: var(--line); display: inline-block; }
+
+
+/* 拖拽换板：拖起时整页抓手光标，落点由插仓高亮提示 */
+body.rig-dragging, body.rig-dragging .rig__canvas { cursor: grabbing !important; }
+body.rig-dragging .rig-hud__hint::after { content: " · 松手放到空插仓"; color: var(--amber); }

@@ -494,3 +494,75 @@ toast：已部署 FS 服务「FS 校验结果」v0.1.0
 ![未选中主板时 New Service 禁用](img/31-admin-service-needs-vm.png)
 
 ![新建服务卡：HOST VM 固定为所选主板](img/32-admin-service-host-vm.png)
+
+
+---
+
+## 0.11 空插仓就地新建 · 拖拽换板 · 容量提示
+
+上一版只能"先选主板 → 再点顶栏新建"，中间隔了一步；主板插满还会白填一张表单。这次把机架本身做成可编辑的：
+
+### ① 空插仓可见、可点
+
+每块主板有 **5 个插仓**。空着的插仓显示为一片琥珀色淡面板 + 细边框（竖立在"卡会站的位置"，45° 视角可见）。悬停时出现复制光标，点一下直接弹新建表单，**HOST VM 与插仓号都已锁定**：
+
+```
+hover  → hovered="bay:node-0003:2"  cursor="copy"
+click  → 表单：HOST VM = RHINE-L-03 node-0003
+                 BAY · 插仓 = BAY 3 · 指定插仓（hidden slot=2）
+提交   → POST /api/business/mappings {kind, node_id:"node-0003", slot:2} → 200
+          卡落在 node-0003 的第 3 个插仓（placedSlot=2）
+```
+
+### ② 拖拽换板
+
+按住一张卡拖到另一块主板的空插仓即可换板，松手落位：
+
+| 阶段 | 行为 |
+|---|---|
+| pointerdown 命中卡 | 立刻冻结相机（否则 OrbitControls 先转一点，落点会偏） |
+| 位移 > 8px | 进入拖拽：关面板、整页抓手光标、右下角提示「松手放到空插仓」 |
+| 拖到空插仓上 | 该插仓高亮成青色（`setDropTarget`） |
+| 松手 | `PATCH /api/business/mappings/:id {node_id, slot}` → 重新拉数据刷新机架 + toast |
+| 落在卡上 | toast「该插仓已被占用，换个空位」 |
+| 落在空白 | toast「拖放取消：没落在任何插仓上」 |
+
+实测：
+
+```
+dropTarget = { nodeId: "node-0004", slot: 0 }   （拖拽中高亮）
+PATCH body = {"node_id":"node-0004","slot":0}  → 200
+toast = 已移动「网元列表」→ RHINE-L-02 · 插仓 1
+controls.enabled 拖拽中 false，松手恢复 true
+```
+
+### ③ 容量提示：插满就不再让人填表
+
+顶栏 `+ New Service` 的文案随选中主板变化：
+
+| 状态 | 文案 | 可点 |
+|---|---|---|
+| 未选中 | `+ New Service` | ✗（title：先点选一台虚机主板） |
+| 选中 0/5 | `+ New Service · RHINE-L-02 (0/5)` | ✓ |
+| 选中 5/5 | `+ New Service · 已满 5/5` | ✗（title：该板已满 5/5 — 换一块空板，或先删一张卡） |
+
+`scene.bayStats(nodeId)` 返回 `{ total, used, free[] }`，插完一张后按钮立刻重算（`refreshScene()` 末尾重算容量）。
+
+### 数据层
+
+`Mapping.slot`（默认 -1 = 自动找空位）：
+
+```rust
+#[serde(default = "default_slot")]
+pub slot: i32,   // 0..4 指定插仓；-1 自动
+```
+
+落位优先级：`node_id` 找到主板 → 板内 `slot` 可用就用它 → 冲突/未指定则找第一个空位 → 板满则不落位（由 UI 提前拦截）。
+
+删虚机时不再产生"无主卡"：`delete_node` 会把该板上的卡 `node_id` 清空、`slot` 归 -1，并返回解绑数量（`removed_services`）。实测：删一块挂着 1 张卡的板 → `{"ok":true,"removed_services":1}`，卡变成 `node_id="" slot=-1`。
+
+![空插仓：悬停可见、点击就地新建](img/33-admin-empty-bay.png)
+
+![拖拽换板：目标插仓高亮成青色](img/34-admin-drag-move.png)
+
+![主板插满 5/5：New Service 禁用并提示](img/35-admin-board-full.png)
