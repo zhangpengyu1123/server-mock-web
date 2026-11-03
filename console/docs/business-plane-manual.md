@@ -402,3 +402,47 @@ node console/scripts/check-desktop.mjs
 - 折叠后底部保留 `⇄`（跨工作区）与 `›`（展开）
 
 实测（1600×1000）：展开 `216px 1384px`，折叠 `60px 1540px`；切到准备态后 hash=`#/prep/elements`，浏览器后退回到 `#/runtime/audit`；直接打开 `#/prep/topo` 会落在拓扑视图。
+
+---
+
+## 0.8 管理面：新建服务器卡时的「平台类型」
+
+原来新建服务只有 Name / Method / Path，卡匣属于哪个平台由 `scene.js` 按 path 猜、猜不到就按 id 哈希分 —— 于是同名同形的三张卡看不出区别，也说不清是哪套平台的服务。
+
+现在：
+
+1. **数据层**：`Mapping.kind`（`LCM | OMC | FS`），`NewMapping.kind` 可写、`PatchMapping.kind` 可改；旧数据缺字段时 `#[serde(default = "default_kind")]` 回落 `LCM`。
+2. **表单层**：新建服务器卡顶部加 `PLATFORM · 平台类型` 三选，每项有色点、中文名、一行说明：
+   - **LCM 生命周期**（琥珀）：版本 / 软件包
+   - **OMC 网元管理**（青）：纳管 / 账号 / 升级
+   - **FS 虚层**（绿）：站点 / CPU / 校验
+   选中后隐藏域同步、Name 的 placeholder 也跟着变（登记网元版本 / 纳管网元 / 查询站点信息）。
+3. **表现层**：铭牌 accent、灯带 emissive 按 kind 三色；左下角图例写成 `LCM · 生命周期 / OMC · 网元管理 / FS · 虚层`，各带色块。
+
+实测：
+
+```
+PATCH map-0002 {kind:"OMC"} → 200，3D 里该卡 kind=OMC
+POST /api/business/mappings {kind:"OMC", name:"OMC 纳管网元"} → 200 map-0016 kind=OMC
+toast：已部署 OMC 服务「OMC 纳管网元」v0.1.0
+sceneKinds：OMC:/omc/v1/manage, LCM:/nemp/v1/ne/register, OMC:/nemp/v1/ne/list, FS:/alarm/v1/report
+```
+
+## 0.9 管理面顶栏动作按钮不再重叠
+
+`+ NEW VM / + NEW SERVICE` 原来绝对定位在 `#rig` 上（`top:14px; right:16px`），和顶栏右侧的 `NODES / ONLINE / JOBS` 统计叠在一起，最右还被窗口裁掉。
+
+现在按钮放进顶栏 `.top__right` 里的 `#topActs`，与统计之间用 1px 竖线分隔：
+
+```html
+<div class="top__acts" id="topActs"></div>
+<div class="top__stat"><span>NODES</span>…</div>
+```
+
+实测（1600×1000）：动作区 `left 1033 → right 1218`，统计起始 `left 1234`，**不重叠**且 `right ≤ innerWidth`（不再被裁）。同时把 3D HUD 里重复的 `NODES / ONLINE` 去掉，只保留顶栏没有的 `SERVICES / TARGET`。
+
+![顶栏动作区与统计分离](img/28-admin-topbar-actions.png)
+
+![新建服务器卡：平台类型三选](img/29-admin-new-service-kinds.png)
+
+![三种平台在机架上的配色与铭牌](img/30-admin-kinds-in-rig.png)

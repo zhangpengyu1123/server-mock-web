@@ -6,7 +6,7 @@
 <title>管理面 · RHINE LAB FLEET</title>
 <meta name="color-scheme" content="light" />
 <link rel="stylesheet" href="../shared/base.css" />
-<link rel="stylesheet" href="./rig-ui.css?v=20261103200642" />
+<link rel="stylesheet" href="./rig-ui.css?v=20261103210913" />
   <link rel="stylesheet" href="./scene.css?v=202611022352" />
 <!-- three.js 本地化：vendor 目录已镜像 examples/jsm 结构，离线可用 -->
 <script type="importmap">
@@ -128,6 +128,7 @@
       <span class="plat"><span class="badge badge--amber">ADMIN</span><span class="mono" style="font-size:10px;color:var(--ink-3)" id="topTarget">—</span></span>
     </div>
     <div class="top__right">
+      <div class="top__acts" id="topActs"></div>
       <div class="top__stat"><span>NODES</span><b id="topNodes" class="mono">0</b></div>
       <div class="top__stat"><span>ONLINE</span><b id="topOnline" class="mono">0</b></div>
       <div class="top__stat"><span>JOBS</span><b id="topJobs" class="mono">0</b></div>
@@ -152,11 +153,11 @@
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script src="../shared/api.js"></script>
-<script src="./app.js?v=20261103195426"></script>
+<script src="./app.js?v=20261103210913"></script>
 <!-- 三维机架视图（ES module，依赖 importmap 里的 three） -->
-<script type="module" src="./scene.js?v=20261103195426"></script>
+<script type="module" src="./scene.js?v=20261103210913"></script>
   <script type="module" src="./effects.js?v=202611022352"></script>
-  <script src="./rig-create.js?v=202611022353"></script>
-  <script src="./rig-ui.js?v=20261103201027"></script>
+  <script src="./rig-create.js?v=20261103210913"></script>
+  <script src="./rig-ui.js?v=20261103210913"></script>
 </body>
 </html>

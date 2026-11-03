@@ -201,15 +201,21 @@
       '<span class="rig-hud__idx mono">X-001</span>' +
       '</div>' +
       '<div class="rig-hud__tr">' +
-      '<div class="kv"><span>NODES</span><b>' + S.nodes.length + '</b></div>' +
-      '<div class="kv"><span>ONLINE</span><b>' + online + '</b></div>' +
+      '<div class="rig-hud__acts" id="rigActs"></div>' +
+      '<div class="rig-hud__stats">' +
       '<div class="kv"><span>SERVICES</span><b>' + (S.mappings || []).length + '</b></div>' +
       '<div class="kv"><span>TARGET</span><b>' + esc(S.base.replace(/^https?:\/\//, '')) + '</b></div>' +
+      '</div>' +
       '</div>' +
       '<div class="rig-hud__list">' + list + '</div>' +
       '<div class="rig-hud__panel" id="rigPanel"></div>' +
       '<div class="rig-hud__legend">' +
-      '<span><i></i>LCM</span><span><i></i>OMC</span><span><i class="is-cyan"></i>DEPLOYING</span><span><i class="is-dim"></i>OFFLINE</span>' +
+      '<span class="lg-k lg-lcm"><i></i>LCM · 生命周期</span>' +
+      '<span class="lg-k lg-omc"><i></i>OMC · 网元管理</span>' +
+      '<span class="lg-k lg-fs"><i></i>FS · 虚层</span>' +
+      '<span class="lg-sep"></span>' +
+      '<span><i class="is-cyan"></i>DEPLOYING</span>' +
+      '<span><i class="is-dim"></i>OFFLINE</span>' +
       '</div>' +
       '<div class="rig-hud__hint">拖拽旋转 · 滚轮缩放 · 点选查看</div>' +
       '</div></div>'

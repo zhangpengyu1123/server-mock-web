@@ -105,13 +105,21 @@ impl Method {
       pub note: String,
   }
 
-  /// 一条「本地映射」：把某个路径映射成指定的 mock 响应。
-  /// 业务面用户可以自己创建（限自己的 owner），管理面可以看见全部。
-  #[derive(Clone, Debug, Serialize, Deserialize)]
-  pub struct Mapping {
+/// 平台类型缺省值（旧数据没有这个字段）
+pub fn default_kind() -> String {
+    "LCM".to_string()
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+/// 一条「本地映射」：把某个路径映射成指定的 mock 响应。
+/// 业务面用户可以自己创建（限自己的 owner），管理面可以看见全部。
+pub struct Mapping {
     pub id: String,
     pub owner: String,
     pub name: String,
+    /// 所属平台：LCM | OMC | FS（管理面按此分配卡匣与配色）
+    #[serde(default = "default_kind")]
+    pub kind: String,
     pub method: Method,
     /// 例如 `/nemp/v1/ne/register`
     pub path: String,
@@ -233,6 +241,9 @@ pub struct LoginReq {
 #[derive(Debug, Deserialize)]
 pub struct NewMapping {
     pub name: Option<String>,
+    /// 所属平台（可选，默认 LCM）
+    #[serde(default)]
+    pub kind: Option<String>,
     pub method: String,
     pub path: String,
     #[serde(default)]
@@ -246,6 +257,9 @@ pub struct NewMapping {
 #[derive(Debug, Default, Deserialize)]
 pub struct PatchMapping {
     pub enabled: Option<bool>,
+    /// 可改平台类型
+    #[serde(default)]
+    pub kind: Option<String>,
     pub status: Option<u16>,
     pub delay_ms: Option<u32>,
     pub body: Option<String>,

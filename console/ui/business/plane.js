@@ -259,6 +259,7 @@
       const list = await api('/api/business/mappings') || [];
       S.ifaces = list.map((m) => ({
         id: m.id,
+        kind: m.kind || 'LCM',
         method: String(m.method || 'get').toUpperCase(),
         path: m.path,
         status: m.status,
@@ -545,9 +546,9 @@
         <div class="pl-card">
           <div class="pl-card__t">接口列表</div>
           <table class="pl-table">
-            <thead><tr><th>Method</th><th>Path</th><th>Status</th><th>Delay</th><th>Rules</th><th>Human</th><th></th></tr></thead>
+            <thead><tr><th>Kind</th><th>Method</th><th>Path</th><th>Status</th><th>Delay</th><th>Rules</th><th>Human</th><th></th></tr></thead>
             <tbody>${S.ifaces.map((i) => `<tr>
-              <td>${esc(i.method)}</td><td>${esc(i.path)}</td>
+              <td><span class="pl-tag">${esc(i.kind || 'LCM')}</span></td><td>${esc(i.method)}</td><td>${esc(i.path)}</td>
               <td class="num">${i.status}</td><td class="num">${i.delay} ms</td>
               <td class="num">${i.rules}</td>
               <td>${i.human ? `<span class="pl-tag pl-tag--on">${i.human}</span>` : '<span class="pl-muted">—</span>'}</td>

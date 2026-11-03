@@ -10,7 +10,7 @@
   'use strict';
 
   const CSS = `
-  .rig-new { position: absolute; top: 14px; right: 16px; z-index: 20; display: flex; gap: 8px; }
+  .rig-new { display: flex; gap: 8px; }
   .rig-new button {
     appearance: none; cursor: pointer; font: inherit;
     font-family: "JetBrains Mono", ui-monospace, monospace;
@@ -20,6 +20,8 @@
   }
   .rig-new button:hover { background: #17140f; color: #f3eee7; border-color: #17140f; }
   .rig-new button i { font-style: normal; color: #d79a44; margin-right: 6px; }
+  .top__acts .rig-new button { padding: 6px 9px; background: transparent; }
+  .top__acts .rig-new button:hover { background: #17140f; color: #f3eee7; }
 
   .rig-form { position: fixed; z-index: 75; width: 372px; background: #f3eee7;
     background-image: linear-gradient(180deg, rgba(255,255,255,.5), rgba(238,232,223,.5));
@@ -53,6 +55,24 @@
     color: #17140f; background: transparent; border: 1px solid rgba(23,20,15,.3); }
   .rig-form__ft button[type="submit"] { background: #17140f; color: #f3eee7; border-color: #17140f; }
   .rig-form__ft button:hover { background: #17140f; color: #f3eee7; }
+
+  /* 平台类型三选：每项带色点 + 中文名 + 一行说明，选中有边框加重 */
+  .rig-kind { display: grid; gap: 6px; }
+  .rig-kind__opt {
+    display: grid; grid-template-columns: 10px 1fr; gap: 8px; align-items: start;
+    padding: 8px 10px; cursor: pointer; text-align: left;
+    background: rgba(255,255,255,.42); border: 1px solid rgba(23,20,15,.22);
+    font: inherit; color: #17140f; transition: background .12s ease, border-color .12s ease;
+  }
+  .rig-kind__opt:hover { background: #fff; }
+  .rig-kind__opt.is-on { border-color: #17140f; background: #fff; box-shadow: inset 0 -2px 0 #d79a44; }
+  .rig-kind__dot { width: 8px; height: 8px; margin-top: 4px; }
+  .rig-kind__opt[data-kind="LCM"] .rig-kind__dot { background: #d79a44; }
+  .rig-kind__opt[data-kind="OMC"] .rig-kind__dot { background: #3f8f93; }
+  .rig-kind__opt[data-kind="FS"]  .rig-kind__dot { background: #4a6b47; }
+  .rig-kind__nm { font-size: 11px; letter-spacing: .06em; font-weight: 600; }
+  .rig-kind__nm em { font-style: normal; font-size: 8.5px; letter-spacing: .16em; color: rgba(23,20,15,.45); margin-left: 6px; }
+  .rig-kind__ds { display: block; margin-top: 2px; font-size: 9px; letter-spacing: .04em; color: rgba(23,20,15,.55); }
   `;
   const st = document.createElement('style');
   st.textContent = CSS;
@@ -62,9 +82,23 @@
   const bar = document.createElement('div');
   bar.className = 'rig-new';
   bar.innerHTML = '<button data-new="vm"><i>+</i>New VM</button><button data-new="svc"><i>+</i>New Service</button>';
-  const host = document.getElementById('rig') || document.body;
-  if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
-  host.appendChild(bar);
+  // 挂载优先级：页面顶栏动作槽（与统计同行、留分隔线）→ HUD 动作区 → 绝对定位兜底
+  function mountBar() {
+    const slot = document.getElementById('topActs') || document.getElementById('rigActs');
+    if (slot) {
+      if (bar.parentElement !== slot) { bar.style.position = ''; bar.style.top = ''; bar.style.right = ''; slot.appendChild(bar); }
+      return true;
+    }
+    const host = document.getElementById('rig') || document.body;
+    if (bar.parentElement === host) return true;
+    if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+    bar.style.position = 'absolute';
+    bar.style.top = '14px';
+    bar.style.right = '16px';
+    host.appendChild(bar);
+    return true;
+  }
+  mountBar();
 
   /* ------------------------------------------------------------ 表单 */
   const form = document.createElement('form');   // 必须是 form：div 不会触发 submit
@@ -94,6 +128,27 @@
         <div class="rig-form__sub">New Service · Mock Mapping</div></div>
         <div class="rig-form__x">✕</div></div>
       <div class="rig-form__bd">
+        <div class="rig-field">
+          <label>Platform · 平台类型</label>
+          <div class="rig-kind" id="rigKind">
+            <button type="button" class="rig-kind__opt is-on" data-kind="LCM">
+              <span class="rig-kind__dot"></span>
+              <span><span class="rig-kind__nm">LCM 生命周期<em>版本 / 软件包</em></span>
+              <span class="rig-kind__ds">管网元版本与软件包；琥珀色铭牌，长卡位</span></span>
+            </button>
+            <button type="button" class="rig-kind__opt" data-kind="OMC">
+              <span class="rig-kind__dot"></span>
+              <span><span class="rig-kind__nm">OMC 网元管理<em>纳管 / 账号 / 升级</em></span>
+              <span class="rig-kind__ds">发起升级与纳管；青色铭牌，气道色同步</span></span>
+            </button>
+            <button type="button" class="rig-kind__opt" data-kind="FS">
+              <span class="rig-kind__dot"></span>
+              <span><span class="rig-kind__nm">FS 虚层<em>站点 / CPU / 校验</em></span>
+              <span class="rig-kind__ds">虚层平台能力；绿色铭牌，高卡位</span></span>
+            </button>
+          </div>
+          <input type="hidden" name="kind" value="LCM" />
+        </div>
         <div class="rig-field"><label>Service name</label><input name="name" placeholder="注册网元" /></div>
         <div class="rig-field rig-field--row">
           <div><label>Method</label><select name="method"><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option></select></div>
@@ -113,7 +168,19 @@
     const w = 372, h = form.offsetHeight || 320;
     form.style.left = Math.max(16, Math.min(x || innerWidth / 2 - w / 2, innerWidth - w - 16)) + 'px';
     form.style.top = Math.max(70, Math.min(y || 120, innerHeight - h - 16)) + 'px';
-    setTimeout(() => { const i = form.querySelector('input'); if (i) i.focus(); }, 40);
+    // 平台类型三选：选中同步 hidden + 改 name 占位提示
+    const kindBox = form.querySelector('#rigKind');
+    if (kindBox) {
+      const hidden = form.querySelector('input[name="kind"]');
+      const nameInp = form.querySelector('input[name="name"]');
+      const PH = { LCM: '登记网元版本', OMC: '纳管网元', FS: '查询站点信息' };
+      kindBox.querySelectorAll('.rig-kind__opt').forEach((b) => b.addEventListener('click', () => {
+        kindBox.querySelectorAll('.rig-kind__opt').forEach((x) => x.classList.toggle('is-on', x === b));
+        if (hidden) hidden.value = b.dataset.kind;
+        if (nameInp && PH[b.dataset.kind]) nameInp.placeholder = PH[b.dataset.kind];
+      }));
+    }
+    setTimeout(() => { const i = form.querySelector('input:not([type=hidden])'); if (i) i.focus(); }, 40);
   }
   function closeForm() { form.classList.remove('on'); form.style.display = 'none'; }
 
@@ -167,9 +234,11 @@
         closeForm();
         if (window.RigUI && window.RigUI.say) window.RigUI.say('已登记虚机 ' + n.name + ' (' + n.id + ')');
       } else {
+        const kind = val('kind') || 'LCM';
         const body = {
           name: val('name') || val('path'), method: val('method') || 'GET',
           path: val('path') || '/mock/new', version: val('version') || '0.1.0',
+          kind,
           status: 200, body: '{}',
         };
         const r = await fetch('/api/business/mappings', {
@@ -180,7 +249,7 @@
         if (!r.ok) throw new Error('HTTP ' + r.status);
         const m = await r.json();
         closeForm();
-        if (window.RigUI && window.RigUI.say) window.RigUI.say('已部署服务 ' + (m.name || m.path) + ' v' + m.version);
+        if (window.RigUI && window.RigUI.say) window.RigUI.say('已部署 ' + (m.kind || 'LCM') + ' 服务「' + (m.name || m.path) + '」v' + m.version);
       }
       await refreshScene();
     } catch (ex) {
@@ -190,5 +259,5 @@
     }
   });
 
-  window.RigCreate = { openForm, closeForm, refreshScene };
+  window.RigCreate = { openForm, closeForm, refreshScene, mountBar };
 })();

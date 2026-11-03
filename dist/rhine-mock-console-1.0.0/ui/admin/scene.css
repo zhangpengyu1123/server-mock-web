@@ -56,8 +56,11 @@
 
 .rig-hud__tr {
   position: absolute; right: 22px; top: 20px; text-align: right;
-  display: grid; gap: 3px;
+  display: grid; gap: 8px; justify-items: end;
 }
+/* 右上动作区：先放按钮，再放统计，两者在同一列里，永不重叠 */
+.rig-hud__acts { display: flex; gap: 8px; pointer-events: auto; }
+.rig-hud__stats { display: grid; gap: 3px; }
 .rig-hud__tr .kv { justify-content: flex-end; gap: 12px; }
 .rig-hud__tr .kv span { font-size: 8.5px; letter-spacing: .2em; }
 .rig-hud__tr .kv b { font-size: 11px; }
@@ -151,3 +154,11 @@
   .rig__scan { animation: none; }
   .rig-hud__dot.is-up { animation: none; }
 }
+
+
+/* 图例：三种平台各有自己的信号色（与 3D 铭牌一致） */
+.rig-hud__legend .lg-k i { border-radius: 0; }
+.rig-hud__legend .lg-lcm i { background: #d79a44; }
+.rig-hud__legend .lg-omc i { background: #3f8f93; }
+.rig-hud__legend .lg-fs  i { background: #4a6b47; }
+.rig-hud__legend .lg-sep { width: 1px; height: 9px; background: var(--line); display: inline-block; }

@@ -465,7 +465,7 @@ class Rig {
         [name, String(mp.method || 'GET').toUpperCase() + '  ' + (mp.path || '')],
         {
           big: 110, code: kind,
-          accent: kind === 'OMC' ? '#3f8f93' : '#d79a44',
+          accent: kind === 'OMC' ? '#3f8f93' : kind === 'FS' ? '#4a6b47' : '#d79a44',
           version: mp.version || (board.node && board.node.version) || '',
           stale: !!(mp.version && board.node && mp.version !== board.node.version),
           state: mp.enabled === false ? 'OFF' : 'ON',
@@ -480,7 +480,7 @@ class Rig {
         this.collect(root, 'GEO_Server_Led')
       );
       emitters.forEach((o) => {
-        o.material.emissive = new THREE.Color(kind === 'OMC' ? C.cyan : C.amber);
+        o.material.emissive = new THREE.Color(kind === 'OMC' ? C.cyan : kind === 'FS' ? C.green : C.amber);
         o.material.emissiveIntensity = mp.enabled === false ? 0.08 : 1.4;
       });
 
