@@ -11,7 +11,7 @@
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderMap, HeaderValue, Method, StatusCode};
 use axum::response::{IntoResponse, Response};
-use axum::routing::{any, get, patch, post};
+use axum::routing::{any, delete, get, patch, post};
 use axum::{Json, Router};
 use rhine_core::model::*;
 use rhine_core::{AuthUser, Error, Store};
@@ -495,6 +495,17 @@ async fn admin_create_node(
     Ok(Json(node))
 }
 
+async fn admin_delete_node(
+    st: Ctx,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+) -> ApiResult<Json<Value>> {
+    let u = auth_admin(&st, &headers)?;
+    csrf_guard(&st, &headers, &u)?;
+    let removed = st.store.delete_node(&id)?;
+    Ok(Json(json!({ "ok": true, "removed_services": removed })))
+}
+
 async fn admin_deploy(
     st: Ctx,
     headers: HeaderMap,
@@ -816,6 +827,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/business/endpoints/:id", patch(business_patch_endpoint))
         .route("/business/endpoints/:id/cert", post(business_issue_cert))
         .route("/admin/nodes", get(admin_nodes).post(admin_create_node))
+        .route("/admin/nodes/:id", delete(admin_delete_node))
         .route("/admin/nodes/:id/deploy", post(admin_deploy))
         .route("/admin/jobs/:id", get(admin_job))
         .route("/admin/users", get(admin_users).post(admin_create_user))

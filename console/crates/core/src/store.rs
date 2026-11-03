@@ -1116,6 +1116,18 @@ impl Store {
         Ok(m)
     }
 
+    /// 删除虚机（服务器）。级联删除挂在该虚机下的服务，返回被删服务数。
+    /// 删除虚机（服务器）。服务（mapping）不随虚机删除，会重新分配到其余虚机。
+    pub fn delete_node(&self, id: &str) -> Result<usize> {
+        let mut i = self.inner.lock().unwrap();
+        let idx = i.nodes.iter().position(|n| n.id == id).ok_or(Error::NotFound)?;
+        let node = i.nodes.remove(idx);
+        self.persist_locked(&i)?;
+        drop(i);
+        self.push_log("admin", "node.delete", &format!("删除虚机 {}", node.id), "warn");
+        Ok(0)
+    }
+
     pub fn delete_mapping(&self, user: &AuthUser, id: &str) -> Result<()> {
         let mut i = self.inner.lock().unwrap();
         let idx = i

@@ -348,3 +348,27 @@ node console/scripts/check-desktop.mjs
 3. `placeTip()` 读取面板左边界做避让；
 4. 面板打开且悬停同一对象时隐藏详情卡；
 5. app.js 机架选中不再渲染内联面板（`renderRigPanel(type, null)`），操作入口唯一。
+---
+
+## 0.6 删除操作（服务 / 虚机）
+
+删除是**两段确认**：第一次点击按钮变成深红「确认删除？ · 再点一次」，4 秒内再点才真正下发；超时自动复原，避免误删。
+
+| 位置 | 对象 | 接口 | 交互 |
+|---|---|---|---|
+| 管理面 · 机架视图 | 服务（主板） | `DELETE /api/business/mappings/:id` | 悬停/点选服务板 → 操作面板「删除服务」 |
+| 管理面 · 机架视图 | 虚机（服务器） | `DELETE /api/admin/nodes/:id` | 点选虚机 → 操作面板「删除虚机」 |
+| 业务面 · MOCK 流程 | 接口 | `DELETE /api/business/mappings/:id` | 接口列表行内「删除」 |
+
+删除成功后：面板关闭 → 右下角 toast 报出对象名 → 3D 场景与列表**自动重新拉数据**（不需要刷新页面）。
+
+行为约定：
+
+* 删服务只删这一个接口，虚机不动；
+* 删虚机只删这台虚机，其上的服务不级联删除，会重新分配到其余虚机（`delete_node` 返回 `removed_services: 0`）；
+* 两者都会写审计日志（`mapping.delete` / `node.delete`，级别 warn）。
+
+实测（管理面 CDP）：`DELETE admin/nodes/node-0006 → 200`，toast「已删除虚机 DEL-VM-TEST」，节点列表 5 → 4，3D 板卡 5 → 4。
+业务面：`DELETE business/mappings/map-0014 → 200`，列表 5 → 4 行。
+
+> 顺带修掉一个隐性 bug：同一浏览器里若被另一个页面重新登录过，`sessionStorage` 里的旧 csrf 会失效，所有写操作 403（表现为"点了删除报权限不足"）。现在 `ensureAuth()` 以 `/api/auth/me` 返回的 csrf 为准；管理面的删除接口也带 403 → 取 csrf → 重试一次。

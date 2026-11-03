@@ -317,3 +317,11 @@ html.is-tauri #plExit { display: none; }
 }
 .pl-winctl__b:hover { background: var(--panel); color: var(--ink); border-color: var(--line-2); }
 .pl-winctl__b--x:hover { background: var(--danger); color: #f5efe7; border-color: var(--danger); }
+/* 删除按钮的两段确认态 */
+.pl-btn[data-armed="1"] {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: var(--paper);
+  letter-spacing: .02em;
+}
+.pl-btn[data-armed="1"]::after { content: " · 再点一次"; opacity: .7; }

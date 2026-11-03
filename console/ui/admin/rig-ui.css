@@ -296,3 +296,26 @@
   pointer-events: none;
 }
 .rig-toast.on { opacity: 1; }
+
+/* ---------------------------------------------------------------- 危险动作（删除） */
+.rig-btn--danger {
+  color: #7d2f22;
+  border-color: rgba(125, 47, 34, 0.45);
+}
+.rig-btn--danger:hover {
+  background: #7d2f22;
+  border-color: #7d2f22;
+  color: #f3eee7;
+}
+.rig-btn--wide { grid-column: 1 / -1; }
+/* 两段确认：第一次点击后的「确认删除？」态 */
+.rig-btn.is-armed {
+  background: #7d2f22;
+  border-color: #7d2f22;
+  color: #f3eee7;
+  letter-spacing: 0.08em;
+}
+.rig-btn.is-armed::after {
+  content: " · 再点一次";
+  opacity: 0.72;
+}

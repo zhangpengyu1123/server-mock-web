@@ -159,9 +159,18 @@
   async function ensureAuth() {
     const meta = await api('/api/meta').catch(() => null);
     if (meta && meta.authRequired === false) return true;
+    // 关键：/api/auth/me 会返回当前会话的 csrf。必须以它为准——
+    // 否则同一浏览器里被别的页面（如管理面）重新登录过，sessionStorage 里的旧 csrf 会失效，
+    // 所有写操作都会 403（历史 bug：删除接口点两次后报"权限不足"）。
     if (S.csrf) {
       const me = await api('/api/auth/me').catch(() => null);
-      if (me && me.user) return true;
+      if (me && me.user) {
+        if (me.csrf && me.csrf !== S.csrf) {
+          S.csrf = me.csrf;
+          sessionStorage.setItem('rhine.plane.csrf', me.csrf);
+        }
+        return true;
+      }
     }
     return new Promise((resolve) => {
       const wrap = document.createElement('div');
@@ -420,7 +429,10 @@
               <td class="num">${i.status}</td><td class="num">${i.delay} ms</td>
               <td class="num">${i.rules}</td>
               <td>${i.human ? `<span class="pl-tag pl-tag--on">${i.human}</span>` : '<span class="pl-muted">—</span>'}</td>
-              <td style="text-align:right"><button class="pl-btn pl-btn--sm" data-iface="${esc(i.id)}">编辑</button></td>
+              <td style="text-align:right;white-space:nowrap">
+                <button class="pl-btn pl-btn--sm" data-iface="${esc(i.id)}">编辑</button>
+                <button class="pl-btn pl-btn--sm pl-btn--danger" data-iface-del="${esc(i.id)}" data-armed="0">删除</button>
+              </td>
             </tr>`).join('')}</tbody>
           </table>
         </div>
@@ -1718,6 +1730,35 @@
     $$('[data-iface]').forEach((b) => b.addEventListener('click', () => {
       S.ifaceSel = b.dataset.iface; S.view = 'iface'; render();
     }));
+
+    // 接口删除：第一次点变「确认删除？」，4s 内再点才真删
+    $$('[data-iface-del]').forEach((b) => {
+let timer = 0;
+b.addEventListener('click', async (ev) => {
+    ev.stopPropagation();
+    if (b.dataset.armed !== '1') {
+    b.dataset.armed = '1';
+    b.dataset.label = b.textContent;
+    b.textContent = '确认删除？';
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      b.dataset.armed = '0';
+      b.textContent = b.dataset.label || '删除';
+    }, 4000);
+    return;
+    }
+    clearTimeout(timer);
+    b.disabled = true;
+    try {
+    await api('/api/business/mappings/' + encodeURIComponent(b.dataset.ifaceDel), {
+      method: 'DELETE', headers: headers(),
+    });
+    await loadIfaces();
+    if (S.ifaceSel === b.dataset.ifaceDel) S.ifaceSel = (S.ifaces[0] || {}).id || '';
+    } catch (e) { console.warn(e); }
+    render();
+});
+    });
     const ifSave = $('#ifSave');
     if (ifSave) ifSave.addEventListener('click', async () => {
       const r = S.ifaceRules[S.ifaceSel];
@@ -2404,3 +2445,4 @@
   })();
   window.Plane = { S, render, openHuman };
 })();
+
