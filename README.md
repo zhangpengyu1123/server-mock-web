@@ -25,7 +25,8 @@ cd ..
 |---|---|---|
 | L 端（业务面） | http://127.0.0.1:9600/business/plane.html | `admin / rhine-admin-2026` |
 | W 端（免登录） | http://127.0.0.1:9601/business/plane.html | — |
-| 管理面看板 | http://127.0.0.1:9600/business/index.html | 同 L 端 |
+| **管理面**（Fleet Control） | http://127.0.0.1:9600/admin/index.html | 同 L 端（页面内「平台授权」填节点+账号接入） |
+| 业务面看板 | http://127.0.0.1:9600/business/index.html | 同 L 端 |
 
 也可以用便携版：`node console/scripts/make-dist.mjs` → `dist/rhine-mock-console-1.0.0/启动.cmd`。
 桌面应用：`console/desktop/business/target/debug/rhine-desktop-business.exe`（Tauri 2 + WebView2）。
