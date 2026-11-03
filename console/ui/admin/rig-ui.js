@@ -115,6 +115,7 @@
       <div class="rig-modal__x">✕</div>
     </div>
     <div class="rig-modal__bd"><div class="rig-modal__meta"></div></div>
+    <div class="rig-modal__act">Actions · 操作</div>
     <div class="rig-actions">
       <button class="rig-btn" data-act="start">启用</button>
       <button class="rig-btn" data-act="stop">停用</button>
@@ -149,9 +150,15 @@
   }
   function hideTip() { tip.classList.remove('on'); }
   function placeTip() {
-    const w = tip.offsetWidth || 280, h = tip.offsetHeight || 120;
+    const w = tip.offsetWidth || 286, h = tip.offsetHeight || 120;
+    // 操作面板打开时，悬停卡一律放到它的左侧，绝不重叠
+    let panelLeft = innerWidth;
+    if (modal.classList.contains('on')) {
+      const r = modal.getBoundingClientRect();
+      panelLeft = r.left;
+    }
     let x = pointer.x + 18, y = pointer.y + 16;
-    if (x + w > innerWidth - 12) x = pointer.x - w - 18;
+    if (x + w + 14 > panelLeft) x = Math.min(pointer.x - w - 18, panelLeft - w - 14);
     if (y + h > innerHeight - 12) y = pointer.y - h - 16;
     tip.style.left = Math.max(8, x) + 'px';
     tip.style.top = Math.max(8, y) + 'px';
@@ -197,7 +204,7 @@
   /* ------------------------------------------------------------ 弹窗 */
   let current = null;   // { type: 'module'|'board', ref }
 
-  function openModal(type, ref, clientX, clientY) {
+  function openModal(type, ref) {
     current = { type, ref };
     const m = modal.querySelector('.rig-modal__ttl');
     const meta = modal.querySelector('.rig-modal__meta');
@@ -236,12 +243,7 @@
     }
 
     modal.classList.add('on');
-    const w = 380, h = modal.offsetHeight || 220;
-    let x = Math.min(clientX, innerWidth - w - 16);
-    let y = Math.min(clientY + 12, innerHeight - h - 16);
-    modal.style.left = Math.max(16, x) + 'px';
-    modal.style.top = Math.max(16, y) + 'px';
-    hideTip();
+    // 面板固定停靠在右侧（不跟随点击位置）：点击 = 操作，不与悬停卡抢空间
   }
 
   function closeModal() { modal.classList.remove('on'); current = null; }
@@ -314,6 +316,7 @@
     if (!host || host.__rigBound) return;
     host.__rigBound = true;
     host.addEventListener('rig:select', (e) => {
+      if (!e.detail || !e.detail.type) { closeModal(); return; }
       window.__rigSel = e.detail;
       const d = e.detail || {};
       const s2 = window.RhineScene.instance;
@@ -333,36 +336,32 @@
 
   window.addEventListener('pointerdown', (e) => { downAt = { x: e.clientX, y: e.clientY, t: Date.now() }; }, { passive: true });
 
+  // 点空白（没悬停任何对象）关闭操作面板；拖拽旋转不误关
   window.addEventListener('pointerup', (e) => {
-    if (!downAt) return;
+    if (!modal.classList.contains('on') || !downAt) return;
     const moved = Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y);
-    const dt = Date.now() - downAt.t;
     downAt = null;
-    if (moved > 6 || dt > 550) return;   // 拖拽/长按不当作点击
+    if (moved > 6) return;
+    if (e.target && e.target.closest && e.target.closest('.rig-modal')) return;
     const s = window.RhineScene && window.RhineScene.instance;
     if (!s || !s.renderer) return;
-    // 用场景的射线检测（它已经知道点了谁）
-    const el = s.renderer.domElement;
-    const rect = el.getBoundingClientRect();
-    if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) return;
-
-    // 由场景的 rig:select 事件决定打开谁（场景先做射线检测）
-    const sel = window.__rigSel;
-    if (!sel) return;
-    if (sel.type === 'mapping') {
-      const mod = s.modules.find((m) => m.id === sel.id);
-      if (mod) openModal('module', mod, e.clientX, e.clientY);
-    } else {
-      const board = s.boards.find((b) => b.id === sel.id);
-      if (board) openModal('board', board, e.clientX, e.clientY);
-    }
+    const rect = s.renderer.domElement.getBoundingClientRect();
+    if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) { closeModal(); return; }
+    if (!s.hovered) closeModal();
   }, { passive: true });
+
 
   function loop() {
     requestAnimationFrame(loop);
     const s = window.RhineScene && window.RhineScene.instance;
     if (!s) return;
     const id = s.hovered;
+    // 操作面板已打开、且悬停的正是面板里的那个对象 → 不再弹详情卡（面板已经写着同样信息）
+    if (id && current && modal.classList.contains('on')) {
+      const ref = current.ref || {};
+      const curId = (ref.mapping && ref.mapping.id) || ref.id;
+      if (curId === id) { if (tip.classList.contains('on')) hideTip(); lastHover = id; return; }
+    }
     if (id === lastHover) { if (id) placeTip(); return; }
     lastHover = id;
     if (!id) { hideTip(); return; }

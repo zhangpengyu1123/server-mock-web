@@ -148,17 +148,33 @@
   text-transform: uppercase;
 }
 
-/* ---------------------------------------------------------------- 操作弹窗 */
+/* ---------------------------------------------------------------- 操作面板（右侧停靠）
+   交互分工：悬停 = 详情（.rig-tip，跟随光标、只读）
+             点击 = 操作（.rig-modal，贴右侧固定，含动作按钮）
+   面板永远停靠在右上，不跟随点击位置，因此不会和悬停卡或 3D 画面打架。 */
 .rig-modal {
   position: fixed;
   z-index: 70;
-  width: 392px;
+  right: 22px;
+  top: 92px;
+  width: 336px;
+  max-height: calc(100vh - 148px);
+  overflow-y: auto;
   opacity: 0;
-  transform: translateY(6px);
+  transform: translateX(10px);
   transition: opacity 0.14s ease, transform 0.14s ease;
   pointer-events: none;
 }
-.rig-modal.on { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.rig-modal.on { opacity: 1; transform: translateX(0); pointer-events: auto; }
+
+/* 面板抬头：ACTIONS 标记，明确"这里是操作" */
+.rig-modal__act {
+  padding: 9px 15px 0;
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(23, 20, 15, 0.45);
+}
 
 .rig-modal__hd {
   display: flex;

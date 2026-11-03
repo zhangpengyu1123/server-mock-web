@@ -325,3 +325,26 @@ node console/scripts/check-desktop.mjs
 | 权限 | `core:window:allow-start-dragging / allow-minimize / allow-toggle-maximize / allow-close` |
 
 实测（WebView2 CDP）：`is-tauri=true`、拖动区存在、3 个按钮可见、`minimize` 与 `close` 均生效（关闭后进程退出）。
+---
+
+## 0.5 管理面交互规范（虚机视图）
+
+**一条铁律：悬停是详情，点击是操作。** 两者不重复、不重叠。
+
+| 交互 | 元素 | 行为 |
+|---|---|---|
+| 悬停对象 | `.rig-tip`（跟随光标、`pointer-events:none`） | 只读详情：Model / 方法·路径 / 版本（落后标琥珀）/ 状态 / 命中 / 所属虚机 |
+| 点击对象 | `.rig-modal`（右侧固定停靠，`right:22px; top:92px`） | 操作面板：抬头 + 事实行 + ACTIONS 四键（启用 / 停用 / 更新版本 / 共享） |
+| 面板开着再悬停**别的**对象 | 两者并存 | 详情卡自动靠左放置（`tip.right ≤ panel.left`），绝不重叠 |
+| 悬停**面板里的那个**对象 | 详情卡隐藏 | 面板已经写着同样信息，避免重复 |
+| 点空白（画布内且未悬停任何对象） | 关闭面板 | 拖拽旋转不触发（位移 > 6px 判定为拖拽） |
+| Esc | 关闭面板 | — |
+
+修复前的问题（用户反馈）：悬停卡与点击弹窗内容高度重复；点击弹窗浮在鼠标位置，会和悬停卡、以及 app.js 的旧内联面板（`#rigPanel`）三块叠在一起。
+
+修复动作：
+1. `.rig-modal` 从「跟随点击点」改为「右侧固定停靠」；
+2. 删掉 `pointerup` 里重复打开面板的那段（`rig:select` 已经负责）；
+3. `placeTip()` 读取面板左边界做避让；
+4. 面板打开且悬停同一对象时隐藏详情卡；
+5. app.js 机架选中不再渲染内联面板（`renderRigPanel(type, null)`），操作入口唯一。
