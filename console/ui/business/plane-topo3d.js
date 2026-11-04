@@ -127,6 +127,16 @@ function labelTexture(title, sub, opts) {
   const g = cv.getContext('2d');
   g.clearRect(0, 0, W, H);
   g.textBaseline = 'middle';
+  if (opts.chip) {
+    // 小纸片底：接口编号要压在弧线上，纯文字读不出来
+    g.fillStyle = 'rgba(246,242,236,.94)';
+    g.fillRect(6, 20, W - 12, H - 40);
+    g.strokeStyle = 'rgba(27,25,22,.16)';
+    g.lineWidth = 2;
+    g.strokeRect(6, 20, W - 12, H - 40);
+    g.fillStyle = 'rgba(166,125,72,.9)';
+    g.fillRect(6, 20, 4, H - 40);
+  }
   if (opts.tick) { g.fillStyle = opts.tick; g.fillRect(0, 34, 4, H - 68); }
   g.fillStyle = opts.ink || '#1b1916';
   g.font = '600 ' + (opts.big || 54) + 'px "JetBrains Mono","PingFang SC","Microsoft YaHei",monospace';
@@ -162,6 +172,21 @@ const NFS = [
   { id: 'nf-nrf', name: 'NRF', shape: 'tri', material: 'porcelain', g: 'grp-2', cn: '网络存储' },
   { id: 'nf-upf', name: 'UPF', shape: 'quad', material: 'resin', g: 'grp-3', cn: '用户平面' },
   { id: 'nf-nssf', name: 'NSSF', shape: 'cyl', material: 'slate', g: 'grp-3', cn: '网络切片选择' },
+];
+
+/* 网元间接口（5GC 参考点）：[源, 目标, 接口编号, 是否跨组] */
+const IFACES = [
+  ['AMF', 'SMF', 'N11', true],
+  ['AMF', 'AUSF', 'N12', false],
+  ['AMF', 'UDM', 'N8', false],
+  ['AMF', 'NSSF', 'N22', true],
+  ['AMF', 'NRF', 'N27', true],
+  ['SMF', 'UPF', 'N4', true],
+  ['SMF', 'PCF', 'N7', false],
+  ['SMF', 'UDM', 'N10', true],
+  ['AUSF', 'UDM', 'N13', false],
+  ['PCF', 'NRF', 'N27', true],
+  ['UPF', 'NSSF', 'N22', true],
 ];
 
 // 单例：宿主容器被重建时销毁旧实例
@@ -214,6 +239,7 @@ class Topo3D {
 
     this.labels = [];
     this.links = [];
+    this.ifaces = [];
     this.nodes = [];
     this.build();
     this.bindPick();
@@ -445,6 +471,41 @@ class Topo3D {
     this.links.push({ from: opts.fromId, to: opts.toId, mesh: m, dot, a, b, phase: Math.random() });
   }
 
+  /** 网元间接口：一段抬高的弧线 + 接口编号小标签 */
+  iface(fromName, toName, code, cross) {
+    const A = this.nfPos[fromName];
+    const B = this.nfPos[toName];
+    if (!A || !B) return;
+    const a = A.clone().add(new THREE.Vector3(0, 0.02, 0));
+    const b = B.clone().add(new THREE.Vector3(0, 0.02, 0));
+    const mid = a.clone().add(b).multiplyScalar(0.5);
+    mid.y += cross ? 0.26 : 0.16;              // 跨组拱得更高，避免穿过立方体
+    const curve = new THREE.QuadraticBezierCurve3(a, mid, b);
+    const tube = new THREE.Mesh(
+      new THREE.TubeGeometry(curve, 32, cross ? 0.0036 : 0.0028, 5, false),
+      new THREE.MeshStandardMaterial({
+        color: cross ? 0xb59c72 : 0x9c9386, roughness: 0.62, metalness: 0,
+        transparent: true, opacity: cross ? 0.72 : 0.55, depthWrite: false,
+      })
+    );
+    this.root.add(tube);
+
+    // 接口编号：挂在弧顶上方
+    const top = curve.getPoint(0.5);
+    const { tex, aspect } = labelTexture(code, '', { big: 54, ink: cross ? '#6b5535' : '#575147', chip: true });
+    const hh = 0.062;
+    const tag = new THREE.Mesh(
+      new THREE.PlaneGeometry(hh * aspect, hh),
+      new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false })
+    );
+    tag.position.copy(top).add(new THREE.Vector3(0, 0.045, 0));
+    tag.renderOrder = 6;
+    this.root.add(tag);
+    this.labels.push(tag);
+
+    this.ifaces.push({ from: fromName, to: toName, code, tube, tag, cross });
+  }
+
   /* ------------------------------------------------------------- 建场 */
   build() {
     if (this.root) {
@@ -456,6 +517,8 @@ class Topo3D {
     this.nodes = [];
     this.labels = [];
     this.links = [];
+    this.ifaces = [];
+    this.nfPos = {};
 
     const st = this.state || {};
     const els = Array.isArray(st.elements) ? st.elements : [];
@@ -529,6 +592,8 @@ class Topo3D {
         edges.raycast = () => {};
         mesh.add(edges);
 
+        this.nfPos[n.name] = new THREE.Vector3(mx, my, mz);
+
         const real = els[realIdx % Math.max(1, els.length)] || null;
         if (real) realIdx += 1;
         const labelName = real ? real.name : n.name;
@@ -542,6 +607,9 @@ class Topo3D {
         this.link([gx, BASE_Y + size * 0.5, gz], [mx, my - 0.10, mz], { fromId: b.id, toId: real ? real.id : n.id });
       });
     });
+
+    // 网元之间的连线：同组（细、灰）+ 跨组（略粗、暖灰），带接口编号
+    IFACES.forEach(([a, b, code, cross]) => this.iface(a, b, code, cross));
 
     // LCM 沙漏
     {
@@ -614,6 +682,15 @@ class Topo3D {
       l.mesh.material.color.setHex(hit && !none ? 0xa67d48 : 0xa9a094);
       l.dot.material.opacity = none ? 0.9 : (hit ? 1 : 0.15);
       l.dot.visible = none || hit;
+    });
+    // 接口弧线：命中选中的网元就点亮
+    (this.ifaces || []).forEach((f) => {
+      const hit = f.from === id || f.to === id;
+      const selName = none ? null : ((this.nodes.find((n) => n.userData.id === id) || {}).userData || {}).code;
+      const involves = none ? false : (hit || selName === f.from || selName === f.to);
+      f.tube.material.opacity = none ? (f.cross ? 0.55 : 0.42) : (involves ? 0.95 : 0.10);
+      f.tube.material.color.setHex(involves ? 0xa67d48 : (f.cross ? 0xbfa87e : 0xa39a8c));
+      f.tag.material.opacity = none ? 1 : (involves ? 1 : 0.25);
     });
   }
 
