@@ -210,9 +210,9 @@
       '<div class="rig-hud__list">' + list + '</div>' +
       '<div class="rig-hud__panel" id="rigPanel"></div>' +
       '<div class="rig-hud__legend">' +
-      '<span class="lg-k lg-lcm"><i></i>LCM · 生命周期</span>' +
-      '<span class="lg-k lg-omc"><i></i>OMC · 网元管理</span>' +
-      '<span class="lg-k lg-fs"><i></i>FS · 虚层</span>' +
+      '<span class="lg-k lg-lcm"><i></i>LCM · LIFECYCLE</span>' +
+      '<span class="lg-k lg-omc"><i></i>OMC · NE MGMT</span>' +
+      '<span class="lg-k lg-fs"><i></i>FS · VM MGMT</span>' +
       '<span class="lg-sep"></span>' +
       '<span><i class="is-cyan"></i>DEPLOYING</span>' +
       '<span><i class="is-dim"></i>OFFLINE</span>' +

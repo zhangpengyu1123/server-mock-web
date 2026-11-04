@@ -82,7 +82,106 @@ function glowTexture() {
 }
 
 /** 铭牌：深底 + 暖白字 + 琥珀色块，像是刻在卡匣上的档案标签 */
-function nameplateTexture(lines, opts) {
+  /* 平台语义：三种卡分别是生命周期管理 / 网元管理 / 虚拟机管理 */
+  /* 平台标识：主标用缩写，副标英文全称（中文名只在表单/图例里做解释） */
+  const KIND_CN = {
+    LCM: { code: 'LCM', en: 'LIFECYCLE MGMT' },
+    OMC: { code: 'OMC', en: 'NE MANAGEMENT' },
+    FS: { code: 'FS', en: 'VM MANAGEMENT' },
+  };
+
+  /* 鎏金铭牌：中文全称烤金箔渐变 + 压凸 + 顶部高光 */
+  function goldPlateTexture(kind) {
+    const info = KIND_CN[kind] || KIND_CN.LCM;
+    const W = 1536, H = 384;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const g = cv.getContext('2d');
+    g.clearRect(0, 0, W, H);
+
+    // ---- 主标：LCM / OMC / FS，宽字距 ----
+    const code = info.code;
+    const size = 236;
+    const track = 30;
+    g.font = '700 ' + size + 'px "JetBrains Mono",ui-monospace,Consolas,monospace';
+    g.textBaseline = 'middle';
+    g.textAlign = 'left';
+    const widths = code.split('').map((ch) => g.measureText(ch).width);
+    const total = widths.reduce((a, b) => a + b, 0) + track * (code.length - 1);
+    let x = (W - total) / 2;
+    const cy = H * 0.40;
+
+    const gold = g.createLinearGradient(0, cy - size * 0.62, 0, cy + size * 0.62);
+    gold.addColorStop(0.00, '#f8e6b0');
+    gold.addColorStop(0.16, '#e5bf70');
+    gold.addColorStop(0.42, '#b57f28');
+    gold.addColorStop(0.50, '#f0d78f');
+    gold.addColorStop(0.68, '#8f5f18');
+    gold.addColorStop(0.86, '#d8b45c');
+    gold.addColorStop(1.00, '#fbf0c6');
+
+    const drawCode = (dx, dy, fill) => {
+      let cx = x + dx;
+      g.fillStyle = fill;
+      for (let i = 0; i < code.length; i++) {
+        g.fillText(code[i], cx, cy + dy);
+        cx += widths[i] + track;
+      }
+    };
+
+    // 压凸：深色底 + 描边，再压金
+    drawCode(0, 8, 'rgba(16,10,4,.66)');
+    g.lineWidth = 5;
+    g.strokeStyle = 'rgba(58,36,8,.9)';
+    let sx = x;
+    g.beginPath();
+    for (let i = 0; i < code.length; i++) {
+      g.strokeText(code[i], sx, cy + 3);
+      sx += widths[i] + track;
+    }
+    drawCode(0, 0, gold);
+
+    // 顶部反光，只作用在字上
+    g.globalCompositeOperation = 'source-atop';
+    const shine = g.createLinearGradient(0, cy - size * 0.52, 0, cy - size * 0.02);
+    shine.addColorStop(0, 'rgba(255,246,214,.34)');
+    shine.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = shine;
+    g.fillRect(0, cy - size * 0.58, W, size * 0.58);
+    g.globalCompositeOperation = 'source-over';
+
+    // ---- 副标：英文全称 ----
+    g.textAlign = 'center';
+    g.font = '500 46px "JetBrains Mono",ui-monospace,Consolas,monospace';
+    g.fillStyle = 'rgba(233,200,119,.66)';
+    g.fillText(info.en, W / 2, H * 0.845);
+
+    const tex = new THREE.CanvasTexture(cv);
+    tex.anisotropy = 4;
+    return tex;
+  }
+
+  /* 斜向扫光条：靠贴图 offset 慢慢推，模拟金箔被灯扫过 */
+  function sheenTexture() {
+    const W = 512, H = 8;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const g = cv.getContext('2d');
+    const grd = g.createLinearGradient(0, 0, W, 0);
+    grd.addColorStop(0.00, 'rgba(255,255,255,0)');
+    grd.addColorStop(0.44, 'rgba(255,246,214,0)');
+    grd.addColorStop(0.50, 'rgba(255,248,222,.90)');
+    grd.addColorStop(0.56, 'rgba(255,246,214,0)');
+    grd.addColorStop(1.00, 'rgba(255,255,255,0)');
+    g.fillStyle = grd;
+    g.fillRect(0, 0, W, H);
+    const tex = new THREE.CanvasTexture(cv);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.repeat.set(1.6, 1);
+    return tex;
+  }
+
+  function nameplateTexture(lines, opts) {
   opts = opts || {};
   const W = 2048, H = 512;
   const cv = document.createElement('canvas');
@@ -473,6 +572,7 @@ class Rig {
         used.set(bi, taken);
 
       const root = this.clonePrefab(this.prefabs[kind] || this.prefabs.LCM);
+        const dims = this.dressCard(root, kind);   // 造型差异（返回尺寸供铭牌定位）
       // 卡片材质压暗一档：白卡正对主光时容易过曝
     root.traverse((o) => {
       if (!o.isMesh || !o.material) return;
@@ -508,6 +608,51 @@ class Rig {
         });
       plate.position.set(0, plateYc, G.cardT / 2 + 0.0036);   // 前移 2mm，跳出铭牌凹位
       root.add(plate);
+
+        // —— 鎏金中文全称：暗色衬板 + 金箔字（生命周期管理 / 网元管理 / 虚拟机管理）——
+        const goldW = Math.min(0.285, (dims.w || 0.40) * 0.70);
+        const goldH = goldW * 0.25;
+        const goldY = dims.yMin + dims.h * 0.46;   // 卡面中上部的大块留白
+        const faceZ = dims.zFront + 0.0042;
+
+        // 衬板：深色半透 + 细金边，让金字在浅色卡面上"嵌"进去
+        const backW = goldW + 0.022, backH = goldH + 0.013;
+        const back = new THREE.Mesh(
+          new THREE.PlaneGeometry(backW, backH),
+          new THREE.MeshBasicMaterial({ color: 0x120e08, transparent: true, opacity: 0.93, toneMapped: false, depthWrite: false })
+        );
+        back.position.set(0, goldY, faceZ);
+        back.renderOrder = 3;
+        root.add(back);
+
+        const edge = new THREE.LineSegments(
+          new THREE.EdgesGeometry(new THREE.PlaneGeometry(backW, backH)),
+          new THREE.LineBasicMaterial({ color: 0xc6923c, transparent: true, opacity: 0.75 })
+        );
+        edge.raycast = () => {};
+        edge.position.set(0, goldY, faceZ + 0.0004);
+        root.add(edge);
+
+        const gold = new THREE.Mesh(
+          new THREE.PlaneGeometry(goldW, goldH),
+          new THREE.MeshBasicMaterial({ map: this.goldTex(kind), transparent: true, toneMapped: false, depthWrite: false })
+        );
+        gold.position.set(0, goldY, faceZ + 0.0012);
+        gold.renderOrder = 4;
+        root.add(gold);
+
+        // 扫光：细窄一条金色高光，慢慢扫过铭牌
+        const sheenTex = this.sheenTex();
+        const sheen = new THREE.Mesh(
+          new THREE.PlaneGeometry(goldW * 0.92, goldH * 0.94),
+          new THREE.MeshBasicMaterial({
+            map: sheenTex, color: 0xffd98a, transparent: true, opacity: 0.10,
+            blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false,
+          })
+        );
+        sheen.position.set(0, goldY, faceZ + 0.0022);
+        sheen.renderOrder = 5;
+        root.add(sheen);
 
       const emitters = [].concat(
         this.collect(root, 'GEO_Server_Strip'),
@@ -554,6 +699,7 @@ class Rig {
       const mod = {
         id: mp.id, mapping: mp, kind, root, board, slot,
         emitters, glow, plate, seatY: G.cardSeatY,
+          gold, sheen,
         seed: (this.hash(mp.id) % 1000) / 1000, hit: 0
       };
       this.modules.push(mod);
@@ -565,6 +711,92 @@ class Rig {
     if (this.selectedId && !this.byNode.has(this.selectedId) && !this.byMapping.has(this.selectedId)) {
       this.selectedId = null;
     }
+  }
+
+  /** 每种平台一张鎏金贴图（只生成一次） */
+  goldTex(kind) {
+    this._gold = this._gold || {};
+    if (!this._gold[kind]) this._gold[kind] = goldPlateTexture(kind);
+    return this._gold[kind];
+  }
+
+  /** 扫光贴图（每个卡各自 clone，才能独立推 offset） */
+  sheenTex() {
+    this._sheenBase = this._sheenBase || sheenTexture();
+    const tex = this._sheenBase.clone();
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  /**
+   * 造型差异化：三种平台不只是换颜色，卡体轮廓也不同
+   *   LCM 生命周期管理 → 顶部三层"版本阶梯"，右下时间轴凹槽
+   *   OMC 网元管理     → 顶部一根"管理总线"，左侧 4 个端口凸点
+   *   FS  虚拟机管理   → 底部"宿主裙边" + 右侧双风扇环
+   * 返回 { w, h, yMin, zFront } 供鎏金铭牌定位。
+   */
+  dressCard(root, kind) {
+    const box = new THREE.Box3().setFromObject(root);
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    const dims = { w: size.x || 0.40, h: size.y || 0.42, yMin: box.min.y, zFront: box.max.z };
+    const accent = kind === 'OMC' ? C.cyan : kind === 'FS' ? C.green : C.amber;
+    // 与卡体同族的浅色金属，不要用深色块，否则像贴在卡上的黑胶带
+    const shell = new THREE.MeshStandardMaterial({ color: 0xcfc6b6, roughness: 0.55, metalness: 0.25 });
+    const trim = new THREE.MeshStandardMaterial({ color: 0x8d8578, roughness: 0.45, metalness: 0.45 });
+    const glow = new THREE.MeshStandardMaterial({
+      color: accent, emissive: new THREE.Color(accent), emissiveIntensity: 0.85,
+      roughness: 0.4, metalness: 0.2, toneMapped: false,
+    });
+    const add = (mesh, x, y, z) => { mesh.position.set(x, y, z); root.add(mesh); return mesh; };
+    const TOP = box.max.y;
+
+    if (kind === 'LCM') {
+      // 顶部三层"版本阶梯"：逐级抬升的薄板
+      for (let k = 0; k < 3; k++) {
+        const w = 0.33 - k * 0.070;
+        const bar = new THREE.Mesh(new THREE.BoxGeometry(w, 0.006, 0.026), k === 2 ? glow : shell);
+        add(bar, -0.01 + k * 0.012, TOP + 0.005 + k * 0.010, 0.004);
+      }
+      // 卡面右下：时间轴刻度（版本演进）
+      const rail = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.004, 0.004), trim);
+      add(rail, 0.0, dims.yMin + 0.048, dims.zFront + 0.0012);
+      for (let k = 0; k < 5; k++) {
+        const tick = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.016, 0.003), k === 4 ? glow : trim);
+        add(tick, -0.096 + k * 0.048, dims.yMin + 0.056, dims.zFront + 0.0014);
+      }
+    } else if (kind === 'OMC') {
+      // 顶部"管理总线"：一根细梁 + 两个立脚
+      const beam = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.009, 0.022), shell);
+      add(beam, 0, TOP + 0.010, 0.002);
+      [-0.11, 0.11].forEach((x) => {
+        const leg = new THREE.Mesh(new THREE.BoxGeometry(0.010, 0.020, 0.018), trim);
+        add(leg, x, TOP + 0.008, 0.002);
+      });
+      // 顶部天线桅杆：网元管理的"上行链路"
+      const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.0035, 0.0035, 0.085, 8), trim);
+      add(mast, 0.075, TOP + 0.048, 0.002);
+      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.0075, 12, 10), glow);
+      add(bulb, 0.075, TOP + 0.094, 0.002);
+      // 左侧端口凸点（4 个，像被纳管的网元）
+      for (let k = 0; k < 4; k++) {
+        const port = new THREE.Mesh(new THREE.BoxGeometry(0.017, 0.014, 0.008), k === 0 ? glow : trim);
+        add(port, -size.x / 2 + 0.020, dims.yMin + 0.062 + k * 0.026, dims.zFront + 0.0016);
+      }
+    } else {
+      // FS：底部"宿主裙边" + 右下双风扇环
+      const skirt = new THREE.Mesh(new THREE.BoxGeometry(size.x * 1.04, 0.012, 0.042), trim);
+      add(skirt, 0, dims.yMin + 0.002, 0.008);
+      [-0.042, 0.042].forEach((dx, k) => {
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(0.024, 0.0030, 8, 24), k === 0 ? glow : trim);
+        ring.position.set(dx, dims.yMin + 0.088, dims.zFront + 0.0016);
+        root.add(ring);
+        const hub = new THREE.Mesh(new THREE.CircleGeometry(0.0085, 16), trim);
+        hub.position.set(dx, dims.yMin + 0.088, dims.zFront + 0.0018);
+        root.add(hub);
+      });
+    }
+    return dims;
   }
 
   inferKind(mp) {
@@ -871,6 +1103,12 @@ class Rig {
       const ease = 1 - Math.pow(1 - k, 3);
       if (this.intro < 1 && !(this.dragState && this.dragState.mod === m)) m.root.position.y = m.seatY + G.insertLift * (1 - ease);   // 入场结束后把 y 交给特效层   // 竖直插入
       const settle = Math.sin(Math.min(1, Math.max(0, (k - 0.85) / 0.15)) * Math.PI) * 0.005;
+        // 鎏金扫光：每 6 秒左右扫一遍，按 seed 错开相位
+        if (m.sheen && m.sheen.material && m.sheen.material.map) {
+          const phase = (t * 0.16 + m.seed) % 1;
+          m.sheen.material.map.offset.x = -0.35 + phase * 1.7;
+          m.sheen.material.opacity = 0.05 + 0.14 * Math.sin(phase * Math.PI);
+        }
       m.root.position.y -= settle;
 
       const enabled = m.mapping.enabled !== false;

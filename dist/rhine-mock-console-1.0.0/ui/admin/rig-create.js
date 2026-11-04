@@ -197,18 +197,18 @@
           <div class="rig-kind" id="rigKind">
             <button type="button" class="rig-kind__opt is-on" data-kind="LCM">
               <span class="rig-kind__dot"></span>
-              <span><span class="rig-kind__nm">LCM 生命周期<em>版本 / 软件包</em></span>
-              <span class="rig-kind__ds">管网元版本与软件包；琥珀色铭牌，长卡位</span></span>
+              <span><span class="rig-kind__nm">LCM 生命周期管理<em>版本 / 软件包</em></span>
+              <span class="rig-kind__ds">管网元版本与软件包；琥珀色铭牌，顶部版本阶梯</span></span>
             </button>
             <button type="button" class="rig-kind__opt" data-kind="OMC">
               <span class="rig-kind__dot"></span>
               <span><span class="rig-kind__nm">OMC 网元管理<em>纳管 / 账号 / 升级</em></span>
-              <span class="rig-kind__ds">发起升级与纳管；青色铭牌，气道色同步</span></span>
+              <span class="rig-kind__ds">发起升级与纳管；青色铭牌，顶部管理总线</span></span>
             </button>
             <button type="button" class="rig-kind__opt" data-kind="FS">
               <span class="rig-kind__dot"></span>
-              <span><span class="rig-kind__nm">FS 虚层<em>站点 / CPU / 校验</em></span>
-              <span class="rig-kind__ds">虚层平台能力；绿色铭牌，高卡位</span></span>
+              <span><span class="rig-kind__nm">FS 虚拟机管理<em>虚机 / 宿主 / 校验</em></span>
+              <span class="rig-kind__ds">宿主虚机的运行与校验；绿色铭牌，带风扇环</span></span>
             </button>
           </div>
           <input type="hidden" name="kind" value="LCM" />
