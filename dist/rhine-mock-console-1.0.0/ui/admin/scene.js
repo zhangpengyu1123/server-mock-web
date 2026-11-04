@@ -609,20 +609,21 @@ class Rig {
       plate.position.set(0, plateYc, G.cardT / 2 + 0.0036);   // 前移 2mm，跳出铭牌凹位
       root.add(plate);
 
-        // —— 鎏金中文全称：暗色衬板 + 金箔字（生命周期管理 / 网元管理 / 虚拟机管理）——
-        const goldW = Math.min(0.285, (dims.w || 0.40) * 0.70);
+        // —— 鎏金铭牌：主标 LCM / OMC / FS（英文），贴在实测卡面上 ——
+        const goldW = Math.min(0.283, dims.w * 0.72);
         const goldH = goldW * 0.25;
-        const goldY = dims.yMin + dims.h * 0.46;   // 卡面中上部的大块留白
-        const faceZ = dims.zFront + 0.0042;
+        const goldY = dims.yMin + dims.h * 0.46;
+        const faceZ = dims.faceAt(goldY) + 0.0006;   // 距卡面 0.6mm，避免穿插又不像浮贴
+        const backW = goldW + 0.020, backH = goldH + 0.012;
 
-        // 衬板：深色半透 + 细金边，让金字在浅色卡面上"嵌"进去
-        const backW = goldW + 0.022, backH = goldH + 0.013;
+        // 衬板：深色 + 细金边
         const back = new THREE.Mesh(
           new THREE.PlaneGeometry(backW, backH),
           new THREE.MeshBasicMaterial({ color: 0x120e08, transparent: true, opacity: 0.93, toneMapped: false, depthWrite: false })
         );
         back.position.set(0, goldY, faceZ);
         back.renderOrder = 3;
+        back.userData.isFitting = true;
         root.add(back);
 
         const edge = new THREE.LineSegments(
@@ -630,28 +631,30 @@ class Rig {
           new THREE.LineBasicMaterial({ color: 0xc6923c, transparent: true, opacity: 0.75 })
         );
         edge.raycast = () => {};
-        edge.position.set(0, goldY, faceZ + 0.0004);
+        edge.position.set(0, goldY, faceZ + 0.0002);
         root.add(edge);
 
         const gold = new THREE.Mesh(
           new THREE.PlaneGeometry(goldW, goldH),
           new THREE.MeshBasicMaterial({ map: this.goldTex(kind), transparent: true, toneMapped: false, depthWrite: false })
         );
-        gold.position.set(0, goldY, faceZ + 0.0012);
+        gold.position.set(0, goldY, faceZ + 0.0005);
         gold.renderOrder = 4;
+        gold.userData.isFitting = true;
         root.add(gold);
 
-        // 扫光：细窄一条金色高光，慢慢扫过铭牌
+        // 扫光：比衬板略小，扫过时才不会"漏"到白卡面上
         const sheenTex = this.sheenTex();
         const sheen = new THREE.Mesh(
-          new THREE.PlaneGeometry(goldW * 0.92, goldH * 0.94),
+          new THREE.PlaneGeometry(goldW * 0.96, goldH * 0.90),
           new THREE.MeshBasicMaterial({
             map: sheenTex, color: 0xffd98a, transparent: true, opacity: 0.10,
             blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false,
           })
         );
-        sheen.position.set(0, goldY, faceZ + 0.0022);
+        sheen.position.set(0, goldY, faceZ + 0.0009);
         sheen.renderOrder = 5;
+        sheen.userData.isFitting = true;
         root.add(sheen);
 
       const emitters = [].concat(
@@ -736,64 +739,107 @@ class Rig {
    * 返回 { w, h, yMin, zFront } 供鎏金铭牌定位。
    */
   dressCard(root, kind) {
-    const box = new THREE.Box3().setFromObject(root);
-    const size = new THREE.Vector3();
-    box.getSize(size);
-    const dims = { w: size.x || 0.40, h: size.y || 0.42, yMin: box.min.y, zFront: box.max.z };
+    root.updateMatrixWorld(true);
+    const inv = root.matrixWorld.clone().invert();
+    const V3 = THREE.Vector3;
+
+    // 采样卡体顶点（root 局部坐标）：得到包围盒 + "某高度上的卡面 z"
+    const verts = [];
+    const min = [Infinity, Infinity, Infinity];
+    const max = [-Infinity, -Infinity, -Infinity];
+    root.traverse((o) => {
+      if (!o.isMesh || !o.geometry || !o.geometry.attributes.position) return;
+      if (o.userData && o.userData.isFitting) return;
+      const pos = o.geometry.attributes.position;
+      const v = new V3();
+      const step = Math.max(1, Math.floor(pos.count / 900));
+      for (let i = 0; i < pos.count; i += step) {
+        v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld).applyMatrix4(inv);
+        verts.push([v.x, v.y, v.z]);
+        for (let k = 0; k < 3; k++) {
+          if (v.getComponent(k) < min[k]) min[k] = v.getComponent(k);
+          if (v.getComponent(k) > max[k]) max[k] = v.getComponent(k);
+        }
+      }
+    });
+
+    // 卡面 z：给定高度、x 居中范围内最大的 z
+    const faceAt = (y, tol, halfX) => {
+      tol = tol === undefined ? 0.014 : tol;
+      halfX = halfX === undefined ? 0.09 : halfX;
+      let best = null;
+      for (let i = 0; i < verts.length; i++) {
+        const p = verts[i];
+        if (Math.abs(p[1] - y) > tol || Math.abs(p[0]) > halfX) continue;
+        if (best === null || p[2] > best) best = p[2];
+      }
+      return best === null ? 0.010 : best;
+    };
+
+    const dims = {
+      w: max[0] - min[0] || 0.36,
+      h: max[1] - min[1] || 0.42,
+      xHalf: max[0], yMin: min[1], yMax: max[1], zMax: max[2],
+      faceAt,
+    };
+
     const accent = kind === 'OMC' ? C.cyan : kind === 'FS' ? C.green : C.amber;
-    // 与卡体同族的浅色金属，不要用深色块，否则像贴在卡上的黑胶带
-    const shell = new THREE.MeshStandardMaterial({ color: 0xcfc6b6, roughness: 0.55, metalness: 0.25 });
-    const trim = new THREE.MeshStandardMaterial({ color: 0x8d8578, roughness: 0.45, metalness: 0.45 });
+    const shell = new THREE.MeshStandardMaterial({ color: 0xd3cabb, roughness: 0.55, metalness: 0.22 });
+    const trim = new THREE.MeshStandardMaterial({ color: 0x9a9184, roughness: 0.45, metalness: 0.42 });
     const glow = new THREE.MeshStandardMaterial({
-      color: accent, emissive: new THREE.Color(accent), emissiveIntensity: 0.85,
+      color: accent, emissive: new THREE.Color(accent), emissiveIntensity: 0.75,
       roughness: 0.4, metalness: 0.2, toneMapped: false,
     });
-    const add = (mesh, x, y, z) => { mesh.position.set(x, y, z); root.add(mesh); return mesh; };
-    const TOP = box.max.y;
+    const add = (mesh, x, y, z) => {
+      mesh.userData.isFitting = true;
+      mesh.position.set(x, y, z);
+      root.add(mesh);
+      return mesh;
+    };
+    // 贴在卡面上的薄片：厚度朝 +z，正面刚好比卡面高 1mm
+    const facePlate = (geoW, geoH, y, x, thick) => {
+      const z = faceAt(y) + (thick || 0.002) / 2 + 0.0006;
+      const m = new THREE.Mesh(new THREE.BoxGeometry(geoW, geoH, thick || 0.002), trim);
+      return add(m, x || 0, y, z);
+    };
+    // 顶部贴边短檐：跨在卡顶边缘上（下半截压进卡体，上半截露出 3mm），保证"长在一起"
+    const topRim = (w, depth, x, tint) => {
+      const h = 0.014;
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, depth), tint || shell);
+      return add(m, x || 0, max[1] - h / 2 + 0.003, 0.004);
+    };
 
     if (kind === 'LCM') {
-      // 顶部三层"版本阶梯"：逐级抬升的薄板
-      for (let k = 0; k < 3; k++) {
-        const w = 0.33 - k * 0.070;
-        const bar = new THREE.Mesh(new THREE.BoxGeometry(w, 0.006, 0.026), k === 2 ? glow : shell);
-        add(bar, -0.01 + k * 0.012, TOP + 0.005 + k * 0.010, 0.004);
-      }
-      // 卡面右下：时间轴刻度（版本演进）
-      const rail = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.004, 0.004), trim);
-      add(rail, 0.0, dims.yMin + 0.048, dims.zFront + 0.0012);
-      for (let k = 0; k < 5; k++) {
-        const tick = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.016, 0.003), k === 4 ? glow : trim);
-        add(tick, -0.096 + k * 0.048, dims.yMin + 0.056, dims.zFront + 0.0014);
-      }
+      // 顶檐：两道细檐，像版本栈的压条
+      topRim(0.30, 0.020, 0, shell);
+      topRim(0.21, 0.016, -0.01, trim);
     } else if (kind === 'OMC') {
-      // 顶部"管理总线"：一根细梁 + 两个立脚
-      const beam = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.009, 0.022), shell);
-      add(beam, 0, TOP + 0.010, 0.002);
-      [-0.11, 0.11].forEach((x) => {
-        const leg = new THREE.Mesh(new THREE.BoxGeometry(0.010, 0.020, 0.018), trim);
-        add(leg, x, TOP + 0.008, 0.002);
-      });
-      // 顶部天线桅杆：网元管理的"上行链路"
-      const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.0035, 0.0035, 0.085, 8), trim);
-      add(mast, 0.075, TOP + 0.048, 0.002);
-      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.0075, 12, 10), glow);
-      add(bulb, 0.075, TOP + 0.094, 0.002);
-      // 左侧端口凸点（4 个，像被纳管的网元）
-      for (let k = 0; k < 4; k++) {
-        const port = new THREE.Mesh(new THREE.BoxGeometry(0.017, 0.014, 0.008), k === 0 ? glow : trim);
-        add(port, -size.x / 2 + 0.020, dims.yMin + 0.062 + k * 0.026, dims.zFront + 0.0016);
+      // 顶檐：中间留缺口的"管理总线"护罩
+      topRim(0.115, 0.022, -0.095, shell);
+      topRim(0.115, 0.022, 0.095, shell);
+      topRim(0.150, 0.016, 0, trim);
+      // 卡面右下：2×2 端口方块（整体内缩，不压卡边倒角）
+      for (let r = 0; r < 2; r++) {
+        for (let c = 0; c < 2; c++) {
+          const y = dims.yMin + 0.072 + r * 0.030;
+          const x = 0.052 + c * 0.032;
+          const port = facePlate(0.024, 0.022, y, x, 0.0040);
+          port.material = (r === 0 && c === 0) ? glow : trim;
+        }
       }
     } else {
-      // FS：底部"宿主裙边" + 右下双风扇环
-      const skirt = new THREE.Mesh(new THREE.BoxGeometry(size.x * 1.04, 0.012, 0.042), trim);
-      add(skirt, 0, dims.yMin + 0.002, 0.008);
+      // FS：顶檐更宽，底部"宿主裙边"（贴在卡底之上，不外露到卡底以下）
+      topRim(0.34, 0.026, 0, shell);
+      const skirt = new THREE.Mesh(new THREE.BoxGeometry(dims.w * 1.02, 0.012, 0.036), trim);
+      add(skirt, 0, dims.yMin + 0.006, 0.006);
+      // 卡面下部：双风扇环（贴面）
       [-0.042, 0.042].forEach((dx, k) => {
-        const ring = new THREE.Mesh(new THREE.TorusGeometry(0.024, 0.0030, 8, 24), k === 0 ? glow : trim);
-        ring.position.set(dx, dims.yMin + 0.088, dims.zFront + 0.0016);
-        root.add(ring);
-        const hub = new THREE.Mesh(new THREE.CircleGeometry(0.0085, 16), trim);
-        hub.position.set(dx, dims.yMin + 0.088, dims.zFront + 0.0018);
-        root.add(hub);
+        const ringY = dims.yMin + 0.118;
+        const z = faceAt(ringY, 0.02) + 0.0012;
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(0.024, 0.0028, 8, 24), k === 0 ? glow : trim);
+        add(ring, dx, ringY, z);
+        const hub = new THREE.Mesh(new THREE.CircleGeometry(0.0080, 16), trim);
+        add(hub, dx, ringY, z + 0.0004);
       });
     }
     return dims;

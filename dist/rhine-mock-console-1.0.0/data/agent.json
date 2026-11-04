@@ -54,6 +54,28 @@
       },
       "enabled": false,
       "created_at": 1793802991556
+    },
+    {
+      "id": "ep-0004",
+      "host": "127.0.0.1",
+      "port": 18443,
+      "capabilities": [
+        "NEMP",
+        "NEF"
+      ],
+      "cert": {
+        "cn": "mock.rhine.local",
+        "san": [
+          "mock.rhine.local",
+          "127.0.0.1"
+        ],
+        "serial": "7119957E0B79B5E5C14FECB03C247D43",
+        "issued_at": 1793803581416,
+        "expires_at": 1825339581416,
+        "pem": "-----BEGIN CERTIFICATE-----\n# RHINE LAB · DEMO CERT（演示用，不可用于真实 TLS）\n# CN=mock.rhine.local\n# SAN=mock.rhine.local,127.0.0.1\n# SERIAL=7119957E0B79B5E5C14FECB03C247D43\n30175F87F50ED35D6FB866E0BD7EC808\nFCB5B05A54854F265C7A09C12E5476C2\n659CAD10D1070A2AA40D6659D188B24B\nB97609A780B5D1F99391C91A4D121FBC\n8039C26A19ACD5041B2FB1D1A708D79F\nC3C1A07BED43D1F23A836363782AF14A\n\n-----END CERTIFICATE-----"
+      },
+      "enabled": false,
+      "created_at": 1793803581411
     }
   ],
   "elements": [
@@ -345,6 +367,82 @@
         }
       ],
       "created_at": 1793802991811
+    },
+    {
+      "id": "ne-0008",
+      "name": "gNB-HZ-0999",
+      "arch": "SA",
+      "kind": "gNB",
+      "version": "5.2.3",
+      "software": "NR-RAN",
+      "prev_versions": [],
+      "group": "g-hz-01",
+      "components": [
+        "主控板",
+        "业务板"
+      ],
+      "checks": [],
+      "flow": [
+        {
+          "step": "上传软件包",
+          "human": false
+        },
+        {
+          "step": "预检查（参数校验）",
+          "human": false
+        },
+        {
+          "step": "激活",
+          "human": true
+        },
+        {
+          "step": "主备倒换",
+          "human": true
+        },
+        {
+          "step": "完成与回执",
+          "human": false
+        }
+      ],
+      "created_at": 1793803581649
+    },
+    {
+      "id": "ne-0009",
+      "name": "gNB-HZ-0999-copy",
+      "arch": "SA",
+      "kind": "gNB",
+      "version": "5.2.3",
+      "software": "NR-RAN",
+      "prev_versions": [],
+      "group": "g-hz-01",
+      "components": [
+        "主控板",
+        "业务板"
+      ],
+      "checks": [],
+      "flow": [
+        {
+          "step": "上传软件包",
+          "human": false
+        },
+        {
+          "step": "预检查（参数校验）",
+          "human": false
+        },
+        {
+          "step": "激活",
+          "human": true
+        },
+        {
+          "step": "主备倒换",
+          "human": true
+        },
+        {
+          "step": "完成与回执",
+          "human": false
+        }
+      ],
+      "created_at": 1793803581665
     }
   ],
   "groups": [
@@ -458,25 +556,25 @@
         {
           "step": "校验 checksum（sha256）",
           "status": "pass",
-          "at": 1793802992029,
+          "at": 1793803581883,
           "note": "sha256 匹配"
         },
         {
           "step": "校验签名（GPG）",
           "status": "pass",
-          "at": 1793802992029,
+          "at": 1793803581883,
           "note": "GPG 签名有效"
         },
         {
           "step": "校验包与平台版本兼容性",
           "status": "pass",
-          "at": 1793802992029,
+          "at": 1793803581883,
           "note": "3 个软件包与平台版本兼容"
         },
         {
           "step": "校验主备站点一致性",
           "status": "pass",
-          "at": 1793802992029,
+          "at": 1793803581883,
           "note": "主备站点一致"
         }
       ]
@@ -527,6 +625,54 @@
     ]
   },
   "hits": [
+    {
+      "status": 202,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 0,
+      "mapping_id": "map-0003",
+      "at": 1793803581620,
+      "method": "POST",
+      "path": "/alarm/v1/report",
+      "delay_ms": 240,
+      "human": true
+    },
+    {
+      "status": 200,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793803581588,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 45,
+      "human": false
+    },
+    {
+      "status": 500,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793803581511,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 12,
+      "human": false
+    },
+    {
+      "status": 201,
+      "body": "",
+      "content_type": "application/json",
+      "latency_ms": 120,
+      "mapping_id": "map-0001",
+      "at": 1793803581480,
+      "method": "POST",
+      "path": "/nemp/v1/ne/register",
+      "delay_ms": 5,
+      "human": false
+    },
     {
       "status": 202,
       "body": "",
@@ -803,25 +949,25 @@
       ],
       "from_version": "5.2.1",
       "to_version": "5.2.2",
-      "stage": 0,
-      "progress": 20,
+      "stage": 2,
+      "progress": 60,
       "stages": [
         {
           "key": "upload",
           "label": "上传软件包",
-          "state": "running",
+          "state": "done",
           "human": null
         },
         {
           "key": "verify",
           "label": "预检查与参数校验",
-          "state": "pending",
+          "state": "done",
           "human": null
         },
         {
           "key": "activate",
           "label": "激活",
-          "state": "pending",
+          "state": "held",
           "human": {
             "prompt": "升级包已就绪，确认开始激活？",
             "options": [
@@ -838,7 +984,7 @@
                 "effect": "abort"
               }
             ],
-            "state": "pending",
+            "state": "expired",
             "chosen": null,
             "timeout_s": 60,
             "since": 1793802991906
@@ -878,10 +1024,180 @@
         }
       ],
       "created_at": 1793802991906,
-      "updated_at": 1793802991906
+      "updated_at": 1793803052181
     },
     {
       "id": "UPG-0364",
+      "site": "site-hz",
+      "element_ids": [
+        "ne-0001"
+      ],
+      "from_version": "5.2.1",
+      "to_version": "5.2.1",
+      "stage": 2,
+      "progress": 60,
+      "stages": [
+        {
+          "key": "upload",
+          "label": "上传软件包",
+          "state": "done",
+          "human": null
+        },
+        {
+          "key": "verify",
+          "label": "预检查与参数校验",
+          "state": "done",
+          "human": null
+        },
+        {
+          "key": "activate",
+          "label": "激活",
+          "state": "held",
+          "human": {
+            "prompt": "升级包已就绪，确认开始激活？",
+            "options": [
+              {
+                "label": "确认继续",
+                "effect": "continue"
+              },
+              {
+                "label": "稍后处理",
+                "effect": "hold"
+              },
+              {
+                "label": "终止升级",
+                "effect": "abort"
+              }
+            ],
+            "state": "expired",
+            "chosen": null,
+            "timeout_s": 60,
+            "since": 1793802991951
+          }
+        },
+        {
+          "key": "switch",
+          "label": "主备倒换",
+          "state": "pending",
+          "human": {
+            "prompt": "即将主备倒换，请确认现场可以操作",
+            "options": [
+              {
+                "label": "确认继续",
+                "effect": "continue"
+              },
+              {
+                "label": "稍后处理",
+                "effect": "hold"
+              },
+              {
+                "label": "终止升级",
+                "effect": "abort"
+              }
+            ],
+            "state": "pending",
+            "chosen": null,
+            "timeout_s": 45,
+            "since": 1793802991951
+          }
+        },
+        {
+          "key": "done",
+          "label": "完成与回执",
+          "state": "pending",
+          "human": null
+        }
+      ],
+      "created_at": 1793802991951,
+      "updated_at": 1793803052181
+    },
+    {
+      "id": "UPG-0455",
+      "site": "site-hz",
+      "element_ids": [
+        "ne-0001"
+      ],
+      "from_version": "5.2.1",
+      "to_version": "5.2.2",
+      "stage": 0,
+      "progress": 20,
+      "stages": [
+        {
+          "key": "upload",
+          "label": "上传软件包",
+          "state": "running",
+          "human": null
+        },
+        {
+          "key": "verify",
+          "label": "预检查与参数校验",
+          "state": "pending",
+          "human": null
+        },
+        {
+          "key": "activate",
+          "label": "激活",
+          "state": "pending",
+          "human": {
+            "prompt": "升级包已就绪，确认开始激活？",
+            "options": [
+              {
+                "label": "确认继续",
+                "effect": "continue"
+              },
+              {
+                "label": "稍后处理",
+                "effect": "hold"
+              },
+              {
+                "label": "终止升级",
+                "effect": "abort"
+              }
+            ],
+            "state": "pending",
+            "chosen": null,
+            "timeout_s": 60,
+            "since": 1793803581759
+          }
+        },
+        {
+          "key": "switch",
+          "label": "主备倒换",
+          "state": "pending",
+          "human": {
+            "prompt": "即将主备倒换，请确认现场可以操作",
+            "options": [
+              {
+                "label": "确认继续",
+                "effect": "continue"
+              },
+              {
+                "label": "稍后处理",
+                "effect": "hold"
+              },
+              {
+                "label": "终止升级",
+                "effect": "abort"
+              }
+            ],
+            "state": "pending",
+            "chosen": null,
+            "timeout_s": 45,
+            "since": 1793803581759
+          }
+        },
+        {
+          "key": "done",
+          "label": "完成与回执",
+          "state": "pending",
+          "human": null
+        }
+      ],
+      "created_at": 1793803581759,
+      "updated_at": 1793803581759
+    },
+    {
+      "id": "UPG-0546",
       "site": "site-hz",
       "element_ids": [
         "ne-0001"
@@ -926,7 +1242,7 @@
             "state": "pending",
             "chosen": null,
             "timeout_s": 60,
-            "since": 1793802991951
+            "since": 1793803581805
           }
         },
         {
@@ -952,7 +1268,7 @@
             "state": "pending",
             "chosen": null,
             "timeout_s": 45,
-            "since": 1793802991951
+            "since": 1793803581805
           }
         },
         {
@@ -962,8 +1278,8 @@
           "human": null
         }
       ],
-      "created_at": 1793802991951,
-      "updated_at": 1793802991951
+      "created_at": 1793803581805,
+      "updated_at": 1793803581805
     }
   ],
   "users": [
@@ -1016,7 +1332,7 @@
           "step": 1,
           "max": 0,
           "condition": "",
-          "count": 48,
+          "count": 51,
           "used": false
         },
         {
@@ -1074,8 +1390,8 @@
       ],
       "human": null,
       "version": "0.1.1",
-      "hits": 48,
-      "last_hit_at": 1793802991669,
+      "hits": 51,
+      "last_hit_at": 1793803581525,
       "created_at": 1793641707173
     },
     {
@@ -1136,8 +1452,8 @@
         "chosen": null
       },
       "version": "0.2.0",
-      "hits": 20,
-      "last_hit_at": 1793802991764,
+      "hits": 21,
+      "last_hit_at": 1793803581619,
       "created_at": 1793641587173
     },
     {
