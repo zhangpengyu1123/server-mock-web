@@ -240,6 +240,7 @@ class Topo3D {
     this.labels = [];
     this.links = [];
     this.ifaces = [];
+    this.outlines = [];
     this.nodes = [];
     this.build();
     this.bindPick();
@@ -445,66 +446,119 @@ class Topo3D {
   }
 
   /* ------------------------------------------------------------- 连线 */
-  link(a0, b0, opts) {
+  /* ------------------------------------------------------- 底面轮廓（黄线） */
+  /**
+   * 在平面上画一个几何体的"足迹"轮廓：方形 / 圆形 / 三角
+   * shape: 'square' | 'diamond' | 'circle' | 'tri'
+   */
+  outline(shape, x, z, size, opts) {
     opts = opts || {};
-    const a = new THREE.Vector3(...a0);
-    const b = new THREE.Vector3(...b0);
-    const dir = new THREE.Vector3().subVectors(b, a);
+    const r = size / 2;
+    const pts = [];
+    if (shape === 'circle') {
+      const N = 56;
+      for (let i = 0; i <= N; i++) {
+        const a = (i / N) * Math.PI * 2;
+        pts.push(new THREE.Vector3(Math.cos(a) * r, 0, Math.sin(a) * r));
+      }
+    } else if (shape === 'tri') {
+      for (let i = 0; i < 3; i++) {
+        const a = -Math.PI / 2 + (i / 3) * Math.PI * 2;
+        pts.push(new THREE.Vector3(Math.cos(a) * r, 0, Math.sin(a) * r));
+      }
+      pts.push(pts[0].clone());
+    } else {
+      const rot = shape === 'diamond' ? Math.PI / 4 : 0;
+      for (let i = 0; i < 4; i++) {
+        const a = rot + (i / 4) * Math.PI * 2;
+        pts.push(new THREE.Vector3(Math.cos(a) * r, 0, Math.sin(a) * r));
+      }
+      pts.push(pts[0].clone());
+    }
+    const geo = new THREE.BufferGeometry().setFromPoints(pts);
+    const mat = new THREE.LineBasicMaterial({
+      color: opts.color || 0xd08f2c,
+      transparent: true,
+      opacity: opts.opacity === undefined ? 0.85 : opts.opacity,
+    });
+    const line = new THREE.Line(geo, mat);
+    line.position.set(x, 0.010, z);
+    line.renderOrder = 2;
+    line.raycast = () => {};
+    this.root.add(line);
+
+    // 角标：底座轮廓加四角小刻线，像图纸
+    if (opts.ticks) {
+      const t = size * 0.10;
+      [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => {
+        const p = [
+          new THREE.Vector3(sx * r, 0, sz * r),
+          new THREE.Vector3(sx * (r + t), 0, sz * (r + t)),
+        ];
+        const g2 = new THREE.BufferGeometry().setFromPoints(p);
+        const l2 = new THREE.Line(g2, new THREE.LineBasicMaterial({
+          color: opts.color || 0xd08f2c, transparent: true, opacity: 0.55,
+        }));
+        l2.position.set(x, 0.010, z);
+        l2.raycast = () => {};
+        this.root.add(l2);
+      });
+    }
+    this.outlines.push({ line, id: opts.id || null, base: !!opts.base });
+    return line;
+  }
+
+  /** 地面走线：两个足迹之间的一段弧（在平面内），可带编号标签 */
+  trace(a, b, opts) {
+    opts = opts || {};
+    const A = new THREE.Vector3(a.x, 0.012, a.z);
+    const B = new THREE.Vector3(b.x, 0.012, b.z);
+    const dir = new THREE.Vector3().subVectors(B, A);
     const len = dir.length();
-    if (len < 0.001) return;
-    const m = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.0026, 0.0026, len, 5, 1, true),
-      new THREE.MeshStandardMaterial({
-        color: 0xa9a094, roughness: 0.6, metalness: 0,
-        transparent: true, opacity: 0.55, depthWrite: false,
-      })
-    );
-    m.position.copy(a).addScaledVector(dir, 0.5);
-    m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
-    this.root.add(m);
+    if (len < 0.02) return null;
+    // 起止各让出足迹半径
+    const ra = opts.ra || 0;
+    const rb = opts.rb || 0;
+    const n = dir.clone().normalize();
+    const s = A.clone().addScaledVector(n, ra);
+    const e = B.clone().addScaledVector(n, -rb);
+    // 垂直方向拱起一点，避免多条线完全重叠
+    const perp = new THREE.Vector3(-n.z, 0, n.x);
+    const bend = opts.bend === undefined ? 0.06 : opts.bend;
+    const mid = s.clone().add(e).multiplyScalar(0.5).addScaledVector(perp, bend);
+    const curve = new THREE.QuadraticBezierCurve3(s, mid, e);
+    const pts = curve.getPoints(30);
+    const geo = new THREE.BufferGeometry().setFromPoints(pts);
+    const mat = new THREE.LineBasicMaterial({
+      color: opts.color || 0xc79a4e,
+      transparent: true,
+      opacity: opts.opacity === undefined ? 0.75 : opts.opacity,
+    });
+    const line = new THREE.Line(geo, mat);
+    line.renderOrder = 2;
+    line.raycast = () => {};
+    this.root.add(line);
 
-    const dot = new THREE.Mesh(
-      new THREE.SphereGeometry(0.009, 8, 8),
-      new THREE.MeshBasicMaterial({ color: 0xc8a86a, transparent: true, opacity: 0.95, toneMapped: false })
-    );
-    this.root.add(dot);
-    this.links.push({ from: opts.fromId, to: opts.toId, mesh: m, dot, a, b, phase: Math.random() });
+    let tag = null;
+    if (opts.code) {
+      const { tex, aspect } = labelTexture(opts.code, '', { big: 54, ink: '#8a6320', chip: true });
+      const hh = 0.058;
+      tag = new THREE.Mesh(
+        new THREE.PlaneGeometry(hh * aspect, hh),
+        new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false })
+      );
+      const m = curve.getPoint(0.5);
+      tag.position.set(m.x, 0.014, m.z);
+      tag.rotation.x = -Math.PI / 2;      // 平铺在地面上，像丝印
+      tag.renderOrder = 3;
+      this.root.add(tag);
+    }
+    return { line, tag };
   }
 
-  /** 网元间接口：一段抬高的弧线 + 接口编号小标签 */
-  iface(fromName, toName, code, cross) {
-    const A = this.nfPos[fromName];
-    const B = this.nfPos[toName];
-    if (!A || !B) return;
-    const a = A.clone().add(new THREE.Vector3(0, 0.02, 0));
-    const b = B.clone().add(new THREE.Vector3(0, 0.02, 0));
-    const mid = a.clone().add(b).multiplyScalar(0.5);
-    mid.y += cross ? 0.26 : 0.16;              // 跨组拱得更高，避免穿过立方体
-    const curve = new THREE.QuadraticBezierCurve3(a, mid, b);
-    const tube = new THREE.Mesh(
-      new THREE.TubeGeometry(curve, 32, cross ? 0.0036 : 0.0028, 5, false),
-      new THREE.MeshStandardMaterial({
-        color: cross ? 0xb59c72 : 0x9c9386, roughness: 0.62, metalness: 0,
-        transparent: true, opacity: cross ? 0.72 : 0.55, depthWrite: false,
-      })
-    );
-    this.root.add(tube);
-
-    // 接口编号：挂在弧顶上方
-    const top = curve.getPoint(0.5);
-    const { tex, aspect } = labelTexture(code, '', { big: 54, ink: cross ? '#6b5535' : '#575147', chip: true });
-    const hh = 0.062;
-    const tag = new THREE.Mesh(
-      new THREE.PlaneGeometry(hh * aspect, hh),
-      new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false })
-    );
-    tag.position.copy(top).add(new THREE.Vector3(0, 0.045, 0));
-    tag.renderOrder = 6;
-    this.root.add(tag);
-    this.labels.push(tag);
-
-    this.ifaces.push({ from: fromName, to: toName, code, tube, tag, cross });
-  }
+  /* ------------------------------------------------------- 兼容旧调用 */
+  link() { /* 不再使用：连线全部走地面 */ }
+  iface() { /* 不再使用：见 trace */ }
 
   /* ------------------------------------------------------------- 建场 */
   build() {
@@ -518,110 +572,123 @@ class Topo3D {
     this.labels = [];
     this.links = [];
     this.ifaces = [];
+    this.outlines = [];
     this.nfPos = {};
+    this.foot = {};
 
     const st = this.state || {};
     const els = Array.isArray(st.elements) ? st.elements : [];
     const pick = (obj, data) => { obj.userData = Object.assign({}, data); this.nodes.push(obj); };
 
-    /* —— 尺度：整体缩小，靠明度差与阴影分层 —— */
-    const BASE_S = 0.52;
-    const BASE_Y = 0.50;
-    const NF_Y = BASE_Y + 0.60;
-    const COLX = [-0.94, 0, 0.94];
+    /* —— 所有几何体都坐在平面上；尺寸：底座大、业务小 —— */
+    const BASE_S = 0.40;               // 底座立方体边长
+    const COLX = [-0.92, 0, 0.92];     // 三组
     const ROWZ = 0.0;
-    const NE_S = 0.20;
+    const RING = 0.74;                 // 业务网元环绕半径
+    const NE_S = 0.17;                 // 业务网元基准尺寸
 
     const byGroup = {};
     els.forEach((e) => { const g = e.group || 'grp-1'; (byGroup[g] = byGroup[g] || []).push(e); });
     let realIdx = 0;
 
+    const solidH = (shape, s) => (shape === 'cube' ? s : s * 1.42);
+
     BASES.forEach((b, gi) => {
       const gx = COLX[gi];
       const gz = ROWZ;
-      const { grp, core, size } = this.baseCube(b, BASE_S);
-      grp.position.set(gx, BASE_Y, gz);
+
+      // 底座：立方体坐地 + 底部 1/4 黄条 + 方形黄线轮廓（带角标）
+      const { grp, core } = this.baseCube(b, BASE_S);
+      grp.position.set(gx, BASE_S / 2, gz);
       this.root.add(grp);
-      this.contact(gx, gz, 1.02, 0.95);
+      this.outline('square', gx, gz, BASE_S * 1.34, {
+        color: 0xd08f2c, opacity: 0.95, ticks: true, base: true, id: b.id,
+      });
+      this.foot['base:' + b.name] = { x: gx, z: gz, r: BASE_S * 0.67 };
 
       const groupIds = Object.keys(byGroup);
       const boundHere = byGroup[groupIds[gi] || ('grp-' + (gi + 1))] || [];
       const total = boundHere.length;
 
       pick(core, { kind: 'base', id: b.id, label: b.name, base: b.name, group: b.group });
-      this.addLabel(grp, b.name, 'BASE · ' + b.cn + (total ? ' · ' + total + ' NE' : ''), -size * 0.62, 1.0, {
+      this.addLabel(grp, b.name, 'BASE · ' + b.cn + (total ? ' · ' + total + ' NE' : ''), -BASE_S * 0.52, 1.25, {
         big: 56, small: 26, tick: '#a67d48',
-      }, size * 0.92);
-
-      // 同组地环
-      {
-        const ring = new THREE.Mesh(
-          new THREE.RingGeometry(0.56, 0.575, 64),
-          new THREE.MeshBasicMaterial({ color: 0xbfb5a3, transparent: true, opacity: 0.50, side: THREE.DoubleSide })
-        );
-        ring.rotation.x = -Math.PI / 2;
-        ring.position.set(gx, 0.006, gz);
-        ring.raycast = () => {};
-        this.root.add(ring);
-      }
+      }, BASE_S * 1.02);
 
       const members = NFS.filter((n) => n.g === b.group);
-      const span = Math.PI * 0.66;
+      const span = Math.PI * 1.18;
       members.forEach((n, i) => {
         const t = members.length === 1 ? 0.5 : i / (members.length - 1);
         const ang = -span / 2 + span * t;
-        const r = 0.42;
-        const mx = gx + Math.sin(ang) * r;
-        const mz = gz + Math.cos(ang) * r * 0.52 - 0.04;
-        const my = NF_Y + (i % 2 ? 0.07 : 0);
+        const mx = gx + Math.sin(ang) * RING;
+        const mz = gz + Math.cos(ang) * RING * 0.74;
 
-        const size2 = n.shape === 'cube' ? NE_S * 1.12 : NE_S;
-        const geo = this.solid(n.shape, size2);
+        const s2 = n.shape === 'cube' ? NE_S * 1.14 : NE_S;
+        const h = solidH(n.shape, s2);
+        const geo = this.solid(n.shape, s2);
         const mesh = new THREE.Mesh(geo, this.material(n.material));
         mesh.castShadow = true;
         mesh.receiveShadow = true;
-        mesh.position.set(mx, my, mz);
+        mesh.position.set(mx, h / 2 + 0.004, mz);      // 坐在地面上
         mesh.rotation.y = ang * 0.5;
         this.root.add(mesh);
-        this.contact(mx, mz, 0.42, 0.42);
 
-        const edges = new THREE.LineSegments(
-          new THREE.EdgesGeometry(geo, 24),
-          new THREE.LineBasicMaterial({ color: 0x6c665c, transparent: true, opacity: 0.20 })
-        );
-        edges.raycast = () => {};
-        mesh.add(edges);
-
-        this.nfPos[n.name] = new THREE.Vector3(mx, my, mz);
+        // 底面轮廓：形状跟随几何体（圆柱=圆、三棱锥=三角、四棱锥=菱形、立方=方）
+        const footShape = n.shape === 'cyl' ? 'circle' : n.shape === 'tri' ? 'tri' : n.shape === 'quad' ? 'diamond' : 'square';
+        const footD = n.shape === 'cube' ? s2 * 1.6 : s2 * 1.75;
+        this.outline(footShape, mx, mz, footD, {
+          color: 0xd08f2c, opacity: 0.72, id: null,
+        });
+        this.foot[n.name] = { x: mx, z: mz, r: footD / 2 };
 
         const real = els[realIdx % Math.max(1, els.length)] || null;
         if (real) realIdx += 1;
         const labelName = real ? real.name : n.name;
         const sub = real ? (n.name + ' · v' + (real.version || '—')) : (n.name + ' · ' + n.cn);
 
+        this.nfPos[n.name] = new THREE.Vector3(mx, h / 2, mz);
         pick(mesh, { kind: 'ne', id: real ? real.id : n.id, label: labelName, code: n.name, element: real || null });
-        this.addLabel(mesh, labelName, sub, n.shape === 'cube' ? 0.18 : 0.155, 0.85, {
-          big: 46, small: 24, tick: '#a67d48',
-        });
+        // 网元标签挂一个空 Group 跟随位置（billboard）
+        const holder = new THREE.Group();
+        holder.position.set(mx, h / 2, mz);
+        this.root.add(holder);
+        this.addLabel(holder, labelName, sub, h / 2 + 0.13, 0.88, { big: 46, small: 24, tick: '#a67d48' });
 
-        this.link([gx, BASE_Y + size * 0.5, gz], [mx, my - 0.10, mz], { fromId: b.id, toId: real ? real.id : n.id });
+        // 挂载：底座轮廓 → 业务网元轮廓（地面走线）
+        this.trace({ x: gx, z: gz }, { x: mx, z: mz }, {
+          ra: BASE_S * 0.67, rb: footD / 2, bend: 0.03, color: 0xc79a4e, opacity: 0.40,
+        });
       });
     });
 
-    // 网元之间的连线：同组（细、灰）+ 跨组（略粗、暖灰），带接口编号
-    IFACES.forEach(([a, b, code, cross]) => this.iface(a, b, code, cross));
+    // 网元间接口：轮廓之间走线，编号平铺在线上
+    IFACES.forEach(([a, b, code, cross]) => {
+      const A = this.foot[a];
+      const B = this.foot[b];
+      if (!A || !B) return;
+      this._bendFlip = !this._bendFlip;
+      const res = this.trace(A, B, {
+        ra: A.r, rb: B.r,
+        bend: cross ? (this._bendFlip ? 0.34 : -0.34) : (this._bendFlip ? 0.10 : -0.10),
+        color: cross ? 0xcf9a3f : 0xd8a95a,
+        opacity: cross ? 0.85 : 0.7,
+        code,
+      });
+      if (res) this.ifaces.push({ from: a, to: b, code, cross, line: res.line, tag: res.tag });
+    });
 
-    // LCM 沙漏
+    // LCM 沙漏：坐地 + 菱形轮廓
     {
-      const lx = COLX[2] + 0.86;
-      const lz = ROWZ + 0.26;
-      const { grp, height } = this.hourglass(0.24);
-      grp.position.set(lx, BASE_Y + 0.12, lz);
+      const lx = COLX[2] + 0.84;
+      const lz = ROWZ + 0.30;
+      const S = 0.20;
+      const { grp, height } = this.hourglass(S);
+      grp.position.set(lx, height / 2, lz);
       this.root.add(grp);
-      this.contact(lx, lz, 0.52, 0.55);
+      this.outline('diamond', lx, lz, S * 2.1, { color: 0xd08f2c, opacity: 0.8 });
 
       const hit = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.20, 0.20, height, 12, 1, true),
+        new THREE.CylinderGeometry(S * 0.62, S * 0.62, height, 10, 1, true),
         new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
       );
       hit.raycast = () => {};
@@ -630,26 +697,28 @@ class Topo3D {
       this.root.add(hit);
       this.nodes.push(hit);
 
-      this.addLabel(grp, 'LCM', '生命周期 · 版本沙漏', height * 0.66, 0.9, {
-        big: 54, small: 24, tick: '#a67d48',
-      });
+      const holder = new THREE.Group();
+      holder.position.copy(grp.position);
+      this.root.add(holder);
+      this.addLabel(holder, 'LCM', '生命周期 · 版本沙漏', height / 2 + 0.16, 0.92, { big: 54, small: 24, tick: '#a67d48' });
       this.lcmGrp = grp;
     }
 
-    // 相机：按画布宽高比装下整排
-    const target = new THREE.Vector3(0.34, BASE_Y + 0.46, 0.02);
+    // 相机：俯视一点，按画布宽高比装下整排
+    const target = new THREE.Vector3(0.30, 0.12, 0.02);
     const aspect = this.camera.aspect || 2.1;
     const vFov = (this.camera.fov * Math.PI) / 180;
     const hFov = 2 * Math.atan(Math.tan(vFov / 2) * aspect);
-    const halfW = 1.72;
-    const dist = halfW / Math.tan(hFov / 2) * 1.14;   // 留 14% 余量，别让标签切边
-    const dir = new THREE.Vector3(0.26, 0.50, 1).normalize();
+    const halfW = 1.86;
+    const dist = halfW / Math.tan(hFov / 2) * 1.10;
+    const dir = new THREE.Vector3(0.18, 1.05, 1).normalize();   // 俯角加深，看清底面轮廓
     this.camera.position.copy(target).addScaledVector(dir, dist);
     this.controls.target.copy(target);
     this.camera.lookAt(target);
     this.controls.update();
     this.select(this.selected || null);
   }
+
 
   /* ------------------------------------------------------------- 选中 */
   select(id) {
@@ -676,21 +745,21 @@ class Topo3D {
         }
       });
     });
-    (this.links || []).forEach((l) => {
-      const hit = l.from === id || l.to === id;
-      l.mesh.material.opacity = none ? 0.55 : (hit ? 0.95 : 0.18);
-      l.mesh.material.color.setHex(hit && !none ? 0xa67d48 : 0xa9a094);
-      l.dot.material.opacity = none ? 0.9 : (hit ? 1 : 0.15);
-      l.dot.visible = none || hit;
+    // 足迹轮廓：选中的亮成深橘，其余淡下去
+    (this.outlines || []).forEach((o) => {
+      const hit = o.id && o.id === id;
+      const mat = o.line.material;
+      mat.opacity = none ? (o.base ? 0.92 : 0.62) : (hit ? 1 : (o.base ? 0.55 : 0.22));
+      mat.color.setHex(hit ? 0xe07b1e : 0xd08f2c);
+      o.line.scale.setScalar(hit ? 1.06 : 1);
     });
-    // 接口弧线：命中选中的网元就点亮
+    // 接口走线：命中选中的网元就点亮
     (this.ifaces || []).forEach((f) => {
-      const hit = f.from === id || f.to === id;
       const selName = none ? null : ((this.nodes.find((n) => n.userData.id === id) || {}).userData || {}).code;
-      const involves = none ? false : (hit || selName === f.from || selName === f.to);
-      f.tube.material.opacity = none ? (f.cross ? 0.55 : 0.42) : (involves ? 0.95 : 0.10);
-      f.tube.material.color.setHex(involves ? 0xa67d48 : (f.cross ? 0xbfa87e : 0xa39a8c));
-      f.tag.material.opacity = none ? 1 : (involves ? 1 : 0.25);
+      const involves = none ? false : (f.from === id || f.to === id || selName === f.from || selName === f.to);
+      f.line.material.opacity = none ? (f.cross ? 0.9 : 0.75) : (involves ? 1 : 0.12);
+      f.line.material.color.setHex(involves ? 0xe07b1e : (f.cross ? 0xcf9a3f : 0xd8a95a));
+      if (f.tag) f.tag.material.opacity = none ? 1 : (involves ? 1 : 0.2);
     });
   }
 
@@ -737,14 +806,6 @@ class Topo3D {
   loop() {
     this.raf = requestAnimationFrame(() => this.loop());
     this.labels.forEach((l) => { if (l.parent) l.quaternion.copy(this.camera.quaternion); });
-    const now = (performance.now() / 3000);
-    if (this.links && this.links.length) {
-      this.links.forEach((l) => {
-        const e = ((now + l.phase) % 1);
-        l.dot.position.lerpVectors(l.a, l.b, e);
-        l.dot.material.opacity = 0.25 + Math.sin(e * Math.PI) * 0.75;
-      });
-    }
     if (this.lcmGrp) this.lcmGrp.rotation.y += 0.0035;
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
