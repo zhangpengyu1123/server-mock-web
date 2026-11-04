@@ -1,92 +1,160 @@
 /* ============================================================================
-   RHINE LAB · 3D 拓扑（v3 · Blender 资产）
+   RHINE LAB · 业务面 3D 拓扑（v4 · 5GC 网元几何）
    ----------------------------------------------------------------------------
-   资产来自 console/assets/blender/topo_assets_v1.py（米白档案质感 + 琥珀光条）：
-     topo_site.glb  站点平台（1.62 × 1.18，凹槽/短脚/前缘光条/四角刻线）
-     topo_group.glb 网元组托板（2.10 × 0.72，3 条卡槽）
-     topo_ne.glb    网元模块（立卡 0.36 × 0.48，标签凹槽 + 顶缘光带 + 散热筋）
-     topo_comp.glb  组件芯片（0.22，琥珀条与缺口）
-   交互：点选高亮邻接 / 双击下钻（element→component） / 拖拽旋转缩放
-   资产加载失败时回退程序化方块，保证不白屏。
+   设计口径（按需求重写）：
+     · 只管"网元"，不再画站点/机架/托盘这些非网元设备
+     · 每个"同组网元"有且只有一个底座网元；同组业务网元全部挂在这个底座上
+     · 底座网元三种：CSP / CGP / CSPEdge，都是正方体
+         CSP     玻璃材质
+         CGP     金属材质
+         CSPEdge 信息数码体（自发光 + 数字纹理 + 线框）
+       三者底部 1/4 用黄条包裹，黄条上写 BASE
+     · 其他网元用圆柱 / 三棱锥 / 四棱锥 / 正方体，材质各异
+     · 另设 LCM 几何示例体：上下两个四棱锥对接成沙漏
+   交互：点选高亮同组 / 双击下钻 / 拖拽旋转缩放
    ==========================================================================*/
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-const C = { paper: 0xeae5e1, ink: 0x171713, amber: 0xa67d48, sand: 0xc1b8a7, muted: 0x8e897b };
-const ASSETS = './assets/';
+const PAL = {
+  paper: 0xe9e4de,
+  ink: 0x171713,
+  amber: 0xb8853f,
+  base: 0xf2c437,          // 底座黄条
+  glass: 0xbfe4ef,
+  metal: 0xc9c1b0,
+  data: 0x16232b,
+  soft: 0xd8d2c8,
+};
 
-let rig = null;
-let ASSET_PROMISE = null;   // 资产只拉一次，rebuild 复用
+/* 环境贴图：一条竖向渐变当"反射天光"，金属/玻璃才有质感（无需外部 HDR） */
+function envTexture() {
+  const cv = document.createElement('canvas');
+  cv.width = 64; cv.height = 32;
+  const g = cv.getContext('2d');
+  const grd = g.createLinearGradient(0, 0, 0, 32);
+  grd.addColorStop(0.00, '#ffffff');
+  grd.addColorStop(0.42, '#e4dcd1');
+  grd.addColorStop(0.70, '#a89f92');
+  grd.addColorStop(1.00, '#5d5850');
+  g.fillStyle = grd;
+  g.fillRect(0, 0, 64, 32);
+  // 顶部一块亮斑，金属表面会出现一条高光带
+  g.fillStyle = 'rgba(255,252,244,.9)';
+  g.beginPath();
+  g.ellipse(18, 7, 12, 5, 0, 0, Math.PI * 2);
+  g.fill();
+  const t = new THREE.CanvasTexture(cv);
+  t.mapping = THREE.EquirectangularReflectionMapping;
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
 
+/* 事件文本贴图：数字流（CSPEdge 的"信息数码体"） */
+function digitTexture(seed) {
+  const W = 256, H = 256;
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const g = cv.getContext('2d');
+  g.fillStyle = '#0d181e';
+  g.fillRect(0, 0, W, H);
+  g.font = '600 15px "JetBrains Mono",ui-monospace,monospace';
+  let s = seed || 7;
+  const rnd = () => { s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff; };
+  for (let y = 10; y < H; y += 17) {
+    for (let x = 6; x < W; x += 30) {
+      const v = Math.floor(rnd() * 256).toString(16).padStart(2, '0').toUpperCase();
+      g.fillStyle = rnd() > 0.62 ? 'rgba(120,235,214,.95)' : 'rgba(120,235,214,.30)';
+      g.fillText(v, x, y);
+    }
+  }
+  g.strokeStyle = 'rgba(120,235,214,.20)';
+  g.lineWidth = 1;
+  for (let y = 0; y < H; y += 34) { g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
+  const t = new THREE.CanvasTexture(cv);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+/* 黄条贴图：写 BASE（四面环绕） */
+function baseBandTexture() {
+  const W = 512, H = 128;
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const g = cv.getContext('2d');
+  g.fillStyle = '#f2c437';
+  g.fillRect(0, 0, W, H);
+  // 斜纹
+  g.strokeStyle = 'rgba(23,23,19,.12)';
+  g.lineWidth = 10;
+  for (let x = -H; x < W + H; x += 34) {
+    g.beginPath(); g.moveTo(x, H); g.lineTo(x + H, 0); g.stroke();
+  }
+  g.fillStyle = '#171713';
+  g.font = '700 58px "JetBrains Mono",ui-monospace,monospace';
+  g.textBaseline = 'middle';
+  g.textAlign = 'center';
+  g.fillText('BASE', W * 0.5, H * 0.52);
+  // 两侧细刻度
+  g.fillStyle = 'rgba(23,23,19,.55)';
+  for (let i = 0; i < 8; i++) { g.fillRect(26, 24 + i * 11, 18, 3); g.fillRect(W - 44, 24 + i * 11, 18, 3); }
+  const t = new THREE.CanvasTexture(cv);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 4;
+  return t;
+}
+
+/* 文字标签（billboard） */
 function labelTexture(title, sub, opts) {
   opts = opts || {};
-  const W = 512, H = 160;
+  const W = 512, H = 168;
   const cv = document.createElement('canvas');
   cv.width = W; cv.height = H;
   const g = cv.getContext('2d');
   g.clearRect(0, 0, W, H);
   g.textBaseline = 'middle';
-  g.fillStyle = '#171713';
-  g.font = '600 ' + (opts.big || 60) + 'px "JetBrains Mono","PingFang SC","Microsoft YaHei",monospace';
+  if (opts.tick) { g.fillStyle = opts.tick; g.fillRect(0, 26, 5, H - 52); }
+  g.fillStyle = opts.ink || '#171713';
+  g.font = '600 ' + (opts.big || 56) + 'px "JetBrains Mono","PingFang SC","Microsoft YaHei",monospace';
   let text = String(title || '');
-  while (g.measureText(text).width > W - 40 && text.length > 3) text = text.slice(0, -2) + '…';
-  g.fillText(text, 18, opts.sub ? H * 0.40 : H * 0.52);
+  while (g.measureText(text).width > W - 54 && text.length > 2) text = text.slice(0, -2) + '…';
+  g.fillText(text, 20, opts.sub ? H * 0.40 : H * 0.52);
   if (sub) {
     g.fillStyle = 'rgba(23,23,19,.55)';
-    g.font = '500 ' + (opts.small || 32) + 'px "JetBrains Mono","PingFang SC",monospace';
-    g.fillText(String(sub), 18, H * 0.75);
+    g.font = '500 ' + (opts.small || 30) + 'px "JetBrains Mono","PingFang SC",monospace';
+    let s = String(sub);
+    while (g.measureText(s).width > W - 54 && s.length > 2) s = s.slice(0, -2) + '…';
+    g.fillText(s, 20, H * 0.74);
   }
-  if (opts.tick) { g.fillStyle = opts.tick; g.fillRect(0, 4, 6, H - 8); }
   const t = new THREE.CanvasTexture(cv);
   t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = 4;
   return { tex: t, aspect: W / H };
 }
 
-/* 卡面铭牌贴图：名称 + 版本 + 编号（贴在 Blender 的 MAT_TopoPlate 面上） */
-function nameplateTexture(name, version, code) {
-  const W = 512, H = 256;
-  const cv = document.createElement('canvas');
-  cv.width = W; cv.height = H;
-  const g = cv.getContext('2d');
-  g.fillStyle = '#171713';
-  g.fillRect(0, 0, W, H);
-  g.strokeStyle = 'rgba(234,229,225,.30)';
-  g.lineWidth = 2;
-  g.strokeRect(10, 10, W - 20, H - 20);
-  g.fillStyle = '#a67d48';
-  g.fillRect(20, 20, 6, 34);
-  g.fillStyle = 'rgba(234,229,225,.50)';
-  g.font = '500 24px "JetBrains Mono",monospace';
-  g.fillText(String(code || ''), 34, 46);
-  g.fillStyle = '#eae5e1';
-  g.font = '600 58px "JetBrains Mono","PingFang SC",monospace';
-  let nm = String(name || '');
-  while (g.measureText(nm).width > W - 60 && nm.length > 4) nm = nm.slice(0, -2) + '…';
-  g.fillText(nm, 30, 132);
-  g.fillStyle = '#a67d48';
-  g.font = '600 40px "JetBrains Mono",monospace';
-  g.fillText('v' + String(version || ''), 30, 200);
-  g.fillStyle = 'rgba(234,229,225,.25)';
-  for (let i = 0; i < 7; i++) g.fillRect(W - 150 + i * 16, 184, 8, 3);
-  const tex = new THREE.CanvasTexture(cv);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  tex.anisotropy = 8;
-  return tex;
-}
+// 单例：宿主容器被重建时销毁旧实例
+let rig = null;
 
-const MAT = {};
-function mat(color, rough) {
-  const k = 'm' + color + rough;
-  if (!MAT[k]) MAT[k] = new THREE.MeshStandardMaterial({ color, roughness: rough });
-  return MAT[k];
-}
-function glow(color, intensity) {
-  const k = 'g' + color + intensity;
-  if (!MAT[k]) MAT[k] = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: intensity, roughness: 0.42 });
-  return MAT[k];
-}
+/* ---------------------------------------------------------------- 5GC 目录 */
+/* 底座网元：同组唯一，三种形状都是正方体，仅材质不同 */
+const BASES = [
+  { id: 'base-CSP', name: 'CSP', shape: 'cube', material: 'glass', group: 'grp-1', cn: '云服务平台' },
+  { id: 'base-CGP', name: 'CGP', shape: 'cube', material: 'metal', group: 'grp-2', cn: '云网关平台' },
+  { id: 'base-CSPEdge', name: 'CSPEdge', shape: 'cube', material: 'data', group: 'grp-3', cn: '边缘平台' },
+];
+
+/* 业务网元：全部挂在各自的底座上（同组只有 1 个底座） */
+const NFS = [
+  { id: 'nf-amf', name: 'AMF', shape: 'cyl', material: 'metal', g: 'grp-1', cn: '接入与移动性管理' },
+  { id: 'nf-ausf', name: 'AUSF', shape: 'tri', material: 'glass', g: 'grp-1', cn: '鉴权服务器' },
+  { id: 'nf-udm', name: 'UDM', shape: 'quad', material: 'soft', g: 'grp-1', cn: '统一数据管理' },
+  { id: 'nf-smf', name: 'SMF', shape: 'cyl', material: 'glass', g: 'grp-2', cn: '会话管理' },
+  { id: 'nf-pcf', name: 'PCF', shape: 'cube', material: 'metal', g: 'grp-2', cn: '策略控制' },
+  { id: 'nf-nrf', name: 'NRF', shape: 'tri', material: 'metal', g: 'grp-2', cn: '网络存储' },
+  { id: 'nf-upf', name: 'UPF', shape: 'quad', material: 'metal', g: 'grp-3', cn: '用户平面' },
+  { id: 'nf-nssf', name: 'NSSF', shape: 'cyl', material: 'soft', g: 'grp-3', cn: '网络切片选择' },
+];
 
 class Topo3D {
   constructor(host, state, onPick, onDrill) {
@@ -99,11 +167,11 @@ class Topo3D {
     const h = host.clientHeight || 430;
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(C.paper);
-    this.scene.fog = new THREE.FogExp2(C.paper, 0.030);
+    this.scene.background = new THREE.Color(PAL.paper);
+    this.scene.fog = new THREE.FogExp2(PAL.paper, 0.016);
 
     this.camera = new THREE.PerspectiveCamera(34, w / h, 0.05, 80);
-    this.camera.position.set(2.6, 2.3, 3.0);
+    this.camera.position.set(3.3, 3.0, 4.4);
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
@@ -111,237 +179,222 @@ class Topo3D {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.02;
+    this.renderer.toneMappingExposure = 1.04;
     host.appendChild(this.renderer.domElement);
     this.renderer.domElement.style.display = 'block';
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.08;
-    this.controls.minDistance = 1.4;
-    this.controls.maxDistance = 9;
-    this.controls.minPolarAngle = Math.PI * 0.12;
-    this.controls.maxPolarAngle = Math.PI * 0.40;
-    this.controls.minAzimuthAngle = -Math.PI * 0.45;
-    this.controls.maxAzimuthAngle = Math.PI * 0.45;
+    this.controls.minDistance = 1.8;
+    this.controls.maxDistance = 11;
+    this.controls.minPolarAngle = Math.PI * 0.10;
+    this.controls.maxPolarAngle = Math.PI * 0.46;
+    this.controls.minAzimuthAngle = -Math.PI * 0.55;
+    this.controls.maxAzimuthAngle = Math.PI * 0.55;
     this.controls.enablePan = false;
+
+    this.env = envTexture();
+    this.scene.environment = this.env;
 
     this.lights();
     this.floor();
+
     this.labels = [];
     this.links = [];
-    this.models = null;
-    this.loader = new GLTFLoader();
-    // 加载态骨架：资产下载完成前给可读反馈
-    this.skeleton = document.createElement('div');
-    this.skeleton.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;background:rgba(234,229,225,.92);z-index:2;font:600 9px "JetBrains Mono",monospace;letter-spacing:.22em;color:rgba(23,23,19,.55)';
-    this.skeleton.innerHTML = '<div>T O P O L O G Y &nbsp; L O A D I N G</div><div style="width:120px;height:1px;background:rgba(23,23,19,.18);overflow:hidden"><i style="display:block;width:40%;height:1px;background:#a67d48;animation:rhineLoad 1.1s ease-in-out infinite"></i></div><style>@keyframes rhineLoad{0%{transform:translateX(-100%)}100%{transform:translateX(320%)}}</style>';
-    host.appendChild(this.skeleton);
-    const done = () => {
-      if (this.skeleton && this.skeleton.parentNode) this.skeleton.remove();
-      this.skeleton = null;
-      this.build();
-    };
-    this.loadModels().then(done).catch(() => {
-      if (this.skeleton) this.skeleton.innerHTML = '<div>ASSET FALLBACK</div><div style="font-size:8px;opacity:.6">资产加载失败，使用程序化几何</div>';
-      setTimeout(done, 600);
-    });
+    this.nodes = [];
+    this.build();
     this.bindPick();
     this.loop();
   }
 
   lights() {
-    this.scene.add(new THREE.HemisphereLight(0xffffff, C.sand, 1.0));
-    const key = new THREE.DirectionalLight(0xfff6ea, 1.85);
-    key.position.set(-3.2, 5.2, 3.4);
+    this.scene.add(new THREE.HemisphereLight(0xffffff, 0xd8d0c4, 1.05));
+    const key = new THREE.DirectionalLight(0xfff4e6, 2.0);
+    key.position.set(-3.4, 5.6, 3.6);
     key.castShadow = true;
     key.shadow.mapSize.set(2048, 2048);
     const sc = key.shadow.camera;
     sc.left = -6; sc.right = 6; sc.top = 6; sc.bottom = -6;
-    key.shadow.bias = -0.0008;
+    key.shadow.bias = -0.0009;
     this.scene.add(key);
-    const rim = new THREE.DirectionalLight(0xffd9a8, 0.55);
-    rim.position.set(3.6, 2.6, -3.2);
+    const rim = new THREE.DirectionalLight(0xffd9a8, 0.6);
+    rim.position.set(3.8, 2.4, -3.6);
     this.scene.add(rim);
-    this.bounce = new THREE.PointLight(0xffbf78, 1.1, 5, 2);
-    this.bounce.position.set(0, 0.32, 1.2);
-    this.scene.add(this.bounce);
   }
 
+  /* 平面：细网格，说明"这些东西悬浮在平面上" */
   floor() {
-    const f = new THREE.Mesh(new THREE.PlaneGeometry(40, 40),
-      new THREE.MeshStandardMaterial({ color: 0xe8e3dc, roughness: 0.94 }));
+    const f = new THREE.Mesh(
+      new THREE.PlaneGeometry(60, 60),
+      new THREE.MeshStandardMaterial({ color: 0xece7e0, roughness: 0.95, metalness: 0 })
+    );
     f.rotation.x = -Math.PI / 2;
     f.receiveShadow = true;
     this.scene.add(f);
+
+    const grid = new THREE.GridHelper(24, 24, 0xc7bfb2, 0xd9d2c7);
+    grid.position.y = 0.002;
+    grid.material.transparent = true;
+    grid.material.opacity = 0.55;
+    this.scene.add(grid);
   }
 
-  async loadModels() {
-    // 单文件资产：一次请求拿全部模型（模块级缓存，rebuild 不再重复下载）
-    if (!ASSET_PROMISE) {
-      ASSET_PROMISE = new Promise((res, rej) =>
-        this.loader.load(ASSETS + 'topo_all.glb?v=1', res, undefined, rej));
-    }
-    const gltf = await ASSET_PROMISE;
-    const NAMES = {
-      TOPO_SITE: 'site',
-      TOPO_GROUP: 'group',
-      TOPO_NE: 'ne',
-      TOPO_COMP_CTRL: 'comp_ctrl',
-      TOPO_COMP_SWITCH: 'comp_switch',
-      TOPO_COMP_SERVICE: 'comp_service',
-      TOPO_COMP_POWER: 'comp_power',
-      TOPO_COMP_FAN: 'comp_fan',
-    };
-    this.models = {};
-    const roots = [];
-    gltf.scene.traverse((o) => {
-      if (o.parent === gltf.scene) roots.push(o);
-    });
-    roots.forEach((node) => {
-      const key = NAMES[node.name];
-      if (!key) return;
-      const holder = new THREE.Group();
-      const clone = node.clone(true);
-      clone.position.set(0, 0, 0);
-      clone.rotation.set(0, 0, 0);
-      holder.add(clone);
-      this.models[key] = { scene: holder };
-    });
-    // 通用芯片兜底 = 主控板
-    if (!this.models.comp) this.models.comp = this.models.comp_ctrl || null;
-  }
-
-  /** 组件名映射到资产：主控/交换/业务/电源/风扇，其余用通用芯片 */
-  compKind(name) {
-    const s = String(name || '');
-    if (/主控|ctrl|control/i.test(s)) return 'comp_ctrl';
-    if (/交换|switch/i.test(s)) return 'comp_switch';
-    if (/业务|service|业务板/i.test(s)) return 'comp_service';
-    if (/电源|power|psu/i.test(s)) return 'comp_power';
-    if (/风扇|fan/i.test(s)) return 'comp_fan';
-    return 'comp';
-  }
-
-  inst(kind) {
-    if (this.models && !this.models[kind]) kind = 'comp';
-    if (!this.models) return null;
-    const o = this.models[kind].scene.clone(true);
-    o.traverse((c) => {
-      if (c.isMesh) {
-        c.castShadow = true;
-        c.receiveShadow = true;
-        c.material = Array.isArray(c.material) ? c.material.map((m) => m.clone()) : c.material.clone();
-      }
-    });
-    return o;
-  }
-
-  /** 卡面铭牌：以 MAT_TopoPlate 面的网格为父级，前后各贴一张（不依赖 UV 朝向） */
-  paintNameplate(mod, name, version, code) {
-    const tex = nameplateTexture(name, version, code);
-    let count = 0;
-    mod.traverse((c) => {
-      if (!c.isMesh) return;
-      const mats = Array.isArray(c.material) ? c.material : [c.material];
-      const plateIdx = mats.findIndex((m) => /TopoPlate/i.test(m.name || ''));
-      if (plateIdx < 0) return;
-      // 该网格的包围盒 → 取最薄的轴作为法线方向
-      c.geometry.computeBoundingBox();
-      const bb = c.geometry.boundingBox;
-      const size = bb.getSize(new THREE.Vector3());
-      const axes = [['x', size.x], ['y', size.y], ['z', size.z]].sort((a, b) => a[1] - b[1]);
-      const thin = axes[0][0];                 // 最薄轴 = 面法线方向
-      const faceAxes = axes.slice(1);          // 面内两轴（升序）
-      const big = faceAxes[1], small = faceAxes[0];
-      const w = big[1] * 0.94;                 // 宽 = 较长轴
-      const h = small[1] * 0.94;               // 高 = 较短轴
-      const flip = big[0] === 'y';             // 若长轴是 y，需要把平面转 90°
-      const off = axes[0][1] / 2 + 0.0015;
-      const center = bb.getCenter(new THREE.Vector3());
-
-      [1, -1].forEach((sign) => {
-        const plane = new THREE.Mesh(
-          new THREE.PlaneGeometry(w, h),
-          new THREE.MeshBasicMaterial({ map: tex, toneMapped: false, side: THREE.DoubleSide })
-        );
-        plane.position.copy(center);
-        if (thin === 'x') { plane.position.x += sign * off; plane.rotation.y = sign > 0 ? Math.PI / 2 : -Math.PI / 2; if (flip) plane.rotation.z = Math.PI / 2; }
-        else if (thin === 'y') { plane.position.y += sign * off; plane.rotation.x = sign > 0 ? -Math.PI / 2 : Math.PI / 2; if (flip) plane.rotation.z = Math.PI / 2; }
-        else { plane.position.z += sign * off; if (sign < 0) plane.rotation.y = Math.PI; if (flip) plane.rotation.z = Math.PI / 2; }
-        plane.renderOrder = 7;
-        c.add(plane);
-        count++;
+  /* ------------------------------------------------------------- 材质 */
+  material(kind) {
+    if (kind === 'glass') {
+      return new THREE.MeshPhysicalMaterial({
+        color: PAL.glass, metalness: 0, roughness: 0.05,
+        transmission: 0.86, thickness: 0.55, ior: 1.46,
+        transparent: true, opacity: 0.62,
+        clearcoat: 1, clearcoatRoughness: 0.04,
+        envMapIntensity: 1.5, side: THREE.DoubleSide,
+        attenuationColor: new THREE.Color(0x9fd2e2), attenuationDistance: 1.2,
       });
+    }
+    if (kind === 'metal') {
+      return new THREE.MeshStandardMaterial({
+        color: PAL.metal, metalness: 0.96, roughness: 0.24,
+        envMapIntensity: 1.35,
+        emissive: 0x120f0b, emissiveIntensity: 0.5,
+      });
+    }
+    if (kind === 'data') {
+      const tex = digitTexture(11);
+      return new THREE.MeshStandardMaterial({
+        color: PAL.data, metalness: 0.5, roughness: 0.35,
+        map: tex, emissiveMap: tex, emissive: 0x7de8cf, emissiveIntensity: 0.55,
+        envMapIntensity: 0.8,
+      });
+    }
+    // soft：哑光陶土
+    return new THREE.MeshStandardMaterial({ color: PAL.soft, metalness: 0.1, roughness: 0.78, envMapIntensity: 0.6 });
+  }
+
+  /* ------------------------------------------------------------- 几何体 */
+  solid(shape, size) {
+    const s = size || 0.22;
+    if (shape === 'cyl') return new THREE.CylinderGeometry(s * 0.52, s * 0.52, s * 1.5, 28);
+    if (shape === 'tri') return new THREE.ConeGeometry(s * 0.72, s * 1.5, 3);
+    if (shape === 'quad') {
+      const g = new THREE.ConeGeometry(s * 0.74, s * 1.5, 4, 1);
+      g.rotateY(Math.PI / 4);
+      return g;
+    }
+    return new THREE.BoxGeometry(s, s, s);
+  }
+
+  /** 底座正方体 + 底部 1/4 黄条（BASE）+ 材质 */
+  baseCube(base, size) {
+    const grp = new THREE.Group();
+    const S = size || 0.66;
+    const core = new THREE.Mesh(new THREE.BoxGeometry(S, S, S), this.material(base.material));
+    core.castShadow = true;
+    core.receiveShadow = true;
+    grp.add(core);
+
+    // 黄条：正好包住底部 1/4
+    const bandH = S / 4;
+    const bandTex = baseBandTexture();
+    const bandSide = new THREE.MeshStandardMaterial({
+      color: 0xffffff, map: bandTex, roughness: 0.55, metalness: 0.05,
     });
-    return count;
+    const bandTop = new THREE.MeshStandardMaterial({ color: PAL.base, roughness: 0.55, metalness: 0.05 });
+    const band = new THREE.Mesh(
+      new THREE.BoxGeometry(S * 1.012, bandH, S * 1.012),
+      [bandSide, bandSide, bandTop, bandTop, bandSide, bandSide]
+    );
+    band.position.y = -S / 2 + bandH / 2;
+    band.castShadow = true;
+    band.receiveShadow = true;
+    grp.add(band);
+
+    // 数码体/玻璃体加一圈细线框，轮廓更清楚
+    const edges = new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.BoxGeometry(S, S, S)),
+      new THREE.LineBasicMaterial({
+        color: base.material === 'data' ? 0x7de8cf : 0x8b8478,
+        transparent: true,
+        opacity: base.material === 'data' ? 0.75 : 0.45,
+      })
+    );
+    edges.raycast = () => {};
+    grp.add(edges);
+    return { grp, core, edges, size: S, bandH };
   }
 
-  /* 程序化回退 */
-  plate(w, t, d, color) {
-    const m = new THREE.Mesh(new THREE.BoxGeometry(w, t, d), mat(color || 0xe6e1d9, 0.62));
-    m.castShadow = true; m.receiveShadow = true;
-    return m;
-  }
-  card(w, h, t) {
-    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, t), mat(0xdfd8ce, 0.6));
-    m.castShadow = true; m.receiveShadow = true;
-    const band = new THREE.Mesh(new THREE.BoxGeometry(w * 0.92, 0.012, t + 0.002), glow(C.amber, 1.7));
-    band.position.y = h / 2 - 0.022;
-    m.add(band);
-    return m;
+  /** LCM 沙漏：上下两个四棱锥对接 */
+  hourglass(size) {
+    const grp = new THREE.Group();
+    const S = size || 0.34;
+    const H = S * 1.9;
+    const m = new THREE.MeshPhysicalMaterial({
+      color: 0xe3c063, metalness: 0.85, roughness: 0.28,
+      envMapIntensity: 1.3, emissive: 0x2a1e08, emissiveIntensity: 0.5,
+    });
+    const lower = new THREE.Mesh(new THREE.ConeGeometry(S * 0.72, H / 2, 4, 1), m);
+    lower.geometry.rotateY(Math.PI / 4);
+    lower.position.y = -H / 4 + 0.012;   // 两个锥体在中缝略微咬合，避免看起来断开
+    const upper = new THREE.Mesh(new THREE.ConeGeometry(S * 0.72, H / 2, 4, 1), m);
+    upper.geometry.rotateY(Math.PI / 4);
+    upper.rotation.x = Math.PI;
+    upper.position.y = H / 4 - 0.012;
+    [lower, upper].forEach((o) => { o.castShadow = true; o.receiveShadow = true; grp.add(o); });
+    // 中缝光带
+    const seam = new THREE.Mesh(
+      new THREE.TorusGeometry(S * 0.17, 0.010, 10, 32),
+      new THREE.MeshStandardMaterial({ color: 0xffd98a, emissive: 0xffc35c, emissiveIntensity: 1.6, roughness: 0.4 })
+    );
+    seam.rotation.x = Math.PI / 2;
+    seam.raycast = () => {};
+    grp.add(seam);
+    return { grp, size: S, height: H };
   }
 
+  /* ------------------------------------------------------------- 标签 */
   addLabel(parent, title, sub, y, scale, opts) {
     const { tex, aspect } = labelTexture(title, sub, opts);
-    const hh = 0.16 * (scale || 1);
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(hh * aspect, hh),
-      new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false }));
+    const hh = 0.15 * (scale || 1);
+    const m = new THREE.Mesh(
+      new THREE.PlaneGeometry(hh * aspect, hh),
+      new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false })
+    );
     m.position.set(0, y, 0);
-    m.renderOrder = 5;
+    m.renderOrder = 6;
     parent.add(m);
     this.labels.push(m);
     return m;
   }
 
-  linkOneshot(a, b) {
-    const from = new THREE.Vector3(...a);
-    const to = new THREE.Vector3(...b);
-    const dir = new THREE.Vector3().subVectors(to, from);
+  /* ------------------------------------------------------------- 连线 */
+  link(from, to, opts) {
+    opts = opts || {};
+    const a = new THREE.Vector3(...from);
+    const b = new THREE.Vector3(...to);
+    const dir = new THREE.Vector3().subVectors(b, a);
     const len = dir.length();
-    if (len < 0.001) return null;
-    const m = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, len, 6, 1, true), glow(C.amber, 0.95));
-    m.position.copy(from).addScaledVector(dir, 0.5);
+    if (len < 0.001) return;
+    const m = new THREE.Mesh(
+      new THREE.CylinderGeometry(opts.r || 0.005, opts.r || 0.005, len, 6, 1, true),
+      new THREE.MeshStandardMaterial({
+        color: opts.color || 0xb8a893, emissive: opts.color || 0xb8a893,
+        emissiveIntensity: 0.5, transparent: true, opacity: 0.75, roughness: 0.4,
+      })
+    );
+    m.position.copy(a).addScaledVector(dir, 0.5);
     m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
     this.root.add(m);
-    return m;
-  }
 
-  edge(idA, idB) {
-    const a = this.anchorOf(idA), b = this.anchorOf(idB);
-    const m = this.linkOneshot(a, b);
-    if (!m) return;
-    // 流光：沿线往复的小光点
-    const dot = new THREE.Mesh(new THREE.SphereGeometry(0.016, 8, 8), glow(0xffc978, 2.6).clone());
-    dot.position.set(a[0], a[1], a[2]);
+    // 上行的数据光点（业务网元 → 底座，反向也走）
+    const dot = new THREE.Mesh(
+      new THREE.SphereGeometry(0.012, 8, 8),
+      new THREE.MeshStandardMaterial({ color: 0xffd79a, emissive: 0xffc978, emissiveIntensity: 2.2, roughness: 0.4 })
+    );
     this.root.add(dot);
-    // 方向箭头：链路中点的小圆锥，指向子节点（父 → 子的数据方向）
-    const va = new THREE.Vector3(...a), vb = new THREE.Vector3(...b);
-    const dir = new THREE.Vector3().subVectors(vb, va).normalize();
-    const arrow = new THREE.Mesh(new THREE.ConeGeometry(0.020, 0.055, 8), glow(0xffc978, 1.2).clone());
-    arrow.position.copy(va).addScaledVector(dir, 0.58);
-    arrow.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
-    this.root.add(arrow);
-
-    this.links.push({ from: idA, to: idB, mesh: m, dot, arrow, a: va, b: vb, phase: Math.random() });
+    this.links.push({ from: opts.fromId, to: opts.toId, mesh: m, dot, a, b, phase: Math.random() });
   }
 
-  anchorOf(id) {
-    const n = (this.nodes || []).find((o) => o.userData && o.userData.id === id);
-    if (!n) return [0, 0.7, 0];
-    return [n.position.x, n.position.y + 0.1, n.position.z];
-  }
-
+  /* ------------------------------------------------------------- 建场 */
   build() {
     if (this.root) {
       this.scene.remove(this.root);
@@ -353,136 +406,144 @@ class Topo3D {
     this.labels = [];
     this.links = [];
 
-    const st = this.state;
-    const lvl = st.topoLevel || 'element';
-    const Y = 0.62;
-    const addPick = (obj, data) => { obj.userData = Object.assign({}, data); this.nodes.push(obj); };
+    const st = this.state || {};
+    const els = Array.isArray(st.elements) ? st.elements : [];
+    const pick = (obj, data) => { obj.userData = Object.assign({}, data); this.nodes.push(obj); };
 
-    if (lvl === 'component') {
-      const ne = st.elements.find((e) => e.id === st.topoSel) || st.elements[0];
-      const base = this.inst('site') || this.plate(3.0, 0.06, 3.0);
-      base.scale.setScalar(1.15);
-      base.position.set(0, Y - 0.05, 0);
-      this.root.add(base);
+    const BASE_Y = 0.72;                 // 底座中心高度（悬浮在平面之上）
+    const BASE_S = 0.80;
+    const NF_Y = BASE_Y + 0.76;          // 业务网元挂载高度（贴着底座顶面）
+    const COLX = [-1.30, 0, 1.30];       // 三个同组沿 x 排开
+    const ROWZ = 0.0;
 
-      const mod = this.inst('ne') || this.card(0.78, 0.5, 0.035);
-      mod.position.set(0, Y, 0);
-      if (this.models) mod.scale.setScalar(1.55);
-      if (this.models) this.paintNameplate(mod, ne.name, ne.version, ne.id.toUpperCase());
-      this.root.add(mod);
-      addPick(mod, { kind: 'ne', id: ne.id, label: ne.name });
-      this.addLabel(mod, ne.name, ne.type + ' · v' + ne.version, this.models ? 0.86 : 0.35, 1.15, { big: 46, small: 26, tick: '#a67d48' });
+    // 把真实网元按组分配到业务网元槽位（有数据就显示真实名字/版本）
+    const byGroup = {};
+    els.forEach((e) => { const g = e.group || 'grp-1'; (byGroup[g] = byGroup[g] || []).push(e); });
+    let realIdx = 0;
 
-      const comps = ne.comps || [];
-      comps.forEach((name, i) => {
-        const ang = (i / comps.length) * Math.PI * 2 - Math.PI / 2;
-        const r = 0.92;
-        const chip = this.inst(this.compKind(name)) || new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.22, 0.22), mat(0xd8d1c7, 0.55));
-        chip.position.set(Math.cos(ang) * r, Y + 0.02, Math.sin(ang) * r); chip.scale.setScalar(1.5);
-        chip.rotation.y = -ang + Math.PI / 2;
-        this.root.add(chip);
-        addPick(chip, { kind: 'comp', id: ne.id + ':' + name, label: name });
-        this.addLabel(chip, name, 'COMPONENT', 0.20, 0.85, { big: 44, small: 24 });
-        this.edge(ne.id, ne.id + ':' + name);
+    BASES.forEach((b, gi) => {
+      const gx = COLX[gi];
+      const gz = ROWZ;
+      const { grp, core, size } = this.baseCube(b, BASE_S);
+      grp.position.set(gx, BASE_Y, gz);
+      this.root.add(grp);
+
+      const groupIds = Object.keys(byGroup);
+      const boundHere = byGroup[groupIds[gi] || ('grp-' + (gi + 1))] || [];
+      const total = boundHere.length;
+
+      // 底座本体可点（业务网元点击走各自的绑定网元）
+      pick(core, { kind: 'base', id: b.id, label: b.name, base: b.name, group: b.group });
+      this.addLabel(grp, b.name, 'BASE · ' + b.cn + (total ? ' · ' + total + ' NE' : ''), -size * 0.86, 1.25, {
+        big: 60, small: 28, tick: '#b8853f',
       });
 
-      this.controls.target.set(0, Y + 0.10, 0);
-      this.camera.position.set(2.9, Y + 2.45, 3.15);
-      return;
-    }
-
-    // 组视角：站点板在后，选中的组居中，组内网元弧形展开
-    if (lvl === 'group') {
-      const g = st.groups.find((x) => x.id === st.topoSel) || st.groups[0];
-      const siteB = this.inst('site') || this.plate(1.55, 0.08, 1.05, 0xeae5e1);
-      siteB.scale.setScalar(0.85);
-      siteB.position.set(0, Y, -1.30);
-      this.root.add(siteB);
-      addPick(siteB, { kind: 'site', id: 'site', label: st.site.name });
-      this.addLabel(siteB, st.site.name, 'SITE', 0.26, 0.9, { big: 44, small: 24, tick: '#a67d48' });
-
-      if (g) {
-        const tray = this.inst('group') || this.plate(2.05, 0.07, 0.66, 0xe6e1d9);
-        tray.position.set(0, Y, 0);
-        this.root.add(tray);
-        addPick(tray, { kind: 'group', id: g.id, label: g.name });
-        this.addLabel(tray, g.name, 'GROUP · ' + g.elements.length + ' NE', 0.30, 1.0, { big: 42, small: 22 });
-        this.edge('site', g.id);
-
-        const members = g.elements.map((id) => st.elements.find((e) => e.id === id)).filter(Boolean);
-        members.forEach((e, i) => {
-          const n = members.length;
-          const span = 1.25;
-          const x = n === 1 ? 0 : -span / 2 + (span / (n - 1)) * i;
-          const mod = this.inst('ne') || this.card(0.34, 0.46, 0.03);
-          mod.position.set(x, Y + 0.05, 0.02);
-          mod.scale.setScalar(1.15);
-          this.root.add(mod);
-          addPick(mod, { kind: 'ne', id: e.id, label: e.name });
-          if (this.models) this.paintNameplate(mod, e.name, e.version, e.id.toUpperCase());
-          this.addLabel(mod, e.name, e.type + ' · v' + e.version, this.models ? 0.58 : 0.34, 1.0,
-            { big: 42, small: 22, tick: /5\.2\.1/.test(e.version) ? '#a67d48' : null });
-          this.edge(g.id, e.id);
-        });
+      // 同组地环：一个细椭圆环，标出"这一组的范围"（不是设备，只是分组提示）
+      {
+        const ring = new THREE.Mesh(
+          new THREE.RingGeometry(0.82, 0.87, 64),
+          new THREE.MeshBasicMaterial({ color: 0xc0b6a4, transparent: true, opacity: 0.55, side: THREE.DoubleSide })
+        );
+        ring.rotation.x = -Math.PI / 2;
+        ring.position.set(gx, 0.012, gz + 0.02);
+        ring.raycast = () => {};
+        this.root.add(ring);
+        const dash = new THREE.Mesh(
+          new THREE.RingGeometry(0.867, 0.880, 64),
+          new THREE.MeshBasicMaterial({ color: 0xb8853f, transparent: true, opacity: 0.45, side: THREE.DoubleSide })
+        );
+        dash.rotation.x = -Math.PI / 2;
+        dash.position.set(gx, 0.013, gz + 0.02);
+        dash.raycast = () => {};
+        this.root.add(dash);
       }
-      // 其他组：后排小托盘，可点切换焦点
-      const others = st.groups.filter((x) => !g || x.id !== g.id);
-      others.forEach((og, i) => {
-        const tray = this.inst('group') || this.plate(1.2, 0.06, 0.4, 0xe6e1d9);
-        tray.scale.setScalar(0.55);
-        tray.position.set(-1.5 + i * 1.5, Y - 0.02, -2.15);
-        this.root.add(tray);
-        addPick(tray, { kind: 'group', id: og.id, label: og.name });
-        this.addLabel(tray, og.name, og.elements.length + ' NE', 0.20, 0.8, { big: 44, small: 24 });
-      });
 
-      this.controls.target.set(0, Y + 0.12, -0.15);
-      this.camera.position.set(2.6, Y + 2.1, 2.9);
-      return;
-    }
+      // 同组业务网元：在底座上方呈扇形展开（全部挂在这一个底座上）
+      const members = NFS.filter((n) => n.g === b.group);
+      const span = Math.PI * 0.70;
+      members.forEach((n, i) => {
+        const t = members.length === 1 ? 0.5 : i / (members.length - 1);
+        const ang = -span / 2 + span * t;
+        const r = 0.56;
+        const mx = gx + Math.sin(ang) * r;
+        const mz = gz + Math.cos(ang) * r * 0.48 - 0.02;
+        const my = NF_Y + (i % 2 ? 0.10 : 0);
 
-    const site = this.inst('site') || this.plate(1.55, 0.08, 1.05, 0xeae5e1);
-    site.position.set(0, Y, 0.95);
-    this.root.add(site);
-    addPick(site, { kind: 'site', id: 'site', label: st.site.name });
-    this.addLabel(site, st.site.name, 'SITE · ' + st.site.role, 0.30, 1.05, { big: 44, small: 24, tick: '#a67d48' });
+        const geo = this.solid(n.shape, n.shape === 'cube' ? 0.34 : 0.30);
+        const mesh = new THREE.Mesh(geo, this.material(n.material));
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        mesh.position.set(mx, my, mz);
+        mesh.rotation.y = ang * 0.6;
+        this.root.add(mesh);
 
-    st.groups.forEach((g, gi) => {
-      const gz = -0.25 - gi * 1.45;
-      const tray = this.inst('group') || this.plate(2.05, 0.07, 0.66, 0xe6e1d9);
-      tray.position.set(0, Y, gz);
-      this.root.add(tray);
-      addPick(tray, { kind: 'group', id: g.id, label: g.name });
-      this.addLabel(tray, g.name, 'GROUP · ' + g.elements.length + ' NE', 0.30, 0.95, { big: 42, small: 22 });
-      this.edge('site', g.id);
+        // 边缘线：几何体轮廓更清晰
+        const edges = new THREE.LineSegments(
+          new THREE.EdgesGeometry(geo, 24),
+          new THREE.LineBasicMaterial({ color: 0x6f6a60, transparent: true, opacity: 0.28 })
+        );
+        edges.raycast = () => {};
+        mesh.add(edges);
 
-      g.elements.forEach((eid, ei) => {
-        const e = st.elements.find((x) => x.id === eid);
-        if (!e) return;
-        const x = (ei - (g.elements.length - 1) / 2) * 0.66;
-        const mod = this.inst('ne') || this.card(0.34, 0.46, 0.03);
-        mod.position.set(x, Y + 0.04, gz); mod.scale.setScalar(1.25);
-        if (this.models) this.paintNameplate(mod, e.name, e.version, e.id.toUpperCase());
-        this.root.add(mod);
-        addPick(mod, { kind: 'ne', id: e.id, label: e.name });
-        this.addLabel(mod, e.name, e.type + ' · v' + e.version, this.models ? 0.60 : 0.34, 1.0,
-          { big: 42, small: 22, tick: /5\.2\.1/.test(e.version) ? '#a67d48' : null });
-        this.edge(g.id, e.id);
+        const real = els[realIdx % Math.max(1, els.length)] || null;
+        if (real) realIdx += 1;
+        const labelName = real ? real.name : n.name;
+        const sub = real ? (n.name + ' · v' + (real.version || '—')) : (n.name + ' · ' + n.cn);
+
+        pick(mesh, {
+          kind: 'ne',
+          id: real ? real.id : n.id,
+          label: labelName,
+          code: n.name,
+          element: real || null,
+        });
+        this.addLabel(mesh, labelName, sub, n.shape === 'cube' ? 0.30 : 0.26, 1.0, {
+          big: 46, small: 24, tick: '#b8853f',
+        });
+
+        // 挂载关系：底座 → 业务网元
+        this.link([gx, BASE_Y + size * 0.5, gz], [mx, my - 0.14, mz], {
+          fromId: b.id, toId: real ? real.id : n.id, r: 0.004,
+        });
       });
     });
 
-    this.controls.target.set(0, Y + 0.10, -0.35);
-    this.camera.position.set(3.15, Y + 2.35, 3.25);
+    // LCM 几何示例体：沙漏，放在右侧，说明"LCM 只管版本生命周期"
+    {
+      const lx = COLX[2] + 1.16;
+      const lz = ROWZ + 0.42;
+      const { grp, height } = this.hourglass(0.34);
+      grp.position.set(lx, BASE_Y + 0.28, lz);
+      this.root.add(grp);
+      const hit = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.30, 0.30, height, 12, 1, true),
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
+      );
+      hit.raycast = () => {};
+      hit.userData = { kind: 'lcm', id: 'lcm-hourglass', label: 'LCM' };
+      this.root.add(hit);
+      hit.position.copy(grp.position);
+      this.nodes.push(hit);
+      this.addLabel(grp, 'LCM', '生命周期 · 版本沙漏', height * 0.62, 0.95, {
+        big: 56, small: 26, tick: '#b8853f',
+      });
+      this.lcmGrp = grp;
+    }
+
+    this.controls.target.set(0.42, BASE_Y + 0.34, 0.12);
+    this.camera.position.set(1.42, BASE_Y + 2.44, 4.02);
+    this.camera.lookAt(this.controls.target);
+    this.controls.update();
+    this.select(this.selected || null);
   }
 
+  /* ------------------------------------------------------------- 选中 */
   select(id) {
     if (!this.nodes) return;
     this.selected = id;
     const near = new Set([id]);
-    (this.links || []).forEach((l) => {
-      if (l.from === id) near.add(l.to);
-      if (l.to === id) near.add(l.from);
-    });
+    (this.links || []).forEach((l) => { if (l.from === id) near.add(l.to); if (l.to === id) near.add(l.from); });
+    const none = !id;
     this.nodes.forEach((o) => {
       const oid = (o.userData || {}).id;
       const isSel = oid === id;
@@ -490,39 +551,23 @@ class Topo3D {
       o.traverse((c) => {
         if (!c.isMesh || !c.material) return;
         const mm = c.material;
-        if (mm.emissive) {
-          if (isSel) { mm.emissive.setHex(0x6b4a1f); mm.emissiveIntensity = 0.5; }
-          else { mm.emissive.setHex(0x000000); mm.emissiveIntensity = 0; }
+        if (Array.isArray(mm)) return;
+        if (mm.emissive && !mm.emissiveMap) {
+          if (isSel) { mm.emissive.setHex(0x6b4a1f); mm.emissiveIntensity = 0.55; }
+          else { mm.emissive.setHex(mm.__em || 0x000000); mm.emissiveIntensity = mm.__emi || 0; }
         }
-        mm.transparent = true;
-        mm.opacity = isSel ? 1 : (on ? 0.95 : 0.6);
+        if (mm.transparent && mm.opacity > 0.05) mm.opacity = none ? (mm.__op || mm.opacity) : (on ? 1 : 0.45);
       });
     });
     (this.links || []).forEach((l) => {
       const hit = l.from === id || l.to === id;
-      l.mesh.material = l.mesh.material.clone();
-      l.mesh.material.color.setHex(hit ? 0xe6b26a : 0xb8b2a6);
-      l.mesh.material.emissive.setHex(hit ? 0xa67d48 : 0x000000);
-      l.mesh.material.emissiveIntensity = hit ? 2.4 : 0.05;
-      l.mesh.scale.set(hit ? 2.4 : 0.6, 1, hit ? 2.4 : 0.6);
-      // 流光点跟随选中：命中链路亮琥珀快速，其余灰暗慢速；无选中时常态
-      l.hot = hit;
-      if (l.dot) {
-        const none = !id;
-        l.dot.material.color.setHex(none ? 0xffc978 : (hit ? 0xffd79a : 0x8f8b82));
-        l.dot.material.emissive.setHex(none ? 0xffc978 : (hit ? 0xffc978 : 0x5c5850));
-        l.dot.material.emissiveIntensity = none ? 1.6 : (hit ? 2.4 : 0.5);
-        l.dot.visible = none || hit;
-      }
-        if (l.arrow) {
-          const none2 = !id;
-          l.arrow.material.color.setHex(none2 ? 0xffc978 : (hit ? 0xffd79a : 0x9a948a));
-          l.arrow.material.emissiveIntensity = none2 ? 1.2 : (hit ? 2.0 : 0.25);
-          l.arrow.visible = none2 || hit;
-        }
+      l.mesh.material.color.setHex(none ? 0xb8a893 : (hit ? 0xe6b26a : 0xa9a29a));
+      l.mesh.material.emissiveIntensity = none ? 0.5 : (hit ? 1.8 : 0.12);
+      l.dot.visible = none || hit;
     });
   }
 
+  /* ------------------------------------------------------------- 拾取 */
   bindPick() {
     this.ray = new THREE.Raycaster();
     this.ptr = new THREE.Vector2(-2, -2);
@@ -542,10 +587,9 @@ class Topo3D {
         while (o && !(o.userData && o.userData.kind)) o = o.parent;
         return o;
       };
-      // 优先拾取"网元 / 组件"这类小对象，避免被托板/站点板挡住
       for (const h of hits) {
         const o = resolve(h);
-        if (o && (o.userData.kind === 'ne' || o.userData.kind === 'comp')) return o;
+        if (o && (o.userData.kind === 'ne' || o.userData.kind === 'base' || o.userData.kind === 'lcm')) return o;
       }
       return resolve(hits[0]) || null;
     };
@@ -566,20 +610,16 @@ class Topo3D {
   loop() {
     this.raf = requestAnimationFrame(() => this.loop());
     this.labels.forEach((l) => { if (l.parent) l.quaternion.copy(this.camera.quaternion); });
-    // 流光推进（每 3.2s 走完一条线段，错相出发）
+    const now = (performance.now() / 3000);
     if (this.links && this.links.length) {
-      const speedBoost = this.selected ? 1.35 : 1;
-      const now = (performance.now() / 3200) * speedBoost;
       this.links.forEach((l) => {
-        if (!l.dot) return;
-        const dim = this.selected && l.hot === false;
-        const e = (((now * (dim ? 0.3 : 1)) + l.phase) % 1);   // 单向：父 → 子，到终点重生
+        const e = ((now + l.phase) % 1);
         l.dot.position.lerpVectors(l.a, l.b, e);
-        const base = dim ? 0.35 : 1.6;
-        const fade = Math.sin(e * Math.PI);
-        l.dot.material.emissiveIntensity = base * (0.35 + fade);
+        l.dot.material.emissiveIntensity = 0.8 + Math.sin(e * Math.PI) * 1.8;
       });
     }
+    // 沙漏缓慢自转，提示它是"示例体"
+    if (this.lcmGrp) this.lcmGrp.rotation.y += 0.004;
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
   }
@@ -602,7 +642,6 @@ class Topo3D {
 
 window.PlaneTopo3D = {
   mount(host, state, onPick, onDrill) {
-    // host 是重渲染后的新容器时，旧 rig 的画布已脱离 DOM → 重建
     if (rig && !host.contains(rig.renderer.domElement)) { rig.dispose(); rig = null; }
     if (rig) { rig.state = state; rig.onPick = onPick; rig.onDrill = onDrill; window.__topoRig = rig; return rig; }
     rig = new Topo3D(host, state, onPick, onDrill);

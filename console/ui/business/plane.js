@@ -779,7 +779,7 @@
 
   /* ---------------------------------------------------------------- 视图：拓扑 */
   function viewTopo() {
-    return head('拓扑连接', 'Site → element group → element → component（正交连线，双击下钻）', 'FILE NO. TOPO-001') + `
+    return head('拓扑连接', '同组网元：1 个底座网元 + N 个业务网元（点选高亮同组，双击下钻）', 'FILE NO. TOPO-001') + `
       <div class="pl-grid pl-grid--side">
         <div class="pl-card" style="padding:0;overflow:hidden">
           <div class="pl-topo" id="topoBox" style="position:relative">
