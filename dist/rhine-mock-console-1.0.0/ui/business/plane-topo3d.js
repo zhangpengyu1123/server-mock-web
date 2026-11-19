@@ -617,11 +617,11 @@ class Topo3D {
     const pick = (obj, data) => { obj.userData = Object.assign({}, data); this.nodes.push(obj); };
 
     /* —— 所有几何体都坐在平面上；尺寸：底座大、业务小 —— */
-    const BASE_S = 0.40;               // 底座立方体边长
-    const COLX = [-0.92, 0, 0.92];     // 三组
+    const BASE_S = 0.32;               // 底座立方体边长
+    const COLX = [-1.18, 0, 1.18];     // 三组（拉开）
     const ROWZ = 0.0;
-    const RING = 0.74;                 // 业务网元环绕半径
-    const NE_S = 0.17;                 // 业务网元基准尺寸
+    const RING = 1.00;                 // 业务网元环绕半径（拉开）
+    const NE_S = 0.145;                 // 业务网元基准尺寸
 
     const byGroup = {};
     els.forEach((e) => { const g = e.group || 'grp-1'; (byGroup[g] = byGroup[g] || []).push(e); });
@@ -640,12 +640,12 @@ class Topo3D {
       this.contact(gx, gz, BASE_S * 3.0, 0.55);
       this.root.add(grp);
       // 双线：外粗内细，像图纸基准框
-        this.outline('square', gx, gz, BASE_S * 1.82, {
+        this.outline('square', gx, gz, BASE_S * 1.95, {
           color: 0xa8540c, opacity: 0.95, width: 0.017, ticks: true, base: true, id: b.id,
         });
         this.foot['base:' + b.name] = { x: gx, z: gz, r: BASE_S * 0.98 };
         // 内细线
-        this.outline('square', gx, gz, BASE_S * 1.62, {
+        this.outline('square', gx, gz, BASE_S * 1.72, {
           color: 0xc0741c, opacity: 0.75, width: 0.008,
         });
 
@@ -657,17 +657,17 @@ class Topo3D {
       const total = boundHere.length;
 
       pick(core, { kind: 'base', id: b.id, label: b.name, base: b.name, group: b.group });
-      this.addLabel(grp, b.name, 'BASE · ' + b.cn + (total ? ' · ' + total + ' NE' : ''), -BASE_S * 0.52, 1.25, {
+      this.addLabel(grp, b.name, 'BASE · ' + b.cn + (total ? ' · ' + total + ' NE' : ''), -BASE_S * 0.72, 1.00, {
         big: 56, small: 26, tick: '#a67d48',
       }, BASE_S * 1.02);
 
       const members = NFS.filter((n) => n.g === b.group);
-      const span = Math.PI * 1.18;
+      const span = Math.PI * 1.05;
       members.forEach((n, i) => {
         const t = members.length === 1 ? 0.5 : i / (members.length - 1);
         const ang = -span / 2 + span * t;
         const mx = gx + Math.sin(ang) * RING;
-        const mz = gz + Math.cos(ang) * RING * 0.74;
+        const mz = gz + Math.cos(ang) * RING * 0.78;
 
         const s2 = n.shape === 'cube' ? NE_S * 1.14 : NE_S;
         const h = solidH(n.shape, s2);
@@ -675,13 +675,13 @@ class Topo3D {
         const mesh = new THREE.Mesh(geo, this.material(n.material));
         mesh.castShadow = true;
         mesh.receiveShadow = true;
-        const LIFT = 0.10;                               // 悬浮离地高度
+        const LIFT = 0.060;                              // 悬浮离地高度（随尺寸缩小）
         mesh.position.set(mx, h / 2 + LIFT, mz);
         this.root.add(mesh);
 
         // 形状严格跟随几何体底面：圆柱=圆、三棱锥=三角、四棱锥/立方=方
         const footShape = n.shape === 'cyl' ? 'circle' : n.shape === 'tri' ? 'tri' : 'square';
-        const footD = n.shape === 'cube' ? s2 * 1.95 : s2 * 2.15;
+        const footD = n.shape === 'cube' ? s2 * 2.10 : s2 * 2.30;
         this.outline(footShape, mx, mz, footD, {
           color: 0xb4650f, opacity: 0.95, width: 0.013, id: null,
         });
@@ -699,7 +699,7 @@ class Topo3D {
         const holder = new THREE.Group();
         holder.position.set(mx, h / 2 + LIFT, mz);
         this.root.add(holder);
-        this.addLabel(holder, labelName, sub, h / 2 + 0.13, 0.88, { big: 46, small: 24, tick: '#a67d48' });
+        this.addLabel(holder, labelName, sub, h / 2 + 0.085, 0.78, { big: 46, small: 24, tick: '#a67d48' });
 
         // 挂载：底座轮廓 → 业务网元轮廓（地面走线）
         this.trace({ x: gx, z: gz }, { x: mx, z: mz }, {
@@ -726,11 +726,11 @@ class Topo3D {
 
     // LCM 沙漏：坐地 + 菱形轮廓
     {
-      const lx = COLX[2] + 0.84;
+      const lx = COLX[2] + 1.00;
       const lz = ROWZ + 0.30;
-      const S = 0.20;
+      const S = 0.145;
       const { grp, height } = this.hourglass(S);
-      grp.position.set(lx, height / 2 + 0.10, lz);
+      grp.position.set(lx, height / 2 + 0.055, lz);
       this.root.add(grp);
       this.contact(lx, lz, S * 3.4, 0.5);
       this.outline('square', lx, lz, S * 2.3, { color: 0xb4650f, opacity: 0.95, width: 0.013 });
@@ -748,18 +748,18 @@ class Topo3D {
       const holder = new THREE.Group();
       holder.position.copy(grp.position);
       this.root.add(holder);
-      this.addLabel(holder, 'LCM', '生命周期 · 版本沙漏', height / 2 + 0.16, 0.92, { big: 54, small: 24, tick: '#a67d48' });
+      this.addLabel(holder, 'LCM', '生命周期 · 版本沙漏', height / 2 + 0.10, 0.72, { big: 54, small: 24, tick: '#a67d48' });
       this.lcmGrp = grp;
     }
 
     // 相机：俯视一点，按画布宽高比装下整排
-    const target = new THREE.Vector3(0.30, 0.12, 0.02);
+    const target = new THREE.Vector3(0.20, 0.11, 0.02);
     const aspect = this.camera.aspect || 2.1;
     const vFov = (this.camera.fov * Math.PI) / 180;
     const hFov = 2 * Math.atan(Math.tan(vFov / 2) * aspect);
-    const halfW = 1.86;
+    const halfW = 2.14;
     const dist = halfW / Math.tan(hFov / 2) * 1.10;
-    const dir = new THREE.Vector3(0.18, 1.05, 1).normalize();   // 俯角加深，看清底面轮廓
+    const dir = new THREE.Vector3(0.14, 1.55, 1).normalize();   // 更俯视，平面才摊得开   // 俯角加深，看清底面轮廓
     this.camera.position.copy(target).addScaledVector(dir, dist);
     this.controls.target.copy(target);
     this.camera.lookAt(target);
