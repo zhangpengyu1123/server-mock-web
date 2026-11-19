@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>业务面 · RHINE LAB MOCK</title>
+<meta name="color-scheme" content="light" />
+<link rel="stylesheet" href="../shared/base.css" />
+<style>
+  /* 业务面：没有管理面切换，顶栏更矮；本地免登录时不显示用户区 */
+  .top { gap: 16px; }
+  .app__mode { display: flex; align-items: center; gap: 8px; margin-left: 4px; }
+  .app__mode .badge { font-size: 9px; }
+</style>
+</head>
+<body>
+
+<!-- 仅在 L 端（authRequired=true）出现：登录门 -->
+<div class="auth" id="gate" hidden>
+  <div class="auth__grid" aria-hidden="true"></div>
+  <div class="auth__grain" aria-hidden="true"></div>
+  <div class="auth__scan" aria-hidden="true"></div>
+  <div class="auth__flicker" id="gateFlicker" aria-hidden="true"></div>
+  <div class="ticks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+  <header class="brand">
+    <div class="brand__mark">
+      <svg viewBox="0 0 64 64" width="46" height="46" aria-hidden="true">
+        <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="1.2" />
+        <circle cx="32" cy="32" r="21" fill="none" stroke="currentColor" stroke-width=".7" stroke-dasharray="1 3" />
+        <path d="M32 6 L32 24 M32 40 L32 58 M6 32 L20 32 M44 32 L58 32" stroke="currentColor" stroke-width="1.2" />
+        <rect x="28" y="28" width="8" height="8" fill="currentColor" />
+      </svg>
+    </div>
+    <div class="brand__lines">
+      <span class="brand__l1">RHINE LAB</span>
+      <span class="brand__l2">MOCK SERVICE</span>
+      <span class="brand__l3">L-AGENT</span>
+    </div>
+    <p class="brand__legal">业务面 · 本节点对外提供服务，需授权后使用 · 访问均被记录</p>
+  </header>
+
+  <div class="auth__meta">
+    <div class="kv"><span>NODE</span><b id="gateNode">L-AGENT</b></div>
+    <div class="kv"><span>BUILD</span><b id="gateVer">0.1.0</b></div>
+    <div class="kv"><span>CLOCK</span><b id="gateClock" class="mono">--:--:--</b></div>
+  </div>
+
+  <main class="auth__stage">
+    <section class="seq" id="gateSeq">
+      <svg class="seq__rings" viewBox="0 0 220 220" aria-hidden="true">
+        <circle class="ring ring--outer" cx="110" cy="110" r="96" />
+        <circle class="ring ring--mid" cx="110" cy="110" r="76" />
+        <g class="seq__arcs">
+          <path class="arc arc--a" d="M110 14 A96 96 0 0 1 206 110" />
+          <path class="arc arc--b" d="M110 206 A96 96 0 0 1 14 110" />
+        </g>
+        <circle class="seq__node" cx="110" cy="14" r="4.5" />
+        <circle class="seq__core" x="102" y="102" width="16" height="16" />
+      </svg>
+      <div class="seq__log mono" id="gateLog"></div>
+      <div class="seq__verb" id="gateVerb">REQUEST RECEIVED</div>
+    </section>
+
+    <section class="card" id="gateCard" hidden>
+      <div class="card__head">
+        <span class="card__idx mono">X-101</span>
+        <h1 class="card__title"><span class="roll">业务面接入</span></h1>
+        <p class="card__sub">该节点对局域网提供服务，需要授权码</p>
+      </div>
+      <form class="form" id="gateForm" autocomplete="off" novalidate>
+        <label class="fld">
+          <span class="fld__lb">身份 <i>IDENTITY</i></span>
+          <input class="inp" id="gUser" autocomplete="username" spellcheck="false" required />
+        </label>
+        <label class="fld">
+          <span class="fld__lb">授权码 <i>ACCESS CODE</i></span>
+          <input class="inp mono" id="gPass" type="password" autocomplete="current-password" required />
+        </label>
+        <div class="card__acts">
+          <button class="btn btn--primary" id="gSubmit" type="submit">
+            <span class="btn__lb">请求接入</span><span class="btn__en mono">REQUEST ACCESS</span>
+          </button>
+          <button class="btn btn--ghost" id="gDemo" type="button">填入演示账号</button>
+        </div>
+        <p class="card__err mono" id="gErr" hidden></p>
+        <p class="card__hint">演示凭据：<b>viewer / rhine-viewer-2026</b>（业务用户）· <b>admin / rhine-admin-2026</b></p>
+      </form>
+      <div class="card__foot mono"><span id="gFoot">等待授权</span><span class="dotsep">·</span><span id="gFootVer">v0.1.0</span></div>
+    </section>
+    <div class="whiteout" id="gateWhite" aria-hidden="true"></div>
+  </main>
+
+  <footer class="auth__foot mono">
+    <span>RHINE LAB · MOCK SERVICE</span><span class="dotsep">·</span><span>业务面 · 请勿外传</span>
+  </footer>
+</div>
+
+<!-- 业务面主体（W 端本地 / L 端登录后同一份） -->
+<div class="app" id="app" hidden>
+  <div class="app__grain" aria-hidden="true"></div>
+  <header class="top">
+    <div class="top__brand">
+      <svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true">
+        <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M32 8 L32 26 M32 38 L32 56 M8 32 L26 32 M38 32 L56 32" stroke="currentColor" stroke-width="2" />
+        <rect x="28" y="28" width="8" height="8" fill="currentColor" />
+      </svg>
+      <span class="top__wordmark">RHINE <b>MOCK</b></span>
+      <span class="app__mode"><span class="badge badge--amber" id="modeBadge">LOCAL</span></span>
+    </div>
+    <div class="top__right">
+      <div class="top__stat"><span>MAPPINGS</span><b id="topMaps" class="mono">0</b></div>
+      <div class="top__stat"><span>HITS</span><b id="topHits" class="mono">0</b></div>
+      <div class="user" id="userBox" hidden>
+        <span class="user__dot" aria-hidden="true"></span>
+        <span class="user__name" id="userName">—</span>
+        <span class="user__role mono" id="userRole">—</span>
+      </div>
+      <button class="btn btn--ghost btn--sm" id="btnLogout" type="button" hidden>退出</button>
+    </div>
+  </header>
+  <div class="shell">
+    <aside class="rail" id="rail"></aside>
+    <main class="main" id="main"></main>
+  </div>
+  <footer class="statusbar mono">
+    <span id="sbLeft">READY</span><span class="dotsep">·</span><span id="sbMid">—</span>
+    <span class="sb__spacer"></span><span id="sbRight">—</span>
+  </footer>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="../shared/api.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>

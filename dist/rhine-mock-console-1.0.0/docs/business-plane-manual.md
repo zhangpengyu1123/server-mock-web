@@ -5,13 +5,26 @@
 > 面向"有机响应"的 MoC 平台：**LCM 管版本 → OMC 管升级 → 升级的元组件仍是网元**，
 > 全流程带人机交互（human-in-the-loop），风格统一为米白档案纸 + 黑墨细线 + 琥珀信号色。
 
-- 入口：`http://127.0.0.1:9600/business/plane.html`
+- 入口：`http://127.0.0.1:9600/business/`（自动进 `plane.html`；旧快速 Mock 看板在 `legacy.html`）
 - 登录：L 端需要凭据（默认 `admin / rhine-admin-2026`）；W 端 `RHINE_AUTH=off` 自动跳过
 - 数据：`console/data/*.json`（端点 / 映射规则 / 网元 / 网元组 / 软件包 / 平台配置 / 升级任务 / 人机模板）
 
 ---
 
 ---
+
+### 0.0.1 三个页面的关系（别走错门）
+
+`console/ui/business/` 里其实有两个业务面页面，历史上并存：
+
+| 文件 | 品牌 | 内容 | 现在的定位 |
+|---|---|---|---|
+| `plane.html` | RHINE LAB · PLANE | 两大工作区（运行态 / 准备态）× 六个工作台：MOCK 管理、MOCK 流程、运行审计、网元管理、OMC、LCM、FS | **正式业务面**，入口 `/business/` 会重定向到这里 |
+| `index.html` | — | 只是一个跳板：meta refresh + JS 双保险跳到 `plane.html`，并给出 legacy 链接 | 统一入口 |
+| `legacy.html` | RHINE LAB · L-AGENT | 早期"快速 Mock"看板：MAPPINGS（本地映射 / 新建映射）+ RUNTIME（接入端点 / 调用流） | 已归档，只在需要看原始调用流时打开 |
+
+> 之前容易混：直接开 `/business/` 落到的是旧看板 `index.html`，看起来跟文档里的截图完全不是一套 UI。
+> 现在 `/business/` 默认进新版；旧看板改名为 `legacy.html`，如需保留访问可以在菜单里加一条。
 
 ## 0.1 一键启动
 
@@ -33,7 +46,7 @@ start-demo.cmd
 |---|---|---|
 | L 端 | http://127.0.0.1:9600/business/plane.html | `admin / rhine-admin-2026` |
 | W 端 | http://127.0.0.1:9601/business/plane.html | 免登录 |
-| 看板 | http://127.0.0.1:9600/business/index.html | 同 L 端 |
+| 看板（旧） | http://127.0.0.1:9600/business/legacy.html | 同 L 端 |
 
 停止：`Get-Process rhine-agent | Stop-Process -Force`
 
